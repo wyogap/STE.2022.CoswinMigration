@@ -1,12 +1,13 @@
 /****** Object:  Table [dbo].[ste_migration_params]    Script Date: 25/01/2023 17:46:34 ******/
 -- Add custom columns
 -- ------------------
-ALTER TABLE ASSETSPEC
-ADD STE_MIGRATIONID bigint default null,
+ALTER TABLE SPAREPART
+ADD STE_CSWNEQCD varchar(40) default null, 
+	STE_CSWNASSETID varchar(40) default null,
+	STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
 
--- create dummy column so that sp creation is successful
-ALTER TABLE ASSETSPEC ADD _ASSETSPECID bigint;
+-- col assetnum is already varchar(24)
 
 -- Create pre-task
 -- ---------------
@@ -15,21 +16,15 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_0106_Asset_ASSETSPEC_pre
+drop procedure if exists ste_0107_asset_spareparts_pre
 GO
 
-CREATE PROCEDURE ste_0106_Asset_ASSETSPEC_pre 
+CREATE PROCEDURE ste_0107_asset_spareparts_pre 
 	@PackageLogID INT
 AS
 BEGIN
-	declare @v_max_id bigint;
-
 	-- truncate existing data
-	truncate table ASSETSPEC;
-
-	-- enable identity column LOCATIONS.ASSETSPECID (by using temporary column for identity)
-	ALTER TABLE ASSETSPEC
-	ADD _ASSETSPECID bigint IDENTITY;
+	DELETE FROM sparepart WHERE STE_MIGRATIONID IS NOT NULL;
 
 END
 
@@ -42,10 +37,10 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_0106_Asset_ASSETSPEC_post
+drop procedure if exists ste_0107_asset_spareparts_post
 GO
 
-CREATE PROCEDURE ste_0106_Asset_ASSETSPEC_post
+CREATE PROCEDURE ste_0107_asset_spareparts_post
   @PackageLogID INT
 AS
 BEGIN
@@ -54,17 +49,12 @@ BEGIN
 	declare @v_max_id bigint;
 
 	-- update identity column
-	select @v_max_id=max(_ASSETSPECID) from ASSETSPEC;
-
-	update ASSETSPEC set ASSETSPECID = _ASSETSPECID;
-
-	alter table ASSETSPEC drop column _ASSETSPECID;
-
-	-- update maximo seq
-	update maxsequence set maxreserved=@v_max_id+1 where tbname='ASSETSPEC' and name='ASSETSPECID';
+	select @v_max_id=max(sparepartid) from sparepart;
+	update maxsequence set maxreserved=@v_max_id+1 where tbname='SPAREPART' and name='SPAREPARTID';
 
 	-- update start_id and end_id
-	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID) from ASSETSPEC;
+	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID) from SPAREPART
+	WHERE STE_MIGRATIONID IS NOT NULL;
 
 	UPDATE [dbo].[ste_migration_logs] SET
 	  [start_id] = @v_start_id
@@ -73,9 +63,6 @@ BEGIN
 
 END
 GO
-
--- drop dummy column
-alter table ASSETSPEC drop column _ASSETSPECID;
 
 -- update migration params
 -- -----------------------
@@ -88,7 +75,7 @@ INSERT INTO [dbo].[ste_migration_params]
            ,[modified_on]
            ,[modified_by])
      VALUES
-           ('0106_Asset_AssetSpec'
+           ('0107_Asset_SpareParts'
            ,'version'
            ,'1'
            ,getdate()

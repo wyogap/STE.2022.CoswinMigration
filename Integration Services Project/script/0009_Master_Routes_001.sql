@@ -1,11 +1,8 @@
 /****** Object:  Table [dbo].[ste_migration_params]    Script Date: 25/01/2023 17:46:34 ******/
 -- Add custom columns
 -- ------------------
-ALTER TABLE ASSETLOCUSERCUST
-ADD STE_CSWNASSETID varchar(40) NULL,
-	STE_MIGRATIONID bigint default null,
-    STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE())
-	;
+ALTER TABLE [ROUTES]
+ADD STE_CSWNGRCD varchar(20) default null;
 
 -- Create pre-task
 -- ---------------
@@ -14,21 +11,15 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_0102_Asset_AssetLocUserCust_pre
+drop procedure if exists ste_009_master_routes_pre
 GO
 
-CREATE PROCEDURE ste_0102_Asset_AssetLocUserCust_pre 
+CREATE PROCEDURE ste_009_master_routes_pre 
 	@PackageLogID INT
 AS
 BEGIN
-	declare @v_max_id bigint;
-
 	-- truncate existing data
-	truncate table ASSETLOCUSERCUST;
-
-	---- enable identity column LOCATIONS.ASSETLOCUSERCUSTID (by using temporary column for identity)
-	--ALTER TABLE ASSETLOCUSERCUST
-	--ADD _ASSETLOCUSERCUSTID bigint IDENTITY;
+	DELETE FROM [routes] WHERE STE_MIGRATIONID IS NOT NULL;
 
 END
 
@@ -41,10 +32,10 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_0102_Asset_AssetLocUserCust_post
+drop procedure if exists ste_009_master_routes_post
 GO
 
-CREATE PROCEDURE ste_0102_Asset_AssetLocUserCust_post
+CREATE PROCEDURE ste_009_master_routes_post
   @PackageLogID INT
 AS
 BEGIN
@@ -53,13 +44,14 @@ BEGIN
 	declare @v_max_id bigint;
 
 	-- update identity column
-	select @v_max_id=max(ASSETLOCUSERCUSTID) from ASSETLOCUSERCUST;
+	select @v_max_id=max(routesid) from [ROUTES];
 
 	-- update maximo seq
-	update maxsequence set maxreserved=ISNULL(@v_max_id,0)+1 where tbname='ASSETLOCUSERCUST' and name='ASSETLOCUSERCUSTID';
+	update maxsequence set maxreserved=@v_max_id+1 where tbname='ROUTES' and name='ROUTESID';
 
 	-- update start_id and end_id
-	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID) from ASSETLOCUSERCUST;
+	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID) from [ROUTES]
+	WHERE STE_MIGRATIONID IS NOT NULL;
 
 	UPDATE [dbo].[ste_migration_logs] SET
 	  [start_id] = @v_start_id
@@ -80,9 +72,9 @@ INSERT INTO [dbo].[ste_migration_params]
            ,[modified_on]
            ,[modified_by])
      VALUES
-           ('0102_Asset_AssetLocUserCust'
+           ('0009_Master_Routes'
            ,'version'
-           ,'1'
+           ,'2'
            ,getdate()
            ,'ssis'
            ,NULL

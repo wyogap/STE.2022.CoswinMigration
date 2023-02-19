@@ -2,11 +2,24 @@
 -- Add custom columns
 -- ------------------
 ALTER TABLE WORKORDER
-ADD STE_MIGRATIONID bigint default null,
+ADD STE_CSWNEQCD varchar(20) default null,
+	STE_CSWNASSETID varchar(40) default null,
+	STE_CSWNSYCD varchar(20) default null,
+	STE_CSWNACTHRS float default null,
+	STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
 
--- create dummy column so that sp creation is successful
-ALTER TABLE WORKORDER ADD _WORKORDERID bigint;
+-- force make sure jobtype/worktype from coswin is not truncated (originally varchar(5))
+ALTER TABLE WORKORDER
+ALTER COLUMN WORKTYPE varchar(6);
+
+-- force make sure failurecode from coswin is not truncated (originally varchar(8))
+ALTER TABLE WORKORDER
+ALTER COLUMN failurecode varchar(10);
+
+-- force make sure equipmentcode from coswin is not truncated (originally varchar(12))
+ALTER TABLE WORKORDER
+ALTER COLUMN assetnum varchar(20);
 
 -- Create pre-task
 -- ---------------
@@ -22,14 +35,8 @@ CREATE PROCEDURE ste_0201_WO_Workorder_pre
 	@PackageLogID INT
 AS
 BEGIN
-	declare @v_max_id bigint;
-
 	-- truncate existing data
 	truncate table WORKORDER;
-
-	-- enable identity column LOCATIONS.WORKORDERID (by using temporary column for identity)
-	ALTER TABLE WORKORDER
-	ADD _WORKORDERID bigint IDENTITY;
 
 END
 
@@ -54,11 +61,7 @@ BEGIN
 	declare @v_max_id bigint;
 
 	-- update identity column
-	select @v_max_id=max(_WORKORDERID) from WORKORDER;
-
-	update WORKORDER set WORKORDERID = _WORKORDERID;
-
-	alter table WORKORDER drop column _WORKORDERID;
+	select @v_max_id=max(WORKORDERID) from WORKORDER;
 
 	-- update maximo seq
 	update maxsequence set maxreserved=@v_max_id+1 where tbname='WORKORDER' and name='WORKORDERID';

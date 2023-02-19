@@ -3,10 +3,8 @@
 -- ------------------
 ALTER TABLE ASSETTRANS
 ADD STE_MIGRATIONID bigint default null,
-    STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
-
--- create dummy column so that sp creation is successful
-ALTER TABLE ASSETTRANS ADD _ASSETTRANSID bigint;
+    STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE()),
+	STE_CSWNASSETID varchar(40) NULL;
 
 -- Create pre-task
 -- ---------------
@@ -27,9 +25,9 @@ BEGIN
 	-- truncate existing data
 	truncate table ASSETTRANS;
 
-	-- enable identity column LOCATIONS.ASSETTRANSID (by using temporary column for identity)
-	ALTER TABLE ASSETTRANS
-	ADD _ASSETTRANSID bigint IDENTITY;
+	---- enable identity column LOCATIONS.ASSETTRANSID (by using temporary column for identity)
+	--ALTER TABLE ASSETTRANS
+	--ADD _ASSETTRANSID bigint IDENTITY;
 
 END
 
@@ -54,11 +52,7 @@ BEGIN
 	declare @v_max_id bigint;
 
 	-- update identity column
-	select @v_max_id=max(_ASSETTRANSID) from ASSETTRANS;
-
-	update ASSETTRANS set ASSETTRANSID = _ASSETTRANSID;
-
-	alter table ASSETTRANS drop column _ASSETTRANSID;
+	select @v_max_id=max(ASSETTRANSID) from ASSETTRANS;
 
 	-- update maximo seq
 	update maxsequence set maxreserved=@v_max_id+1 where tbname='ASSETTRANS' and name='ASSETTRANSID';
@@ -74,9 +68,6 @@ BEGIN
 END
 GO
 
--- drop dummy column
-alter table ASSETTRANS drop column _ASSETTRANSID;
-
 -- update migration params
 -- -----------------------
 INSERT INTO [dbo].[ste_migration_params]
@@ -88,7 +79,7 @@ INSERT INTO [dbo].[ste_migration_params]
            ,[modified_on]
            ,[modified_by])
      VALUES
-           ('0105_Asset_Trans'
+           ('0105_Asset_AssetTrans'
            ,'version'
            ,'1'
            ,getdate()

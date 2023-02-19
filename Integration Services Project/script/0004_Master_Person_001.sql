@@ -1,12 +1,3 @@
-/****** Object:  Table [dbo].[ste_migration_params]    Script Date: 25/01/2023 17:46:34 ******/
--- Add custom columns
--- ------------------
-ALTER TABLE ASSETSPEC
-ADD STE_CSWNASSETID varchar(40) NULL,
-	STE_MIGRATIONID bigint default null,
-    STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE())
-	;
-
 -- Create pre-task
 -- ---------------
 SET ANSI_NULLS ON
@@ -14,17 +5,15 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_0106_Asset_AssetSpec_pre
+drop procedure if exists ste_004_master_person_pre
 GO
 
-CREATE PROCEDURE ste_0106_Asset_AssetSpec_pre 
+CREATE PROCEDURE ste_004_master_person_pre 
 	@PackageLogID INT
 AS
 BEGIN
-	declare @v_max_id bigint;
-
 	-- truncate existing data
-	truncate table ASSETSPEC;
+	delete from person where STE_MIGRATIONID is not null;
 
 END
 
@@ -37,10 +26,10 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_0106_Asset_AssetSpec_post
+drop procedure if exists ste_004_master_person_post
 GO
 
-CREATE PROCEDURE ste_0106_Asset_AssetSpec_post
+CREATE PROCEDURE ste_004_master_person_post
   @PackageLogID INT
 AS
 BEGIN
@@ -48,14 +37,13 @@ BEGIN
 	declare @v_end_id int;
 	declare @v_max_id bigint;
 
-	-- update identity column
-	select @v_max_id=max(ASSETSPECID) from ASSETSPEC;
-
 	-- update maximo seq
-	update maxsequence set maxreserved=@v_max_id+1 where tbname='ASSETSPEC' and name='ASSETSPECID';
+	select @v_max_id=max(PERSONUID) from PERSON;
+	update maxsequence set maxreserved=@v_max_id+1 where tbname='PERSON' and name='PERSONUID';
 
 	-- update start_id and end_id
-	select @v_start_id=min(ASSETSPECID), @v_end_id=max(ASSETSPECID) from ASSETSPEC;
+	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID) from person
+	where STE_MIGRATIONID is not NULL;
 
 	UPDATE [dbo].[ste_migration_logs] SET
 	  [start_id] = @v_start_id
@@ -76,9 +64,9 @@ INSERT INTO [dbo].[ste_migration_params]
            ,[modified_on]
            ,[modified_by])
      VALUES
-           ('0106_Asset_AssetSpec'
+           ('0004_Master_Person'
            ,'version'
-           ,'1'
+           ,'2'
            ,getdate()
            ,'ssis'
            ,NULL

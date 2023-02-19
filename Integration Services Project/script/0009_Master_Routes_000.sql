@@ -64,7 +64,7 @@ BEGIN
 	update maxsequence set maxreserved=@v_max_id+1 where tbname='ROUTES' and name='ROUTESID';
 
 	-- update start_id and end_id
-	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID) from meter;
+	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID) from [ROUTES];
 
 	UPDATE [dbo].[ste_migration_logs] SET
 	  [start_id] = @v_start_id

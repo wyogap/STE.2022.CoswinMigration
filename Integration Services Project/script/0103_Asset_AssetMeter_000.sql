@@ -2,11 +2,15 @@
 -- Add custom columns
 -- ------------------
 ALTER TABLE ASSETMETER
-ADD STE_MIGRATIONID bigint default null,
-    STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
+ADD STE_CSWNASSETID varchar(40) NULL,
+	STE_MIGRATIONID bigint default null,
+    STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE())
+	;
 
--- create dummy column so that sp creation is successful
-ALTER TABLE ASSETMETER ADD _ASSETMETERID bigint;
+-- make sure metername from coswin is not truncated (the same column in master METER table is already 24 char)
+-- originally it is varchar(12)
+ALTER TABLE ASSETMETER
+ALTER COLUMN metername varchar(20) NOT NULL;
 
 -- Create pre-task
 -- ---------------
@@ -15,10 +19,10 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_0103_Asset_Meter_pre
+drop procedure if exists ste_0103_Asset_AssetMeter_pre
 GO
 
-CREATE PROCEDURE ste_0103_Asset_Meter_pre 
+CREATE PROCEDURE ste_0103_Asset_AssetMeter_pre 
 	@PackageLogID INT
 AS
 BEGIN
@@ -27,9 +31,9 @@ BEGIN
 	-- truncate existing data
 	truncate table ASSETMETER;
 
-	-- enable identity column LOCATIONS.ASSETMETERID (by using temporary column for identity)
-	ALTER TABLE ASSETMETER
-	ADD _ASSETMETERID bigint IDENTITY;
+	---- enable identity column LOCATIONS.ASSETMETERID (by using temporary column for identity)
+	--ALTER TABLE ASSETMETER
+	--ADD _ASSETMETERID bigint IDENTITY;
 
 END
 
@@ -42,10 +46,10 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_0103_Asset_Meter_post
+drop procedure if exists ste_0103_Asset_AssetMeter_post
 GO
 
-CREATE PROCEDURE ste_0103_Asset_Meter_post
+CREATE PROCEDURE ste_0103_Asset_AssetMeter_post
   @PackageLogID INT
 AS
 BEGIN
@@ -54,11 +58,7 @@ BEGIN
 	declare @v_max_id bigint;
 
 	-- update identity column
-	select @v_max_id=max(_ASSETMETERID) from ASSETMETER;
-
-	update ASSETMETER set ASSETMETERID = _ASSETMETERID;
-
-	alter table ASSETMETER drop column _ASSETMETERID;
+	select @v_max_id=max(ASSETMETERID) from ASSETMETER;
 
 	-- update maximo seq
 	update maxsequence set maxreserved=@v_max_id+1 where tbname='ASSETMETER' and name='ASSETMETERID';
@@ -74,9 +74,6 @@ BEGIN
 END
 GO
 
--- drop dummy column
-alter table ASSETMETER drop column _ASSETMETERID;
-
 -- update migration params
 -- -----------------------
 INSERT INTO [dbo].[ste_migration_params]
@@ -88,7 +85,7 @@ INSERT INTO [dbo].[ste_migration_params]
            ,[modified_on]
            ,[modified_by])
      VALUES
-           ('0103_Asset_Meter'
+           ('0103_Asset_AssetMeter'
            ,'version'
            ,'1'
            ,getdate()
