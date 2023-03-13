@@ -10,6 +10,10 @@ ADD STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
 ;
 
+-- this will be created through maximo
+ --ALTER TABLE COMPANIES
+ --ADD STE_CSWNCOUNTRY varchar(50) default null;
+
 -- Create pre-task
 -- ---------------
 SET ANSI_NULLS ON
@@ -98,6 +102,11 @@ ADD STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
 ;
 
+-- this will be created through maximo
+ --ALTER TABLE COMPCONTACT
+ --ADD STE_CSWNVOICEPHONE2 varchar(50) default null,
+ --    STE_CONTACTTYPE varchar(50) default null;
+
 -- Create pre-task
 -- ---------------
 SET ANSI_NULLS ON
@@ -180,7 +189,7 @@ INSERT INTO [dbo].[ste_migration_params]
            ,[modified_on]
            ,[modified_by])
      VALUES
-           ('012_Master_Companies_CompContact'
+           ('0012_Master_Companies_CompContact'
            ,'version'
            ,'1'
            ,getdate()
