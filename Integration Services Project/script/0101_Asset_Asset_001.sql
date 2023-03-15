@@ -2,8 +2,8 @@
 -- Add custom columns
 -- ------------------
 ALTER TABLE ASSET
-ADD STE_CSWNPRCD VARCHAR(20) default null,
-	STE_CSWNLEVEL int default null
+ADD STE_MIGRATIONPRCD VARCHAR(20) default null,
+	STE_MIGRATIONLEVEL int default null
 	;
 
 -- update migration params

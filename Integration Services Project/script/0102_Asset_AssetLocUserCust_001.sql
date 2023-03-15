@@ -2,7 +2,7 @@
 -- Add custom columns
 -- ------------------
 ALTER TABLE ASSETLOCUSERCUST
-ADD STE_CSWNEQCD varchar(20) NULL
+ADD STE_MIGRATIONEQCD varchar(20) NULL
 	;
 
 -- update migration params

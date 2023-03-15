@@ -1,25 +1,18 @@
 /****** Object:  Table [dbo].[ste_migration_params]    Script Date: 25/01/2023 17:46:34 ******/
--- ----------- 
--- COMPMASTER
--- -----------
+-- -----
+-- MR
+-- -----
 
 -- Add custom columns
 -- ------------------
-ALTER TABLE COMPMASTER
+ALTER TABLE [po]
 ADD STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
-;
 
-;
-ALTER TABLE COMPMASTER
-ADD STE_MIGRATIONRMK1 IMAGE default null,
-    STE_MIGRATIONRMK2 IMAGE default null,
-	STE_MIGRATIONRMK3 IMAGE default null
-;
-
--- this will be created by maximo
---ALTER TABLE COMPMASTER
---ADD ste_cswncountry varchar(50) default null;
+-- will be created in MAXIMO
+--ALTER TABLE [po]
+--ADD ste_cswnapglcode varchar(20) default null,
+--    ste_cswnpotype smallint default null;
 
 -- Create pre-task
 -- ---------------
@@ -28,15 +21,15 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_011_master_compmaster_pre
+drop procedure if exists ste_0306_po_po_pre
 GO
 
-CREATE PROCEDURE ste_011_master_compmaster_pre 
+CREATE PROCEDURE ste_0306_po_po_pre 
 	@PackageLogID INT
 AS
 BEGIN
 	-- truncate existing data
-	delete from compmaster where STE_MIGRATIONID is not null;
+	delete from dbo.[po] where STE_MIGRATIONID is not null
 
 END
 
@@ -49,10 +42,10 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_011_master_compmaster_post
+drop procedure if exists ste_0306_po_po_post
 GO
 
-CREATE PROCEDURE ste_011_master_compmaster_post
+CREATE PROCEDURE ste_0306_po_po_post
   @PackageLogID INT
 AS
 BEGIN
@@ -63,15 +56,15 @@ BEGIN
 	declare @PackageName varchar(250);
 
 	-- update identity column
-	select @v_max_id=max(COMPMASTERID) from COMPMASTER;
-	update maxsequence set maxreserved=@v_max_id+1 where tbname='COMPMASTER' and name='COMPMASTERID';
+	select @v_max_id=max(poid) from [po];
+	update maxsequence set maxreserved=@v_max_id+1 where tbname='PO' and name='POID';
 
 	-- get package name
 	select @PackageName = package_name from [dbo].[ste_migration_logs] where id = @PackageLogID;
 	if (@PackageName is null) return;
 
 	-- update start_id and end_id for ITEM_
-	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID), @v_cnt=count(STE_MIGRATIONID) from COMPMASTER
+	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID), @v_cnt=count(STE_MIGRATIONID) from [po]
 	where STE_MIGRATIONID is not null;
 
 	insert into [dbo].[ste_migration_log_details] (
@@ -84,7 +77,7 @@ BEGIN
 	values (
 		@PackageName
 		, @PackageLogID
-		, 'COMPMASTER'
+		, 'PO'
 		, 'COMPLETED'
 		, CONCAT('COUNT: ', @v_cnt, ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
 	);
@@ -98,21 +91,20 @@ BEGIN
 END
 GO
 
--- ----------------- 
--- COMPCONTACTMSTR
--- -----------------
+-- -------
+-- MRLine
+-- -------
 
 -- Add custom columns
 -- ------------------
-ALTER TABLE COMPCONTACTMSTR
+ALTER TABLE poline
 ADD STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
-;
 
--- this will be created through maximo
---ALTER TABLE COMPCONTACTMSTR
---ADD ste_cswnvoicephone2 varchar(50) default null,
---    ste_contacttype varchar(50) default null;
+-- will be created in MAXIMO
+--ALTER TABLE poline
+--ADD ste_cswnpendingqty decimal(15,2) default null,
+--    ste_cswninvqty decimal(15,2) default null;
 
 -- Create pre-task
 -- ---------------
@@ -121,15 +113,15 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_011_master_compcontactmstr_pre
+drop procedure if exists ste_0306_po_poline_pre
 GO
 
-CREATE PROCEDURE ste_011_master_compcontactmstr_pre 
+CREATE PROCEDURE ste_0306_po_poline_pre 
 	@PackageLogID INT
 AS
 BEGIN
 	-- truncate existing data
-	delete from compcontactmstr where STE_MIGRATIONID is not null;
+	delete from dbo.poline where STE_MIGRATIONID is not null;
 
 END
 
@@ -142,10 +134,10 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_011_master_compcontactmstr_post
+drop procedure if exists ste_0306_po_poline_post
 GO
 
-CREATE PROCEDURE ste_011_master_compcontactmstr_post
+CREATE PROCEDURE ste_0306_po_poline_post
   @PackageLogID INT
 AS
 BEGIN
@@ -156,15 +148,15 @@ BEGIN
 	declare @PackageName varchar(250);
 
 	-- update identity column
-	select @v_max_id=max(COMPCONTACTMSTRID) from COMPCONTACTMSTR;
-	update maxsequence set maxreserved=@v_max_id+1 where tbname='COMPCONTACTMSTR' and name='COMPCONTACTMSTRID';
+	select @v_max_id=max(polineid) from poline;
+	update maxsequence set maxreserved=@v_max_id+1 where tbname='POLINE' and name='POLINEID';
 
 	-- get package name
 	select @PackageName = package_name from [dbo].[ste_migration_logs] where id = @PackageLogID;
 	if (@PackageName is null) return;
 
 	-- update start_id and end_id for ITEM_
-	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID), @v_cnt=count(STE_MIGRATIONID) from COMPCONTACTMSTR
+	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID), @v_cnt=count(STE_MIGRATIONID) from poline
 	where STE_MIGRATIONID is not null;
 
 	insert into [dbo].[ste_migration_log_details] (
@@ -177,7 +169,7 @@ BEGIN
 	values (
 		@PackageName
 		, @PackageLogID
-		, 'COMPCONTACTMSTR'
+		, 'POLINE'
 		, 'COMPLETED'
 		, CONCAT('COUNT: ', @v_cnt, ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
 	);
@@ -196,7 +188,7 @@ INSERT INTO [dbo].[ste_migration_params]
            ,[modified_on]
            ,[modified_by])
      VALUES
-           ('0011_Master_CompMaster_CompContactMstr'
+           ('0306_PO_PO_POLine'
            ,'version'
            ,'1'
            ,getdate()

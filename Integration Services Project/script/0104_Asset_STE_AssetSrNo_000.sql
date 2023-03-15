@@ -6,10 +6,13 @@ CREATE TABLE [dbo].[ste_assetsrno](
 	[orgid] [varchar](8) NOT NULL,
 	[ste_cswnsnodate] [datetime] NULL,
 	[assetsrnoid] [bigint] NOT NULL,
-	[STE_CSWNASSETID] [varchar](40) NULL,
 	[STE_MIGRATIONID] [bigint] NULL,
 	[STE_MIGRATIONDATE] [datetime] NOT NULL
 ) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[ste_assetsrno]
+ADD STE_MIGRATIONASSETID varchar(40) NULL;
 GO
 
 ALTER TABLE [dbo].[ste_assetsrno] ADD  DEFAULT (NULL) FOR [STE_MIGRATIONID]

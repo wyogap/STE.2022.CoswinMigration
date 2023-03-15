@@ -1,6 +1,6 @@
 -- Create custom table
 ALTER TABLE [ste_assetsrno]
-ADD STE_CSWNEQCD varchar(20) NULL
+ADD STE_MIGRATIONEQCD varchar(20) NULL
 	;
 
 -- make sure assetnum is not truncated (the same column in ASSET table is 24 char)

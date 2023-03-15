@@ -2,7 +2,7 @@
 -- Add custom columns
 -- ------------------
 ALTER TABLE ASSETMETER
-ADD STE_CSWNASSETID varchar(40) NULL,
+ADD STE_MIGRATIONASSETID varchar(40) NULL,
 	STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE())
 	;

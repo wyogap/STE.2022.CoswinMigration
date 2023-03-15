@@ -2,7 +2,7 @@
 -- Add custom columns
 -- ------------------
 ALTER TABLE ASSETMETER
-ADD STE_CSWNEQCD varchar(40) NULL
+ADD STE_MIGRATIONEQCD varchar(40) NULL
 	;
 
 -- make sure assetnum is not truncated (the same column in ASSET table is 24 char)

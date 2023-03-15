@@ -2,48 +2,52 @@
 -- Add custom columns
 -- ------------------
 ALTER TABLE [ROUTE_STOP]
-ADD STE_CSWNEQCD varchar(20) default null,
-	STE_CSWNASSETID varchar(40) default null,
-	STE_CSWNGRCD varchar(20) default null,
-	STE_MIGRATIONID bigint default null,
+ADD STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
 
--- force make sure eqcode from coswin is not truncated
--- originally is varchar(12)
 ALTER TABLE [ROUTE_STOP]
-ALTER COLUMN [route] varchar(20) NOT NULL;
+ADD STE_MIGRATIONEQCD varchar(20) default null,
+	STE_MIGRATIONASSETID varchar(40) default null,
+	STE_MIGRATIONGRCD varchar(20) default null;
 
--- force make sure eqcode from coswin is not truncated (the same column in ASSET table is already varchar(24))
--- originally is varchar(12)
--- DROP SOME INDEX FIRST
-DROP INDEX [route_stop_ndx2] ON [dbo].[route_stop];
-DROP INDEX [route_stop_ndx3] ON [dbo].[route_stop];
+---- will be created through maximo
 
--- ALTER THE COLUMN
-ALTER TABLE [ROUTE_STOP]
-ALTER COLUMN [assetnum] varchar(20) NOT NULL;
+---- force make sure eqcode from coswin is not truncated
+---- originally is varchar(12)
+--ALTER TABLE [ROUTE_STOP]
+--ALTER COLUMN [route] varchar(20) NOT NULL;
 
--- RECREATE THE INDEX
-CREATE NONCLUSTERED INDEX [route_stop_ndx2] ON [dbo].[route_stop]
-(
-	[siteid] ASC,
-	[route] ASC,
-	[stopsequence] ASC,
-	[assetnum] ASC,
-	[location] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-GO
-SET ANSI_PADDING ON
-GO
+---- force make sure eqcode from coswin is not truncated (the same column in ASSET table is already varchar(24))
+---- originally is varchar(12)
+---- DROP SOME INDEX FIRST
+--DROP INDEX [route_stop_ndx2] ON [dbo].[route_stop];
+--DROP INDEX [route_stop_ndx3] ON [dbo].[route_stop];
 
-CREATE NONCLUSTERED INDEX [route_stop_ndx3] ON [dbo].[route_stop]
-(
-	[siteid] ASC,
-	[assetnum] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-GO
-SET ANSI_PADDING ON
-GO
+---- ALTER THE COLUMN
+--ALTER TABLE [ROUTE_STOP]
+--ALTER COLUMN [assetnum] varchar(20) NOT NULL;
+
+---- RECREATE THE INDEX
+--CREATE NONCLUSTERED INDEX [route_stop_ndx2] ON [dbo].[route_stop]
+--(
+--	[siteid] ASC,
+--	[route] ASC,
+--	[stopsequence] ASC,
+--	[assetnum] ASC,
+--	[location] ASC
+--)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+--GO
+--SET ANSI_PADDING ON
+--GO
+
+--CREATE NONCLUSTERED INDEX [route_stop_ndx3] ON [dbo].[route_stop]
+--(
+--	[siteid] ASC,
+--	[assetnum] ASC
+--)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+--GO
+--SET ANSI_PADDING ON
+--GO
 
 -- Create pre-task
 -- ---------------

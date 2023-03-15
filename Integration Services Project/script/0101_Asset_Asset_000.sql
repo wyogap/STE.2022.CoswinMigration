@@ -3,27 +3,31 @@
 -- ------------------
 ALTER TABLE ASSET
 ADD STE_MIGRATIONID bigint default null,
-    STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE()),
-	STE_CSWNEQPCODE VARCHAR(100) default null,
-	STE_CSWNEQPFUNCTN VARCHAR(10) default null,
-	STE_CSWNWPTYPE VARCHAR(10) default null,
-	STE_CSWNWPONCMWO CHAR(1) default null,
-	STE_CSWNWAUTHORITY VARCHAR(16) default null,
-	STE_SYSTEMCODE VARCHAR(4) default null,
-	STE_SUBSYSTEMCODE VARCHAR(6) default null,
-	STE_AISASSETCODE VARCHAR(38) default null,
-	STE_AISASSETID VARCHAR(18) default null,
-	STE_AISLOCATIONCODE VARCHAR(50) default null,
-	STE_CSWNASSETID VARCHAR(40) default null,
-	STE_CSWNBARCODE VARCHAR(20) default null,
-	STE_CSWNSYSTEMEQUIP VARCHAR(20) default null,
-	STE_CSWNGT VARCHAR(12) default null,
-	STE_CSWNSNODATE DATETIME default null
+    STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE())
 	;
 
--- force make sure modelnumber from coswin is not truncated
-ALTER TABLE ASSET
-ALTER COLUMN pluscmodelnum varchar(24) NOT NULL;
+-- this will be created automatically by maximo
+--ALTER TABLE ASSET
+--ADD ste_cswneqpcode VARCHAR(100) default null,
+--	ste_cswneqpfunctn VARCHAR(10) default null,
+--	ste_cswnwptype VARCHAR(10) default null,
+--	ste_cswnwponcmwo CHAR(1) default null,
+--	ste_cswnauthority VARCHAR(16) default null,
+--	ste_systemcode VARCHAR(4) default null,
+--	ste_subsystemcode VARCHAR(6) default null,
+--	ste_aisassetcode VARCHAR(38) default null,
+--	ste_aisassetid VARCHAR(18) default null,
+--	ste_aislocationcode VARCHAR(50) default null,
+--	ste_cswnassetid VARCHAR(40) default null,
+--	ste_cswnbarcode VARCHAR(20) default null,
+--	ste_cswnsystemequip VARCHAR(20) default null,
+--	ste_cswngt VARCHAR(12) default null,
+--	ste_cswnsnodate DATETIME default null
+--	;
+
+---- force make sure modelnumber from coswin is not truncated
+--ALTER TABLE ASSET
+--ALTER COLUMN pluscmodelnum varchar(24) NOT NULL;
 
 ---- create dummy column so that sp creation is successful
 --ALTER TABLE ASSET ADD _ASSETTUID bigint;

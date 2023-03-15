@@ -2,8 +2,8 @@
 -- Add custom columns
 -- ------------------
 ALTER TABLE SPAREPART
-ADD STE_CSWNEQCD varchar(40) default null, 
-	STE_CSWNASSETID varchar(40) default null,
+ADD STE_MIGRATIONEQCD varchar(40) default null, 
+	STE_MIGRATIONASSETID varchar(40) default null,
 	STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
 

@@ -2,12 +2,13 @@
 -- Add custom columns
 -- ------------------
 ALTER TABLE ASSETSPEC
-ADD STE_CSWNEQCD varchar(20) NULL;
+ADD STE_MIGRATIONEQCD varchar(20) NULL;
 
--- make sure assetnum is not truncated (the same column in ASSET table is 24 char)
--- originally it is varchar(12)
-ALTER TABLE ASSETSPEC
-ALTER COLUMN assetnum varchar(20) NOT NULL;
+-- THIS WILL BE DONE IN MAXIMO
+---- make sure assetnum is not truncated (the same column in ASSET table is 24 char)
+---- originally it is varchar(12)
+--ALTER TABLE ASSETSPEC
+--ALTER COLUMN assetnum varchar(20) NOT NULL;
 
 -- update migration params
 -- -----------------------

@@ -11,8 +11,8 @@ ADD STE_MIGRATIONID bigint default null,
 ;
 
 -- this will be created through maximo
- --ALTER TABLE COMPANIES
- --ADD STE_CSWNCOUNTRY varchar(50) default null;
+--ALTER TABLE COMPANIES
+--ADD ste_cswncountry varchar(50) default null;
 
 -- Create pre-task
 -- ---------------
@@ -103,9 +103,9 @@ ADD STE_MIGRATIONID bigint default null,
 ;
 
 -- this will be created through maximo
- --ALTER TABLE COMPCONTACT
- --ADD STE_CSWNVOICEPHONE2 varchar(50) default null,
- --    STE_CONTACTTYPE varchar(50) default null;
+--ALTER TABLE COMPCONTACT
+--ADD ste_cswnvoicephone2 varchar(50) default null,
+--    ste_contacttype varchar(50) default null;
 
 -- Create pre-task
 -- ---------------
