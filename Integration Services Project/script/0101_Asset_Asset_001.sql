@@ -1,10 +1,10 @@
 /****** Object:  Table [dbo].[ste_migration_params]    Script Date: 25/01/2023 17:46:34 ******/
 -- Add custom columns
 -- ------------------
-ALTER TABLE ASSET
-ADD STE_MIGRATIONPRCD VARCHAR(20) default null,
-	STE_MIGRATIONLEVEL int default null
-	;
+--ALTER TABLE ASSET
+--ADD STE_CSWNPRCD VARCHAR(20) default null,
+--	STE_CSWNLEVEL int default null
+--	;
 
 -- update migration params
 -- -----------------------
