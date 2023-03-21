@@ -1,11 +1,11 @@
 ALTER TABLE ASSET
-ADD ste_cswneqpcode VARCHAR(100) default null,
+ADD ste_cweqcode VARCHAR(100) default null,
 	ste_cswneqpfunctn VARCHAR(10) default null,
 	ste_cswnwptype VARCHAR(10) default null,
 	ste_cswnwponcmwo CHAR(1) default null,
 	ste_cswnauthority VARCHAR(16) default null,
-	ste_systemcode VARCHAR(4) default null,
-	ste_subsystemcode VARCHAR(6) default null,
+	ste_system VARCHAR(4) default null,
+	ste_subsystem VARCHAR(6) default null,
 	ste_aisassetcode VARCHAR(38) default null,
 	ste_aisassetid VARCHAR(18) default null,
 	ste_aislocationcode VARCHAR(50) default null,
@@ -13,7 +13,9 @@ ADD ste_cswneqpcode VARCHAR(100) default null,
 	ste_cswnbarcode VARCHAR(20) default null,
 	ste_cswnsystemequip VARCHAR(20) default null,
 	ste_cswngt VARCHAR(12) default null,
-	ste_cswnsnodate DATETIME default null
+	ste_cswnsnodate DATETIME default null,
+	ste_manufactmtbf varchar(50) default null,
+	ste_loccode VARCHAR(50) default null
 	;
 	
 ALTER TABLE ASSET
