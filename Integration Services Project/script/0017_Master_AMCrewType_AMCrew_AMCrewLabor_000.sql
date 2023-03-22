@@ -101,6 +101,9 @@ ADD STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
 ;
 
+-- this will updated via MAXIMO
+--ALTER TABLE AMCREW
+--ALTER COLUMN amcrew varchar(10) NOT NULL;
 
 -- Create pre-task
 -- ---------------
@@ -184,6 +187,13 @@ ALTER TABLE AMCREWLABOR
 ADD STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
 ;
+
+-- this will updated via MAXIMO
+--ALTER TABLE AMCREWLABOR
+--ALTER COLUMN amcrew varchar(10) NOT NULL;
+
+--ALTER TABLE AMCREWLABOR
+--ALTER COLUMN laborcode varchar(10) NOT NULL;
 
 
 -- Create pre-task
