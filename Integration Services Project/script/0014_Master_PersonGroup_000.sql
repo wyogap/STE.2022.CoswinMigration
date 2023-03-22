@@ -6,7 +6,8 @@
 -- Add custom columns
 -- ------------------
 ALTER TABLE PERSONGROUP
-ADD STE_MIGRATIONID bigint default null,
+ADD STE_MIGRATIONSOURCE VARCHAR(50) default null,
+	STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
 ;
 
