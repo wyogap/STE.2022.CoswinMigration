@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="0005_Master_Meter"
   DTS:PackageType="5"
-  DTS:VersionBuild="54"
-  DTS:VersionGUID="{167054D9-3AC5-4D27-BDEB-34F457808AAE}"
+  DTS:VersionBuild="55"
+  DTS:VersionGUID="{86E412C1-7894-4302-A557-5CEED0E78D15}"
   DTS:VersionMajor="2">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -30,6 +30,9 @@
       <DTS:ObjectData>
         <DTS:ConnectionManager>
           <OraConnectionString>SERVER=103.149.177.117:1521/COSWINDB;USERNAME=coswin;WINAUTH=0;</OraConnectionString>
+          <OraPassword
+            Sensitive="1"
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAADmyftzcZ9iVFNC+uayUahxXMnUk4S62WhiwF4rbuCICQAAAAAOgAAAAAIAACAAAAD2O1wRYidDXDt/mLp+lPOwODalRtcgq5j5ecLh/ypWkiAAAACT2h2ub6k9qdyJAJF1at5xCGvlFYpA0q5nO8jr84ccmUAAAACiat2g7YyuQUHjylZ9+NLo8xUhnpklaITmqmxAIB+Ht2cj0n2WEocDtCFlzeyVVZriM5+SjDUslxH68qG7Nt1c</OraPassword>
           <OraRetain>False</OraRetain>
           <OraInitialCatalog></OraInitialCatalog>
           <OraServerName>103.149.177.117:1521/COSWINDB</OraServerName>
@@ -54,7 +57,11 @@
         <DTS:ConnectionManager
           DTS:ConnectRetryCount="1"
           DTS:ConnectRetryInterval="5"
-          DTS:ConnectionString="Data Source=103.149.177.253,14330;User ID=maximo;Initial Catalog=maximodb;Provider=SQLNCLI11.1;Persist Security Info=True;Auto Translate=False;Application Name=STE.2022.CoswinMigration-{A2D54055-0CBC-4EA5-9952-7A6ADE49C2F8}.maximodb.maximo;">
+          DTS:ConnectionString="Data Source=103.149.177.253, 14330;User ID=maximo;Initial Catalog=maximodb;Provider=SQLNCLI11.1;Persist Security Info=True;Auto Translate=False;Application Name=STE.2022.CoswinMigration-{A2D54055-0CBC-4EA5-9952-7A6ADE49C2F8}.maximodb.maximo;">
+          <DTS:Password
+            DTS:Name="Password"
+            Sensitive="1"
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAADKNLppycS6uim0YwGBL6qt17Ns3niDwk5Hefaz+i0+lgAAAAAOgAAAAAIAACAAAABURU61Sf+39Ynahj4RNNtAkyU8IOAwAfpmpXUqEvsY2yAAAAD6D1Glm//fDcTXGrxL4TGcCJTO2XDi2UCCncd0LQZJKkAAAAB2Ei10wpZc1L9u7p6jymu/ABKLV9/F8VcUB/vd+Z5z/CCE57p1d8uylygtpuqHK3ho/ybJ69K8En9GaQeLTbu6</DTS:Password>
         </DTS:ConnectionManager>
       </DTS:ObjectData>
     </DTS:ConnectionManager>
@@ -542,12 +549,6 @@
                       externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[metername]"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[MT_MTID]" />
                     <inputColumn
-                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[MT_TYPE]"
-                      cachedDataType="i2"
-                      cachedName="MT_TYPE"
-                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[metertype]"
-                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[MT_TYPE]" />
-                    <inputColumn
                       refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[MT_DESC]"
                       cachedCodepage="1252"
                       cachedDataType="str"
@@ -595,6 +596,14 @@
                       cachedName="v_readingtype"
                       externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[readingtype]"
                       lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[v_readingtype]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[METER_TYPE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="METER_TYPE"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[metertype]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[METER_TYPE]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -708,7 +717,12 @@
                   description="The SQL command to be executed."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">select * from COSWIN.DIR_METER</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">select dm.*
+	, case when dm.MT_TYPE=48 then 'CONTINUOUS'
+		WHEN dm.MT_TYPE=49 THEN 'GAUGE'
+		ELSE CAST(dm.MT_TYPE AS varchar(10))
+		END AS METER_TYPE
+from COSWIN.DIR_METER dm</property>
                 <property
                   dataType="System.Int32"
                   description="Specify the number of rows fetched per batch."
@@ -908,6 +922,14 @@
                       length="20"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[MT_STRING1]"
                       name="MT_STRING1" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[METER_TYPE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[METER_TYPE]"
+                      length="10"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[METER_TYPE]"
+                      name="METER_TYPE" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1021,6 +1043,12 @@
                       dataType="str"
                       length="20"
                       name="MT_STRING1" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[METER_TYPE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="METER_TYPE" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -1186,6 +1214,14 @@
                       length="20"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[MT_STRING1]"
                       name="MT_STRING1" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[METER_TYPE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[METER_TYPE]"
+                      length="10"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[METER_TYPE]"
+                      name="METER_TYPE" />
                     <outputColumn
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -1755,13 +1791,13 @@
           Id="Package\Data Flow Task\Oracle Source"
           TopLeft="19.5,5.5" />
         <NodeLayout
-          Size="158,42"
-          Id="Package\Data Flow Task\Derived Column"
-          TopLeft="216,74" />
-        <NodeLayout
           Size="177,42"
           Id="Package\Data Flow Task\OLE DB Destination"
           TopLeft="18.5,159.5" />
+        <NodeLayout
+          Size="158,42"
+          Id="Package\Data Flow Task\Derived Column"
+          TopLeft="216,74" />
         <EdgeLayout
           Id="Package\Data Flow Task.Paths[Oracle Source Output]"
           TopLeft="94,47.5">
