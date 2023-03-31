@@ -5,6 +5,7 @@
 
 -- Add custom columns
 -- ------------------
+IF COLUMNPROPERTY(OBJECT_ID('dbo.mr'), 'STE_MIGRATIONID', 'ColumnId') is null
 ALTER TABLE mr
 ADD STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
@@ -92,6 +93,7 @@ GO
 
 -- Add custom columns
 -- ------------------
+IF COLUMNPROPERTY(OBJECT_ID('dbo.mrline'), 'STE_MIGRATIONID', 'ColumnId') is null
 ALTER TABLE mrline
 ADD STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());

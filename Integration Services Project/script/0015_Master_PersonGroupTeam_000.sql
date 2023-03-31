@@ -5,6 +5,7 @@
 
 -- Add custom columns
 -- ------------------
+if COLUMNPROPERTY(OBJECT_ID('dbo.PERSONGROUPTEAM'), 'STE_MIGRATIONID', 'ColumnId') is null
 ALTER TABLE PERSONGROUPTEAM
 ADD STE_MIGRATIONSOURCE VARCHAR(50) default null,
 	STE_MIGRATIONID bigint default null,

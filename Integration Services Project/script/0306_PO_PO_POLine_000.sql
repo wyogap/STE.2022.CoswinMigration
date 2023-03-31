@@ -5,6 +5,7 @@
 
 -- Add custom columns
 -- ------------------
+IF COLUMNPROPERTY(OBJECT_ID('dbo.po'), 'STE_MIGRATIONID', 'ColumnId') is null
 ALTER TABLE [po]
 ADD STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
@@ -97,6 +98,7 @@ GO
 
 -- Add custom columns
 -- ------------------
+IF COLUMNPROPERTY(OBJECT_ID('dbo.poline'), 'STE_MIGRATIONID', 'ColumnId') is null
 ALTER TABLE poline
 ADD STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());

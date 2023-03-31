@@ -1,16 +1,18 @@
 ---- Create custom table. This will be created through MAXIMO
---CREATE TABLE [dbo].ste_cswnassetslhist (
---	ste_cweqcode [varchar](25) NOT NULL,
---	ste_cswnsno [varchar](24) NOT NULL,
---	ste_siteid [varchar](8) NULL,
---	ste_cswnsnodate datetime NOT NULL,
---	hasld smallint NOT NULL,
---	[description] varchar(50) NULL,
---	description_longdescription text NULL,
---	ste_cswnassetslhistid [bigint] NOT NULL
---) ON [PRIMARY]
---GO
+IF OBJECT_ID(N'dbo.ste_cswnassetslhist', N'U') IS NULL
+CREATE TABLE [dbo].ste_cswnassetslhist (
+	ste_cweqcode [varchar](25) NOT NULL,
+	ste_cswnsno [varchar](24) NOT NULL,
+	ste_siteid [varchar](8) NULL,
+	ste_cswnsnodate datetime NOT NULL,
+	hasld smallint NOT NULL,
+	[description] varchar(50) NULL,
+	description_longdescription text NULL,
+	ste_cswnassetslhistid [bigint] NOT NULL
+) ON [PRIMARY]
+GO
 
+IF COLUMNPROPERTY(OBJECT_ID('dbo.ste_cswnassetslhist'), 'STE_MIGRATIONID', 'ColumnId') is null
 ALTER TABLE [dbo].ste_cswnassetslhist
 ADD [STE_MIGRATIONID] [bigint] NULL,
 	[STE_MIGRATIONDATE] [datetime] NOT NULL;
@@ -24,10 +26,10 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_0104_Asset_STEAssetSrNo_pre
+drop procedure if exists ste_0104_Asset_STE_CSWNASSETSLHIST_pre
 GO
 
-CREATE PROCEDURE ste_0104_Asset_STEAssetSrNo_pre 
+CREATE PROCEDURE ste_0104_Asset_STE_CSWNASSETSLHIST_pre 
 	@PackageLogID INT
 AS
 BEGIN
@@ -47,10 +49,10 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_0104_Asset_STEAssetSrNo_post
+drop procedure if exists ste_0104_Asset_STE_CSWNASSETSLHIST_post
 GO
 
-CREATE PROCEDURE ste_0104_Asset_STEAssetSrNo_post
+CREATE PROCEDURE ste_0104_Asset_STE_CSWNASSETSLHIST_post
   @PackageLogID INT
 AS
 BEGIN

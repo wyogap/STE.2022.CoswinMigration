@@ -5,6 +5,7 @@
 
 -- Add custom columns
 -- ------------------
+IF COLUMNPROPERTY(OBJECT_ID('dbo.contract'), 'STE_MIGRATIONID', 'ColumnId') is null
 ALTER TABLE [contract]
 ADD STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
@@ -92,6 +93,7 @@ GO
 
 -- Add custom columns
 -- ------------------
+IF COLUMNPROPERTY(OBJECT_ID('dbo.contractline'), 'STE_MIGRATIONID', 'ColumnId') is null
 ALTER TABLE contractline
 ADD STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());

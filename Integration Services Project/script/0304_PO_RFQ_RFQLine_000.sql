@@ -5,6 +5,7 @@
 
 -- Add custom columns
 -- ------------------
+IF COLUMNPROPERTY(OBJECT_ID('dbo.rfq'), 'STE_MIGRATIONID', 'ColumnId') is null
 ALTER TABLE [rfq]
 ADD STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
@@ -92,6 +93,7 @@ GO
 
 -- Add custom columns
 -- ------------------
+IF COLUMNPROPERTY(OBJECT_ID('dbo.rfqline'), 'STE_MIGRATIONID', 'ColumnId') is null
 ALTER TABLE rfqline
 ADD STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());

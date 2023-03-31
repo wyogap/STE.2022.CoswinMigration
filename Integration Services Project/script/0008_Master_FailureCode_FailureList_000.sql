@@ -4,6 +4,7 @@
 -- FAILURECODE
 --
 
+IF COLUMNPROPERTY(OBJECT_ID('dbo.FailureCode'), 'STE_MIGRATIONID', 'ColumnId') IS NULL
 ALTER TABLE FailureCode
 ADD STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
@@ -70,8 +71,13 @@ BEGIN
 END
 GO
 
--- FAILURECODE
+-- FAILURELIST
 --
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.FailureList'), 'STE_MIGRATIONID', 'ColumnId') IS NULL
+ALTER TABLE FailureList
+ADD STE_MIGRATIONID bigint default null,
+    STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
 
 -- Create pre-task
 -- ---------------

@@ -1,6 +1,7 @@
 
 -- Add custom columns
 -- ------------------
+IF COLUMNPROPERTY(OBJECT_ID('dbo.ASSETTRANS'), 'STE_MIGRATIONEQCD', 'ColumnId') is null
 ALTER TABLE ASSETTRANS
 ADD STE_MIGRATIONEQCD varchar(20) NULL;
 

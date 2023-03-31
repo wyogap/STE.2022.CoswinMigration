@@ -1,4 +1,5 @@
 -- custom columns
+IF COLUMNPROPERTY(OBJECT_ID('dbo.PERSON'), 'STE_MIGRATIONSOURCE', 'ColumnId') IS NULL
 ALTER TABLE PERSON
 ADD STE_MIGRATIONSOURCE varchar(20) default null,
     STE_MIGRATIONCOSTC varchar(16) default null,

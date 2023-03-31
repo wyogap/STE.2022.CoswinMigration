@@ -5,6 +5,7 @@
 
 -- Add custom columns
 -- ------------------
+if COLUMNPROPERTY(OBJECT_ID('dbo.LABOR'), 'STE_MIGRATIONID', 'ColumnId') is null
 ALTER TABLE LABOR
 ADD STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());

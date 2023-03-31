@@ -1,6 +1,7 @@
 /****** Object:  Table [dbo].[ste_migration_params]    Script Date: 25/01/2023 17:46:34 ******/
 -- Add custom columns
 -- ------------------
+IF COLUMNPROPERTY(OBJECT_ID('dbo.SPAREPART'), 'STE_MIGRATIONID', 'ColumnId') is null
 ALTER TABLE SPAREPART
 ADD STE_MIGRATIONEQCD varchar(40) default null, 
 	STE_MIGRATIONASSETID varchar(40) default null,

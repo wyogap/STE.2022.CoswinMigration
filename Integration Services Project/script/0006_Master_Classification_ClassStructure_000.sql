@@ -62,6 +62,7 @@ GO
 
 -- Add custom columns
 -- ------------------
+IF COLUMNPROPERTY(OBJECT_ID('dbo.ClassStructure'), 'STE_MIGRATIONID', 'ColumnId') IS NULL
 ALTER TABLE ClassStructure
 ADD STE_MIGRATIONID varchar(25) default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());

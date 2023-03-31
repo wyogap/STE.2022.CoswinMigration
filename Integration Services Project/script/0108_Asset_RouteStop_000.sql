@@ -1,10 +1,12 @@
 /****** Object:  Table [dbo].[ste_migration_params]    Script Date: 25/01/2023 17:46:34 ******/
 -- Add custom columns
 -- ------------------
+IF COLUMNPROPERTY(OBJECT_ID('dbo.ROUTE_STOP'), 'STE_MIGRATIONID', 'ColumnId') is null
 ALTER TABLE [ROUTE_STOP]
 ADD STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
 
+IF COLUMNPROPERTY(OBJECT_ID('dbo.ROUTE_STOP'), 'STE_MIGRATIONEQCD', 'ColumnId') is null
 ALTER TABLE [ROUTE_STOP]
 ADD STE_MIGRATIONEQCD varchar(20) default null,
 	STE_MIGRATIONASSETID varchar(40) default null,

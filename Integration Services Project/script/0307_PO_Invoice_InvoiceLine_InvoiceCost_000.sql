@@ -5,6 +5,7 @@
 
 -- Add custom columns
 -- ------------------
+IF COLUMNPROPERTY(OBJECT_ID('dbo.invoice'), 'STE_MIGRATIONID', 'ColumnId') is null
 ALTER TABLE [invoice]
 ADD STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
@@ -100,6 +101,7 @@ GO
 
 -- Add custom columns
 -- ------------------
+IF COLUMNPROPERTY(OBJECT_ID('dbo.invoiceline'), 'STE_MIGRATIONID', 'ColumnId') is null
 ALTER TABLE invoiceline
 ADD STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
@@ -181,6 +183,7 @@ GO
 
 -- Add custom columns
 -- ------------------
+IF COLUMNPROPERTY(OBJECT_ID('dbo.invoicecost'), 'STE_MIGRATIONID', 'ColumnId') is null
 ALTER TABLE invoicecost
 ADD STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());

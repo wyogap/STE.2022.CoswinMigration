@@ -5,6 +5,7 @@
 
 -- Add custom columns
 -- ------------------
+IF COLUMNPROPERTY(OBJECT_ID('dbo.CLASSIFICATION'), 'STE_MIGRATIONID', 'ColumnId') IS NULL
 ALTER TABLE [CLASSIFICATION]
 ADD STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
@@ -32,6 +33,11 @@ GO
 
 -- CLASSSTRUCTURE
 --
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.ClassStructure'), 'STE_MIGRATIONID', 'ColumnId') IS NULL
+ALTER TABLE ClassStructure
+ADD STE_MIGRATIONID bigint default null,
+    STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
 
 -- Create pre-task
 -- ---------------

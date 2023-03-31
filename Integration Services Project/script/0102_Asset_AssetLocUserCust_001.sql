@@ -1,6 +1,7 @@
 /****** Object:  Table [dbo].[ste_migration_params]    Script Date: 25/01/2023 17:46:34 ******/
 -- Add custom columns
 -- ------------------
+if COLUMNPROPERTY(OBJECT_ID('dbo.ASSETLOCUSERCUST'), 'STE_MIGRATIONEQCD', 'ColumnId') is null
 ALTER TABLE ASSETLOCUSERCUST
 ADD STE_MIGRATIONEQCD varchar(20) NULL
 	;

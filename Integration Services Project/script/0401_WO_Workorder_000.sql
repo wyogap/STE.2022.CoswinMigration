@@ -1,6 +1,7 @@
 /****** Object:  Table [dbo].[ste_migration_params]    Script Date: 25/01/2023 17:46:34 ******/
 -- Add custom columns
 -- ------------------
+IF COLUMNPROPERTY(OBJECT_ID('dbo.WORKORDER'), 'STE_MIGRATIONID', 'ColumnId') is null
 ALTER TABLE WORKORDER
 ADD STE_CSWNEQCD varchar(20) default null,
 	STE_CSWNASSETID varchar(40) default null,
@@ -9,17 +10,17 @@ ADD STE_CSWNEQCD varchar(20) default null,
 	STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
 
--- force make sure jobtype/worktype from coswin is not truncated (originally varchar(5))
-ALTER TABLE WORKORDER
-ALTER COLUMN WORKTYPE varchar(6);
+---- force make sure jobtype/worktype from coswin is not truncated (originally varchar(5))
+--ALTER TABLE WORKORDER
+--ALTER COLUMN WORKTYPE varchar(6);
 
--- force make sure failurecode from coswin is not truncated (originally varchar(8))
-ALTER TABLE WORKORDER
-ALTER COLUMN failurecode varchar(10);
+---- force make sure failurecode from coswin is not truncated (originally varchar(8))
+--ALTER TABLE WORKORDER
+--ALTER COLUMN failurecode varchar(10);
 
--- force make sure equipmentcode from coswin is not truncated (originally varchar(12))
-ALTER TABLE WORKORDER
-ALTER COLUMN assetnum varchar(20);
+---- force make sure equipmentcode from coswin is not truncated (originally varchar(12))
+--ALTER TABLE WORKORDER
+--ALTER COLUMN assetnum varchar(20);
 
 -- Create pre-task
 -- ---------------
@@ -76,9 +77,6 @@ BEGIN
 
 END
 GO
-
--- drop dummy column
-alter table WORKORDER drop column _WORKORDERID;
 
 -- update migration params
 -- -----------------------

@@ -1,16 +1,17 @@
 /****** Object:  Table [dbo].[ste_migration_params]    Script Date: 25/01/2023 17:46:34 ******/
 -- Add custom columns
 -- ------------------
+IF COLUMNPROPERTY(OBJECT_ID('dbo.ROUTES'), 'STE_MIGRATIONID', 'ColumnId') IS NULL
 ALTER TABLE [ROUTES]
 ADD STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
 
--- force make sure eqcode from coswin is not truncated
-ALTER TABLE [ROUTES]
-ALTER COLUMN [route] varchar(20) NOT NULL;
+---- force make sure eqcode from coswin is not truncated. should be done via maximo
+--ALTER TABLE [ROUTES]
+--ALTER COLUMN [route] varchar(20) NOT NULL;
 
-ALTER TABLE [ROUTES]
-ALTER COLUMN [routestopsbecome] varchar(20) NOT NULL;
+--ALTER TABLE [ROUTES]
+--ALTER COLUMN [routestopsbecome] varchar(20) NOT NULL;
 
 -- Create pre-task
 -- ---------------

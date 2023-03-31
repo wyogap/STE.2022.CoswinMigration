@@ -1,6 +1,7 @@
 /****** Object:  Table [dbo].[ste_migration_params]    Script Date: 25/01/2023 17:46:34 ******/
 -- Add custom columns
 -- ------------------
+IF COLUMNPROPERTY(OBJECT_ID('dbo.ROUTES'), 'STE_CSWNGRCD', 'ColumnId') IS NULL
 ALTER TABLE [ROUTES]
 ADD STE_CSWNGRCD varchar(20) default null;
 

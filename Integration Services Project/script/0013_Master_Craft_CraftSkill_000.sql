@@ -5,6 +5,7 @@
 
 -- Add custom columns
 -- ------------------
+IF COLUMNPROPERTY(OBJECT_ID('dbo.CRAFT'), 'STE_MIGRATIONID', 'ColumnId') IS NULL
 ALTER TABLE CRAFT
 ADD STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
@@ -94,6 +95,7 @@ GO
 
 -- Add custom columns
 -- ------------------
+IF COLUMNPROPERTY(OBJECT_ID('dbo.CRAFTSKILL'), 'STE_MIGRATIONID', 'ColumnId') IS NULL
 ALTER TABLE CRAFTSKILL
 ADD STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
