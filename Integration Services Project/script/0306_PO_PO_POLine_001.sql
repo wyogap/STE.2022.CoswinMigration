@@ -11,7 +11,7 @@ INSERT INTO [dbo].[ste_migration_params]
            ,[modified_on]
            ,[modified_by])
      VALUES
-           ('0307_PO_Invoice_InvoiceLine_InvoiceCost'
+           ('0306_PO_PO_POLine'
            ,'version'
            ,'2'
            ,getdate()

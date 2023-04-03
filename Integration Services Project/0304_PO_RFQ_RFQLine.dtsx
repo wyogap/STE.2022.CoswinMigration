@@ -12,8 +12,9 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="0304_PO_RFQ_RFQLine"
   DTS:PackageType="5"
-  DTS:VersionBuild="77"
-  DTS:VersionGUID="{2463D468-B686-4AA0-9C0A-284457097013}">
+  DTS:VersionBuild="80"
+  DTS:VersionGUID="{8904450A-089A-46D2-BAF4-788DD7CF22FC}"
+  DTS:VersionMajor="2">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -29,6 +30,9 @@
       <DTS:ObjectData>
         <DTS:ConnectionManager>
           <OraConnectionString>SERVER=103.149.177.117:1521/COSWINDB;USERNAME=coswin;WINAUTH=0;</OraConnectionString>
+          <OraPassword
+            Sensitive="1"
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAD2aRClidH13wVmiEoq1TfhmBglBsNiCer/xnbuc5bDxgAAAAAOgAAAAAIAACAAAADAEldBP8MTY6h0hQwAlFoPsI11mwswvvVUHdyqRDjsriAAAAByjqqMvpf8MzrlIYZ8B3YKPI2ECbUf5uk4pOeyPsPbg0AAAABgJw6v1cEoQTyBkl0PrbZ9CU1HQ1d8wRnwPU8xT4ZXT8uKaMQFPt5FhRZL43spBCrDrHV25jAVg4EPycVhsJUn</OraPassword>
           <OraRetain>False</OraRetain>
           <OraInitialCatalog></OraInitialCatalog>
           <OraServerName>103.149.177.117:1521/COSWINDB</OraServerName>
@@ -53,7 +57,11 @@
         <DTS:ConnectionManager
           DTS:ConnectRetryCount="1"
           DTS:ConnectRetryInterval="5"
-          DTS:ConnectionString="Data Source=103.149.177.253, 14330;User ID=maximo;Initial Catalog=maximodb;Provider=SQLNCLI11.1;Persist Security Info=True;Auto Translate=False;Application Name=STE.2022.CoswinMigration-{A2D54055-0CBC-4EA5-9952-7A6ADE49C2F8}.maximodb.maximo;">
+          DTS:ConnectionString="Data Source=LENOVO-YOGA\SQLEXPRESS;User ID=maximo;Initial Catalog=maximodb;Provider=SQLNCLI11.1;Persist Security Info=True;Auto Translate=False;Application Name=STE.2022.CoswinMigration-{A2D54055-0CBC-4EA5-9952-7A6ADE49C2F8}.maximodb.maximo;">
+          <DTS:Password
+            DTS:Name="Password"
+            Sensitive="1"
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAAGsJ86x1LD+IydqytOB+CUkJNOkr9ibmXCy1yk6XNf3wAAAAAOgAAAAAIAACAAAAC2kG9h4jIKNIIGxs8hkfhRTfYtnuimLEvCv7BAhfP4wSAAAACYUUrXneh+efpRtIjQQqggHbX1/Mx9IiVkNnl4hswd8kAAAAD5GYqfjE1I5hr4QvXGMsHv9X07DYjcxEtv1pU8yh/Z9omS0f3i5DY/mcFY6IGgNOytC+cEG5I9RCKSUl05GF78</DTS:Password>
         </DTS:ConnectionManager>
       </DTS:ObjectData>
     </DTS:ConnectionManager>
@@ -793,12 +801,6 @@
                       externalMetadataColumnId="Package\DF - RFQ\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[langcode]"
                       lineageId="Package\DF - RFQ\Derived Column.Outputs[Derived Column Output].Columns[v_langcode]" />
                     <inputColumn
-                      refId="Package\DF - RFQ\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DV_STATUS]"
-                      cachedDataType="i4"
-                      cachedName="DV_STATUS"
-                      externalMetadataColumnId="Package\DF - RFQ\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[status]"
-                      lineageId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Output].Columns[DV_STATUS]" />
-                    <inputColumn
                       refId="Package\DF - RFQ\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DEVIS_CD]"
                       cachedCodepage="1252"
                       cachedDataType="str"
@@ -894,6 +896,14 @@
                       cachedName="PK_DEVIS"
                       externalMetadataColumnId="Package\DF - RFQ\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONID]"
                       lineageId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DEVIS]" />
+                    <inputColumn
+                      refId="Package\DF - RFQ\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[STATUS_TEXT]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="STATUS_TEXT"
+                      externalMetadataColumnId="Package\DF - RFQ\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[status]"
+                      lineageId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Output].Columns[STATUS_TEXT]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1211,17 +1221,15 @@
 	--, s.SUPL_NAME 
 	--, s.S_CURR_CD
 	--, rmk.DEV_TEXT
+	, CASE WHEN d.DV_STATUS = 0 THEN 'INPRG'
+		   WHEN d.DV_STATUS = 1 THEN 'INPRG'
+		   WHEN d.DV_STATUS = 2 THEN 'INPRG'
+		   WHEN d.DV_STATUS = 3 THEN 'COMP'
+		   ELSE CAST(d.DV_STATUS AS VARCHAR(10))
+	  END AS STATUS_TEXT
 FROM COSWIN.DEVIS d
 LEFT JOIN COSWIN.SUPPLIER_ s ON s.PK_SUPPLIER_ = d.S_SUPL_DV
-LEFT JOIN COSWIN.DV_RMK rmk ON rmk.S_DV_RMK = d.PK_DEVIS
---LEFT JOIN (
---	SELECT 
---		rmk.S_DV_RMK
---		, rmk.DEV_TEXT
---		, ROW_NUMBER() OVER (PARTITION BY --rmk.S_DV_RMK ORDER BY rmk.PK_DV_RMK DESC) RN
---	FROM COSWIN.DV_RMK rmk
---	WHERE rmk.S_DV_RMK IS NOT NULL 
---) rmk ON rmk.S_DV_RMK = d.PK_DEVIS AND rmk.RN = 1</property>
+LEFT JOIN COSWIN.DV_RMK rmk ON rmk.S_DV_RMK = d.PK_DEVIS</property>
                 <property
                   dataType="System.Int32"
                   description="Specify the number of rows fetched per batch."
@@ -1297,6 +1305,14 @@ LEFT JOIN COSWIN.DV_RMK rmk ON rmk.S_DV_RMK = d.PK_DEVIS
                       externalMetadataColumnId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_STATUS]"
                       lineageId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Output].Columns[DV_STATUS]"
                       name="DV_STATUS" />
+                    <outputColumn
+                      refId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Output].Columns[STATUS_TEXT]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[STATUS_TEXT]"
+                      length="10"
+                      lineageId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Output].Columns[STATUS_TEXT]"
+                      name="STATUS_TEXT" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1324,6 +1340,12 @@ LEFT JOIN COSWIN.DV_RMK rmk ON rmk.S_DV_RMK = d.PK_DEVIS
                       refId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_STATUS]"
                       dataType="i4"
                       name="DV_STATUS" />
+                    <externalMetadataColumn
+                      refId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[STATUS_TEXT]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="STATUS_TEXT" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -1365,6 +1387,14 @@ LEFT JOIN COSWIN.DV_RMK rmk ON rmk.S_DV_RMK = d.PK_DEVIS
                       externalMetadataColumnId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_STATUS]"
                       lineageId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Error Output].Columns[DV_STATUS]"
                       name="DV_STATUS" />
+                    <outputColumn
+                      refId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Error Output].Columns[STATUS_TEXT]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[STATUS_TEXT]"
+                      length="10"
+                      lineageId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Error Output].Columns[STATUS_TEXT]"
+                      name="STATUS_TEXT" />
                     <outputColumn
                       refId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -2698,14 +2728,6 @@ LEFT JOIN COSWIN.NSITEM ns ON ns.PK_NSITEM = di.S_NSITEM_DV
 --	AND ((di.S_ITEM_DV IS NOT NULL AND di.S_ITEM_DV = si.S_ITEM_SUPL) 
 --		OR (di.S_NSITEM_DV IS NOT NULL AND di.S_NSITEM_DV = si.S_NSITEM_SUPL))
 LEFT JOIN COSWIN.DV_RMK rmk ON rmk.S_NSITEM_RMK = di.S_NSITEM_DV
---LEFT JOIN (
---	SELECT 
---		rmk.S_NSITEM_RMK
---		, rmk.DEV_TEXT
---		, ROW_NUMBER() OVER (PARTITION BY rmk.S_NSITEM_RMK ORDER BY rmk.PK_DV_RMK DESC) RN
---	FROM COSWIN.DV_RMK rmk
---	WHERE rmk.S_NSITEM_RMK IS NOT NULL 
---) rmk ON rmk.S_NSITEM_RMK = di.S_NSITEM_DV AND rmk.RN = 1
 WHERE (CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_CD ELSE it.ITEM_CD END) IS NOT NULL;</property>
                 <property
                   dataType="System.Int32"
@@ -3906,6 +3928,10 @@ WHERE (CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_CD ELSE it.ITEM_CD END)
       <GraphLayout
         Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
+          Size="149,42"
+          Id="Package\DF - RFQLine\Oracle Source"
+          TopLeft="19.5,5.5" />
+        <NodeLayout
           Size="177,42"
           Id="Package\DF - RFQLine\OLE DB Destination"
           TopLeft="12.5,174.5" />
@@ -3913,10 +3939,6 @@ WHERE (CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_CD ELSE it.ITEM_CD END)
           Size="158,42"
           Id="Package\DF - RFQLine\Derived Column"
           TopLeft="181,79" />
-        <NodeLayout
-          Size="149,42"
-          Id="Package\DF - RFQLine\Oracle Source"
-          TopLeft="19.5,5.5" />
         <EdgeLayout
           Id="Package\DF - RFQLine.Paths[Oracle Source Output]"
           TopLeft="94,47.5">
@@ -3989,6 +4011,14 @@ WHERE (CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_CD ELSE it.ITEM_CD END)
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
+    design-time-name="Package\DF - RFQLine\Oracle Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
     design-time-name="Package\DF - RFQLine\OLE DB Destination">
     <Properties>
       <Property>
@@ -3998,14 +4028,6 @@ WHERE (CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_CD ELSE it.ITEM_CD END)
         <Name>TableInfoObjectType</Name>
         <Value
           type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\DF - RFQLine\Oracle Source">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
