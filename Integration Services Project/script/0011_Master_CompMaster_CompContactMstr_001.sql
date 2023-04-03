@@ -2,26 +2,6 @@
 -- ----------- 
 -- COMPMASTER
 -- -----------
-
--- Add custom columns
--- ------------------
-IF COLUMNPROPERTY(OBJECT_ID('dbo.COMPMASTER'), 'STE_MIGRATIONID', 'ColumnId') IS NULL
-ALTER TABLE COMPMASTER
-ADD STE_MIGRATIONID bigint default null,
-    STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
-;
-
-IF COLUMNPROPERTY(OBJECT_ID('dbo.COMPMASTER'), 'STE_MIGRATIONRMK1', 'ColumnId') IS NULL
-ALTER TABLE COMPMASTER
-ADD STE_MIGRATIONRMK1 IMAGE default null,
-    STE_MIGRATIONRMK2 IMAGE default null,
-	STE_MIGRATIONRMK3 IMAGE default null
-;
-
--- this will be created by maximo
---ALTER TABLE COMPMASTER
---ADD ste_cswncountry varchar(50) default null;
-
 -- Create pre-task
 -- ---------------
 SET ANSI_NULLS ON
@@ -104,19 +84,6 @@ GO
 -- ----------------- 
 -- COMPCONTACTMSTR
 -- -----------------
-
--- Add custom columns
--- ------------------
-IF COLUMNPROPERTY(OBJECT_ID('dbo.COMPCONTACTMSTR'), 'STE_MIGRATIONID', 'ColumnId') IS NULL
-ALTER TABLE COMPCONTACTMSTR
-ADD STE_MIGRATIONID bigint default null,
-    STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
-;
-
--- this will be created through maximo
---ALTER TABLE COMPCONTACTMSTR
---ADD ste_cswnvoicephone2 varchar(50) default null,
---    ste_contacttype varchar(50) default null;
 
 -- Create pre-task
 -- ---------------
@@ -204,7 +171,7 @@ INSERT INTO [dbo].[ste_migration_params]
      VALUES
            ('0011_Master_CompMaster_CompContactMstr'
            ,'version'
-           ,'1'
+           ,'2'
            ,getdate()
            ,'ssis'
            ,NULL

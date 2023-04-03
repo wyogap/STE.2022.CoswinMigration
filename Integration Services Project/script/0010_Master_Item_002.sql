@@ -1,9 +1,25 @@
 /****** Object:  Table [dbo].[ste_migration_params]    Script Date: 25/01/2023 17:46:34 ******/
--- Add custom columns
--- ------------------
-IF COLUMNPROPERTY(OBJECT_ID('dbo.ITEM'), 'STE_MIGRATIONSOURCE', 'ColumnId') IS NULL
-ALTER TABLE ITEM
-ADD STE_MIGRATIONSOURCE VARCHAR(100) default null;
+-- Create pre-task
+-- ---------------
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+drop procedure if exists ste_010_master_item_pre;
+drop procedure if exists ste_0010_master_item_pre;
+GO
+
+CREATE PROCEDURE ste_0010_master_item_pre 
+	@PackageLogID INT
+AS
+BEGIN
+	-- truncate existing data
+	DELETE FROM [item] WHERE STE_MIGRATIONID IS NOT NULL;
+
+END
+
+GO
 
 -- Create post-task
 -- ---------------
@@ -118,7 +134,7 @@ INSERT INTO [dbo].[ste_migration_params]
      VALUES
            ('0010_Master_Item'
            ,'version'
-           ,'2'
+           ,'3'
            ,getdate()
            ,'ssis'
            ,NULL

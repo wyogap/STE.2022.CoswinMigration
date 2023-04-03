@@ -107,9 +107,7 @@ ADD ste_cswnvoicephone2 varchar(50) default null,
 --ALTER TABLE WORKORDER
 --ALTER COLUMN assetnum varchar(20);
 
--- this will updated via MAXIMO
---ALTER TABLE AMCREWLABOR
---ALTER COLUMN amcrew varchar(10) NOT NULL;
-
---ALTER TABLE AMCREWLABOR
---ALTER COLUMN laborcode varchar(10) NOT NULL;
+---- make sure assetnum is not truncated (the same column in ASSET table is 24 char)
+---- originally it is varchar(12)
+--ALTER TABLE ASSETMETER
+--ALTER COLUMN assetnum varchar(20) NOT NULL;

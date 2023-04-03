@@ -1,16 +1,4 @@
 /****** Object:  Table [dbo].[ste_migration_params]    Script Date: 25/01/2023 17:46:34 ******/
--- Add custom columns
--- ------------------
-if COLUMNPROPERTY(OBJECT_ID('dbo.ASSETMETER'), 'STE_MIGRATIONEQCD', 'ColumnId') is null
-ALTER TABLE ASSETMETER
-ADD STE_MIGRATIONEQCD varchar(40) NULL
-	;
-
----- make sure assetnum is not truncated (the same column in ASSET table is 24 char)
----- originally it is varchar(12)
---ALTER TABLE ASSETMETER
---ALTER COLUMN assetnum varchar(20) NOT NULL;
-
 -- update migration params
 -- -----------------------
 INSERT INTO [dbo].[ste_migration_params]
@@ -22,7 +10,7 @@ INSERT INTO [dbo].[ste_migration_params]
            ,[modified_on]
            ,[modified_by])
      VALUES
-           ('0103_Asset_AssetMeter'
+           ('0201_Inventory_Inventory'
            ,'version'
            ,'2'
            ,getdate()

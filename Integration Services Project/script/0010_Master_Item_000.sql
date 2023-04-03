@@ -13,7 +13,8 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_0010_master_item_pre
+drop procedure if exists ste_010_master_item_pre;
+drop procedure if exists ste_0010_master_item_pre;
 GO
 
 CREATE PROCEDURE ste_0010_master_item_pre 
@@ -34,7 +35,8 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_0010_master_item_post
+drop procedure if exists ste_010_master_item_post;
+drop procedure if exists ste_0010_master_item_post;
 GO
 
 CREATE PROCEDURE ste_0010_master_item_post

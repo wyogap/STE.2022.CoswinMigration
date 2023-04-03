@@ -68,7 +68,7 @@ INSERT INTO [dbo].[ste_migration_params]
      VALUES
            ('0005_Master_Meter'
            ,'version'
-           ,'2'
+           ,'3'
            ,getdate()
            ,'ssis'
            ,NULL

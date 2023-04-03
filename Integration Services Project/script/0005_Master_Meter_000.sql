@@ -13,10 +13,11 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_005_master_meter_pre
+drop procedure if exists ste_005_master_meter_pre;
+drop procedure if exists ste_0005_master_meter_pre;
 GO
 
-CREATE PROCEDURE ste_005_master_meter_pre 
+CREATE PROCEDURE ste_0005_master_meter_pre 
 	@PackageLogID INT
 AS
 BEGIN
@@ -40,10 +41,11 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_005_master_meter_post
+drop procedure if exists ste_005_master_meter_post;
+drop procedure if exists ste_0005_master_meter_post;
 GO
 
-CREATE PROCEDURE ste_005_master_meter_post
+CREATE PROCEDURE ste_0005_master_meter_post
   @PackageLogID INT
 AS
 BEGIN
