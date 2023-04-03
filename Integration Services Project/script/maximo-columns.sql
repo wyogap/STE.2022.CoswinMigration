@@ -18,6 +18,10 @@ ADD ste_cweqcode VARCHAR(100) default null,
 	ste_manufactmtbf varchar(50) default null,
 	ste_loccode VARCHAR(50) default null
 	;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.ASSET'), 'ste_cswnmodelnum', 'ColumnId') IS NULL
+ALTER TABLE ASSET
+ADD ste_cswnmodelnum VARCHAR(24) default null;
 	
 IF COLUMNPROPERTY(OBJECT_ID('dbo.prline'), 'ste_cswnapglcode', 'ColumnId') IS NULL
 ALTER TABLE prline
