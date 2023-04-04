@@ -115,3 +115,73 @@ ADD ste_cswnvoicephone2 varchar(50) default null,
 ---- originally it is varchar(12)
 --ALTER TABLE ASSETMETER
 --ALTER COLUMN assetnum varchar(20) NOT NULL;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.workorder'), 'ste_cswnactionauth', 'ColumnId') IS NULL
+ALTER TABLE [workorder]
+ADD ste_cswnactionauth varchar(16) default null,
+	ste_cswnactiondesc varchar(100) default null,
+	ste_cswncc varchar(16) default null,
+	ste_cswniexfl varchar(3) default null,
+	ste_cswnprjref varchar(10) default null,
+	ste_cswneqpcode varchar(20) default null,
+	ste_cswnjbclu varchar(6) default null,
+	ste_cswnjbcludesc varchar(100) default null,
+	ste_cswnjobid varchar(16) default null,
+	ste_cswnnewserialnum varchar(24) default null,
+	ste_cswnreqdesc varchar(100) default null,
+	ste_cswnrequestauth varchar(16) default null,
+	ste_cswntotcumunits varchar(38) default null,
+	ste_cswnwofnctn varchar(10) default null,
+	ste_cswnwotype varchar(3) default null,
+	ste_cswnwozone varchar(10) default null,
+	ste_eqpphone varchar(13) default null;
+
+--ALTER TABLE workorder
+--ALTER COLUMN [route] varchar(20) NOT NULL;
+
+---- delete index dependent to problemcode
+--drop index [workorder_ndx7] ON [dbo].[workorder];
+--drop index [workorder_ndx9] ON [dbo].[workorder];
+
+--ALTER TABLE workorder
+--ALTER COLUMN [problemcode] varchar(10) NOT NULL;
+
+---- recreate index
+--SET ANSI_PADDING ON
+--GO
+--/****** Object:  Index [workorder_ndx7]    Script Date: 04/04/2023 15:14:53 ******/
+--CREATE NONCLUSTERED INDEX [workorder_ndx7] ON [dbo].[workorder]
+--(
+--	[siteid] ASC,
+--	[assetnum] ASC,
+--	[problemcode] ASC,
+--	[status] ASC
+--)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+--GO
+--SET ANSI_PADDING ON
+--GO
+--/****** Object:  Index [workorder_ndx9]    Script Date: 04/04/2023 15:14:53 ******/
+--CREATE NONCLUSTERED INDEX [workorder_ndx9] ON [dbo].[workorder]
+--(
+--	[siteid] ASC,
+--	[location] ASC,
+--	[problemcode] ASC,
+--	[status] ASC
+--)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+--GO
+
+--ALTER TABLE workorder
+--ALTER COLUMN [justifypriority] varchar(100) NOT NULL;
+
+--ALTER TABLE workorder
+--ALTER COLUMN [contract] varchar(10) NOT NULL;
+
+--ALTER TABLE workorder
+--ALTER COLUMN [wonum] varchar(20) NOT NULL;
+
+--ALTER TABLE workorder
+--ALTER COLUMN [parent] varchar(20) NOT NULL;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.ticket'), 'STE_CSWNEQPCODE', 'ColumnId') is null
+ALTER TABLE ticket
+ADD STE_CSWNEQPCODE varchar(25) default null;
