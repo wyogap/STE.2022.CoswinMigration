@@ -185,3 +185,7 @@ ADD ste_cswnactionauth varchar(16) default null,
 IF COLUMNPROPERTY(OBJECT_ID('dbo.ticket'), 'STE_CSWNEQPCODE', 'ColumnId') is null
 ALTER TABLE ticket
 ADD STE_CSWNEQPCODE varchar(25) default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.ITEM'), 'STE_CSWNBARCODE', 'ColumnId') IS NULL
+ALTER TABLE ITEM
+ADD STE_CSWNBARCODE VARCHAR(20) default null;

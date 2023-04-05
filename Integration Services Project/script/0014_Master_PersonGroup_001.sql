@@ -1,30 +1,15 @@
 /****** Object:  Table [dbo].[ste_migration_params]    Script Date: 25/01/2023 17:46:34 ******/
+-- ----------- 
+-- PERSONGROUP
+-- -----------
 
---IF COLUMNPROPERTY(OBJECT_ID('dbo.ITEM'), 'STE_CSWNBARCODE', 'ColumnId') IS NULL
---ALTER TABLE ITEM
---ADD STE_CSWNBARCODE VARCHAR(20) default null;
-
--- Create pre-task
--- ---------------
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-
-drop procedure if exists ste_010_master_item_pre;
-drop procedure if exists ste_0010_master_item_pre;
-GO
-
-CREATE PROCEDURE ste_0010_master_item_pre 
-	@PackageLogID INT
-AS
-BEGIN
-	-- truncate existing data
-	DELETE FROM [item] WHERE STE_MIGRATIONID IS NOT NULL;
-
-END
-
-GO
+-- Add custom columns
+-- ------------------
+if COLUMNPROPERTY(OBJECT_ID('dbo.PERSONGROUP'), 'STE_MIGRATIONGRPPARENT', 'ColumnId') is null
+ALTER TABLE PERSONGROUP
+ADD STE_MIGRATIONGRPPARENT VARCHAR(50) default null,
+	STE_MIGRATIONGRPLEVEL INT default 1;
+;
 
 -- Create post-task
 -- ---------------
@@ -33,11 +18,10 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_010_master_item_post;
-drop procedure if exists ste_0010_master_item_post;
+drop procedure if exists ste_0014_master_persongroup_post
 GO
 
-CREATE PROCEDURE ste_0010_master_item_post
+CREATE PROCEDURE ste_0014_master_persongroup_post
   @PackageLogID INT
 AS
 BEGIN
@@ -48,18 +32,16 @@ BEGIN
 	declare @PackageName varchar(250);
 
 	-- update identity column
-	select @v_max_id=max(itemid) from [ITEM];
-
-	-- update maximo seq
-	update maxsequence set maxreserved=@v_max_id+1 where tbname='ITEM' and name='ITEMID';
+	select @v_max_id=max(persongroupid) from persongroup;
+	update maxsequence set maxreserved=@v_max_id+1 where tbname='PERSONGROUP' and name='PERSONGROUPID';
 
 	-- get package name
 	select @PackageName = package_name from [dbo].[ste_migration_logs] where id = @PackageLogID;
 	if (@PackageName is null) return;
 
 	-- update start_id and end_id for ITEM_
-	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID), @v_cnt=count(STE_MIGRATIONID) from [ITEM]
-	where STE_MIGRATIONID is not null and STE_MIGRATIONSOURCE='ITEM_';
+	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID), @v_cnt=count(STE_MIGRATIONID) from persongroup
+	where STE_MIGRATIONID is not null AND STE_MIGRATIONSOURCE = 'GROUP_USER';
 
 	insert into [dbo].[ste_migration_log_details] (
 		[package_name]
@@ -71,14 +53,13 @@ BEGIN
 	values (
 		@PackageName
 		, @PackageLogID
-		, 'ITEM_'
+		, 'GROUP_USER'
 		, 'COMPLETED'
 		, CONCAT('COUNT: ', @v_cnt, ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
 	);
 
-	-- update start_id and end_id for NSITEM
-	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID), @v_cnt=count(STE_MIGRATIONID) from [ITEM]
-	where STE_MIGRATIONID is not null and STE_MIGRATIONSOURCE='NSITEM';
+	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID), @v_cnt=count(STE_MIGRATIONID) from persongroup
+	where STE_MIGRATIONID is not null AND STE_MIGRATIONSOURCE = 'RES_EMPL';
 
 	insert into [dbo].[ste_migration_log_details] (
 		[package_name]
@@ -90,14 +71,13 @@ BEGIN
 	values (
 		@PackageName
 		, @PackageLogID
-		, 'NSITEM'
+		, 'RES_EMPL'
 		, 'COMPLETED'
 		, CONCAT('COUNT: ', @v_cnt, ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
 	);
 
-	-- update start_id and end_id for DIR_STOCK
-	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID), @v_cnt=count(STE_MIGRATIONID) from [ITEM]
-	where STE_MIGRATIONID is not null and STE_MIGRATIONSOURCE='DIR_STOCK';
+	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID), @v_cnt=count(STE_MIGRATIONID) from persongroup
+	where STE_MIGRATIONID is not null AND STE_MIGRATIONSOURCE = 'COH_ENTITY';
 
 	insert into [dbo].[ste_migration_log_details] (
 		[package_name]
@@ -109,15 +89,15 @@ BEGIN
 	values (
 		@PackageName
 		, @PackageLogID
-		, 'DIR_STOCK'
+		, 'COH_ENTITY'
 		, 'COMPLETED'
 		, CONCAT('COUNT: ', @v_cnt, ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
 	);
+
+	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID), @v_cnt=count(STE_MIGRATIONID) from persongroup
+	where STE_MIGRATIONID is not null;
 
 	-- update start_id and end_id
-	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID) from ITEM
-	WHERE STE_MIGRATIONID IS NOT NULL;
-
 	UPDATE [dbo].[ste_migration_logs] SET
 	  [start_id] = @v_start_id
 	, [end_id] = @v_end_id
@@ -125,6 +105,7 @@ BEGIN
 
 END
 GO
+
 
 -- update migration params
 -- -----------------------
@@ -137,9 +118,9 @@ INSERT INTO [dbo].[ste_migration_params]
            ,[modified_on]
            ,[modified_by])
      VALUES
-           ('0010_Master_Item'
+           ('0014_Master_PersonGroup'
            ,'version'
-           ,'3'
+           ,'2'
            ,getdate()
            ,'ssis'
            ,NULL
