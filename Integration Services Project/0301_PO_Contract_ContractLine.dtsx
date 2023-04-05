@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="0301_PO_Contract_ContractLine"
   DTS:PackageType="5"
-  DTS:VersionBuild="72"
-  DTS:VersionGUID="{B33F4CED-B266-4D96-8F81-929675BA41A1}">
+  DTS:VersionBuild="73"
+  DTS:VersionGUID="{EE6BBAA3-2912-44B1-8B12-4403EA3316A6}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -31,7 +31,7 @@
           <OraConnectionString>SERVER=103.149.177.117:1521/COSWINDB;USERNAME=coswin;WINAUTH=0;</OraConnectionString>
           <OraPassword
             Sensitive="1"
-            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAACut9+gMapE0ta4K7HEEpZ+bSxZlMpCo+PQiJxCNK2gKgAAAAAOgAAAAAIAACAAAACxqXpWqO3oBefVIzSKsDLLNnFW7c/cz6UytpsDDD3NiyAAAADZZOf83pmAVYYj4uGh2J0JGUN/W4pXlayGt8FVsnk5YUAAAADmWPtQeO/d+XYLh4TYk6Lfb32HDe4PLvrBSqdX+1TGYPAEHrHUxZmqiJhHBFlg8qErZZfr/LYVwFKEJBEBBjkn</OraPassword>
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAB0ch0YXTrHm7WZwf4DZkFK9wDIqXsZmpPt78U2Z7mJaQAAAAAOgAAAAAIAACAAAABpKcIR8CSjCIGE2HJKKGk4Wz+Up9qyXQUMk3h0kjYngSAAAAAKpXt2kFgeKilTWxJSuALWYhb9/yqeezbdlVvMsKWKPkAAAACxBhsV5TYJK6wOI8QPcFe2O4DH5L+PyxH2Oqg0CJ1GSF7hLQP/9oyPJ+qh6XnNpWWdT00U9TRSKDdyp19lNT1t</OraPassword>
           <OraRetain>False</OraRetain>
           <OraInitialCatalog></OraInitialCatalog>
           <OraServerName>103.149.177.117:1521/COSWINDB</OraServerName>
@@ -60,7 +60,7 @@
           <DTS:Password
             DTS:Name="Password"
             Sensitive="1"
-            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAA7Iqph/YqcE9iCqD8Clivf2iT5nQxhKkFMNqoHXdA5agAAAAAOgAAAAAIAACAAAABIhV3CCz1gHsgR5kY/STC813wt1R/5AbmxepErLZBj+CAAAABXH3tWXsQfyeZd44Z6KpDpk3SvOHlK4geu5ky9JBNGNUAAAAAGJHR0II5OJOeIgN9OJ6miukWAz+NM015uGya6rm/2kGMBMFNKD3RLWkS/XdPFPYNm8MecZZY//6fP6P5U4J2I</DTS:Password>
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAACd0En1KtiCdOGcCyVMQCZXeIQnWz1qLXm18Wt1hw3iUAAAAAAOgAAAAAIAACAAAACgC2ouyCzT1iLVj/kAtqGQdCkiwgNUypjbuCyovcRSiCAAAACf8uvdSb6581vizgRcZPEkgfXUv2HxyJnRdhhiZh/ft0AAAADQFoVaccvLRygUOcmjFhDidssrWhp0IVMBXE4dOVOt+rh9/U00XokMVcTl3VX/5P7DRT1akzSeC56r69PCfdVX</DTS:Password>
         </DTS:ConnectionManager>
       </DTS:ObjectData>
     </DTS:ConnectionManager>
@@ -1673,16 +1673,7 @@
 	--, sar.SAGREE_TXT
 FROM COSWIN.SUPPL_AGREE sa
 LEFT JOIN COSWIN.SUPPLIER_ sup ON sup.PK_SUPPLIER_ = sa.S_SUPP_TO_SAGREE 
-LEFT JOIN (
-	SELECT 
-		sar.PK_SUPPL_AGREE_RMK
-		, sar.S_SAGREE_TO_RMK
-		, sar.SAGREE_TXT
-		--, LISTAGG(sar.SAGREE_TXT, ' ') 
-		, ROW_NUMBER() OVER (PARTITION BY sar.S_SAGREE_TO_RMK ORDER BY sar.PK_SUPPL_AGREE_RMK DESC) RN 
-	FROM COSWIN.SUPPL_AGREE_RMK sar
-	WHERE sar.S_SAGREE_TO_RMK IS NOT NULL 
-) sar ON sar.S_SAGREE_TO_RMK = sa.PK_SUPPL_AGREE AND sar.RN=1
+LEFT JOIN COSWIN.SUPPL_AGREE_RMK sar ON sar.S_SAGREE_TO_RMK = sa.PK_SUPPL_AGREE
 ORDER BY sa.PK_SUPPL_AGREE
 ;</property>
                 <property
@@ -4792,6 +4783,10 @@ LEFT JOIN coswin.NSITEM ns ON ns.PK_NSITEM = sait.S_NS_TO_SAIT ;</property>
       <GraphLayout
         Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
+          Size="167,42"
+          Id="Package\DF - Contract\Running Number"
+          TopLeft="229.5,7.5" />
+        <NodeLayout
           Size="158,42"
           Id="Package\DF - Contract\Derived Column"
           TopLeft="181,79" />
@@ -4803,66 +4798,6 @@ LEFT JOIN coswin.NSITEM ns ON ns.PK_NSITEM = sait.S_NS_TO_SAIT ;</property>
           Size="149,42"
           Id="Package\DF - Contract\Oracle Source"
           TopLeft="19.5,5.5" />
-        <EdgeLayout
-          Id="Package\DF - Contract.Paths[Derived Column Output]"
-          TopLeft="260,121">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-159,53.5"
-              Start="0,0"
-              End="-159,46">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,22.75" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,22.75"
-                    Point2="0,26.75"
-                    Point3="-4,26.75" />
-                  <mssgle:LineSegment
-                    End="-155,26.75" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-155,26.75"
-                    Point2="-159,26.75"
-                    Point3="-159,30.75" />
-                  <mssgle:LineSegment
-                    End="-159,46" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="167,42"
-          Id="Package\DF - Contract\Running Number"
-          TopLeft="229.5,7.5" />
-        <EdgeLayout
-          Id="Package\DF - Contract.Paths[Oracle Source Output]"
-          TopLeft="168.5,27.5">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="61,0"
-              Start="0,0"
-              End="53.5,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="53.5,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - Contract.Paths[Output 0]"
           TopLeft="313,49.5">
@@ -4889,6 +4824,62 @@ LEFT JOIN coswin.NSITEM ns ON ns.PK_NSITEM = sait.S_NS_TO_SAIT ;</property>
                     Point3="-53,18.75" />
                   <mssgle:LineSegment
                     End="-53,22" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - Contract.Paths[Oracle Source Output]"
+          TopLeft="168.5,27.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="61,0"
+              Start="0,0"
+              End="53.5,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="53.5,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - Contract.Paths[Derived Column Output]"
+          TopLeft="260,121">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-159,53.5"
+              Start="0,0"
+              End="-159,46">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,22.75" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,22.75"
+                    Point2="0,26.75"
+                    Point3="-4,26.75" />
+                  <mssgle:LineSegment
+                    End="-155,26.75" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-155,26.75"
+                    Point2="-159,26.75"
+                    Point3="-159,30.75" />
+                  <mssgle:LineSegment
+                    End="-159,46" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
