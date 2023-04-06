@@ -105,6 +105,24 @@ BEGIN
 	);
 
 	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID), @v_cnt=count(STE_MIGRATIONID) from persongroupteam
+	where STE_MIGRATIONID is not null and STE_MIGRATIONSOURCE = 'RES_EMPL (TRADE)';
+
+	insert into [dbo].[ste_migration_log_details] (
+		[package_name]
+		,[log_id]
+		,[event]
+		,[event_type]
+		,[event_description]
+	)
+	values (
+		@PackageName
+		, @PackageLogID
+		, 'RES_EMPL (TRADE)'
+		, 'COMPLETED'
+		, CONCAT('COUNT: ', @v_cnt, ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
+	);
+
+	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID), @v_cnt=count(STE_MIGRATIONID) from persongroupteam
 	where STE_MIGRATIONID is not null;
 
 	-- update start_id and end_id

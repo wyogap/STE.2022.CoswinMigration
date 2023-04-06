@@ -182,10 +182,23 @@ ADD ste_cswnactionauth varchar(16) default null,
 --ALTER TABLE workorder
 --ALTER COLUMN [parent] varchar(20) NOT NULL;
 
-IF COLUMNPROPERTY(OBJECT_ID('dbo.ticket'), 'STE_CSWNEQPCODE', 'ColumnId') is null
+IF COLUMNPROPERTY(OBJECT_ID('dbo.ticket'), 'ste_cswneqpcode', 'ColumnId') is null
 ALTER TABLE ticket
-ADD STE_CSWNEQPCODE varchar(25) default null;
+ADD ste_cswneqpcode varchar(25) default null;
 
-IF COLUMNPROPERTY(OBJECT_ID('dbo.ITEM'), 'STE_CSWNBARCODE', 'ColumnId') IS NULL
+IF COLUMNPROPERTY(OBJECT_ID('dbo.ITEM'), 'ste_cswnbarcode', 'ColumnId') IS NULL
 ALTER TABLE ITEM
-ADD STE_CSWNBARCODE VARCHAR(20) default null;
+ADD ste_cswnbarcode VARCHAR(20) default null;
+
+-- custom columns
+IF COLUMNPROPERTY(OBJECT_ID('dbo.PERSON'), 'ste_cswnemercontact', 'ColumnId') IS NULL
+ALTER TABLE PERSON
+ADD 
+	ste_cswnemercontact	varchar(25)	 default null,
+	ste_cswnidcard	varchar(16)	 default null,
+	ste_cswnpassport	varchar(16)	 default null,
+	ste_cswnworkerid	varchar(16)	 default null,
+	ste_cswnsex	varchar(3)	 default null,
+	ste_cswncompanyentity	varchar(16)	 default null,
+	ste_cswnbarcode	varchar(16)	 default null,
+	ste_cswncc	varchar(16)	 default null;
