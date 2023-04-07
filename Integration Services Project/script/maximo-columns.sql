@@ -202,3 +202,7 @@ ADD
 	ste_cswncompanyentity	varchar(16)	 default null,
 	ste_cswnbarcode	varchar(16)	 default null,
 	ste_cswncc	varchar(16)	 default null;
+	
+IF COLUMNPROPERTY(OBJECT_ID('dbo.qualification'), 'STE_CSWNSKILLSKILL', 'ColumnId') is null
+ALTER TABLE qualification
+ADD ste_cswnskillskill varchar(10) default null;
