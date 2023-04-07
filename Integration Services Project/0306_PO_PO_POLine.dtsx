@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="0306_PO_PO_POLine"
   DTS:PackageType="5"
-  DTS:VersionBuild="78"
-  DTS:VersionGUID="{B24AD912-5D5C-47C1-AF11-B40214463D00}"
+  DTS:VersionBuild="79"
+  DTS:VersionGUID="{5EEF1B8F-5C40-447D-8ECF-D20681E4FE14}"
   DTS:VersionMajor="2">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -32,7 +32,7 @@
           <OraConnectionString>SERVER=103.149.177.117:1521/COSWINDB;USERNAME=coswin;WINAUTH=0;</OraConnectionString>
           <OraPassword
             Sensitive="1"
-            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAATzwXEGlWnvEpiOrihKymw7JBuop7Ow58OIvl5hCOR6wAAAAAOgAAAAAIAACAAAAAHOaDGVSRH3dIlj5ttvcRh3FrxMBIV6aGrgZHnfxAMkSAAAADWHqwP3Owc15kUc5lf4kwPeqmVkobKoHNMokDM9w8udEAAAACeCF5GJHaFq21HLV3+NPDN2qvEprm6l11IGmKVujILHnHAFWnXeznkezFwu++NpV2r4/LStQ90Eilht4LKVPuj</OraPassword>
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAAORTD6XqqkeYl9sS47pMGtfoNjkguhQtPZIyHdoByimgAAAAAOgAAAAAIAACAAAAAmudqzV8ey3UmCbRnX+BbIyr4hDI0GpEzLseI47/fd3iAAAAA9UQb+cfgXlsGE4ajsKMM/q9Dc3TQRwcNCAGYtnwjltkAAAAAoADECzIBRkn2jH8F/Iy0CHGQjFF7F+dAWiWmYBDvb2DLada8o/5WUAwr9I9r5vNUZh/RcHVf85eCaHu/MrAkH</OraPassword>
           <OraRetain>False</OraRetain>
           <OraInitialCatalog></OraInitialCatalog>
           <OraServerName>103.149.177.117:1521/COSWINDB</OraServerName>
@@ -61,7 +61,7 @@
           <DTS:Password
             DTS:Name="Password"
             Sensitive="1"
-            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAAkhUFUTyC79TREWXVPyXWxyDTQnYmaoazAZklM/qFlVgAAAAAOgAAAAAIAACAAAABMc75AXhiRaGtbpaSUysXjzAHRoakU2khGaKHZUk0mNSAAAADZmAXThYQWrIowZTAEIT1cKO/jjEjkKWbZDUF4o8vzZkAAAAAvXV0r18MbOFaCc/A3EfXg6iwkye/5rQl/GZZRJ2gtCFdurSZgPVR83mSkDxg4geszWFVr0sk18CeVOFI4CZOd</DTS:Password>
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAACRUsvy+2Tv2O08kQWhz3g3d7U6RgDCiEc/VC9KSCrI7QAAAAAOgAAAAAIAACAAAAC7jSP0T9BAYpyunDIxvB1CyfRiXvzPYLc2qBpJ+RYK/SAAAADNC72bGIeYz+lD+yjQfzWhLECmA5K70tRUjAlFcrB+5UAAAADeWc65YSU5UJqYVxuXDJmPhiXAOiJg27Pu7Qlo4vnMd/Bjx5e4R6LViTu42e5j3auQ5EQrheL/3lL2ek7oNXBU</DTS:Password>
         </DTS:ConnectionManager>
       </DTS:ObjectData>
     </DTS:ConnectionManager>
@@ -1943,33 +1943,9 @@ LEFT JOIN (
 	JOIN COSWIN.PORDER_ p ON p.PK_PORDER_ = pi2.S_PO_ITEM
 	GROUP BY p.PK_PORDER_
 ) pit ON pit.PK_PORDER_ = po.PK_PORDER_ 
-LEFT JOIN coswin.PO_RMK pr1 ON pr1.S_PO_SHIP_ADDR = po.PK_PORDER_ 
---LEFT JOIN (
---	SELECT
---		p.PK_PORDER_
---		, pr.PO_TXT 
---		, ROW_NUMBER() OVER (PARTITION BY p.PK_PORDER_ ORDER BY pr.PK_PO_RMK desc) rn
---	FROM coswin.PO_RMK pr 
---	JOIN COSWIN.PORDER_ p ON p.PK_PORDER_ = pr.S_PO_SHIP_ADDR 
---) pr1 ON pr1.PK_PORDER_ = po.PK_PORDER_ AND pr1.rn=1
-LEFT JOIN coswin.PO_RMK pr2 ON pr2.S_PO_BILL_ADDR = po.PK_PORDER_ 
---LEFT JOIN (
---	SELECT
---		p.PK_PORDER_
---		, pr.PO_TXT 
---		, ROW_NUMBER() OVER (PARTITION BY p.PK_PORDER_ ORDER BY pr.PK_PO_RMK desc) rn
---	FROM coswin.PO_RMK pr 
---	JOIN COSWIN.PORDER_ p ON p.PK_PORDER_ = pr.S_PO_BILL_ADDR  
---) pr2 ON pr2.PK_PORDER_ = po.PK_PORDER_ AND pr2.rn=1
-LEFT JOIN coswin.PO_RMK pr3 ON pr3.S_PO_RMK = po.PK_PORDER_ 
---LEFT JOIN (
---	SELECT
---		p.PK_PORDER_
---		, pr.PO_TXT 
---		, ROW_NUMBER() OVER (PARTITION BY p.PK_PORDER_ ORDER BY pr.PK_PO_RMK desc) rn
---	FROM coswin.PO_RMK pr 
---	JOIN COSWIN.PORDER_ p ON p.PK_PORDER_ = pr.S_PO_RMK  
---) pr3 ON pr3.PK_PORDER_ = po.PK_PORDER_ AND pr3.rn=1</property>
+--LEFT JOIN coswin.PO_RMK pr1 ON pr1.S_PO_SHIP_ADDR = po.PK_PORDER_ 
+--LEFT JOIN coswin.PO_RMK pr2 ON pr2.S_PO_BILL_ADDR = po.PK_PORDER_ 
+--LEFT JOIN coswin.PO_RMK pr3 ON pr3.S_PO_RMK = po.PK_PORDER_</property>
                 <property
                   dataType="System.Int32"
                   description="Specify the number of rows fetched per batch."
@@ -5680,40 +5656,6 @@ WHERE (CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_CD ELSE it.ITEM_CD END)
           Id="Package\DF - PO\Derived Column"
           TopLeft="181,79" />
         <EdgeLayout
-          Id="Package\DF - PO.Paths[Derived Column Output]"
-          TopLeft="260,121">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-159,53.5"
-              Start="0,0"
-              End="-159,46">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,22.75" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,22.75"
-                    Point2="0,26.75"
-                    Point3="-4,26.75" />
-                  <mssgle:LineSegment
-                    End="-155,26.75" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-155,26.75"
-                    Point2="-159,26.75"
-                    Point3="-159,30.75" />
-                  <mssgle:LineSegment
-                    End="-159,46" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
           Id="Package\DF - PO.Paths[Oracle Source Output]"
           TopLeft="94,47.5">
           <EdgeLayout.Curve>
@@ -5739,6 +5681,40 @@ WHERE (CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_CD ELSE it.ITEM_CD END)
                     Point3="166,19.75" />
                   <mssgle:LineSegment
                     End="166,24" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - PO.Paths[Derived Column Output]"
+          TopLeft="260,121">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-159,53.5"
+              Start="0,0"
+              End="-159,46">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,22.75" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,22.75"
+                    Point2="0,26.75"
+                    Point3="-4,26.75" />
+                  <mssgle:LineSegment
+                    End="-155,26.75" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-155,26.75"
+                    Point2="-159,26.75"
+                    Point3="-159,30.75" />
+                  <mssgle:LineSegment
+                    End="-159,46" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -5780,7 +5756,7 @@ WHERE (CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_CD ELSE it.ITEM_CD END)
     design-time-name="Package\DF - POLine">
     <LayoutInfo>
       <GraphLayout
-        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="177,42"
           Id="Package\DF - POLine\OLE DB Destination"
@@ -5824,7 +5800,9 @@ WHERE (CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_CD ELSE it.ITEM_CD END)
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -5858,7 +5836,9 @@ WHERE (CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_CD ELSE it.ITEM_CD END)
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
