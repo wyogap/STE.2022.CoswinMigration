@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="0109_Asset_AssetAncestor"
   DTS:PackageType="5"
-  DTS:VersionBuild="13"
-  DTS:VersionGUID="{324C3362-EAE7-42B6-BD65-4970A144F426}">
+  DTS:VersionBuild="14"
+  DTS:VersionGUID="{380F5485-5F10-497B-9A20-2249309C5D12}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -29,6 +29,9 @@
       <DTS:ObjectData>
         <DTS:ConnectionManager>
           <OraConnectionString>SERVER=103.149.177.117:1521/COSWINDB;USERNAME=coswin;WINAUTH=0;</OraConnectionString>
+          <OraPassword
+            Sensitive="1"
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAC1sXjBBR45CvTRuhI36l9vKHUKHhMThRkRhIHQaugMBQAAAAAOgAAAAAIAACAAAADy4gMiMopxJOKFKNECXiqLgLMJk5I8wq0XWvzFyGP91yAAAAB0nbFabh8GvDINzpQqPeGYqecsRLMvDvVXDzEggFc4dUAAAABVa0fVs1KuJwImk16we3HJ/O5v0C8MyTJ93KGoZ3mrtiN3vHuW00rjGvTvLpjJBHl+2R9fWqaAOTsLIR6IJ3kS</OraPassword>
           <OraRetain>False</OraRetain>
           <OraInitialCatalog></OraInitialCatalog>
           <OraServerName>103.149.177.117:1521/COSWINDB</OraServerName>
@@ -53,7 +56,11 @@
         <DTS:ConnectionManager
           DTS:ConnectRetryCount="1"
           DTS:ConnectRetryInterval="5"
-          DTS:ConnectionString="Data Source=103.149.177.253,14330;User ID=maximo;Initial Catalog=maximodb;Provider=SQLNCLI11.1;Persist Security Info=True;Auto Translate=False;Application Name=STE.2022.CoswinMigration-{A2D54055-0CBC-4EA5-9952-7A6ADE49C2F8}.maximodb.maximo;">
+          DTS:ConnectionString="Data Source=LENOVO-YOGA\SQLEXPRESS;User ID=maximo;Initial Catalog=maximodb;Provider=SQLNCLI11.1;Persist Security Info=True;Auto Translate=False;Application Name=STE.2022.CoswinMigration-{A2D54055-0CBC-4EA5-9952-7A6ADE49C2F8}.maximodb.maximo;">
+          <DTS:Password
+            DTS:Name="Password"
+            Sensitive="1"
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAABK/0g2BuvgxBon1XCfuvSD5dmaUUtsbr8Qz4FB4XexkwAAAAAOgAAAAAIAACAAAAAFw1chB6cEtFD/loAyR3gGxJArlf4AHou3mHbhFXmsqCAAAAB4aSjJm047yD/ipG0yZQ6AoIK9eKxH0Ut9jeB5Xhb8BkAAAABJB0l4jc2Yq8+u2wJQ+tGbRTdLFyYasxJEyHusTqAozmvptbnjkfWzSNGzNhtbvLi8Hx+E8WvBI5V1Hq7rEeSg</DTS:Password>
         </DTS:ConnectionManager>
       </DTS:ObjectData>
     </DTS:ConnectionManager>
@@ -766,7 +773,20 @@
                   description="The SQL command to be executed."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT 
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">-- group level only has reference to itself
+SELECT 
+	et.PK_EQP_TOPO 
+	,et.EQ_EQCD
+	,0 AS EQ_LEVL
+	,et.PK_EQP_TOPO AS PK_EQP_PR
+	,et.EQ_EQCD as EQ_PRCD
+FROM COSWIN.EQP_TOPO et
+WHERE et.EQ_LEVL = 0
+
+UNION ALL
+
+-- child equipment level has hierarchy reference
+SELECT 
 	et.PK_EQP_TOPO 
 	,et.EQ_EQCD
 	,0 AS EQ_LEVL
@@ -2364,43 +2384,47 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
       <GraphLayout
         Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
-          Size="149,42"
-          Id="Package\Data Flow Task\Oracle Source"
-          TopLeft="19.5,5.5" />
+          Size="162,42"
+          Id="Package\Data Flow Task\Running Number"
+          TopLeft="275.5,15.5" />
+        <NodeLayout
+          Size="177,42"
+          Id="Package\Data Flow Task\OLE DB Destination"
+          TopLeft="11.5,243.5" />
         <NodeLayout
           Size="158,42"
           Id="Package\Data Flow Task\Derived Column"
           TopLeft="181,114" />
         <NodeLayout
-          Size="177,42"
-          Id="Package\Data Flow Task\OLE DB Destination"
-          TopLeft="11.5,243.5" />
+          Size="149,42"
+          Id="Package\Data Flow Task\Oracle Source"
+          TopLeft="19.5,5.5" />
         <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Derived Column Output]"
-          TopLeft="260,156">
+          Id="Package\Data Flow Task.Paths[Output 0]"
+          TopLeft="356.5,57.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-160,87.5"
+              EndConnector="-96.5,56.5"
               Start="0,0"
-              End="-160,80">
+              End="-96.5,49">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,39.75" />
+                    End="0,24.25" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,39.75"
-                    Point2="0,43.75"
-                    Point3="-4,43.75" />
+                    Point1="0,24.25"
+                    Point2="0,28.25"
+                    Point3="-4,28.25" />
                   <mssgle:LineSegment
-                    End="-156,43.75" />
+                    End="-92.5,28.25" />
                   <mssgle:CubicBezierSegment
-                    Point1="-156,43.75"
-                    Point2="-160,43.75"
-                    Point3="-160,47.75" />
+                    Point1="-92.5,28.25"
+                    Point2="-96.5,28.25"
+                    Point3="-96.5,32.25" />
                   <mssgle:LineSegment
-                    End="-160,80" />
+                    End="-96.5,49" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -2409,10 +2433,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="162,42"
-          Id="Package\Data Flow Task\Running Number"
-          TopLeft="275.5,15.5" />
         <EdgeLayout
           Id="Package\Data Flow Task.Paths[Oracle Source Output]"
           TopLeft="168.5,26.5">
@@ -2448,31 +2468,31 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Output 0]"
-          TopLeft="356.5,57.5">
+          Id="Package\Data Flow Task.Paths[Derived Column Output]"
+          TopLeft="260,156">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-96.5,56.5"
+              EndConnector="-160,87.5"
               Start="0,0"
-              End="-96.5,49">
+              End="-160,80">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,24.25" />
+                    End="0,39.75" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,24.25"
-                    Point2="0,28.25"
-                    Point3="-4,28.25" />
+                    Point1="0,39.75"
+                    Point2="0,43.75"
+                    Point3="-4,43.75" />
                   <mssgle:LineSegment
-                    End="-92.5,28.25" />
+                    End="-156,43.75" />
                   <mssgle:CubicBezierSegment
-                    Point1="-92.5,28.25"
-                    Point2="-96.5,28.25"
-                    Point3="-96.5,32.25" />
+                    Point1="-156,43.75"
+                    Point2="-160,43.75"
+                    Point3="-160,47.75" />
                   <mssgle:LineSegment
-                    End="-96.5,49" />
+                    End="-160,80" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -2485,7 +2505,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\Data Flow Task\Oracle Source">
+    design-time-name="Package\Data Flow Task\OLE DB Destination">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -2498,7 +2518,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
     </Properties>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
-    design-time-name="Package\Data Flow Task\OLE DB Destination">
+    design-time-name="Package\Data Flow Task\Oracle Source">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>

@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="0102_Asset_AssetLocUserCust"
   DTS:PackageType="5"
-  DTS:VersionBuild="67"
-  DTS:VersionGUID="{7DF74006-CAA7-46BF-93DC-462340BCEBB7}"
+  DTS:VersionBuild="69"
+  DTS:VersionGUID="{9BCC61F3-578F-42F0-85AE-B4FD4577D368}"
   DTS:VersionMajor="2">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -32,7 +32,7 @@
           <OraConnectionString>SERVER=103.149.177.117:1521/COSWINDB;USERNAME=coswin;WINAUTH=0;</OraConnectionString>
           <OraPassword
             Sensitive="1"
-            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAABtUDmQvUbOaDl2B2TbZQQbBbKMFXAcLSGiJgwWQDZyzAAAAAAOgAAAAAIAACAAAAAqcwt2LQjZ98r9sGhGUlq2ys7wq8LzoMKaShg+LnbV2CAAAABMZSu/2M8UMcIIpoXS8xJRJ0aICPgDZvZ8SvY0zyCUV0AAAABMRJHc1Hk2Zy3oXMqcQ3PnTfX8B0NvcfL8P33XA+T0+E5wKOCuHXfrhLFSPPrytm/R3TZGAggEGj4pZqBPyRs5</OraPassword>
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAACqqtvJdyRYkL1Xe+s8vffU1hXj5xucYG3DnXDWeQs2kAAAAAAOgAAAAAIAACAAAAAOn9CsCfhpFrpkuynDL9lKjJi4kpahRyz2+3mS8NeZ0yAAAABuPCDp0xoG4x32FU1mG/T/UWTb7fxHQWuljbTtyOTmtEAAAADIHSolZzYkpcwFykQJf+EHBV1PvvgfRAjtqNJkunxk5SjmAPDX3Vfoh55CoxgGIq4ATNuzYknOuxvUDeJtfhrm</OraPassword>
           <OraRetain>False</OraRetain>
           <OraInitialCatalog></OraInitialCatalog>
           <OraServerName>103.149.177.117:1521/COSWINDB</OraServerName>
@@ -61,7 +61,7 @@
           <DTS:Password
             DTS:Name="Password"
             Sensitive="1"
-            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAD8KHYql6BQGL5d9k/ozi3FkTVC/n5KrxVnKDxgWQqZJgAAAAAOgAAAAAIAACAAAACFo5mTBQ6MGUURq3MN6K0ZKEyomEWjOo7U6xEHkE7QUiAAAACYLqdt4jGBPP1PYYk9ZlcoajoJ9hYyeTzimgP2xacI10AAAADtE4bYHH8cmomwQgJSaGGpnl+mVxme08zsMd6IQs1Ra2EnLmuBzxjOHfJ1OTIFsfUECWQa+LAzk0kE8b5X8//K</DTS:Password>
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAACgZuZwwl2pUEcKMSoHtkArhXf0B/v7H7QSeiIlnuz58AAAAAAOgAAAAAIAACAAAABMZtvXT7Rrk5pMlVN054pNYoVmOECaPmIkgGomr5y5lyAAAAAlxv0MNVOs3MUw3C6z2rvf6p9CxBUQy2qUkIxuKR50WUAAAACrZcXBrPBI0ZfxzQu9F5ap2B6GH05JaNoEmVE+jFdtlPwbSSyf0aK+gKSkAxIfxvzT0dLa/qKkR6s9FX8ZKhy6</DTS:Password>
         </DTS:ConnectionManager>
       </DTS:ObjectData>
     </DTS:ConnectionManager>
@@ -852,6 +852,14 @@
                       cachedName="EQ_EQCD"
                       externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONEQCD]"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[EQ_EQCD]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[EQ_LOCT]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="16"
+                      cachedName="EQ_LOCT"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[location]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[EQ_LOCT]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1006,16 +1014,19 @@ SELECT
 	a.PK_EQP_TOPO, a.USER_ID
 	, MAX(a.EQ_ASSET_ID) AS EQ_ASSET_ID
 	, MAX(a.EQ_EQCD) AS EQ_EQCD
+	, MAX(a.EQ_LOCT) AS EQ_LOCT
 	, MAX(a.custodian) AS CUSTODIAN 
 FROM 
 (
-	SELECT et2.PK_EQP_TOPO, et2.EQ_ASSET_ID, et2.EQ_EQCD, wu1.USER_ID, 0 AS custodian FROM coswin.EQP_TOPO et2 
+	SELECT et2.PK_EQP_TOPO, et2.EQ_ASSET_ID, et2.EQ_EQCD, wu1.USER_ID, 0 AS custodian, et2.EQ_LOCT 
+	FROM coswin.EQP_TOPO et2 
 	LEFT JOIN COSWIN.WIN_USERS wu1 ON wu1.USER_ID = et2.EQ_USER 
 	WHERE wu1.USER_ID IS NOT NULL
 	
 	UNION 
 	
-	SELECT et2.PK_EQP_TOPO, et2.EQ_ASSET_ID, et2.EQ_EQCD, wu1.USER_ID, 1 AS custodian FROM coswin.EQP_TOPO et2 
+	SELECT et2.PK_EQP_TOPO, et2.EQ_ASSET_ID, et2.EQ_EQCD, wu1.USER_ID, 1 AS custodian, et2.EQ_LOCT 
+	FROM coswin.EQP_TOPO et2 
 	LEFT JOIN COSWIN.WIN_USERS wu1 ON wu1.USER_ID = et2.EQ_INCH  
 	WHERE wu1.USER_ID IS NOT NULL
 ) a 
@@ -1098,6 +1109,14 @@ GROUP BY a.PK_EQP_TOPO, a.USER_ID
                       length="20"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[EQ_EQCD]"
                       name="EQ_EQCD" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[EQ_LOCT]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EQ_LOCT]"
+                      length="16"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[EQ_LOCT]"
+                      name="EQ_LOCT" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1127,6 +1146,12 @@ GROUP BY a.PK_EQP_TOPO, a.USER_ID
                       dataType="str"
                       length="20"
                       name="EQ_EQCD" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EQ_LOCT]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="EQ_LOCT" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -1170,6 +1195,14 @@ GROUP BY a.PK_EQP_TOPO, a.USER_ID
                       length="20"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[EQ_EQCD]"
                       name="EQ_EQCD" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[EQ_LOCT]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EQ_LOCT]"
+                      length="16"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[EQ_LOCT]"
+                      name="EQ_LOCT" />
                     <outputColumn
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
