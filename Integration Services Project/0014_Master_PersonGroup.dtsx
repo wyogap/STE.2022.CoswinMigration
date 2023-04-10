@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="0014_Master_PersonGroup"
   DTS:PackageType="5"
-  DTS:VersionBuild="90"
-  DTS:VersionGUID="{9DDED692-99B7-4207-8618-31DA6620B13F}"
+  DTS:VersionBuild="91"
+  DTS:VersionGUID="{11E06E83-E4AE-4795-8C3A-1D79641645F8}"
   DTS:VersionMajor="2"
   DTS:VersionMinor="1">
   <DTS:Property
@@ -33,7 +33,7 @@
           <OraConnectionString>SERVER=103.149.177.117:1521/COSWINDB;USERNAME=coswin;WINAUTH=0;</OraConnectionString>
           <OraPassword
             Sensitive="1"
-            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAABCeTTsgLaIN6nqIc/9QEI3V0lS8f/TVW5BBRPZhJcU4AAAAAAOgAAAAAIAACAAAAAKBnBB+BcLUzDvq0HudsoIlzG8SGVg5N9Ro+1vwhLDOyAAAAAws30BmmpJnPT/fFu7e6pFEnR5O2FZfRDQhf4MTW75w0AAAAATau9SvhrRnjidC94h2icJOmcc61xn+dm2x/hv7XD5U8SNhOueMFutlBylP+K8cwvTzgPunVydV8CxZIJX68OJ</OraPassword>
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAA1DtxgBvWQB6ciAD/YBLyfA9Wh9DPnMO5kDhXHy+jJaQAAAAAOgAAAAAIAACAAAAAVZwe3ON5WlVF45qWraoDDz2mkuiRnmmb6svVGTe49+SAAAADeOxCImMp8xlwY+vW5LUBsDtw9w4uAZbftC7bcqCG6pkAAAABZTT9iJ9FHKHnFH2aPshUvlDFa0oqg/N5FWgLsncEa4zNWD/FiimaNvSvs/qD86GIJeEE5abza+3ezmMNtAB7N</OraPassword>
           <OraRetain>False</OraRetain>
           <OraInitialCatalog></OraInitialCatalog>
           <OraServerName>103.149.177.117:1521/COSWINDB</OraServerName>
@@ -168,7 +168,7 @@
           <DTS:Password
             DTS:Name="Password"
             Sensitive="1"
-            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAADuYPYQzlKOzIsBUcNpBHU4NwMTfY6ktqJcUMoZbFBtNQAAAAAOgAAAAAIAACAAAAB31qhPBd7b4gT55r6341nS8Z5Ya6QddCwWH12ViufKyiAAAAA8ygSHrR8cBvh45/qV7EshLVVBwjaZ9ZDljLDBFBYCHEAAAAA+mRJQGD6S3EkEw8/N4P9yFWocE/FMAq78jTROrYPwScg9G5tbS7QzG/xAXj0tPvkpyWdIiev58qOIoyS7OOJi</DTS:Password>
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAADP87upG2YnxLObSge5307bsFvCBL/GV8faH2WUFGTRTgAAAAAOgAAAAAIAACAAAAB1JwXye+n87Iv98vlUtKlXE+Gz13CZo9fdinveuPhs7yAAAAAMadS8WAHRySxFObKcfz3PHqwCA6PzHKJDKGykKdS4W0AAAACZEjb95nXTIO54VwvaUseh4poQmWvbc4sLO1toc796U/h2T/HTovwf2bBALf5sSk/KXmY6LFCmR4WGhm3KMlL6</DTS:Password>
         </DTS:ConnectionManager>
       </DTS:ObjectData>
     </DTS:ConnectionManager>
@@ -2248,6 +2248,16 @@ ORDER BY ce.CE_CODE
                       dataType="str"
                       length="50"
                       name="STE_MIGRATIONSOURCE" />
+                    <externalMetadataColumn
+                      refId="Package\DF - RES_EMPL\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONGRPPARENT]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="STE_MIGRATIONGRPPARENT" />
+                    <externalMetadataColumn
+                      refId="Package\DF - RES_EMPL\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONGRPLEVEL]"
+                      dataType="i4"
+                      name="STE_MIGRATIONGRPLEVEL" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -2295,11 +2305,14 @@ ORDER BY ce.CE_CODE
                   description="The SQL command to be executed."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT re.RE_SSNO, re.PK_RES_EMPL 
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT re.PK_RES_EMPL, re.RE_SSNO
 FROM (
-	SELECT DISTINCT (CASE WHEN RE_SSNO='RaiResigned' THEN 'RailResigned' ELSE RE_SSNO END) AS RE_SSNO, PK_RES_EMPL
+	SELECT 
+		(CASE WHEN RE_SSNO='RaiResigned' THEN 'RailResigned' ELSE RE_SSNO END) AS RE_SSNO
+		, MAX(PK_RES_EMPL) AS PK_RES_EMPL
 	FROM COSWIN.RES_EMPL re
 	WHERE re.RE_SSNO IS NOT NULL
+	GROUP BY (CASE WHEN RE_SSNO='RaiResigned' THEN 'RailResigned' ELSE RE_SSNO END)
 ) re
 LEFT JOIN GROUP_USERS gu ON upper(trim(gu.GROUP_ID)) = upper(trim(re.RE_SSNO)) 
 WHERE gu.PK_GROUP_USERS IS NULL</property>
@@ -2369,7 +2382,7 @@ WHERE gu.PK_GROUP_USERS IS NULL</property>
                       name="RE_SSNO" />
                     <externalMetadataColumn
                       refId="Package\DF - RES_EMPL\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_RES_EMPL]"
-                      dataType="i4"
+                      dataType="r8"
                       name="PK_RES_EMPL" />
                   </externalMetadataColumns>
                 </output>
@@ -2388,7 +2401,7 @@ WHERE gu.PK_GROUP_USERS IS NULL</property>
                       name="RE_SSNO" />
                     <outputColumn
                       refId="Package\DF - RES_EMPL\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_RES_EMPL]"
-                      dataType="i4"
+                      dataType="r8"
                       externalMetadataColumnId="Package\DF - RES_EMPL\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_RES_EMPL]"
                       lineageId="Package\DF - RES_EMPL\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_RES_EMPL]"
                       name="PK_RES_EMPL" />
@@ -3671,6 +3684,10 @@ WHERE gu.PK_GROUP_USERS IS NULL</property>
           TopLeft="1115,345" />
         <NodeLayout
           Size="173,42"
+          Id="Package\DF - RES_TRADE"
+          TopLeft="1596.66666666666,356.666666666666" />
+        <NodeLayout
+          Size="173,42"
           Id="Package\End ETL (Success)"
           TopLeft="55.5000000000002,540.833333333333" />
         <NodeLayout
@@ -3681,6 +3698,10 @@ WHERE gu.PK_GROUP_USERS IS NULL</property>
           Size="134,42"
           Id="Package\Get Max ID 1"
           TopLeft="1338.33333333333,231.916666666667" />
+        <NodeLayout
+          Size="152,42"
+          Id="Package\Get Max ID 1 1"
+          TopLeft="1594.5,241.583333333333" />
         <NodeLayout
           Size="191,42"
           Id="Package\Post-Task\Exec Post SP"
@@ -3805,6 +3826,40 @@ WHERE gu.PK_GROUP_USERS IS NULL</property>
                     Point3="-26.1666666666666,52.1034482758621" />
                   <mssgle:LineSegment
                     End="-26.1666666666666,73.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 10]"
+          TopLeft="1683.16666666666,398.666666666666">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-726.16666666666,82.916666666667"
+              Start="0,0"
+              End="-726.16666666666,75.416666666667">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,37.4583333333335" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,37.4583333333335"
+                    Point2="0,41.4583333333335"
+                    Point3="-4,41.4583333333335" />
+                  <mssgle:LineSegment
+                    End="-722.16666666666,41.4583333333335" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-722.16666666666,41.4583333333335"
+                    Point2="-726.16666666666,41.4583333333335"
+                    Point3="-726.16666666666,45.4583333333335" />
+                  <mssgle:LineSegment
+                    End="-726.16666666666,75.416666666667" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -3993,14 +4048,6 @@ WHERE gu.PK_GROUP_USERS IS NULL</property>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="173,42"
-          Id="Package\DF - RES_TRADE"
-          TopLeft="1596.66666666666,356.666666666666" />
-        <NodeLayout
-          Size="152,42"
-          Id="Package\Get Max ID 1 1"
-          TopLeft="1594.5,241.583333333333" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 8]"
           TopLeft="1454.49999999999,347">
@@ -4061,40 +4108,6 @@ WHERE gu.PK_GROUP_USERS IS NULL</property>
                     Point3="-11.3333333333399,33.6901041666665" />
                   <mssgle:LineSegment
                     End="-11.3333333333399,65.583333333333" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 10]"
-          TopLeft="1683.16666666666,398.666666666666">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-726.16666666666,82.916666666667"
-              Start="0,0"
-              End="-726.16666666666,75.416666666667">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,37.4583333333335" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,37.4583333333335"
-                    Point2="0,41.4583333333335"
-                    Point3="-4,41.4583333333335" />
-                  <mssgle:LineSegment
-                    End="-722.16666666666,41.4583333333335" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-722.16666666666,41.4583333333335"
-                    Point2="-726.16666666666,41.4583333333335"
-                    Point3="-726.16666666666,45.4583333333335" />
-                  <mssgle:LineSegment
-                    End="-726.16666666666,75.416666666667" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -4337,7 +4350,7 @@ WHERE gu.PK_GROUP_USERS IS NULL</property>
     design-time-name="Package\DF - RES_EMPL">
     <LayoutInfo>
       <GraphLayout
-        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
           Size="149,42"
           Id="Package\DF - RES_EMPL\Oracle Source"
@@ -4381,9 +4394,7 @@ WHERE gu.PK_GROUP_USERS IS NULL</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -4417,9 +4428,7 @@ WHERE gu.PK_GROUP_USERS IS NULL</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
@@ -4535,6 +4544,14 @@ WHERE gu.PK_GROUP_USERS IS NULL</property>
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
+    design-time-name="Package\DF - RES_TRADE\Oracle Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
     design-time-name="Package\DF - RES_TRADE\OLE DB Destination">
     <Properties>
       <Property>
@@ -4544,14 +4561,6 @@ WHERE gu.PK_GROUP_USERS IS NULL</property>
         <Name>TableInfoObjectType</Name>
         <Value
           type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\DF - RES_TRADE\Oracle Source">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
