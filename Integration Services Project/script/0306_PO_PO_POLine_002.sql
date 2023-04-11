@@ -4,6 +4,10 @@ IF COLUMNPROPERTY(OBJECT_ID('dbo.po'), 'STE_MIGRATIONREQBY', 'ColumnId') is null
 ALTER TABLE [po]
 ADD STE_MIGRATIONREQBY varchar(16) default null;
 
+IF COLUMNPROPERTY(OBJECT_ID('dbo.poline'), 'STE_MIGRATIONAMDWHO', 'ColumnId') is null
+ALTER TABLE [poline]
+ADD STE_MIGRATIONAMDWHO varchar(16) default null;
+
 -- update migration params
 -- -----------------------
 INSERT INTO [dbo].[ste_migration_params]

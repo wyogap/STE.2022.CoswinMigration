@@ -12,10 +12,10 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="0306_PO_PO_POLine"
   DTS:PackageType="5"
-  DTS:VersionBuild="95"
-  DTS:VersionGUID="{435512AE-5535-4E8B-9DA0-CFF764030F56}"
+  DTS:VersionBuild="104"
+  DTS:VersionGUID="{EEE72A77-0EBF-4C0F-BF9F-FB358715290E}"
   DTS:VersionMajor="3"
-  DTS:VersionMinor="1">
+  DTS:VersionMinor="2">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -33,7 +33,7 @@
           <OraConnectionString>SERVER=103.149.177.117:1521/COSWINDB;USERNAME=coswin;WINAUTH=0;</OraConnectionString>
           <OraPassword
             Sensitive="1"
-            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAABov7uyKfD9dqfhsLKvS8zS95VRPihjZOCi6XDQVAojWAAAAAAOgAAAAAIAACAAAADKnTiaXN/sVH1UGcfomKgPGFVaie8yJaBGgLltpa7UfSAAAACsEm5r/6tv0famzsy7Asf/8EalavpWWOkeEeZiOTus5EAAAACa4sje0PweAk9MIfF79o1QfmObKhVEi8SEEv+9m+5b13F/SbmemZYlY9cVbyuAVhTRhwP8t8G1rNpCuwlGjRWf</OraPassword>
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAAkjzVbssrsC1QXjQ4nmwVHjB3VERoBD0NgTj5F4c1U8AAAAAAOgAAAAAIAACAAAABtRteujQq3OoIZimrUkrKIObLcyoYtdDODKqwECRBq0CAAAABcooH8hgc3MO2A+NJsAPFk9vxky4neEiw7Co/nv7w5kEAAAACvGQPGRDYPwZFwAMLw8d+6PdVkUdDlFHIhqJmMggN9eU/oWV1zAmeaYbU4QQeBKZH6khFxudXrzyd/9zISPaa1</OraPassword>
           <OraRetain>False</OraRetain>
           <OraInitialCatalog></OraInitialCatalog>
           <OraServerName>103.149.177.117:1521/COSWINDB</OraServerName>
@@ -62,7 +62,7 @@
           <DTS:Password
             DTS:Name="Password"
             Sensitive="1"
-            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAC7hBMWsfMgDekf+qDZ2rnbJMe8sWBtBL8Yt/ESi4X9LwAAAAAOgAAAAAIAACAAAABHIhrqSARuC+aFNqJc3eo3EBJrXnBDBW/x7J89Wen+FiAAAACiRVrWXBF62+TWIxETINCct3+6YOv6PGUF+qU159vVl0AAAABehjMg385hQQ5L1XcHBZCyfUAiOsjV+tKuEz9gi9tWsG5dRdgLTvti6aWNlu97GhuS1+tekS2etdC/gbtiJ5Hr</DTS:Password>
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAACcgaceDVSzgBwOapHXGu1+Om/g/0JIa31/5pqb2nLgjAAAAAAOgAAAAAIAACAAAAD3L+EIgcctNzWYmeI09SCEBoSEiecGUXSot/CjbUrGkSAAAAAb3srVbQoUZ8jpSWL1yK0v2D4P/4mwDKRxrbrIYtumykAAAABDv5gMcU0mkaAVjF+uitBYBFaeF8xg+RYHTgFdBMGQX3C+iBmMtQLN3+5DDqOBzLwJsPqMdY3V4a6FZ7PInZ9l</DTS:Password>
         </DTS:ConnectionManager>
       </DTS:ObjectData>
     </DTS:ConnectionManager>
@@ -3221,7 +3221,7 @@ where [refTable].[PR_REQ_BY] = ?</property>
 		   WHEN po.PO_STATUS IN (53,54) THEN 'CAN'
 		   ELSE CAST(po.PO_STATUS AS varchar(6))
 	  END AS STATUS_TEXT
-	, lk.USER_ID as REQ_BY_ID
+	, upper(lk.USER_ID) as REQ_BY_ID
 FROM COSWIN.PORDER_ po
 LEFT JOIN COSWIN.SUPPLIER_ s ON s.PK_SUPPLIER_ = po.S_SUPL_PO 
 LEFT JOIN (
@@ -3711,6 +3711,125 @@ LEFT JOIN (
         <pipeline
           version="1">
           <components>
+            <component
+              refId="Package\DF - POLine\Conditional Split"
+              componentClassID="Microsoft.ConditionalSplit"
+              contactInfo="Conditional Split;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Routes data rows to different outputs depending on the content of the data. Use conditions (SSIS expressions) to specify which rows are routed. For example, separate records that need to be cleaned from those that are ready to be loaded or route only a subset of records."
+              name="Conditional Split"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\DF - POLine\Conditional Split.Inputs[Conditional Split Input]"
+                  description="Input to the Conditional Split Transformation"
+                  name="Conditional Split Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DF - POLine\Conditional Split.Inputs[Conditional Split Input].Columns[AMD_USER_ID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="16"
+                      cachedName="AMD_USER_ID"
+                      lineageId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].Columns[AMD_USER_ID]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - POLine\Conditional Split.Outputs[AMD_USER_ID FOUND]"
+                  description="Output 1 of the Conditional Split Transformation"
+                  errorOrTruncationOperation="Computation"
+                  errorRowDisposition="FailComponent"
+                  exclusionGroup="1"
+                  name="AMD_USER_ID FOUND"
+                  synchronousInputId="Package\DF - POLine\Conditional Split.Inputs[Conditional Split Input]"
+                  truncationRowDisposition="FailComponent">
+                  <properties>
+                    <property
+                      containsID="true"
+                      dataType="System.String"
+                      description="Specifies the expression. This expression version uses lineage identifiers instead of column names."
+                      name="Expression">![ISNULL](#{Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].Columns[AMD_USER_ID]})</property>
+                    <property
+                      containsID="true"
+                      dataType="System.String"
+                      description="Specifies the friendly version of the expression. This expression version uses column names."
+                      expressionType="Notify"
+                      name="FriendlyExpression">!ISNULL(AMD_USER_ID)</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the position of the condition in the list of conditions that the transformation evaluates. The evaluation order is from the lowest to the highest value."
+                      name="EvaluationOrder">0</property>
+                  </properties>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - POLine\Conditional Split.Outputs[AMD_USER_ID NOT FOUND]"
+                  description="Output 2 of the Conditional Split Transformation"
+                  errorOrTruncationOperation="Computation"
+                  errorRowDisposition="FailComponent"
+                  exclusionGroup="1"
+                  name="AMD_USER_ID NOT FOUND"
+                  synchronousInputId="Package\DF - POLine\Conditional Split.Inputs[Conditional Split Input]"
+                  truncationRowDisposition="FailComponent">
+                  <properties>
+                    <property
+                      containsID="true"
+                      dataType="System.String"
+                      description="Specifies the expression. This expression version uses lineage identifiers instead of column names."
+                      name="Expression">[ISNULL](#{Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].Columns[AMD_USER_ID]})</property>
+                    <property
+                      containsID="true"
+                      dataType="System.String"
+                      description="Specifies the friendly version of the expression. This expression version uses column names."
+                      expressionType="Notify"
+                      name="FriendlyExpression">ISNULL(AMD_USER_ID)</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the position of the condition in the list of conditions that the transformation evaluates. The evaluation order is from the lowest to the highest value."
+                      name="EvaluationOrder">1</property>
+                  </properties>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - POLine\Conditional Split.Outputs[Conditional Split Default Output]"
+                  description="Default Output of the Conditional Split Transformation"
+                  exclusionGroup="1"
+                  name="Conditional Split Default Output"
+                  synchronousInputId="Package\DF - POLine\Conditional Split.Inputs[Conditional Split Input]">
+                  <properties>
+                    <property
+                      dataType="System.Boolean"
+                      name="IsDefaultOut">true</property>
+                  </properties>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - POLine\Conditional Split.Outputs[Conditional Split Error Output]"
+                  description="Error Output of the Conditional Split Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Conditional Split Error Output"
+                  synchronousInputId="Package\DF - POLine\Conditional Split.Inputs[Conditional Split Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - POLine\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF - POLine\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF - POLine\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF - POLine\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
             <component
               refId="Package\DF - POLine\Derived Column"
               componentClassID="Microsoft.DerivedColumn"
@@ -4526,13 +4645,13 @@ LEFT JOIN (
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">(DT_STR,20,1252)[REPLACENULL](#{Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].Columns[PO_AMD_WHO]},"COSWIN")</property>
+                          name="Expression">(DT_STR,20,1252)[REPLACENULL](#{Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].Columns[PO_AMD_WHO]},"MAXADMIN")</property>
                         <property
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
-                          name="FriendlyExpression">(DT_STR,20,1252)REPLACENULL(PO_AMD_WHO,"COSWIN")</property>
+                          name="FriendlyExpression">(DT_STR,20,1252)REPLACENULL(PO_AMD_WHO,"MAXADMIN")</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
@@ -4580,6 +4699,337 @@ LEFT JOIN (
                       refId="Package\DF - POLine\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
                       dataType="i4"
                       lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DF - POLine\Derived Column 1"
+              componentClassID="Microsoft.DerivedColumn"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="Derived Column 1"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\DF - POLine\Derived Column 1.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DF - POLine\Derived Column 1.Inputs[Derived Column Input].Columns[AMD_USER_ID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="16"
+                      cachedName="AMD_USER_ID"
+                      lineageId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].Columns[AMD_USER_ID]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\Derived Column 1.Inputs[Derived Column Input].Columns[v_enterby]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="v_enterby"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_enterby]"
+                      truncationRowDisposition="FailComponent"
+                      usageType="readWrite">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_STR,16,1252)[REPLACENULL]([UPPER](#{Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].Columns[AMD_USER_ID]}),"MAXADMIN")</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_STR,16,1252)REPLACENULL(UPPER(AMD_USER_ID),"MAXADMIN")</property>
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - POLine\Derived Column 1.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\DF - POLine\Derived Column 1.Inputs[Derived Column Input]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - POLine\Derived Column 1.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\DF - POLine\Derived Column 1.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - POLine\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF - POLine\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF - POLine\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF - POLine\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DF - POLine\Derived Column 1 1"
+              componentClassID="Microsoft.DerivedColumn"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="Derived Column 1 1"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\DF - POLine\Derived Column 1 1.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DF - POLine\Derived Column 1 1.Inputs[Derived Column Input].Columns[AMD_USER_ID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="16"
+                      cachedName="AMD_USER_ID"
+                      lineageId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].Columns[AMD_USER_ID]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\Derived Column 1 1.Inputs[Derived Column Input].Columns[v_enterby]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="v_enterby"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_enterby]"
+                      truncationRowDisposition="FailComponent"
+                      usageType="readWrite">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_STR,16,1252)[REPLACENULL]([UPPER](#{Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].Columns[AMD_USER_ID]}),"MAXADMIN")</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_STR,16,1252)REPLACENULL(UPPER(AMD_USER_ID),"MAXADMIN")</property>
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - POLine\Derived Column 1 1.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\DF - POLine\Derived Column 1 1.Inputs[Derived Column Input]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - POLine\Derived Column 1 1.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\DF - POLine\Derived Column 1 1.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - POLine\Derived Column 1 1.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF - POLine\Derived Column 1 1.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF - POLine\Derived Column 1 1.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF - POLine\Derived Column 1 1.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DF - POLine\Lookup"
+              componentClassID="Microsoft.Lookup"
+              contactInfo="Lookup;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;6"
+              description="Joins additional columns to the data flow by looking up values in a table. For example, join to the 'employee id' column the employees table to get 'hire date' and 'employee name'. We recommend this transformation when the lookup table can fit into memory."
+              name="Lookup"
+              usesDispositions="true"
+              version="6">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="Specifies the SQL statement that generates the lookup table."
+                  expressionType="Notify"
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
+                <property
+                  dataType="System.String"
+                  description="Specifies a SQL statement that uses parameters to generate the lookup table."
+                  expressionType="Notify"
+                  name="SqlCommandParam"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">select * from () [refTable]
+where [refTable].[PR_REQ_BY] = ?</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the type of connection used to access the reference dataset."
+                  name="ConnectionType"
+                  typeConverter="LookupConnectionType">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the cache type of the lookup table."
+                  name="CacheType"
+                  typeConverter="CacheType">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies how the Lookup transformation handles rows without matching entries in the reference data set."
+                  name="NoMatchBehavior"
+                  typeConverter="LookupNoMatchBehavior">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the percentage of the cache that is allocated for rows with no matching entries in the reference dataset."
+                  name="NoMatchCachePercentage">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Maximum Memory Usage for Reference Cache on a 32 bit platform."
+                  name="MaxMemoryUsage">25</property>
+                <property
+                  dataType="System.Int64"
+                  description="Maximum Memory Usage for Reference Cache on a 64 bit platform."
+                  name="MaxMemoryUsage64">25</property>
+                <property
+                  dataType="System.String"
+                  description="Indicates whether to reference metadata in an XML format."
+                  name="ReferenceMetadataXml">&lt;referenceMetadata&gt;&lt;referenceColumns&gt;&lt;referenceColumn name="USER_ID" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PR_REQ_BY" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;/referenceColumns&gt;&lt;/referenceMetadata&gt;</property>
+                <property
+                  containsID="true"
+                  dataType="System.String"
+                  description="Specifies the list of lineage identifiers that map to the parameters that the SQL statement in the SQLCommand property uses. Entries in the list are separated by semicolons."
+                  name="ParameterMap">#{Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].Columns[PO_AMD_WHO]};</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Determines whether duplicate keys in the reference data should be treated as errors when full cache mode is used."
+                  name="TreatDuplicateKeysAsError">false</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\DF - POLine\Lookup.Connections[CacheConnection]"
+                  connectionManagerID="Package.ConnectionManagers[User Lookup Cache]"
+                  connectionManagerRefId="Package.ConnectionManagers[User Lookup Cache]"
+                  description="Connection manager used to access lookup data."
+                  name="CacheConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\DF - POLine\Lookup.Inputs[Lookup Input]"
+                  name="Lookup Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DF - POLine\Lookup.Inputs[Lookup Input].Columns[PO_AMD_WHO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="16"
+                      cachedName="PO_AMD_WHO"
+                      lineageId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].Columns[PO_AMD_WHO]">
+                      <properties>
+                        <property
+                          dataType="System.String"
+                          description="Specifies the column in the reference table that a column joins."
+                          name="JoinToReferenceColumn">PR_REQ_BY</property>
+                        <property
+                          dataType="System.Null"
+                          description="Specifies the column in the reference table from which a column is copied."
+                          name="CopyFromReferenceColumn" />
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - POLine\Lookup.Inputs[Lookup Input].Columns[AMD_USER_ID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="16"
+                      cachedName="AMD_USER_ID"
+                      errorOrTruncationOperation="Copy Column"
+                      lineageId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].Columns[AMD_USER_ID]"
+                      truncationRowDisposition="FailComponent"
+                      usageType="readWrite">
+                      <properties>
+                        <property
+                          dataType="System.Null"
+                          description="Specifies the column in the reference table that a column joins."
+                          name="JoinToReferenceColumn" />
+                        <property
+                          dataType="System.String"
+                          description="Specifies the column in the reference table from which a column is copied."
+                          name="CopyFromReferenceColumn">USER_ID</property>
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - POLine\Lookup.Outputs[Lookup Match Output]"
+                  errorOrTruncationOperation="Lookup"
+                  errorRowDisposition="IgnoreFailure"
+                  exclusionGroup="1"
+                  name="Lookup Match Output"
+                  synchronousInputId="Package\DF - POLine\Lookup.Inputs[Lookup Input]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - POLine\Lookup.Outputs[Lookup No Match Output]"
+                  description="The Lookup output that handles rows with no matching entries in the reference dataset. Use this output when the NoMatchBehavior property is set to &quot;Send rows with no matching entries to the no match output.&quot;"
+                  exclusionGroup="1"
+                  name="Lookup No Match Output"
+                  synchronousInputId="Package\DF - POLine\Lookup.Inputs[Lookup Input]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - POLine\Lookup.Outputs[Lookup Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Lookup Error Output"
+                  synchronousInputId="Package\DF - POLine\Lookup.Inputs[Lookup Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - POLine\Lookup.Outputs[Lookup Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF - POLine\Lookup.Outputs[Lookup Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF - POLine\Lookup.Outputs[Lookup Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF - POLine\Lookup.Outputs[Lookup Error Output].Columns[ErrorColumn]"
                       name="ErrorColumn"
                       specialFlags="2" />
                   </outputColumns>
@@ -4981,6 +5431,14 @@ LEFT JOIN (
                       cachedName="CATEGORY"
                       externalMetadataColumnId="Package\DF - POLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[category]"
                       lineageId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].Columns[CATEGORY]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PO_AMD_WHO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="16"
+                      cachedName="PO_AMD_WHO"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONAMDWHO]"
+                      lineageId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].Columns[PO_AMD_WHO]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -5699,6 +6157,12 @@ LEFT JOIN (
                       name="ste_cswninvqty"
                       precision="15"
                       scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONAMDWHO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="STE_MIGRATIONAMDWHO" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -5720,6 +6184,1160 @@ LEFT JOIN (
                       refId="Package\DF - POLine\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
                       dataType="i4"
                       lineageId="Package\DF - POLine\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DF - POLine\OLE DB Destination 1"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="OLE DB Destination 1"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[dbo].[poline]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\DF - POLine\OLE DB Destination 1.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[maximodb]"
+                  connectionManagerRefId="Package.ConnectionManagers[maximodb]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_hasld]"
+                      cachedDataType="i4"
+                      cachedName="v_hasld"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[hasld]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_hasld]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_langcode]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="4"
+                      cachedName="v_langcode"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[langcode]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_langcode]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[PO_REF]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="PO_REF"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[ponum]"
+                      lineageId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].Columns[PO_REF]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[LINENUM]"
+                      cachedDataType="r8"
+                      cachedName="LINENUM"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[polinenum]"
+                      lineageId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].Columns[LINENUM]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_prorateservice]"
+                      cachedDataType="i4"
+                      cachedName="v_prorateservice"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[prorateservice]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_prorateservice]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[DR_TXT2]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="DR_TXT2"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[remark]"
+                      lineageId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].Columns[DR_TXT2]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_enterdate]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="v_enterdate"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[enterdate]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_enterdate]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_enteredastask]"
+                      cachedDataType="i4"
+                      cachedName="v_enteredastask"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[enteredastask]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_enteredastask]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[ITEM_CD]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="ITEM_CD"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[itemnum]"
+                      lineageId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_CD]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[S_ITEM_REF]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="S_ITEM_REF"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[catalogcode]"
+                      lineageId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].Columns[S_ITEM_REF]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[PO_UNIT_RATE]"
+                      cachedDataType="r8"
+                      cachedName="PO_UNIT_RATE"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[unitcost]"
+                      lineageId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].Columns[PO_UNIT_RATE]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[PO_QTY]"
+                      cachedDataType="r8"
+                      cachedName="PO_QTY"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[orderqty]"
+                      lineageId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].Columns[PO_QTY]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[PO_UNIT]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="6"
+                      cachedName="PO_UNIT"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[orderunit]"
+                      lineageId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].Columns[PO_UNIT]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[PO_RCT_QTY]"
+                      cachedDataType="r8"
+                      cachedName="PO_RCT_QTY"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[receivedqty]"
+                      lineageId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].Columns[PO_RCT_QTY]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[ITEM_DS]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="105"
+                      cachedName="ITEM_DS"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[description]"
+                      lineageId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_DS]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_reqdeliverydate]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="v_reqdeliverydate"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[reqdeliverydate]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_reqdeliverydate]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_receivedtotalcost]"
+                      cachedDataType="r8"
+                      cachedName="v_receivedtotalcost"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[receivedtotalcost]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_receivedtotalcost]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_rejectedqty]"
+                      cachedDataType="i4"
+                      cachedName="v_rejectedqty"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[rejectedqty]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_rejectedqty]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_linecost]"
+                      cachedDataType="i4"
+                      cachedName="v_linecost"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[linecost]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_linecost]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_issue]"
+                      cachedDataType="i4"
+                      cachedName="v_issue"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[issue]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_issue]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_isdistributed]"
+                      cachedDataType="i4"
+                      cachedName="v_isdistributed"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[isdistributed]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_isdistributed]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_linetype]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8"
+                      cachedName="v_linetype"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[linetype]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_linetype]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_loadedcost]"
+                      cachedDataType="i4"
+                      cachedName="v_loadedcost"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[loadedcost]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_loadedcost]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_mktplcitem]"
+                      cachedDataType="i4"
+                      cachedName="v_mktplcitem"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[mktplcitem]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_mktplcitem]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_taxexempt]"
+                      cachedDataType="i4"
+                      cachedName="v_taxexempt"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[taxexempt]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_taxexempt]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_taxed]"
+                      cachedDataType="i4"
+                      cachedName="v_taxed"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[taxed]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_taxed]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_tax1]"
+                      cachedDataType="i4"
+                      cachedName="v_tax1"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[tax1]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_tax1]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_tax2]"
+                      cachedDataType="i4"
+                      cachedName="v_tax2"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[tax2]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_tax2]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_tax3]"
+                      cachedDataType="i4"
+                      cachedName="v_tax3"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[tax3]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_tax3]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_tax4]"
+                      cachedDataType="i4"
+                      cachedName="v_tax4"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[tax4]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_tax4]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_tax5]"
+                      cachedDataType="i4"
+                      cachedName="v_tax5"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[tax5]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_tax5]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_chargestore]"
+                      cachedDataType="i4"
+                      cachedName="v_chargestore"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[chargestore]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_chargestore]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_receiptreqd]"
+                      cachedDataType="i4"
+                      cachedName="v_receiptreqd"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[receiptreqd]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_receiptreqd]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_receiptcomplete]"
+                      cachedDataType="i4"
+                      cachedName="v_receiptcomplete"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[receiptscomplete]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_receiptcomplete]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_revisionnum]"
+                      cachedDataType="i4"
+                      cachedName="v_revisionnum"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[revisionnum]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_revisionnum]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_siteid]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8"
+                      cachedName="v_siteid"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[siteid]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_siteid]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_inspectionrequired]"
+                      cachedDataType="i4"
+                      cachedName="v_inspectionrequired"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[inspectionrequired]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_inspectionrequired]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_orgid]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8"
+                      cachedName="v_orgid"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[orgid]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_orgid]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_tositeid]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8"
+                      cachedName="v_tositeid"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[tositeid]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_tositeid]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_conversion]"
+                      cachedDataType="i4"
+                      cachedName="v_conversion"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[conversion]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_conversion]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_consignment]"
+                      cachedDataType="i4"
+                      cachedName="v_consignment"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[consignment]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_consignment]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[PK_PO_ITEMS]"
+                      cachedDataType="i4"
+                      cachedName="PK_PO_ITEMS"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONID]"
+                      lineageId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].Columns[PK_PO_ITEMS]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[V_MIGRATIONDATE]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="V_MIGRATIONDATE"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[V_MIGRATIONDATE]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_polineid]"
+                      cachedDataType="i8"
+                      cachedName="v_polineid"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[polineid]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_polineid]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[PO_INV_QTY]"
+                      cachedDataType="r8"
+                      cachedName="PO_INV_QTY"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[ste_cswninvqty]"
+                      lineageId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].Columns[PO_INV_QTY]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[PO_PENDING_QTY]"
+                      cachedDataType="r8"
+                      cachedName="PO_PENDING_QTY"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[ste_cswnpendingqty]"
+                      lineageId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].Columns[PO_PENDING_QTY]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_enterby]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="v_enterby"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[enterby]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_enterby]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[v_itemset]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8"
+                      cachedName="v_itemset"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[itemsetid]"
+                      lineageId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output].Columns[v_itemset]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[CATEGORY]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="3"
+                      cachedName="CATEGORY"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[category]"
+                      lineageId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].Columns[CATEGORY]" />
+                    <inputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].Columns[PO_AMD_WHO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="16"
+                      cachedName="PO_AMD_WHO"
+                      externalMetadataColumnId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONAMDWHO]"
+                      lineageId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].Columns[PO_AMD_WHO]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[supervisor]"
+                      codePage="1252"
+                      dataType="str"
+                      length="60"
+                      name="supervisor" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[location]"
+                      codePage="1252"
+                      dataType="str"
+                      length="24"
+                      name="location" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[pcardnum]"
+                      codePage="1252"
+                      dataType="str"
+                      length="60"
+                      name="pcardnum" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[pcardtype]"
+                      codePage="1252"
+                      dataType="str"
+                      length="40"
+                      name="pcardtype" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[pcardexpdate]"
+                      codePage="1252"
+                      dataType="str"
+                      length="14"
+                      name="pcardexpdate" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[pcardverification]"
+                      codePage="1252"
+                      dataType="str"
+                      length="8"
+                      name="pcardverification" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[langcode]"
+                      codePage="1252"
+                      dataType="str"
+                      length="8"
+                      name="langcode" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[hasld]"
+                      dataType="i2"
+                      name="hasld" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[rowstamp]"
+                      dataType="bytes"
+                      length="8"
+                      name="rowstamp" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[classstructureid]"
+                      codePage="1252"
+                      dataType="str"
+                      length="40"
+                      name="classstructureid" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[ponum]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="ponum" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[itemnum]"
+                      codePage="1252"
+                      dataType="str"
+                      length="60"
+                      name="itemnum" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[storeloc]"
+                      codePage="1252"
+                      dataType="str"
+                      length="24"
+                      name="storeloc" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[modelnum]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="modelnum" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[catalogcode]"
+                      codePage="1252"
+                      dataType="str"
+                      length="60"
+                      name="catalogcode" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[orderqty]"
+                      dataType="numeric"
+                      name="orderqty"
+                      precision="15"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[orderunit]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="orderunit" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[unitcost]"
+                      dataType="numeric"
+                      name="unitcost"
+                      precision="10"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[receivedqty]"
+                      dataType="numeric"
+                      name="receivedqty"
+                      precision="15"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[receivedunitcost]"
+                      dataType="numeric"
+                      name="receivedunitcost"
+                      precision="10"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[receivedtotalcost]"
+                      dataType="numeric"
+                      name="receivedtotalcost"
+                      precision="10"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[rejectedqty]"
+                      dataType="numeric"
+                      name="rejectedqty"
+                      precision="15"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[vendeliverydate]"
+                      dataType="dbTimeStamp"
+                      name="vendeliverydate" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[enterdate]"
+                      dataType="dbTimeStamp"
+                      name="enterdate" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[enterby]"
+                      codePage="1252"
+                      dataType="str"
+                      length="60"
+                      name="enterby" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[description]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      name="description" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[pl1]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="pl1" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[pl2]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="pl2" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[pl3]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="pl3" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[pl4]"
+                      dataType="numeric"
+                      name="pl4"
+                      precision="15"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[pl5]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="pl5" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[requestedby]"
+                      codePage="1252"
+                      dataType="str"
+                      length="60"
+                      name="requestedby" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[reqdeliverydate]"
+                      dataType="dbTimeStamp"
+                      name="reqdeliverydate" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[issue]"
+                      dataType="i2"
+                      name="issue" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[polinenum]"
+                      dataType="i4"
+                      name="polinenum" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[taxed]"
+                      dataType="i2"
+                      name="taxed" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[plin1]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="plin1" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[plin2]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="plin2" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[plin3]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="plin3" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[plin4]"
+                      dataType="dbTimeStamp"
+                      name="plin4" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[plin5]"
+                      dataType="numeric"
+                      name="plin5"
+                      precision="15"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[assetnum]"
+                      codePage="1252"
+                      dataType="str"
+                      length="24"
+                      name="assetnum" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[chargestore]"
+                      dataType="i2"
+                      name="chargestore" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[gldebitacct]"
+                      codePage="1252"
+                      dataType="str"
+                      length="220"
+                      name="gldebitacct" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[glcreditacct]"
+                      codePage="1252"
+                      dataType="str"
+                      length="220"
+                      name="glcreditacct" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[linecost]"
+                      dataType="numeric"
+                      name="linecost"
+                      precision="10"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[tax1code]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="tax1code" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[tax1]"
+                      dataType="numeric"
+                      name="tax1"
+                      precision="10"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[tax2code]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="tax2code" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[tax2]"
+                      dataType="numeric"
+                      name="tax2"
+                      precision="10"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[tax3code]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="tax3code" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[tax3]"
+                      dataType="numeric"
+                      name="tax3"
+                      precision="10"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[receiptreqd]"
+                      dataType="i2"
+                      name="receiptreqd" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[manufacturer]"
+                      codePage="1252"
+                      dataType="str"
+                      length="24"
+                      name="manufacturer" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[tax4code]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="tax4code" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[tax4]"
+                      dataType="numeric"
+                      name="tax4"
+                      precision="10"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[tax5code]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="tax5code" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[tax5]"
+                      dataType="numeric"
+                      name="tax5"
+                      precision="10"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[category]"
+                      codePage="1252"
+                      dataType="str"
+                      length="32"
+                      name="category" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[remark]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="remark" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[loadedcost]"
+                      dataType="numeric"
+                      name="loadedcost"
+                      precision="10"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[prorateservice]"
+                      dataType="i2"
+                      name="prorateservice" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[receiptscomplete]"
+                      dataType="i2"
+                      name="receiptscomplete" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[inspectionrequired]"
+                      dataType="i2"
+                      name="inspectionrequired" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[proratecost]"
+                      dataType="numeric"
+                      name="proratecost"
+                      precision="10"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[polineid]"
+                      dataType="i8"
+                      name="polineid" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[linecost2]"
+                      dataType="numeric"
+                      name="linecost2"
+                      precision="10"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[mrnum]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="mrnum" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[mrlinenum]"
+                      dataType="i4"
+                      name="mrlinenum" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[pl6]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="pl6" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[pl7]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="pl7" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[pl8]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="pl8" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[pl9]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="pl9" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[pl10]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="pl10" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[plin6]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="plin6" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[plin7]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="plin7" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[plin8]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="plin8" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[plin9]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="plin9" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[polaln1]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="polaln1" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[polaln2]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="polaln2" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[polaln3]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="polaln3" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[polaln4]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="polaln4" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[polaln5]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="polaln5" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[fincntrlid]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="fincntrlid" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[vendorpackcode]"
+                      codePage="1252"
+                      dataType="str"
+                      length="24"
+                      name="vendorpackcode" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[vendorpackquantity]"
+                      codePage="1252"
+                      dataType="str"
+                      length="24"
+                      name="vendorpackquantity" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[vendorwarehouse]"
+                      codePage="1252"
+                      dataType="str"
+                      length="24"
+                      name="vendorwarehouse" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[siteid]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="siteid" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[orgid]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="orgid" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[isdistributed]"
+                      dataType="i2"
+                      name="isdistributed" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[refwo]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="refwo" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[enteredastask]"
+                      dataType="i2"
+                      name="enteredastask" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[linetype]"
+                      codePage="1252"
+                      dataType="str"
+                      length="30"
+                      name="linetype" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[itemsetid]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="itemsetid" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[conditioncode]"
+                      codePage="1252"
+                      dataType="str"
+                      length="60"
+                      name="conditioncode" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[contractrefnum]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="contractrefnum" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[commoditygroup]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="commoditygroup" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[commodity]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="commodity" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[contractrefid]"
+                      dataType="i8"
+                      name="contractrefid" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[contractrefrev]"
+                      dataType="i4"
+                      name="contractrefrev" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[scheduleid]"
+                      dataType="i8"
+                      name="scheduleid" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[contreflineid]"
+                      dataType="i8"
+                      name="contreflineid" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[tositeid]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="tositeid" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[shipto]"
+                      codePage="1252"
+                      dataType="str"
+                      length="60"
+                      name="shipto" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[shiptoattn]"
+                      codePage="1252"
+                      dataType="str"
+                      length="60"
+                      name="shiptoattn" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[conversion]"
+                      dataType="numeric"
+                      name="conversion"
+                      precision="15"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[mktplcitem]"
+                      dataType="i2"
+                      name="mktplcitem" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[revisionnum]"
+                      dataType="i4"
+                      name="revisionnum" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[revstatus]"
+                      codePage="1252"
+                      dataType="str"
+                      length="7"
+                      name="revstatus" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[taxexempt]"
+                      dataType="i2"
+                      name="taxexempt" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[receipttolerance]"
+                      dataType="numeric"
+                      name="receipttolerance"
+                      precision="15"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[receipttolamt]"
+                      dataType="r8"
+                      name="receipttolamt" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[receipttolqty]"
+                      dataType="r8"
+                      name="receipttolqty" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[restype]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="restype" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[consignment]"
+                      dataType="i2"
+                      name="consignment" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[linecost1]"
+                      dataType="numeric"
+                      name="linecost1"
+                      precision="10"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[loadedcost1]"
+                      dataType="numeric"
+                      name="loadedcost1"
+                      precision="10"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[plustaccomp]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="plustaccomp" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[plustfailure]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="plustfailure" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[plustreason]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="plustreason" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[plustcomp]"
+                      codePage="1252"
+                      dataType="str"
+                      length="30"
+                      name="plustcomp" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[plustpos]"
+                      codePage="1252"
+                      dataType="str"
+                      length="30"
+                      name="plustpos" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[plustwarrvalue]"
+                      dataType="numeric"
+                      name="plustwarrvalue"
+                      precision="10"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[plusthaswarranty]"
+                      codePage="1252"
+                      dataType="str"
+                      length="4"
+                      name="plusthaswarranty" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[plustcontractnum]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="plustcontractnum" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONID]"
+                      dataType="i8"
+                      name="STE_MIGRATIONID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
+                      dataType="dbTimeStamp"
+                      name="STE_MIGRATIONDATE" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[ste_cswnpendingqty]"
+                      dataType="numeric"
+                      name="ste_cswnpendingqty"
+                      precision="15"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[ste_cswninvqty]"
+                      dataType="numeric"
+                      name="ste_cswninvqty"
+                      precision="15"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONAMDWHO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="STE_MIGRATIONAMDWHO" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - POLine\OLE DB Destination 1.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF - POLine\OLE DB Destination 1.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF - POLine\OLE DB Destination 1.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF - POLine\OLE DB Destination 1.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
                       name="ErrorColumn"
                       specialFlags="2" />
                   </outputColumns>
@@ -5788,7 +7406,7 @@ LEFT JOIN (
 	, si.S_ITEM_REF 
 	--, si.S_ITEM_SUPL
 	--, si.S_NSITEM_SUPL
-	--, rmk.PO_TXT
+	, UPPER(lk.USER_ID) AS AMD_USER_ID
 FROM COSWIN.PO_ITEMS pit
 JOIN COSWIN.PORDER_ p ON p.PK_PORDER_ = pit.S_PO_ITEM 
 LEFT JOIN COSWIN.ITEM_ it ON it.PK_ITEM_ = pit.S_ITEM_PO 
@@ -5798,7 +7416,21 @@ LEFT JOIN COSWIN.SUPL_ITEMS si ON si.S_SUPL_ITEM = s.PK_SUPPLIER_
 	AND ((pit.S_ITEM_PO IS NOT NULL AND pit.S_ITEM_PO = si.S_ITEM_SUPL) 
 		OR (pit.S_NSITEM_PO IS NOT NULL AND pit.S_NSITEM_PO = si.S_NSITEM_SUPL))
 LEFT JOIN COSWIN.PO_RMK rmk ON rmk.S_PO_NS_DESC = pit.PK_PO_ITEMS
-WHERE (CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_CD ELSE it.ITEM_CD END) IS NOT NULL</property>
+LEFT JOIN (
+	SELECT po.USR_NAME, wu.USER_ID, wu.USR_SIGNATURE
+		, ROW_NUMBER() OVER (PARTITION BY po.USR_NAME ORDER BY CASE WHEN trim(wu.USR_SIGNATURE) = TRIM(po.USR_NAME) THEN 0 ELSE 1 END, po.USR_NAME) RN 
+	FROM (
+		SELECT DISTINCT po.PO_AMD_WHO AS USR_NAME FROM coswin.PORDER_ po WHERE po.PO_AMD_WHO IS NOT NULL
+	) po 
+	LEFT JOIN coswin.WIN_USERS wu on UPPER(trim(wu.USR_SIGNATURE)) = UPPER(TRIM(po.USR_NAME)) 
+		OR UPPER(TRIM(wu.USER_ID)) = UPPER(TRIM(po.USR_NAME))
+		OR UPPER(TRIM(wu.USR_SIGNATURE)) LIKE concat(UPPER(TRIM(po.USR_NAME)),'%')
+	ORDER BY CASE WHEN wu.USER_ID IS NOT NULL THEN 0 ELSE 1 END, TRIM(po.USR_NAME) 
+		, CASE WHEN trim(wu.USR_SIGNATURE) = TRIM(po.USR_NAME) THEN 0 ELSE 1 END 
+		, TRIM(po.USR_NAME) 
+) lk ON lk.USR_NAME = p.PO_AMD_WHO AND lk.RN=1
+WHERE (CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_CD ELSE it.ITEM_CD END) IS NOT NULL
+;</property>
                 <property
                   dataType="System.Int32"
                   description="Specify the number of rows fetched per batch."
@@ -5980,6 +7612,14 @@ WHERE (CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_CD ELSE it.ITEM_CD END)
                       length="3"
                       lineageId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].Columns[CATEGORY]"
                       name="CATEGORY" />
+                    <outputColumn
+                      refId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].Columns[AMD_USER_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[AMD_USER_ID]"
+                      length="16"
+                      lineageId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].Columns[AMD_USER_ID]"
+                      name="AMD_USER_ID" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -6083,6 +7723,12 @@ WHERE (CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_CD ELSE it.ITEM_CD END)
                       dataType="str"
                       length="3"
                       name="CATEGORY" />
+                    <externalMetadataColumn
+                      refId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[AMD_USER_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="AMD_USER_ID" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -6231,6 +7877,14 @@ WHERE (CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_CD ELSE it.ITEM_CD END)
                       lineageId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[CATEGORY]"
                       name="CATEGORY" />
                     <outputColumn
+                      refId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[AMD_USER_ID]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[AMD_USER_ID]"
+                      length="16"
+                      lineageId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[AMD_USER_ID]"
+                      name="AMD_USER_ID" />
+                    <outputColumn
                       refId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
                       lineageId="Package\DF - POLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
@@ -6250,10 +7904,35 @@ WHERE (CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_CD ELSE it.ITEM_CD END)
           </components>
           <paths>
             <path
+              refId="Package\DF - POLine.Paths[AMD_USER_ID FOUND]"
+              endId="Package\DF - POLine\Derived Column 1.Inputs[Derived Column Input]"
+              name="AMD_USER_ID FOUND"
+              startId="Package\DF - POLine\Conditional Split.Outputs[AMD_USER_ID FOUND]" />
+            <path
+              refId="Package\DF - POLine.Paths[AMD_USER_ID NOT FOUND]"
+              endId="Package\DF - POLine\Lookup.Inputs[Lookup Input]"
+              name="AMD_USER_ID NOT FOUND"
+              startId="Package\DF - POLine\Conditional Split.Outputs[AMD_USER_ID NOT FOUND]" />
+            <path
               refId="Package\DF - POLine.Paths[Derived Column Output]"
-              endId="Package\DF - POLine\OLE DB Destination.Inputs[OLE DB Destination Input]"
+              endId="Package\DF - POLine\Conditional Split.Inputs[Conditional Split Input]"
               name="Derived Column Output"
               startId="Package\DF - POLine\Derived Column.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - POLine.Paths[Derived Column Output1]"
+              endId="Package\DF - POLine\OLE DB Destination.Inputs[OLE DB Destination Input]"
+              name="Derived Column Output"
+              startId="Package\DF - POLine\Derived Column 1.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - POLine.Paths[Derived Column Output2]"
+              endId="Package\DF - POLine\OLE DB Destination 1.Inputs[OLE DB Destination Input]"
+              name="Derived Column Output"
+              startId="Package\DF - POLine\Derived Column 1 1.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - POLine.Paths[Lookup Match Output]"
+              endId="Package\DF - POLine\Derived Column 1 1.Inputs[Derived Column Input]"
+              name="Lookup Match Output"
+              startId="Package\DF - POLine\Lookup.Outputs[Lookup Match Output]" />
             <path
               refId="Package\DF - POLine.Paths[Oracle Source Output]"
               endId="Package\DF - POLine\Derived Column.Inputs[Derived Column Input]"
@@ -6282,7 +7961,8 @@ WHERE (CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_CD ELSE it.ITEM_CD END)
               componentClassID="Microsoft.Cache"
               contactInfo="Cache Transform;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
               description="Writes data to a cache (a .caw file) with the Cache Connection Manager. Reuse the cache between multiple Lookup transforms to reduce database load. Share the cache to reduce memory usage. Note: cache data is stored in clear text and not recommended for sensitive data."
-              name="Cache Transform">
+              name="Cache Transform"
+              version="1">
               <properties>
                 <property
                   dataType="System.Boolean"
@@ -6938,6 +8618,10 @@ WHERE (CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_CD ELSE it.ITEM_CD END)
           Id="Package\DF - POLine"
           TopLeft="1192.25,292.5" />
         <NodeLayout
+          Size="155,42"
+          Id="Package\DF - User Lookup Cache"
+          TopLeft="690,299" />
+        <NodeLayout
           Size="173,42"
           Id="Package\End ETL (Success)"
           TopLeft="55.5000000000002,544.285714285714" />
@@ -7067,6 +8751,40 @@ WHERE (CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_CD ELSE it.ITEM_CD END)
                     Point3="53.2500000000001,180.5" />
                   <mssgle:LineSegment
                     End="91.0000000000001,180.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="962,232">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-194.5,67"
+              Start="0,0"
+              End="-194.5,59.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,29.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,29.5"
+                    Point2="0,33.5"
+                    Point3="-4,33.5" />
+                  <mssgle:LineSegment
+                    End="-190.5,33.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-190.5,33.5"
+                    Point2="-194.5,33.5"
+                    Point3="-194.5,37.5" />
+                  <mssgle:LineSegment
+                    End="-194.5,59.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -7255,44 +8973,6 @@ WHERE (CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_CD ELSE it.ITEM_CD END)
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="155,42"
-          Id="Package\DF - User Lookup Cache"
-          TopLeft="690,299" />
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 1]"
-          TopLeft="962,232">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-194.5,67"
-              Start="0,0"
-              End="-194.5,59.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,29.5" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,29.5"
-                    Point2="0,33.5"
-                    Point3="-4,33.5" />
-                  <mssgle:LineSegment
-                    End="-190.5,33.5" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-190.5,33.5"
-                    Point2="-194.5,33.5"
-                    Point3="-194.5,37.5" />
-                  <mssgle:LineSegment
-                    End="-194.5,59.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 8]"
           TopLeft="845,316.75">
@@ -7328,21 +9008,25 @@ WHERE (CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_CD ELSE it.ITEM_CD END)
           Id="Package\DF - PO\OLE DB Destination"
           TopLeft="11.5,315.5" />
         <NodeLayout
-          Size="158,42"
-          Id="Package\DF - PO\Derived Column"
-          TopLeft="19,87" />
+          Size="177,42"
+          Id="Package\DF - PO\OLE DB Destination 1"
+          TopLeft="276.5,312.5" />
         <NodeLayout
           Size="149,42"
           Id="Package\DF - PO\Oracle Source"
           TopLeft="19.5,5.5" />
         <NodeLayout
+          Size="115,42"
+          Id="Package\DF - PO\Lookup"
+          TopLeft="315,185" />
+        <NodeLayout
           Size="159,42"
           Id="Package\DF - PO\Conditional Split"
           TopLeft="25,180" />
         <NodeLayout
-          Size="115,42"
-          Id="Package\DF - PO\Lookup"
-          TopLeft="315,185" />
+          Size="158,42"
+          Id="Package\DF - PO\Derived Column"
+          TopLeft="19,87" />
         <EdgeLayout
           Id="Package\DF - PO.Paths[REQ_BY_ID NOT FOUND]"
           TopLeft="184,203.5">
@@ -7365,50 +9049,6 @@ WHERE (CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_CD ELSE it.ITEM_CD END)
             <mssgm:EdgeLabel
               BoundingBox="6.2087890625,5,111.082421875,11.3359375"
               RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - PO.Paths[Oracle Source Output]"
-          TopLeft="96,47.5">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,39.5"
-              Start="0,0"
-              End="0,32">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,32" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - PO.Paths[Derived Column Output]"
-          TopLeft="101.25,129">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,51"
-              Start="0,0"
-              End="0,43.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,43.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -7435,10 +9075,28 @@ WHERE (CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_CD ELSE it.ITEM_CD END)
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="177,42"
-          Id="Package\DF - PO\OLE DB Destination 1"
-          TopLeft="276.5,312.5" />
+        <EdgeLayout
+          Id="Package\DF - PO.Paths[Oracle Source Output]"
+          TopLeft="96,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,39.5"
+              Start="0,0"
+              End="0,32">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,32" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - PO.Paths[Lookup Match Output]"
           TopLeft="368.75,227">
@@ -7463,11 +9121,46 @@ WHERE (CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_CD ELSE it.ITEM_CD END)
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - PO.Paths[Derived Column Output]"
+          TopLeft="101.25,129">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,51"
+              Start="0,0"
+              End="0,43.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,43.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
     design-time-name="Package\DF - PO\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - PO\OLE DB Destination 1">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -7492,23 +9185,53 @@ WHERE (CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_CD ELSE it.ITEM_CD END)
       </Property>
     </Properties>
   </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - PO\Lookup">
+    <Properties>
+      <Property>
+        <Name>OverwriteParamsSQLProp</Name>
+        <Value
+          type="q2:string">false</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
   <TaskHost
     design-time-name="Package\DF - POLine">
     <LayoutInfo>
       <GraphLayout
-        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        <NodeLayout
+          Size="149,42"
+          Id="Package\DF - POLine\Oracle Source"
+          TopLeft="19.5,5.5" />
         <NodeLayout
           Size="177,42"
           Id="Package\DF - POLine\OLE DB Destination"
-          TopLeft="12.5,174.5" />
+          TopLeft="23.4090909090909,334.5" />
+        <NodeLayout
+          Size="176,42"
+          Id="Package\DF - POLine\Derived Column 1 1"
+          TopLeft="297,251.954545454546" />
+        <NodeLayout
+          Size="177,42"
+          Id="Package\DF - POLine\OLE DB Destination 1"
+          TopLeft="293.136363636364,333.727272727273" />
+        <NodeLayout
+          Size="115,42"
+          Id="Package\DF - POLine\Lookup"
+          TopLeft="320.681818181818,174.227272727273" />
+        <NodeLayout
+          Size="159,42"
+          Id="Package\DF - POLine\Conditional Split"
+          TopLeft="30.6818181818182,169.227272727273" />
         <NodeLayout
           Size="158,42"
           Id="Package\DF - POLine\Derived Column"
           TopLeft="181,79" />
         <NodeLayout
-          Size="149,42"
-          Id="Package\DF - POLine\Oracle Source"
-          TopLeft="19.5,5.5" />
+          Size="167,42"
+          Id="Package\DF - POLine\Derived Column 1"
+          TopLeft="27.2727272727273,252.727272727273" />
         <EdgeLayout
           Id="Package\DF - POLine.Paths[Oracle Source Output]"
           TopLeft="94,47.5">
@@ -7544,31 +9267,43 @@ WHERE (CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_CD ELSE it.ITEM_CD END)
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - POLine.Paths[Derived Column Output]"
-          TopLeft="260,121">
+          Id="Package\DF - POLine.Paths[Lookup Match Output]"
+          TopLeft="381.590909090909,216.227272727273">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-159,53.5"
+              EndConnector="0,35.7272727272728"
               Start="0,0"
-              End="-159,46">
+              End="0,28.2272727272728">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,22.75" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,22.75"
-                    Point2="0,26.75"
-                    Point3="-4,26.75" />
+                    End="0,28.2272727272728" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-48.19138671875,8.3089488636364,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - POLine.Paths[Derived Column Output2]"
+          TopLeft="383.318181818182,293.954545454546">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,39.7727272727274"
+              Start="0,0"
+              End="0,32.2727272727274">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
                   <mssgle:LineSegment
-                    End="-155,26.75" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-155,26.75"
-                    Point2="-159,26.75"
-                    Point3="-159,30.75" />
-                  <mssgle:LineSegment
-                    End="-159,46" />
+                    End="0,32.2727272727274" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -7577,9 +9312,121 @@ WHERE (CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_CD ELSE it.ITEM_CD END)
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - POLine.Paths[Derived Column Output1]"
+          TopLeft="111.340909090909,294.727272727273">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,39.7727272727274"
+              Start="0,0"
+              End="0,32.2727272727274">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,32.2727272727274" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - POLine.Paths[Derived Column Output]"
+          TopLeft="260,121">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-149.818181818182,48.2272727272727"
+              Start="0,0"
+              End="-149.818181818182,40.7272727272727">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,20.1136363636364" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,20.1136363636364"
+                    Point2="0,24.1136363636364"
+                    Point3="-4,24.1136363636364" />
+                  <mssgle:LineSegment
+                    End="-145.818181818182,24.1136363636364" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-145.818181818182,24.1136363636364"
+                    Point2="-149.818181818182,24.1136363636364"
+                    Point3="-149.818181818182,28.1136363636364" />
+                  <mssgle:LineSegment
+                    End="-149.818181818182,40.7272727272727" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - POLine.Paths[AMD_USER_ID NOT FOUND]"
+          TopLeft="189.681818181818,192.727272727273">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="131,0"
+              Start="0,0"
+              End="123.5,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="123.5,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-1.12927734375,5,125.7585546875,10.88671875"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - POLine.Paths[AMD_USER_ID FOUND]"
+          TopLeft="110.477272727273,211.227272727273">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,41.4999999999999"
+              Start="0,0"
+              End="0,33.9999999999999">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,33.9999999999999" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-51.51927734375,11.556640625,103.0385546875,10.88671875"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - POLine\Oracle Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
   <PipelineComponentMetadata
     design-time-name="Package\DF - POLine\OLE DB Destination">
     <Properties>
@@ -7594,10 +9441,25 @@ WHERE (CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_CD ELSE it.ITEM_CD END)
     </Properties>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
-    design-time-name="Package\DF - POLine\Oracle Source">
+    design-time-name="Package\DF - POLine\OLE DB Destination 1">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - POLine\Lookup">
+    <Properties>
+      <Property>
+        <Name>OverwriteParamsSQLProp</Name>
+        <Value
+          type="q2:string">false</Value>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
@@ -7639,28 +9501,5 @@ WHERE (CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_CD ELSE it.ITEM_CD END)
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
-  <PipelineComponentMetadata
-    design-time-name="Package\DF - PO\Lookup">
-    <Properties>
-      <Property>
-        <Name>OverwriteParamsSQLProp</Name>
-        <Value
-          type="q2:boolean">false</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\DF - PO\OLE DB Destination 1">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
 </Objects>]]></DTS:DesignTimeProperties>
 </DTS:Executable>
