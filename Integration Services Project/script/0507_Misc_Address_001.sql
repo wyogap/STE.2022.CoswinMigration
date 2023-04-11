@@ -1,8 +1,9 @@
 /****** Object:  Table [dbo].[ste_migration_params]    Script Date: 25/01/2023 17:46:34 ******/
-
---IF COLUMNPROPERTY(OBJECT_ID('dbo.asset'), 'ste_inchrgref', 'ColumnId') is null
---ALTER TABLE asset
---ADD ste_inchrgref varchar(20) default null;
+-- Add custom columns
+-- ------------------
+IF COLUMNPROPERTY(OBJECT_ID('dbo.address'), 'STE_MIGRATIONVALUE', 'ColumnId') is null
+ALTER TABLE [address]
+ADD STE_MIGRATIONVALUE image default null;
 
 -- update migration params
 -- -----------------------
@@ -15,9 +16,9 @@ INSERT INTO [dbo].[ste_migration_params]
            ,[modified_on]
            ,[modified_by])
      VALUES
-           ('0101_Asset_Asset'
+           ('0507_Misc_Address'
            ,'version'
-           ,'5'
+           ,'2'
            ,getdate()
            ,'ssis'
            ,NULL

@@ -6,6 +6,10 @@ ALTER TABLE longdescription
 ADD STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
 
+IF COLUMNPROPERTY(OBJECT_ID('dbo.longdescription'), 'STE_MIGRATIONVALUE', 'ColumnId') is null
+ALTER TABLE longdescription
+ADD STE_MIGRATIONVALUE IMAGE default null;
+
 -- Create pre-task
 -- ---------------
 SET ANSI_NULLS ON

@@ -203,6 +203,10 @@ ADD
 	ste_cswnbarcode	varchar(16)	 default null,
 	ste_cswncc	varchar(16)	 default null;
 	
-IF COLUMNPROPERTY(OBJECT_ID('dbo.qualification'), 'STE_CSWNSKILLSKILL', 'ColumnId') is null
+IF COLUMNPROPERTY(OBJECT_ID('dbo.qualification'), 'ste_cswnskillskill', 'ColumnId') is null
 ALTER TABLE qualification
 ADD ste_cswnskillskill varchar(10) default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.asset'), 'ste_inchrgref', 'ColumnId') is null
+ALTER TABLE asset
+ADD ste_inchrgref varchar(20) default null;

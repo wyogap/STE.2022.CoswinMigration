@@ -6,6 +6,10 @@ ALTER TABLE [address]
 ADD STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
 
+IF COLUMNPROPERTY(OBJECT_ID('dbo.address'), 'STE_MIGRATIONSOURCE', 'ColumnId') is null
+ALTER TABLE [address]
+ADD STE_MIGRATIONVALUE image default null;
+
 -- Create pre-task
 -- ---------------
 SET ANSI_NULLS ON
