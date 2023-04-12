@@ -10,6 +10,10 @@ IF COLUMNPROPERTY(OBJECT_ID('dbo.longdescription'), 'STE_MIGRATIONVALUE', 'Colum
 ALTER TABLE longdescription
 ADD STE_MIGRATIONVALUE IMAGE default null;
 
+IF COLUMNPROPERTY(OBJECT_ID('dbo.longdescription'), 'STE_MIGRATIONSOURCE', 'ColumnId') is null
+ALTER TABLE longdescription
+ADD STE_MIGRATIONSOURCE VARCHAR(20) default null;
+
 -- Create pre-task
 -- ---------------
 SET ANSI_NULLS ON
