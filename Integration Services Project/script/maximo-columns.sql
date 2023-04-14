@@ -213,4 +213,4 @@ ADD ste_inchrgref varchar(20) default null;
 
 --IF COLUMNPROPERTY(OBJECT_ID('dbo.workorder'), 'ste_cswnwoid', 'ColumnId') IS NULL
 --ALTER TABLE [workorder]
---ADD ste_cswnwoid varchar(16) default null;
+--ADD ste_cswnwoid varchar(10) default nul

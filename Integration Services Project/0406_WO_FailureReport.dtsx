@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="0406_WO_FailureReport"
   DTS:PackageType="5"
-  DTS:VersionBuild="104"
-  DTS:VersionGUID="{A5E7CEB4-2624-437A-A0B2-5098F3D022F8}"
+  DTS:VersionBuild="108"
+  DTS:VersionGUID="{C325A9F1-A7DC-4E81-B411-1260637F1FE2}"
   DTS:VersionMajor="2">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -32,7 +32,7 @@
           <OraConnectionString>SERVER=103.149.177.117:1521/COSWINDB;USERNAME=coswin;WINAUTH=0;</OraConnectionString>
           <OraPassword
             Sensitive="1"
-            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAADwwZz+yAQom4IS24iBOJ4jkptKs9o1ltiJQy+wZonrpwAAAAAOgAAAAAIAACAAAADxE3Vd4/BxTFDow1S90/KSh5h0cXyuZZcUWYlvHm7P7iAAAACDEfjYhEXm2ZhnNmFhF3CIS6eYHbRGjVtmm8vWk0L3wUAAAABk4MBZyQ17hKm3n6VrKjCGprVF5QspYaKPcBWpfq3FttsxKljv7nBORaOiOz/6+mCZSGjPfZ6AKmZ8N4OJPh+J</OraPassword>
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAADVNkfZT7xEZ9uam8lHxHt8Km0+sPwRleye1eokXtMT4wAAAAAOgAAAAAIAACAAAADlFuHyChIcfI26bXh4kHoYyFTdzRHxBoEJVTvyxquvVyAAAACvGozQmejT1t3uXuaHITgWHFMQHe6DFiyEF2EBxBY9tEAAAABAS2sxjG93OdgHroFunaKLOB4ZZpXt5SuRCmVEzNXdsKJAEtnGpWF3efabnY3keyZ64c/VFZll07Bzn6qupETZ</OraPassword>
           <OraRetain>False</OraRetain>
           <OraInitialCatalog></OraInitialCatalog>
           <OraServerName>103.149.177.117:1521/COSWINDB</OraServerName>
@@ -61,7 +61,7 @@
           <DTS:Password
             DTS:Name="Password"
             Sensitive="1"
-            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAAOnCBWxKdPDNOXPVoGoJuRthdwuox18tawH2zMeVp7KAAAAAAOgAAAAAIAACAAAAAHeMnfrtfqUkbfuXXxhzRKLnKTCm/ouUfRckPP8Lx5KSAAAAAIttHnMUn9F8ifjjmbewu+w/XcgWzYH+cRspwXUkkn20AAAAAxkZhuWD3qG++pOBDAmA2RrJ5e5/DrRiQE3cIT+RQzQDFLPk4ea7uj+avIibh9aPBdKHBx6ah4uZm5yNidtXU2</DTS:Password>
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAABAGR6LiX18n87KFQUQOWDyk9Zl4IlSReFZhGiNQoQ5RQAAAAAOgAAAAAIAACAAAAD0y2TUEmgUYnIAY69ZeTVptyMgjjMA7Q4cRkjxXFoBdyAAAAAJu5w0SOoIlku3acA+1K0m7p1qIEBvecsm9I25eSUSPUAAAAASVfDkPcDwUpH3vuCUtMIpxDIqzDPWK37dxPjr8mA0FVjHcfGDjEKFR1GouWwU62Sp+75nf3e6mtAL07stq2Vm</DTS:Password>
         </DTS:ConnectionManager>
       </DTS:ObjectData>
     </DTS:ConnectionManager>
@@ -1164,18 +1164,6 @@ where [refTable].[ste_cswnwoid] = ?</property>
                   UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">-- failure report
 SELECT 
 	PK_EQP_DEFR
---	, ed."TIMESTAMP"
---	, EQ_DR_08
---	, EQ_DR_09
---	, CT_DR_11
---	, CT_DR_12
---	, CT_DR_13
---	, CT_DR_14
---	, WO_DR_59
---	, IDX_WO_DR_59
-	--, DR_SYCD
-	--, DR_DFCD
-	--, DR_CACD
 	, DR_ACCD
 	, DR_REP_DT
 	, DR_REP_TM
@@ -1183,22 +1171,24 @@ SELECT
 	, DR_REPWK
 	, DR_REPYR
 	, DR_DURT
-	, DR_WOID
 	, DR_REP_ML
 	, DR_TOT_COST
 	, DR_JOBREQUEST
 	, et.PK_EQP_TOPO 
 	, et.EQ_EQCD 
 	, et.EQ_LEVL 
-	, wo.WO_WOID 
-	, wo.WO_EQCD 
+	, ed.WO_DR_59 
+	, ed.DR_WOID
+	, COALESCE(wo1.WO_WOID, wo2.WO_WOID) AS WO_WOID
+	, COALESCE(wo1.WO_EQCD, wo2.WO_EQCD) AS WO_EQCD
 	, jr.JR_REF_NO
 	, jr.JR_EQCD 
 FROM COSWIN.EQP_DEFR ed
 JOIN COSWIN.EQP_TOPO et ON et.PK_EQP_TOPO = ed.EQ_DR_08 
-LEFT JOIN COSWIN.WIP_WO wo ON wo.PK_WIP_WO = ed.WO_DR_59
+LEFT JOIN COSWIN.WIP_WO wo1 ON wo1.PK_WIP_WO = ed.WO_DR_59
+LEFT JOIN COSWIN.WIP_WO wo2 ON wo2.WO_WOID = ed.DR_WOID
 -- THIS ESSENTIALLY JR_WO_REF
-LEFT JOIN COSWIN.EQP_JOBR jr ON jr.JR_REF_NO = wo.WO_REQNO 
+LEFT JOIN COSWIN.EQP_JOBR jr ON jr.JR_REF_NO = coalesce(wo1.WO_REQNO, wo2.WO_REQNO) 
 WHERE ed.DR_ACCD IS NOT null</property>
                 <property
                   dataType="System.Int32"
@@ -1371,14 +1361,19 @@ WHERE ed.DR_ACCD IS NOT null</property>
                       externalMetadataColumnId="Package\DF - ACTION\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EQ_LEVL]"
                       lineageId="Package\DF - ACTION\Oracle Source.Outputs[Oracle Source Output].Columns[EQ_LEVL]"
                       name="EQ_LEVL" />
+                    <outputColumn
+                      refId="Package\DF - ACTION\Oracle Source.Outputs[Oracle Source Output].Columns[WO_DR_59]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - ACTION\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WO_DR_59]"
+                      lineageId="Package\DF - ACTION\Oracle Source.Outputs[Oracle Source Output].Columns[WO_DR_59]"
+                      name="WO_DR_59" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
                     <externalMetadataColumn
                       refId="Package\DF - ACTION\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WO_WOID]"
-                      dataType="numeric"
-                      name="WO_WOID"
-                      precision="10" />
+                      dataType="r8"
+                      name="WO_WOID" />
                     <externalMetadataColumn
                       refId="Package\DF - ACTION\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WO_EQCD]"
                       codePage="1252"
@@ -1466,6 +1461,10 @@ WHERE ed.DR_ACCD IS NOT null</property>
                       refId="Package\DF - ACTION\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EQ_LEVL]"
                       dataType="i4"
                       name="EQ_LEVL" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ACTION\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WO_DR_59]"
+                      dataType="i4"
+                      name="WO_DR_59" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -1475,11 +1474,10 @@ WHERE ed.DR_ACCD IS NOT null</property>
                   <outputColumns>
                     <outputColumn
                       refId="Package\DF - ACTION\Oracle Source.Outputs[Oracle Source Error Output].Columns[WO_WOID]"
-                      dataType="numeric"
+                      dataType="r8"
                       externalMetadataColumnId="Package\DF - ACTION\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WO_WOID]"
                       lineageId="Package\DF - ACTION\Oracle Source.Outputs[Oracle Source Error Output].Columns[WO_WOID]"
-                      name="WO_WOID"
-                      precision="10" />
+                      name="WO_WOID" />
                     <outputColumn
                       refId="Package\DF - ACTION\Oracle Source.Outputs[Oracle Source Error Output].Columns[WO_EQCD]"
                       codePage="1252"
@@ -1603,6 +1601,12 @@ WHERE ed.DR_ACCD IS NOT null</property>
                       externalMetadataColumnId="Package\DF - ACTION\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EQ_LEVL]"
                       lineageId="Package\DF - ACTION\Oracle Source.Outputs[Oracle Source Error Output].Columns[EQ_LEVL]"
                       name="EQ_LEVL" />
+                    <outputColumn
+                      refId="Package\DF - ACTION\Oracle Source.Outputs[Oracle Source Error Output].Columns[WO_DR_59]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - ACTION\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WO_DR_59]"
+                      lineageId="Package\DF - ACTION\Oracle Source.Outputs[Oracle Source Error Output].Columns[WO_DR_59]"
+                      name="WO_DR_59" />
                     <outputColumn
                       refId="Package\DF - ACTION\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -3324,17 +3328,6 @@ where [refTable].[ste_cswnwoid] = ?</property>
                   UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">-- failure report
 SELECT 
 	PK_EQP_DEFR
---	, ed."TIMESTAMP"
---	, EQ_DR_08
---	, EQ_DR_09
---	, CT_DR_11
---	, CT_DR_12
---	, CT_DR_13
---	, CT_DR_14
---	, WO_DR_59
---	, IDX_WO_DR_59
-	--, DR_SYCD
-	--, DR_DFCD
 	, DR_CACD
 	--, DR_ACCD
 	, DR_REP_DT
@@ -3343,22 +3336,24 @@ SELECT
 	, DR_REPWK
 	, DR_REPYR
 	, DR_DURT
-	, DR_WOID
 	, DR_REP_ML
 	, DR_TOT_COST
 	, DR_JOBREQUEST
 	, et.PK_EQP_TOPO 
 	, et.EQ_EQCD 
 	, et.EQ_LEVL 
-	, wo.WO_WOID 
-	, wo.WO_EQCD 
+	, ed.WO_DR_59 
+	, ed.DR_WOID
+	, COALESCE(wo1.WO_WOID, wo2.WO_WOID) AS WO_WOID
+	, COALESCE(wo1.WO_EQCD, wo2.WO_EQCD) AS WO_EQCD
 	, jr.JR_REF_NO
 	, jr.JR_EQCD 
 FROM COSWIN.EQP_DEFR ed
 JOIN COSWIN.EQP_TOPO et ON et.PK_EQP_TOPO = ed.EQ_DR_08 
-LEFT JOIN COSWIN.WIP_WO wo ON wo.PK_WIP_WO = ed.WO_DR_59
+LEFT JOIN COSWIN.WIP_WO wo1 ON wo1.PK_WIP_WO = ed.WO_DR_59
+LEFT JOIN COSWIN.WIP_WO wo2 ON wo2.WO_WOID = ed.DR_WOID
 -- THIS ESSENTIALLY JR_WO_REF
-LEFT JOIN COSWIN.EQP_JOBR jr ON jr.JR_REF_NO = wo.WO_REQNO 
+LEFT JOIN COSWIN.EQP_JOBR jr ON jr.JR_REF_NO = coalesce(wo1.WO_REQNO, wo2.WO_REQNO) 
 WHERE ed.DR_CACD IS NOT null</property>
                 <property
                   dataType="System.Int32"
@@ -3531,14 +3526,19 @@ WHERE ed.DR_CACD IS NOT null</property>
                       externalMetadataColumnId="Package\DF - CAUSE\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EQ_LEVL]"
                       lineageId="Package\DF - CAUSE\Oracle Source.Outputs[Oracle Source Output].Columns[EQ_LEVL]"
                       name="EQ_LEVL" />
+                    <outputColumn
+                      refId="Package\DF - CAUSE\Oracle Source.Outputs[Oracle Source Output].Columns[WO_DR_59]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - CAUSE\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WO_DR_59]"
+                      lineageId="Package\DF - CAUSE\Oracle Source.Outputs[Oracle Source Output].Columns[WO_DR_59]"
+                      name="WO_DR_59" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
                     <externalMetadataColumn
                       refId="Package\DF - CAUSE\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WO_WOID]"
-                      dataType="numeric"
-                      name="WO_WOID"
-                      precision="10" />
+                      dataType="r8"
+                      name="WO_WOID" />
                     <externalMetadataColumn
                       refId="Package\DF - CAUSE\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WO_EQCD]"
                       codePage="1252"
@@ -3626,6 +3626,10 @@ WHERE ed.DR_CACD IS NOT null</property>
                       refId="Package\DF - CAUSE\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EQ_LEVL]"
                       dataType="i4"
                       name="EQ_LEVL" />
+                    <externalMetadataColumn
+                      refId="Package\DF - CAUSE\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WO_DR_59]"
+                      dataType="i4"
+                      name="WO_DR_59" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -3635,11 +3639,10 @@ WHERE ed.DR_CACD IS NOT null</property>
                   <outputColumns>
                     <outputColumn
                       refId="Package\DF - CAUSE\Oracle Source.Outputs[Oracle Source Error Output].Columns[WO_WOID]"
-                      dataType="numeric"
+                      dataType="r8"
                       externalMetadataColumnId="Package\DF - CAUSE\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WO_WOID]"
                       lineageId="Package\DF - CAUSE\Oracle Source.Outputs[Oracle Source Error Output].Columns[WO_WOID]"
-                      name="WO_WOID"
-                      precision="10" />
+                      name="WO_WOID" />
                     <outputColumn
                       refId="Package\DF - CAUSE\Oracle Source.Outputs[Oracle Source Error Output].Columns[WO_EQCD]"
                       codePage="1252"
@@ -3763,6 +3766,12 @@ WHERE ed.DR_CACD IS NOT null</property>
                       externalMetadataColumnId="Package\DF - CAUSE\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EQ_LEVL]"
                       lineageId="Package\DF - CAUSE\Oracle Source.Outputs[Oracle Source Error Output].Columns[EQ_LEVL]"
                       name="EQ_LEVL" />
+                    <outputColumn
+                      refId="Package\DF - CAUSE\Oracle Source.Outputs[Oracle Source Error Output].Columns[WO_DR_59]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - CAUSE\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WO_DR_59]"
+                      lineageId="Package\DF - CAUSE\Oracle Source.Outputs[Oracle Source Error Output].Columns[WO_DR_59]"
+                      name="WO_DR_59" />
                     <outputColumn
                       refId="Package\DF - CAUSE\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -5494,22 +5503,24 @@ SELECT
 	, DR_REPWK
 	, DR_REPYR
 	, DR_DURT
-	, DR_WOID
 	, DR_REP_ML
 	, DR_TOT_COST
 	, DR_JOBREQUEST
 	, et.PK_EQP_TOPO 
 	, et.EQ_EQCD 
 	, et.EQ_LEVL 
-	, wo.WO_WOID 
-	, wo.WO_EQCD 
+	, ed.WO_DR_59 
+	, ed.DR_WOID
+	, COALESCE(wo1.WO_WOID, wo2.WO_WOID) AS WO_WOID
+	, COALESCE(wo1.WO_EQCD, wo2.WO_EQCD) AS WO_EQCD
 	, jr.JR_REF_NO
 	, jr.JR_EQCD 
 FROM COSWIN.EQP_DEFR ed
 JOIN COSWIN.EQP_TOPO et ON et.PK_EQP_TOPO = ed.EQ_DR_08 
-LEFT JOIN COSWIN.WIP_WO wo ON wo.PK_WIP_WO = ed.WO_DR_59
+LEFT JOIN COSWIN.WIP_WO wo1 ON wo1.PK_WIP_WO = ed.WO_DR_59
+LEFT JOIN COSWIN.WIP_WO wo2 ON wo2.WO_WOID = ed.DR_WOID
 -- THIS ESSENTIALLY JR_WO_REF
-LEFT JOIN COSWIN.EQP_JOBR jr ON jr.JR_REF_NO = wo.WO_REQNO 
+LEFT JOIN COSWIN.EQP_JOBR jr ON jr.JR_REF_NO = coalesce(wo1.WO_REQNO, wo2.WO_REQNO) 
 WHERE ed.DR_DFCD IS NOT null</property>
                 <property
                   dataType="System.Int32"
@@ -5690,14 +5701,19 @@ WHERE ed.DR_DFCD IS NOT null</property>
                       length="10"
                       lineageId="Package\DF - DEFECT\Oracle Source.Outputs[Oracle Source Output].Columns[FAILURECLASS]"
                       name="FAILURECLASS" />
+                    <outputColumn
+                      refId="Package\DF - DEFECT\Oracle Source.Outputs[Oracle Source Output].Columns[WO_DR_59]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - DEFECT\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WO_DR_59]"
+                      lineageId="Package\DF - DEFECT\Oracle Source.Outputs[Oracle Source Output].Columns[WO_DR_59]"
+                      name="WO_DR_59" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
                     <externalMetadataColumn
                       refId="Package\DF - DEFECT\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WO_WOID]"
-                      dataType="numeric"
-                      name="WO_WOID"
-                      precision="10" />
+                      dataType="r8"
+                      name="WO_WOID" />
                     <externalMetadataColumn
                       refId="Package\DF - DEFECT\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WO_EQCD]"
                       codePage="1252"
@@ -5791,6 +5807,10 @@ WHERE ed.DR_DFCD IS NOT null</property>
                       dataType="str"
                       length="10"
                       name="FAILURECLASS" />
+                    <externalMetadataColumn
+                      refId="Package\DF - DEFECT\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WO_DR_59]"
+                      dataType="i4"
+                      name="WO_DR_59" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -5800,11 +5820,10 @@ WHERE ed.DR_DFCD IS NOT null</property>
                   <outputColumns>
                     <outputColumn
                       refId="Package\DF - DEFECT\Oracle Source.Outputs[Oracle Source Error Output].Columns[WO_WOID]"
-                      dataType="numeric"
+                      dataType="r8"
                       externalMetadataColumnId="Package\DF - DEFECT\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WO_WOID]"
                       lineageId="Package\DF - DEFECT\Oracle Source.Outputs[Oracle Source Error Output].Columns[WO_WOID]"
-                      name="WO_WOID"
-                      precision="10" />
+                      name="WO_WOID" />
                     <outputColumn
                       refId="Package\DF - DEFECT\Oracle Source.Outputs[Oracle Source Error Output].Columns[WO_EQCD]"
                       codePage="1252"
@@ -5936,6 +5955,12 @@ WHERE ed.DR_DFCD IS NOT null</property>
                       length="10"
                       lineageId="Package\DF - DEFECT\Oracle Source.Outputs[Oracle Source Error Output].Columns[FAILURECLASS]"
                       name="FAILURECLASS" />
+                    <outputColumn
+                      refId="Package\DF - DEFECT\Oracle Source.Outputs[Oracle Source Error Output].Columns[WO_DR_59]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - DEFECT\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WO_DR_59]"
+                      lineageId="Package\DF - DEFECT\Oracle Source.Outputs[Oracle Source Error Output].Columns[WO_DR_59]"
+                      name="WO_DR_59" />
                     <outputColumn
                       refId="Package\DF - DEFECT\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -7498,7 +7523,7 @@ where [refTable].[ste_cswnwoid] = ?</property>
                       refId="Package\DF - SYMPTOM\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[wonum]"
                       cachedCodepage="1252"
                       cachedDataType="str"
-                      cachedLength="20"
+                      cachedLength="10"
                       cachedName="wonum"
                       externalMetadataColumnId="Package\DF - SYMPTOM\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[wonum]"
                       lineageId="Package\DF - SYMPTOM\Lookup.Outputs[Lookup Match Output].Columns[wonum]" />
@@ -7667,24 +7692,30 @@ SELECT
 	, DR_REPWK
 	, DR_REPYR
 	, DR_DURT
-	, DR_WOID
 	, DR_REP_ML
 	, DR_TOT_COST
 	, DR_JOBREQUEST
+	, ed.EQ_DR_08 
 	, et.PK_EQP_TOPO 
 	, et.EQ_EQCD 
 	, et.EQ_LEVL 
 	, ed.WO_DR_59 
-	, wo.WO_WOID 
-	, wo.WO_EQCD 
+	, ed.DR_WOID
+	, COALESCE(wo1.WO_WOID, wo2.WO_WOID) AS WO_WOID
+	, COALESCE(wo1.WO_EQCD, wo2.WO_EQCD) AS WO_EQCD
+	--, et.EQ_EQCD 
+	--, wo1.WO_EQCD 
+	--, wo2.WO_EQCD 
 	, jr.JR_REF_NO
 	, jr.JR_EQCD 
+	--, ed.*
 FROM COSWIN.EQP_DEFR ed
 JOIN COSWIN.EQP_TOPO et ON et.PK_EQP_TOPO = ed.EQ_DR_08 
-LEFT JOIN COSWIN.WIP_WO wo ON wo.PK_WIP_WO = ed.WO_DR_59
+LEFT JOIN COSWIN.WIP_WO wo1 ON wo1.PK_WIP_WO = ed.WO_DR_59
+LEFT JOIN COSWIN.WIP_WO wo2 ON wo2.WO_WOID = ed.DR_WOID
 -- THIS ESSENTIALLY JR_WO_REF
-LEFT JOIN COSWIN.EQP_JOBR jr ON jr.JR_REF_NO = wo.WO_REQNO 
---WHERE ed.DR_SYCD IS NOT null</property>
+LEFT JOIN COSWIN.EQP_JOBR jr ON jr.JR_REF_NO = coalesce(wo1.WO_REQNO, wo2.WO_REQNO) 
+WHERE ed.DR_SYCD IS NOT null</property>
                 <property
                   dataType="System.Int32"
                   description="Specify the number of rows fetched per batch."
@@ -7862,14 +7893,19 @@ LEFT JOIN COSWIN.EQP_JOBR jr ON jr.JR_REF_NO = wo.WO_REQNO
                       externalMetadataColumnId="Package\DF - SYMPTOM\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WO_DR_59]"
                       lineageId="Package\DF - SYMPTOM\Oracle Source.Outputs[Oracle Source Output].Columns[WO_DR_59]"
                       name="WO_DR_59" />
+                    <outputColumn
+                      refId="Package\DF - SYMPTOM\Oracle Source.Outputs[Oracle Source Output].Columns[EQ_DR_08]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - SYMPTOM\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EQ_DR_08]"
+                      lineageId="Package\DF - SYMPTOM\Oracle Source.Outputs[Oracle Source Output].Columns[EQ_DR_08]"
+                      name="EQ_DR_08" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
                     <externalMetadataColumn
                       refId="Package\DF - SYMPTOM\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WO_WOID]"
-                      dataType="numeric"
-                      name="WO_WOID"
-                      precision="10" />
+                      dataType="r8"
+                      name="WO_WOID" />
                     <externalMetadataColumn
                       refId="Package\DF - SYMPTOM\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WO_EQCD]"
                       codePage="1252"
@@ -7961,6 +7997,10 @@ LEFT JOIN COSWIN.EQP_JOBR jr ON jr.JR_REF_NO = wo.WO_REQNO
                       refId="Package\DF - SYMPTOM\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WO_DR_59]"
                       dataType="i4"
                       name="WO_DR_59" />
+                    <externalMetadataColumn
+                      refId="Package\DF - SYMPTOM\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EQ_DR_08]"
+                      dataType="i4"
+                      name="EQ_DR_08" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -7970,11 +8010,10 @@ LEFT JOIN COSWIN.EQP_JOBR jr ON jr.JR_REF_NO = wo.WO_REQNO
                   <outputColumns>
                     <outputColumn
                       refId="Package\DF - SYMPTOM\Oracle Source.Outputs[Oracle Source Error Output].Columns[WO_WOID]"
-                      dataType="numeric"
+                      dataType="r8"
                       externalMetadataColumnId="Package\DF - SYMPTOM\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WO_WOID]"
                       lineageId="Package\DF - SYMPTOM\Oracle Source.Outputs[Oracle Source Error Output].Columns[WO_WOID]"
-                      name="WO_WOID"
-                      precision="10" />
+                      name="WO_WOID" />
                     <outputColumn
                       refId="Package\DF - SYMPTOM\Oracle Source.Outputs[Oracle Source Error Output].Columns[WO_EQCD]"
                       codePage="1252"
@@ -8104,6 +8143,12 @@ LEFT JOIN COSWIN.EQP_JOBR jr ON jr.JR_REF_NO = wo.WO_REQNO
                       externalMetadataColumnId="Package\DF - SYMPTOM\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WO_DR_59]"
                       lineageId="Package\DF - SYMPTOM\Oracle Source.Outputs[Oracle Source Error Output].Columns[WO_DR_59]"
                       name="WO_DR_59" />
+                    <outputColumn
+                      refId="Package\DF - SYMPTOM\Oracle Source.Outputs[Oracle Source Error Output].Columns[EQ_DR_08]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - SYMPTOM\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EQ_DR_08]"
+                      lineageId="Package\DF - SYMPTOM\Oracle Source.Outputs[Oracle Source Error Output].Columns[EQ_DR_08]"
+                      name="EQ_DR_08" />
                     <outputColumn
                       refId="Package\DF - SYMPTOM\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -10276,11 +10321,11 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         <NodeLayout
           Size="177,42"
           Id="Package\DF - SYMPTOM\OLE DB Destination"
-          TopLeft="11.5,248.5" />
+          TopLeft="6.5,315.5" />
         <NodeLayout
           Size="167,42"
           Id="Package\DF - SYMPTOM\Derived Column 1"
-          TopLeft="471,16" />
+          TopLeft="241,102" />
         <EdgeLayout
           Id="Package\DF - SYMPTOM.Paths[Oracle Source Output]"
           TopLeft="168.5,34.5">
@@ -10303,24 +10348,20 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="115,42"
-          Id="Package\DF - SYMPTOM\Lookup"
-          TopLeft="461,130" />
         <EdgeLayout
           Id="Package\DF - SYMPTOM.Paths[Output 0]"
-          TopLeft="404.5,37.25">
+          TopLeft="324,58.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="66.5,0"
+              EndConnector="0,43.5"
               Start="0,0"
-              End="59,0">
+              End="0,36">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="59,0" />
+                    End="0,36" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -10329,32 +10370,24 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <NodeLayout
+          Size="115,42"
+          Id="Package\DF - SYMPTOM\Lookup"
+          TopLeft="272,198" />
         <EdgeLayout
           Id="Package\DF - SYMPTOM.Paths[Derived Column Output]"
-          TopLeft="554.5,58">
+          TopLeft="327,144">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-36,72"
+              EndConnector="0,54"
               Start="0,0"
-              End="-36,64.5">
+              End="0,46.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,32" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,32"
-                    Point2="0,36"
-                    Point3="-4,36" />
-                  <mssgle:LineSegment
-                    End="-32,36" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-32,36"
-                    Point2="-36,36"
-                    Point3="-36,40" />
-                  <mssgle:LineSegment
-                    End="-36,64.5" />
+                    End="0,46.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -10365,37 +10398,37 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - SYMPTOM.Paths[Lookup Match Output]"
-          TopLeft="518.5,172">
+          TopLeft="329.5,240">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-418.5,76.5"
+              EndConnector="-234.5,75.5"
               Start="0,0"
-              End="-418.5,69">
+              End="-234.5,68">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,34.25" />
+                    End="0,33.75" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,34.25"
-                    Point2="0,38.25"
-                    Point3="-4,38.25" />
+                    Point1="0,33.75"
+                    Point2="0,37.75"
+                    Point3="-4,37.75" />
                   <mssgle:LineSegment
-                    End="-414.5,38.25" />
+                    End="-230.5,37.75" />
                   <mssgle:CubicBezierSegment
-                    Point1="-414.5,38.25"
-                    Point2="-418.5,38.25"
-                    Point3="-418.5,42.25" />
+                    Point1="-230.5,37.75"
+                    Point2="-234.5,37.75"
+                    Point3="-234.5,41.75" />
                   <mssgle:LineSegment
-                    End="-418.5,69" />
+                    End="-234.5,68" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="-257.44138671875,43.25,96.3827734375,11.609375"
+              BoundingBox="-165.44138671875,42.75,96.3827734375,11.609375"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
@@ -10425,29 +10458,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         <Name>TableInfoObjectType</Name>
         <Value
           type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\DF - SYMPTOM\Lookup">
-    <Properties>
-      <Property>
-        <Name>OverwriteParamsSQLProp</Name>
-        <Value
-          type="q2:boolean">false</Value>
-      </Property>
-      <Property>
-        <Name>UsedTableName</Name>
-        <Value
-          type="q3:string"></Value>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q4:int">0</Value>
-      </Property>
-      <Property>
-        <Name>DataSourceViewID</Name>
       </Property>
     </Properties>
   </PipelineComponentMetadata>

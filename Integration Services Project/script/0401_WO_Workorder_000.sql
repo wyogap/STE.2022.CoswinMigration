@@ -57,8 +57,33 @@ CREATE PROCEDURE ste_0401_WO_Workorder_pre
 	@PackageLogID INT
 AS
 BEGIN
+	declare @v_seed bigint;
+	declare @v_max_id bigint;
+
 	-- truncate existing data
 	delete from WORKORDER where STE_MIGRATIONID is not null and woclass='WORKORDER' and istask=0;
+
+	-- create autokey if not exist
+	select @v_seed=seed from [dbo].[autokey] where [autokeyname]='WONUM';
+	if (@v_seed is null)
+	begin
+		select @v_max_id=maxreserved from [dbo].[maxsequence] where [tbname]='AUTOKEY' and [name]='AUTOKEYID';
+		
+		insert into [dbo].[autokey] (
+			[seed]
+			,[autokeyname]
+			,[langcode]
+			,[autokeyid]
+		)
+		values (
+			1000
+			,'WONUM'
+			,'EN'
+			,@v_max_id + 1
+		);
+
+		update maxsequence set maxreserved=@v_max_id+1 where tbname='AUTOKEY' and name='AUTOKEYID';
+	end;
 
 END
 
@@ -84,6 +109,10 @@ BEGIN
 	declare @v_cnt int;
 	declare @v_max_id bigint;
 	declare @PackageName varchar(250);
+
+	-- update assetnum
+	select @v_max_id=max(cast(WONUM as bigint)) from workorder;
+	update autokey set seed=@v_max_id+1 where autokeyname='WONUM';
 
 	-- update identity column
 	select @v_max_id=max(WORKORDERID) from WORKORDER;
