@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="0201_Inventory_Inventory"
   DTS:PackageType="5"
-  DTS:VersionBuild="73"
-  DTS:VersionGUID="{0285DF43-289B-4C85-97BA-22B7B0324B3B}"
+  DTS:VersionBuild="75"
+  DTS:VersionGUID="{785A2EA9-1A29-4C3E-B2CD-9172EB9799AE}"
   DTS:VersionMajor="2"
   DTS:VersionMinor="2">
   <DTS:Property
@@ -33,7 +33,7 @@
           <OraConnectionString>SERVER=103.149.177.117:1521/COSWINDB;USERNAME=coswin;WINAUTH=0;</OraConnectionString>
           <OraPassword
             Sensitive="1"
-            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAAiLtyc5rkkPIVqjrbGGiBOar++Dfsf8kErF0kQLNdxbgAAAAAOgAAAAAIAACAAAACwFpmWTtDv5VL1qhlNahmvPCFl1WHB7srcKX21erezGyAAAADM95HNmhIYCheFCSSs+wzzCodvUfRw7ICoJZ4gyb4d4kAAAAACwz6clJIaNNO7HN6YierpzZKmPZawS5eIcukb0O1LtoKGHOSVmE1tXN8S2qd1G6weKl3QFAlI5ckba+Ogq1Vw</OraPassword>
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAABj6nkelIplu0Km7fI6dAtAuOq6lOhpMlIv1XgCPC4LAgAAAAAOgAAAAAIAACAAAABK6rLgGNGOURWoEOUAay54NYB557H+Byep/h//N5M2xSAAAAAyn5SFtWY1TzJh5wPh6j1yubCJCvkG6ELZ4ScLz2dxIkAAAABY1vY/jT0HbADM1KCDxjS0jkWO5QA+yHMmFwD2qwUYMTCZymW1e+fl9dySaubQbbvm1fH9YIZmh6jZiBjYRpeQ</OraPassword>
           <OraRetain>False</OraRetain>
           <OraInitialCatalog></OraInitialCatalog>
           <OraServerName>103.149.177.117:1521/COSWINDB</OraServerName>
@@ -62,7 +62,7 @@
           <DTS:Password
             DTS:Name="Password"
             Sensitive="1"
-            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAADfRqs8glXXan0WkIQ3xsYEdyYHptpm5+j9rkY+xvGhsgAAAAAOgAAAAAIAACAAAAAEuqeIHmGLdE4x4E3jaAfYb0vl1x2/5DmsoHER8pbYaSAAAABKqeihidHwGLN6EIW/4kYuJ5I2+GGHGNnK177BcebHsEAAAABJ2Ihsv5Y4xbKyKHTipk8BJ0wPrb8utK32kQTVjzczsyljlB0SQ9FzoEh5VWaZJNv0y9S25dFKWeCz4evorReM</DTS:Password>
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAABpt0za2kEJ4X+j+Oe+r2z4v91lk/vdyhQPoPJXUx6P6wAAAAAOgAAAAAIAACAAAABav0VU4HvssGvpKTiNsQ+odjLnHg8pOUxuSCSuZTUHSCAAAADK8m056qYkp4K/s3wRYu7KULY1g35imniMiubjVKFB5UAAAABqdLnTycXb64QQLQxdBbJXRi9yliCusfTjAu/zly8IqQRLlMAqxgjS8A4FdXf2s3gYH17Smbj1YXjvCOM1VRn+</DTS:Password>
         </DTS:ConnectionManager>
       </DTS:ObjectData>
     </DTS:ConnectionManager>
@@ -335,6 +335,11 @@
                       cachedDataType="i2"
                       cachedName="GRP_PO_AUTO"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[GRP_PO_AUTO]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\Derived Column.Inputs[Derived Column Input].Columns[ECON_ORD_QTY]"
+                      cachedDataType="r8"
+                      cachedName="ECON_ORD_QTY"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ECON_ORD_QTY]" />
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -689,6 +694,28 @@
                           name="FriendlyExpression">(DT_STR,16,1252)"AVERAGE"</property>
                       </properties>
                     </outputColumn>
+                    <outputColumn
+                      refId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[v_orderqty]"
+                      dataType="r8"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[v_orderqty]"
+                      name="v_orderqty"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">[REPLACENULL](#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ECON_ORD_QTY]},0) &lt;= 0 ? 1 : #{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ECON_ORD_QTY]}</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">REPLACENULL(ECON_ORD_QTY,0) &lt;= 0 ? 1 : ECON_ORD_QTY</property>
+                      </properties>
+                    </outputColumn>
                   </outputColumns>
                   <externalMetadataColumns />
                 </output>
@@ -874,12 +901,6 @@
                       externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[issueytd]"
                       lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[V_ISSUEYTD]" />
                     <inputColumn
-                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[ECON_ORD_QTY]"
-                      cachedDataType="r8"
-                      cachedName="ECON_ORD_QTY"
-                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[orderqty]"
-                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ECON_ORD_QTY]" />
-                    <inputColumn
                       refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_orgid]"
                       cachedCodepage="1252"
                       cachedDataType="str"
@@ -1011,6 +1032,12 @@
                       cachedName="v_costtype"
                       externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[costtype]"
                       lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[v_costtype]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_orderqty]"
+                      cachedDataType="r8"
+                      cachedName="v_orderqty"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[orderqty]"
+                      lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[v_orderqty]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -2485,6 +2512,10 @@ order by si.PK_STORES_ITEMS</property>
       <GraphLayout
         Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
+          Size="149,42"
+          Id="Package\Data Flow Task\Oracle Source"
+          TopLeft="19.5,5.5" />
+        <NodeLayout
           Size="177,42"
           Id="Package\Data Flow Task\OLE DB Destination"
           TopLeft="12.5,174.5" />
@@ -2492,44 +2523,6 @@ order by si.PK_STORES_ITEMS</property>
           Size="158,42"
           Id="Package\Data Flow Task\Derived Column"
           TopLeft="181,79" />
-        <NodeLayout
-          Size="149,42"
-          Id="Package\Data Flow Task\Oracle Source"
-          TopLeft="19.5,5.5" />
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Oracle Source Output]"
-          TopLeft="94,47.5">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="166,31.5"
-              Start="0,0"
-              End="166,24">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,11.75" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,11.75"
-                    Point2="0,15.75"
-                    Point3="4,15.75" />
-                  <mssgle:LineSegment
-                    End="162,15.75" />
-                  <mssgle:CubicBezierSegment
-                    Point1="162,15.75"
-                    Point2="166,15.75"
-                    Point3="166,19.75" />
-                  <mssgle:LineSegment
-                    End="166,24" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
         <EdgeLayout
           Id="Package\Data Flow Task.Paths[Derived Column Output]"
           TopLeft="260,121">
@@ -2564,11 +2557,45 @@ order by si.PK_STORES_ITEMS</property>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Oracle Source Output]"
+          TopLeft="94,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="166,31.5"
+              Start="0,0"
+              End="166,24">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,11.75" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,11.75"
+                    Point2="0,15.75"
+                    Point3="4,15.75" />
+                  <mssgle:LineSegment
+                    End="162,15.75" />
+                  <mssgle:CubicBezierSegment
+                    Point1="162,15.75"
+                    Point2="166,15.75"
+                    Point3="166,19.75" />
+                  <mssgle:LineSegment
+                    End="166,24" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\Data Flow Task\OLE DB Destination">
+    design-time-name="Package\Data Flow Task\Oracle Source">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -2581,7 +2608,7 @@ order by si.PK_STORES_ITEMS</property>
     </Properties>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
-    design-time-name="Package\Data Flow Task\Oracle Source">
+    design-time-name="Package\Data Flow Task\OLE DB Destination">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
