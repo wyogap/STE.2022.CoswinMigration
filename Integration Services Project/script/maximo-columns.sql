@@ -211,6 +211,6 @@ IF COLUMNPROPERTY(OBJECT_ID('dbo.asset'), 'ste_inchrgref', 'ColumnId') is null
 ALTER TABLE asset
 ADD ste_inchrgref varchar(20) default null;
 
---IF COLUMNPROPERTY(OBJECT_ID('dbo.workorder'), 'ste_cswnwoid', 'ColumnId') IS NULL
---ALTER TABLE [workorder]
---ADD ste_cswnwoid varchar(10) default nul
+IF COLUMNPROPERTY(OBJECT_ID('dbo.workorder'), 'ste_cswnwoid', 'ColumnId') IS NULL
+ALTER TABLE [workorder]
+ADD ste_cswnwoid varchar(10) default nul
