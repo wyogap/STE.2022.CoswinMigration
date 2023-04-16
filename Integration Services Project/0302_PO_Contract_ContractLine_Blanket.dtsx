@@ -12,9 +12,9 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="0302_PO_Contract_ContractLine_Blanket"
   DTS:PackageType="5"
-  DTS:VersionBuild="77"
-  DTS:VersionGUID="{7133CE15-B337-486E-895B-28F2886549B6}"
-  DTS:VersionMinor="2">
+  DTS:VersionBuild="81"
+  DTS:VersionGUID="{783A6912-4ECC-47EA-836B-A5C1F2D649FB}"
+  DTS:VersionMajor="2">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -32,7 +32,7 @@
           <OraConnectionString>SERVER=103.149.177.117:1521/COSWINDB;USERNAME=coswin;WINAUTH=0;</OraConnectionString>
           <OraPassword
             Sensitive="1"
-            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAAF1U57egSL6OJa4+ngHJzDBa3CIXNOm+4bCn2bvpSM1AAAAAAOgAAAAAIAACAAAADQmD+HrrmIXM+8nN9eXBaQOqXQl8S3jtWpMRHJmB9M+yAAAAAqJ27YREvrdbarnGYMuKF4Yn6L80V/IH15WegeoQAY30AAAACWr2rSiGWZZO+LV74Ogb6RrnPGI0GU2DplM9vdwlbtXQYOa9O3T/Q3GpbnOQ3z2iZkSWXKEkL+xICdUWU7H6rE</OraPassword>
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAAjZHKtDfJO6+00BgR7v8m9msucwvDjTqRTOV0a/NvkHQAAAAAOgAAAAAIAACAAAACUM0muKw6MWvc8qwVBNQPWUuXa2amN4X6IoiazM/0T2CAAAAAw3VKLVD+TJDcMxV/j6AeQfksJKNdD6VJAeghIyXzEukAAAADrrke9qKxU+Ww6D9wO2485lXgbhzZHqdgLCpqC6wD6UUebFhbUR+nlvG2KJxmWjW/d/lRvb9U5pcHRbwWa3ygI</OraPassword>
           <OraRetain>False</OraRetain>
           <OraInitialCatalog></OraInitialCatalog>
           <OraServerName>103.149.177.117:1521/COSWINDB</OraServerName>
@@ -61,7 +61,7 @@
           <DTS:Password
             DTS:Name="Password"
             Sensitive="1"
-            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAACg3lsZrqRRSi4qCIjBkKWrVBISM0Mbmg8zhIrXHrD8oQAAAAAOgAAAAAIAACAAAADEuUnC/NfX80wI7EtbxBrCKGfA+hE185GWwWIUsMzY/yAAAADetweWDd0KingcLGKcXmd6RtceueqvmAFXY7iaEEjCyEAAAACwQfdE0Op50TcrbLBAkMdVN1LwwId7FtDA7m2hOjklQuIGnCp79OupLnyfViwNLeKL5PkI99IJNkeCpqcyL6yk</DTS:Password>
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAifPiFtyNpEmM6VXJlpWlFgAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAACwj8CALhg++dLFmdDdW7fhBU2ToNff3H0IJxCiP14wngAAAAAOgAAAAAIAACAAAADFNLFReGIwNIoj2R4h4FCMgpKA5lqW5Z7zJx/Jh5U7WyAAAAB1EoYTbBXBcZU+7Ff0R35DohHUp3vBq3dtdAMgFGm+O0AAAAC87YQS0kGlkfYytqhAHGLp8QPDx9UTzvbMXFLDuDPYZj5Cn2ZrbOTXvnsldZ18sRh/GCOQ/F7el8l5JGQZvzpj</DTS:Password>
         </DTS:ConnectionManager>
       </DTS:ObjectData>
     </DTS:ConnectionManager>
@@ -1656,29 +1656,31 @@
                   expressionType="Notify"
                   name="SqlCommand"
                   UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT 
-	po.*
+	po.PO_BLKT_REF 
+	, po.PK_PORDER_ 
+	, po.PO_VALID_FM 
+	, po.PO_VALID_TO 
+	, po.PO_CURR_CD 
+	, po.DT_PORDER
+	, po.TM_PORDER 
+	, po.PO_STATUS
 	, CASE WHEN po.PO_STATUS = 48 THEN 'WAPPR'
 		   WHEN po.PO_STATUS IN (49,50,51) THEN 'APPR'
 		   WHEN po.PO_STATUS = 52 THEN 'CLOSE'
 		   WHEN po.PO_STATUS IN (53,54) THEN 'CAN'
 		   ELSE CAST(po.PO_STATUS AS varchar(6))
 	  END AS STATUS_TEXT	
-FROM (
+	, s.SUPL_CD
+FROM COSWIN.PORDER_ po
+JOIN (
 	SELECT 
-		po.PO_BLKT_REF
-		, MIN(po. PO_VALID_FM) AS PO_VALID_FM
-		, MAX(po.PO_VALID_TO) AS PO_VALID_TO
-		, MAX(po.PO_CURR_CD) AS PO_CURR_CD
-		, MAX(po.PK_PORDER_) AS PK_PORDER_
-		, MAX(po.DT_PORDER) AS DT_PORDER
-		, MAX(po.TM_PORDER) AS TM_PORDER
-		, MAX(s.SUPL_CD) AS SUPL_CD
-		, MAX(po.PO_STATUS) AS PO_STATUS
+		po.PK_PORDER_ 
+		, ROW_NUMBER() OVER (PARTITION BY po.PO_BLKT_REF ORDER BY po.PO_DT DESC, po.PK_PORDER_ desc) rn
 	FROM COSWIN.PORDER_ po
-	LEFT JOIN COSWIN.SUPPLIER_ s ON s.PK_SUPPLIER_ = po.S_SUPL_PO 
-	WHERE po.PO_TYPE = 50
-	GROUP BY po.PO_BLKT_REF
-) po</property>
+	WHERE po.PO_TYPE = 50 AND po.PO_BLKT_REF IS NOT NULL 
+) blkt ON blkt.PK_PORDER_ = po.PK_PORDER_ AND blkt.rn = 1
+LEFT JOIN COSWIN.SUPPLIER_ s ON s.PK_SUPPLIER_ = po.S_SUPL_PO 
+;</property>
                 <property
                   dataType="System.Int32"
                   description="Specify the number of rows fetched per batch."
@@ -1799,12 +1801,14 @@ FROM (
                       name="PO_BLKT_REF" />
                     <externalMetadataColumn
                       refId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PO_VALID_FM]"
-                      dataType="r8"
-                      name="PO_VALID_FM" />
+                      dataType="numeric"
+                      name="PO_VALID_FM"
+                      precision="10" />
                     <externalMetadataColumn
                       refId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PO_VALID_TO]"
-                      dataType="r8"
-                      name="PO_VALID_TO" />
+                      dataType="numeric"
+                      name="PO_VALID_TO"
+                      precision="10" />
                     <externalMetadataColumn
                       refId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PO_CURR_CD]"
                       codePage="1252"
@@ -1813,12 +1817,13 @@ FROM (
                       name="PO_CURR_CD" />
                     <externalMetadataColumn
                       refId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_PORDER_]"
-                      dataType="r8"
+                      dataType="i4"
                       name="PK_PORDER_" />
                     <externalMetadataColumn
                       refId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DT_PORDER]"
-                      dataType="r8"
-                      name="DT_PORDER" />
+                      dataType="numeric"
+                      name="DT_PORDER"
+                      precision="10" />
                     <externalMetadataColumn
                       refId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SUPL_CD]"
                       codePage="1252"
@@ -1827,7 +1832,7 @@ FROM (
                       name="SUPL_CD" />
                     <externalMetadataColumn
                       refId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PO_STATUS]"
-                      dataType="r8"
+                      dataType="i2"
                       name="PO_STATUS" />
                     <externalMetadataColumn
                       refId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[STATUS_TEXT]"
@@ -1837,8 +1842,9 @@ FROM (
                       name="STATUS_TEXT" />
                     <externalMetadataColumn
                       refId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[TM_PORDER]"
-                      dataType="r8"
-                      name="TM_PORDER" />
+                      dataType="numeric"
+                      name="TM_PORDER"
+                      precision="10" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -1856,16 +1862,18 @@ FROM (
                       name="PO_BLKT_REF" />
                     <outputColumn
                       refId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Error Output].Columns[PO_VALID_FM]"
-                      dataType="r8"
+                      dataType="numeric"
                       externalMetadataColumnId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PO_VALID_FM]"
                       lineageId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Error Output].Columns[PO_VALID_FM]"
-                      name="PO_VALID_FM" />
+                      name="PO_VALID_FM"
+                      precision="10" />
                     <outputColumn
                       refId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Error Output].Columns[PO_VALID_TO]"
-                      dataType="r8"
+                      dataType="numeric"
                       externalMetadataColumnId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PO_VALID_TO]"
                       lineageId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Error Output].Columns[PO_VALID_TO]"
-                      name="PO_VALID_TO" />
+                      name="PO_VALID_TO"
+                      precision="10" />
                     <outputColumn
                       refId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Error Output].Columns[PO_CURR_CD]"
                       codePage="1252"
@@ -1876,16 +1884,17 @@ FROM (
                       name="PO_CURR_CD" />
                     <outputColumn
                       refId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_PORDER_]"
-                      dataType="r8"
+                      dataType="i4"
                       externalMetadataColumnId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_PORDER_]"
                       lineageId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_PORDER_]"
                       name="PK_PORDER_" />
                     <outputColumn
                       refId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Error Output].Columns[DT_PORDER]"
-                      dataType="r8"
+                      dataType="numeric"
                       externalMetadataColumnId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DT_PORDER]"
                       lineageId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Error Output].Columns[DT_PORDER]"
-                      name="DT_PORDER" />
+                      name="DT_PORDER"
+                      precision="10" />
                     <outputColumn
                       refId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Error Output].Columns[SUPL_CD]"
                       codePage="1252"
@@ -1896,7 +1905,7 @@ FROM (
                       name="SUPL_CD" />
                     <outputColumn
                       refId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Error Output].Columns[PO_STATUS]"
-                      dataType="r8"
+                      dataType="i2"
                       externalMetadataColumnId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PO_STATUS]"
                       lineageId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Error Output].Columns[PO_STATUS]"
                       name="PO_STATUS" />
@@ -1910,10 +1919,11 @@ FROM (
                       name="STATUS_TEXT" />
                     <outputColumn
                       refId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Error Output].Columns[TM_PORDER]"
-                      dataType="r8"
+                      dataType="numeric"
                       externalMetadataColumnId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[TM_PORDER]"
                       lineageId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Error Output].Columns[TM_PORDER]"
-                      name="TM_PORDER" />
+                      name="TM_PORDER"
+                      precision="10" />
                     <outputColumn
                       refId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -3457,6 +3467,18 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       cachedName="v_orgid"
                       externalMetadataColumnId="Package\DF - ContractLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[orgid]"
                       lineageId="Package\DF - ContractLine\Derived Column.Outputs[Derived Column Output].Columns[v_orgid]" />
+                    <inputColumn
+                      refId="Package\DF - ContractLine\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[S_ITEM_PO]"
+                      cachedDataType="i4"
+                      cachedName="S_ITEM_PO"
+                      externalMetadataColumnId="Package\DF - ContractLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONITEMPK]"
+                      lineageId="Package\DF - ContractLine\Oracle Source.Outputs[Oracle Source Output].Columns[S_ITEM_PO]" />
+                    <inputColumn
+                      refId="Package\DF - ContractLine\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[S_NSITEM_PO]"
+                      cachedDataType="i4"
+                      cachedName="S_NSITEM_PO"
+                      externalMetadataColumnId="Package\DF - ContractLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONNSITEMPK]"
+                      lineageId="Package\DF - ContractLine\Oracle Source.Outputs[Oracle Source Output].Columns[S_NSITEM_PO]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -3661,6 +3683,14 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       refId="Package\DF - ContractLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
                       dataType="dbTimeStamp"
                       name="STE_MIGRATIONDATE" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ContractLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONITEMPK]"
+                      dataType="i8"
+                      name="STE_MIGRATIONITEMPK" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ContractLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONNSITEMPK]"
+                      dataType="i8"
+                      name="STE_MIGRATIONNSITEMPK" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -3709,36 +3739,39 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                   expressionType="Notify"
                   name="SqlCommand"
                   UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT 
-	A.PO_BLKT_REF
-	, A.ITEM_CD
-	, A.ITEM_DS
-	, A.S_ITEM_REF
-	, A.S_ITEM_UNIT
-	, A.S_LAT_UNIT_RATE
-	, A.PK_PO_ITEMS
-	, A.DT_PO_ITEMS
-	, ROW_NUMBER() OVER (PARTITION BY A.PO_BLKT_REF ORDER BY A.ITEM_CD) LINENUM
-FROM (
+	po.PO_BLKT_REF
+	, pit.S_ITEM_PO
+	, pit.S_NSITEM_PO
+	, it.ITEM_CD
+	, it.ITEM_DS
+	, si.S_ITEM_REF
+	, si.S_ITEM_UNIT
+	, si.S_LAT_UNIT_RATE
+	, pit.PK_PO_ITEMS
+	, pit.DT_PO_ITEMS
+	, ROW_NUMBER() OVER (PARTITION BY po.PO_BLKT_REF ORDER BY it.ITEM_CD) LINENUM
+FROM COSWIN.PO_ITEMS pit
+JOIN COSWIN.PORDER_ po ON po.PK_PORDER_ = pit.S_PO_ITEM 
+JOIN (
 	SELECT 
-		p.PO_BLKT_REF
+		po.PK_PORDER_ 
+		, ROW_NUMBER() OVER (PARTITION BY po.PO_BLKT_REF ORDER BY po.PO_DT DESC, po.PK_PORDER_ desc) rn
+	FROM COSWIN.PORDER_ po
+	WHERE po.PO_TYPE = 50 AND po.PO_BLKT_REF IS NOT NULL 
+) blkt ON blkt.PK_PORDER_ = pit.S_PO_ITEM AND blkt.rn = 1
+LEFT JOIN (
+	SELECT
+		pit.PK_PO_ITEMS 
 		, COALESCE(ns.NSITEM_CD, it.ITEM_CD) AS ITEM_CD
-		, MAX(CASE WHEN ns.NSITEM_CD IS NOT NULL THEN ns.NSITEM_SHORT ELSE it.ITEM_SHORT END) AS ITEM_DS
-		, MAX(si.S_ITEM_REF) AS S_ITEM_REF
-		, MAX(si.S_ITEM_UNIT) AS S_ITEM_UNIT
-		, MAX(si.S_LAT_UNIT_RATE) AS S_LAT_UNIT_RATE
-		, MAX(pit.PK_PO_ITEMS) AS PK_PO_ITEMS
-		, MAX(pit.DT_PO_ITEMS) AS DT_PO_ITEMS
+		, COALESCE(ns.NSITEM_SHORT, it.ITEM_SHORT) AS ITEM_DS
 	FROM COSWIN.PO_ITEMS pit
-	JOIN COSWIN.PORDER_ p ON p.PK_PORDER_ = pit.S_PO_ITEM 
 	LEFT JOIN COSWIN.ITEM_ it ON it.PK_ITEM_ = pit.S_ITEM_PO 
 	LEFT JOIN COSWIN.NSITEM ns ON ns.PK_NSITEM = pit.S_NSITEM_PO  
-	LEFT JOIN COSWIN.SUPPLIER_ s ON s.PK_SUPPLIER_ = p.S_SUPL_PO 
-	LEFT JOIN COSWIN.SUPL_ITEMS si ON si.S_SUPL_ITEM = s.PK_SUPPLIER_ 
-		AND ((pit.S_ITEM_PO IS NOT NULL AND pit.S_ITEM_PO = si.S_ITEM_SUPL) 
-			OR (pit.S_NSITEM_PO IS NOT NULL AND pit.S_NSITEM_PO = si.S_NSITEM_SUPL))
-	WHERE p.PO_TYPE = 50 AND COALESCE(ns.NSITEM_CD, it.ITEM_CD) IS NOT NULL
-	GROUP BY p.PO_BLKT_REF, COALESCE(ns.NSITEM_CD, it.ITEM_CD)
-) A</property>
+) it ON it.PK_PO_ITEMS = pit.PK_PO_ITEMS
+LEFT JOIN COSWIN.SUPPLIER_ s ON s.PK_SUPPLIER_ = po.S_SUPL_PO 
+LEFT JOIN COSWIN.SUPL_ITEMS si ON si.S_SUPL_ITEM = s.PK_SUPPLIER_ 
+	AND (pit.S_ITEM_PO = si.S_ITEM_SUPL OR pit.S_NSITEM_PO = si.S_NSITEM_SUPL)
+;</property>
                 <property
                   dataType="System.Int32"
                   description="Specify the number of rows fetched per batch."
@@ -3844,6 +3877,18 @@ FROM (
                       externalMetadataColumnId="Package\DF - ContractLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[LINENUM]"
                       lineageId="Package\DF - ContractLine\Oracle Source.Outputs[Oracle Source Output].Columns[LINENUM]"
                       name="LINENUM" />
+                    <outputColumn
+                      refId="Package\DF - ContractLine\Oracle Source.Outputs[Oracle Source Output].Columns[S_ITEM_PO]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - ContractLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_ITEM_PO]"
+                      lineageId="Package\DF - ContractLine\Oracle Source.Outputs[Oracle Source Output].Columns[S_ITEM_PO]"
+                      name="S_ITEM_PO" />
+                    <outputColumn
+                      refId="Package\DF - ContractLine\Oracle Source.Outputs[Oracle Source Output].Columns[S_NSITEM_PO]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - ContractLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_NSITEM_PO]"
+                      lineageId="Package\DF - ContractLine\Oracle Source.Outputs[Oracle Source Output].Columns[S_NSITEM_PO]"
+                      name="S_NSITEM_PO" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -3883,16 +3928,25 @@ FROM (
                       name="S_LAT_UNIT_RATE" />
                     <externalMetadataColumn
                       refId="Package\DF - ContractLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_PO_ITEMS]"
-                      dataType="r8"
+                      dataType="i4"
                       name="PK_PO_ITEMS" />
                     <externalMetadataColumn
                       refId="Package\DF - ContractLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DT_PO_ITEMS]"
-                      dataType="r8"
-                      name="DT_PO_ITEMS" />
+                      dataType="numeric"
+                      name="DT_PO_ITEMS"
+                      precision="10" />
                     <externalMetadataColumn
                       refId="Package\DF - ContractLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[LINENUM]"
                       dataType="r8"
                       name="LINENUM" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ContractLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_ITEM_PO]"
+                      dataType="i4"
+                      name="S_ITEM_PO" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ContractLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_NSITEM_PO]"
+                      dataType="i4"
+                      name="S_NSITEM_PO" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -3948,22 +4002,35 @@ FROM (
                       name="S_LAT_UNIT_RATE" />
                     <outputColumn
                       refId="Package\DF - ContractLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_PO_ITEMS]"
-                      dataType="r8"
+                      dataType="i4"
                       externalMetadataColumnId="Package\DF - ContractLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_PO_ITEMS]"
                       lineageId="Package\DF - ContractLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_PO_ITEMS]"
                       name="PK_PO_ITEMS" />
                     <outputColumn
                       refId="Package\DF - ContractLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[DT_PO_ITEMS]"
-                      dataType="r8"
+                      dataType="numeric"
                       externalMetadataColumnId="Package\DF - ContractLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DT_PO_ITEMS]"
                       lineageId="Package\DF - ContractLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[DT_PO_ITEMS]"
-                      name="DT_PO_ITEMS" />
+                      name="DT_PO_ITEMS"
+                      precision="10" />
                     <outputColumn
                       refId="Package\DF - ContractLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[LINENUM]"
                       dataType="r8"
                       externalMetadataColumnId="Package\DF - ContractLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[LINENUM]"
                       lineageId="Package\DF - ContractLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[LINENUM]"
                       name="LINENUM" />
+                    <outputColumn
+                      refId="Package\DF - ContractLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[S_ITEM_PO]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - ContractLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_ITEM_PO]"
+                      lineageId="Package\DF - ContractLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[S_ITEM_PO]"
+                      name="S_ITEM_PO" />
+                    <outputColumn
+                      refId="Package\DF - ContractLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[S_NSITEM_PO]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - ContractLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_NSITEM_PO]"
+                      lineageId="Package\DF - ContractLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[S_NSITEM_PO]"
+                      name="S_NSITEM_PO" />
                     <outputColumn
                       refId="Package\DF - ContractLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"

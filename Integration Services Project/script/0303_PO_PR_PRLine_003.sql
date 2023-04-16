@@ -73,6 +73,99 @@ BEGIN
 END
 GO
 
+-- Add custom columns
+-- ------------------
+IF COLUMNPROPERTY(OBJECT_ID('dbo.prline'), 'STE_MIGRATIONITEMPK', 'ColumnId') is null
+ALTER TABLE prline
+ADD STE_MIGRATIONITEMPK bigint default null,
+    STE_MIGRATIONNSITEMPK bigint default null;
+
+-- Create post-task
+-- ---------------
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+drop procedure if exists ste_0303_po_prline_post
+GO
+
+CREATE PROCEDURE ste_0303_po_prline_post
+  @PackageLogID INT
+AS
+BEGIN
+	declare @v_start_id int;
+	declare @v_end_id int;
+	declare @v_cnt int;
+	declare @v_max_id bigint;
+	declare @PackageName varchar(250);
+
+	-- update identity column
+	select @v_max_id=max(prlineid) from prline;
+	update maxsequence set maxreserved=@v_max_id+1 where tbname='PRLINE' and name='PRLINEID';
+
+	-- get package name
+	select @PackageName = package_name from [dbo].[ste_migration_logs] where id = @PackageLogID;
+	if (@PackageName is null) return;
+
+	-- update start_id and end_id for ITEM_
+	select @v_cnt=count(STE_MIGRATIONID) from prline
+	where STE_MIGRATIONID is not null and STE_MIGRATIONITEMPK is not null and itemnum is null;
+
+	insert into [dbo].[ste_migration_log_details] (
+		[package_name]
+		,[log_id]
+		,[event]
+		,[event_type]
+		,[event_description]
+	)
+	values (
+		@PackageName
+		, @PackageLogID
+		, 'PRLINE-NOMATCH-ITEM'
+		, 'LOG'
+		, CONCAT('COUNT: ', COALESCE(@v_cnt,0))
+	);
+
+	select @v_cnt=count(STE_MIGRATIONID) from prline
+	where STE_MIGRATIONID is not null and STE_MIGRATIONNSITEMPK is not null and itemnum is null;
+
+	insert into [dbo].[ste_migration_log_details] (
+		[package_name]
+		,[log_id]
+		,[event]
+		,[event_type]
+		,[event_description]
+	)
+	values (
+		@PackageName
+		, @PackageLogID
+		, 'PRLINE-NOMATCH-NSITEM'
+		, 'LOG'
+		, CONCAT('COUNT: ', COALESCE(@v_cnt,0))
+	);
+
+	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID), @v_cnt=count(STE_MIGRATIONID) from prline
+	where STE_MIGRATIONID is not null;
+
+	insert into [dbo].[ste_migration_log_details] (
+		[package_name]
+		,[log_id]
+		,[event]
+		,[event_type]
+		,[event_description]
+	)
+	values (
+		@PackageName
+		, @PackageLogID
+		, 'PRLINE'
+		, 'COMPLETED'
+		, CONCAT('COUNT: ', @v_cnt, ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
+	);
+
+END
+GO
+
 -- update migration params
 -- -----------------------
 INSERT INTO [dbo].[ste_migration_params]

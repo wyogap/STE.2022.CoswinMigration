@@ -1,8 +1,8 @@
 /****** Object:  Table [dbo].[ste_migration_params]    Script Date: 25/01/2023 17:46:34 ******/
 -- Add custom columns
 -- ------------------
-IF COLUMNPROPERTY(OBJECT_ID('dbo.workzone'), 'STE_MIGRATIONID', 'ColumnId') is null
-ALTER TABLE workzone
+IF COLUMNPROPERTY(OBJECT_ID('dbo.itemstruct'), 'STE_MIGRATIONID', 'ColumnId') is null
+ALTER TABLE itemstruct
 ADD STE_MIGRATIONID bigint default null,
     STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
 
@@ -13,15 +13,15 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_0020_master_workzone_pre
+drop procedure if exists ste_0021_master_itemstruct_pre
 GO
 
-CREATE PROCEDURE ste_0020_master_workzone_pre 
+CREATE PROCEDURE ste_0021_master_itemstruct_pre 
 	@PackageLogID INT
 AS
 BEGIN
 	-- truncate existing data
-	delete from workzone where STE_MIGRATIONID is not null;
+	delete from itemstruct where STE_MIGRATIONID is not null;
 
 END
 
@@ -34,10 +34,10 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_0020_master_workzone_post
+drop procedure if exists ste_0021_master_itemstruct_post
 GO
 
-CREATE PROCEDURE ste_0020_master_workzone_post
+CREATE PROCEDURE ste_0021_master_itemstruct_post
   @PackageLogID INT
 AS
 BEGIN
@@ -48,16 +48,16 @@ BEGIN
 	declare @PackageName varchar(250);
 
 	-- update identity column
-	select @v_max_id=max(workzoneid) from workzone;
-	update maxsequence set maxreserved=coalesce(@v_max_id,0)+1 where tbname='WORKZONE' and name='WORKZONEID';
+	select @v_max_id=max(itemstructid) from itemstruct;
+	update maxsequence set maxreserved=coalesce(@v_max_id,0)+1 where tbname='ITEMSTRUCT' and name='ITEMSTRUCTID';
 
 	-- get package name
 	select @PackageName = package_name from [dbo].[ste_migration_logs] where id = @PackageLogID;
 	if (@PackageName is null) return;
 
 	-- update start_id and end_id for ITEM_
-	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID), @v_cnt=count(STE_MIGRATIONID) from workzone
-	where STE_MIGRATIONID is not null;
+	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID), @v_cnt=count(STE_MIGRATIONID) from itemstruct
+	where STE_MIGRATIONID is not null and parent is null;
 
 	insert into [dbo].[ste_migration_log_details] (
 		[package_name]
@@ -69,10 +69,31 @@ BEGIN
 	values (
 		@PackageName
 		, @PackageLogID
-		, 'WORKZONE'
+		, 'KIT'
 		, 'COMPLETED'
-		, CONCAT('COUNT: ', @v_cnt, ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
+		, CONCAT('COUNT: ', coalesce(@v_cnt,0), ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
 	);
+
+	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID), @v_cnt=count(STE_MIGRATIONID) from itemstruct
+	where STE_MIGRATIONID is not null and parent is not null;
+
+	insert into [dbo].[ste_migration_log_details] (
+		[package_name]
+		,[log_id]
+		,[event]
+		,[event_type]
+		,[event_description]
+	)
+	values (
+		@PackageName
+		, @PackageLogID
+		, 'KIT_ITEMS'
+		, 'COMPLETED'
+		, CONCAT('COUNT: ', coalesce(@v_cnt,0), ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
+	);
+
+	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID), @v_cnt=count(STE_MIGRATIONID) from itemstruct
+	where STE_MIGRATIONID is not null and parent is null;
 
 	UPDATE [dbo].[ste_migration_logs] SET
 	  [start_id] = @v_start_id
@@ -93,7 +114,7 @@ INSERT INTO [dbo].[ste_migration_params]
            ,[modified_on]
            ,[modified_by])
      VALUES
-           ('0020_Master_Workzone'
+           ('0021_Master_ItemStruct'
            ,'version'
            ,'1'
            ,getdate()

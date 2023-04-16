@@ -114,8 +114,7 @@ BEGIN
 
 	-- update start_id and end_id for ITEM_
 	select @v_cnt=count(STE_MIGRATIONID) from poline
-	where STE_MIGRATIONID is not null and itemnum is null 
-		and (STE_MIGRATIONITEMPK is not null or STE_MIGRATIONNSITEMPK is not null);
+	where STE_MIGRATIONID is not null and itemnum is null and STE_MIGRATIONITEMPK is not null;
 
 	insert into [dbo].[ste_migration_log_details] (
 		[package_name]
@@ -128,6 +127,24 @@ BEGIN
 		@PackageName
 		, @PackageLogID
 		, 'POLINE-NOMATCH-ITEM'
+		, 'LOG'
+		, CONCAT('COUNT: ', coalesce(@v_cnt,0))
+	);
+
+	select @v_cnt=count(STE_MIGRATIONID) from poline
+	where STE_MIGRATIONID is not null and itemnum is null and STE_MIGRATIONNSITEMPK is not null;
+
+	insert into [dbo].[ste_migration_log_details] (
+		[package_name]
+		,[log_id]
+		,[event]
+		,[event_type]
+		,[event_description]
+	)
+	values (
+		@PackageName
+		, @PackageLogID
+		, 'POLINE-NOMATCH-NSITEM'
 		, 'LOG'
 		, CONCAT('COUNT: ', coalesce(@v_cnt,0))
 	);

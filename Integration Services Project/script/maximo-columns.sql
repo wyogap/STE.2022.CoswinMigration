@@ -213,4 +213,13 @@ ADD ste_inchrgref varchar(20) default null;
 
 IF COLUMNPROPERTY(OBJECT_ID('dbo.workorder'), 'ste_cswnwoid', 'ColumnId') IS NULL
 ALTER TABLE [workorder]
-ADD ste_cswnwoid varchar(10) default nul
+ADD ste_cswnwoid varchar(10) default null;
+
+--ALTER TABLE jobplan
+--ALTER COLUMN jpnum varchar(16) NOT NULL;
+
+--ALTER TABLE rfqline
+--ALTER COLUMN rfqnum varchar(16) NOT NULL;
+
+--ALTER TABLE rfqline
+--ALTER COLUMN ponum varchar(10);

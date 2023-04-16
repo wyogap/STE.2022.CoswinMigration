@@ -6,10 +6,11 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_007_master_AssetAttribute_pre
+drop procedure if exists ste_007_master_AssetAttribute_pre;
+drop procedure if exists ste_0007_master_AssetAttribute_pre;
 GO
 
-CREATE PROCEDURE ste_007_master_AssetAttribute_pre 
+CREATE PROCEDURE ste_0007_master_AssetAttribute_pre 
 	@PackageLogID INT
 AS
 BEGIN
@@ -28,10 +29,11 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_007_master_AssetAttribute_insert
+drop procedure if exists ste_007_master_AssetAttribute_insert;
+drop procedure if exists ste_0007_master_AssetAttribute_insert;
 GO
 
-CREATE PROCEDURE ste_007_master_AssetAttribute_insert
+CREATE PROCEDURE ste_0007_master_AssetAttribute_insert
   @PackageLogID INT
 AS
 BEGIN
@@ -72,10 +74,11 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_007_master_AssetAttribute_post
+drop procedure if exists ste_007_master_AssetAttribute_post;
+drop procedure if exists ste_0007_master_AssetAttribute_post;
 GO
 
-CREATE PROCEDURE ste_007_master_AssetAttribute_post
+CREATE PROCEDURE ste_0007_master_AssetAttribute_post
   @PackageLogID INT
 AS
 BEGIN
@@ -112,7 +115,7 @@ INSERT INTO [dbo].[ste_migration_params]
      VALUES
            ('0007_Master_AssetAttribute'
            ,'version'
-           ,'2'
+           ,'3'
            ,getdate()
            ,'ssis'
            ,NULL
