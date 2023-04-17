@@ -109,6 +109,44 @@ BEGIN
 	);
 
 	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID), @v_cnt=count(STE_MIGRATIONID) from longdescription
+	where STE_MIGRATIONID is not null and ldownertable='ITEM'
+		and STE_MIGRATIONSOURCE='ITEM-RMK';
+
+	insert into [dbo].[ste_migration_log_details] (
+		[package_name]
+		,[log_id]
+		,[event]
+		,[event_type]
+		,[event_description]
+	)
+	values (
+		@PackageName
+		, @PackageLogID
+		, 'ITEM-RMK-MATCH'
+		, 'COMPLETED'
+		, CONCAT('COUNT: ', coalesce(@v_cnt,0), ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
+	);
+
+	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID), @v_cnt=count(STE_MIGRATIONID) from longdescription
+	where STE_MIGRATIONID is not null and ldownertable='ITEM'
+		and STE_MIGRATIONSOURCE='ITEM-LD';
+
+	insert into [dbo].[ste_migration_log_details] (
+		[package_name]
+		,[log_id]
+		,[event]
+		,[event_type]
+		,[event_description]
+	)
+	values (
+		@PackageName
+		, @PackageLogID
+		, 'ITEM-LD-MATCH'
+		, 'COMPLETED'
+		, CONCAT('COUNT: ', coalesce(@v_cnt,0), ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
+	);
+
+	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID), @v_cnt=count(STE_MIGRATIONID) from longdescription
 	where STE_MIGRATIONID is not null and ldownertable='ITEM';
 
 	UPDATE [dbo].[ste_migration_logs] SET
