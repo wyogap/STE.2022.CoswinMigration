@@ -223,3 +223,12 @@ ADD ste_cswnwoid varchar(10) default null;
 
 --ALTER TABLE rfqline
 --ALTER COLUMN ponum varchar(10);
+
+--ALTER TABLE amcrew
+--ALTER COLUMN amcrew varchar(10);
+
+--ALTER TABLE amcrewlabor
+--ALTER COLUMN amcrew varchar(10);
+
+--ALTER TABLE amcrewlabor
+--ALTER COLUMN craft varchar(10);
