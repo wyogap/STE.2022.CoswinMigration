@@ -232,3 +232,9 @@ ADD ste_cswnwoid varchar(10) default null;
 
 --ALTER TABLE amcrewlabor
 --ALTER COLUMN craft varchar(10);
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.workorder'), 'ste_cswnafcjrnum', 'ColumnId') IS NULL
+ALTER TABLE [workorder]
+ADD ste_cswnafcjrnum varchar(20) default null,
+	ste_cswnoldsernum varchar(20) default null,
+	ste_cswnnewsernum varchar(20) default null;

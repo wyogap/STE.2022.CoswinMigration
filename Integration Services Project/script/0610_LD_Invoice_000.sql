@@ -1,4 +1,19 @@
 /****** Object:  Table [dbo].[ste_migration_params]    Script Date: 25/01/2023 17:46:34 ******/
+-- Add custom columns
+-- ------------------
+IF COLUMNPROPERTY(OBJECT_ID('dbo.longdescription'), 'STE_MIGRATIONID', 'ColumnId') is null
+ALTER TABLE longdescription
+ADD STE_MIGRATIONID bigint default null,
+    STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.longdescription'), 'STE_MIGRATIONVALUE', 'ColumnId') is null
+ALTER TABLE longdescription
+ADD STE_MIGRATIONVALUE IMAGE default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.longdescription'), 'STE_MIGRATIONSOURCE', 'ColumnId') is null
+ALTER TABLE longdescription
+ADD STE_MIGRATIONSOURCE VARCHAR(20) default null;
+
 -- Create pre-task
 -- ---------------
 SET ANSI_NULLS ON
@@ -6,15 +21,21 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_0402_WO_WOActivity_pre
+drop procedure if exists ste_0610_LD_Invoice_pre
 GO
 
-CREATE PROCEDURE ste_0402_WO_WOActivity_pre 
+CREATE PROCEDURE ste_0610_LD_Invoice_pre 
 	@PackageLogID INT
 AS
 BEGIN
 	-- truncate existing data
-	delete from WORKORDER where STE_MIGRATIONID is not null and woclass='ACTIVITY' and istask=1;;
+	delete from longdescription where STE_MIGRATIONID is not null and ldownertable='INVOICE';
+
+	-- reset hasld flag
+	update invoice
+	set
+		hasld=0
+	where STE_MIGRATIONID is not null;
 
 END
 
@@ -27,10 +48,10 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_0402_WO_WOActivity_post
+drop procedure if exists ste_0610_LD_Invoice_post
 GO
 
-CREATE PROCEDURE ste_0402_WO_WOActivity_post
+CREATE PROCEDURE ste_0610_LD_Invoice_post
   @PackageLogID INT
 AS
 BEGIN
@@ -41,16 +62,16 @@ BEGIN
 	declare @PackageName varchar(250);
 
 	-- update identity column
-	select @v_max_id=max(WORKORDERID) from WORKORDER;
-	update maxsequence set maxreserved=@v_max_id+1 where tbname='WORKORDER' and name='WORKORDERID';
+	select @v_max_id=max(longdescriptionid) from longdescription;
+	update maxsequence set maxreserved=coalesce(@v_max_id,0)+1 where tbname='LONGDESCRIPTION' and name='LONGDESCRIPTIONID';
 
 	-- get package name
 	select @PackageName = package_name from [dbo].[ste_migration_logs] where id = @PackageLogID;
 	if (@PackageName is null) return;
 
 	-- update start_id and end_id for ITEM_
-	select @v_cnt=count(STE_MIGRATIONID) from workorder
-	where STE_MIGRATIONID is not null and woclass='ACTIVITY' and istask=1 and parent is null;
+	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID), @v_cnt=count(STE_MIGRATIONID) from longdescription
+	where STE_MIGRATIONID is not null and ldownertable='INVOICE';
 
 	insert into [dbo].[ste_migration_log_details] (
 		[package_name]
@@ -62,32 +83,10 @@ BEGIN
 	values (
 		@PackageName
 		, @PackageLogID
-		, 'NOMATCH-PARENTWO'
-		, 'LOG'
-		, CONCAT('COUNT: ', @v_cnt)
-	);
-
-	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID), @v_cnt=count(STE_MIGRATIONID) from workorder
-	where STE_MIGRATIONID is not null and woclass='ACTIVITY' and istask=1;
-
-	insert into [dbo].[ste_migration_log_details] (
-		[package_name]
-		,[log_id]
-		,[event]
-		,[event_type]
-		,[event_description]
-	)
-	values (
-		@PackageName
-		, @PackageLogID
-		, 'WOACTIVITY'
+		, 'MATCH'
 		, 'COMPLETED'
 		, CONCAT('COUNT: ', @v_cnt, ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
 	);
-
-	-- update start_id and end_id
-	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID) from WORKORDER
-	where STE_MIGRATIONID is not null and woclass='ACTIVITY' and istask=1;
 
 	UPDATE [dbo].[ste_migration_logs] SET
 	  [start_id] = @v_start_id
@@ -108,9 +107,9 @@ INSERT INTO [dbo].[ste_migration_params]
            ,[modified_on]
            ,[modified_by])
      VALUES
-           ('0402_WO_WOActivity'
+           ('0610_LD_Invoice'
            ,'version'
-           ,'2'
+           ,'1'
            ,getdate()
            ,'ssis'
            ,NULL
