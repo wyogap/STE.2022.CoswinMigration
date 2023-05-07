@@ -7,10 +7,11 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_0511_Misc_ServiceItems_pre
+drop procedure if exists ste_0511_Misc_ServiceItems_pre;
+drop procedure if exists ste_0510_Misc_ServiceItems_pre;
 GO
 
-CREATE PROCEDURE ste_0511_Misc_ServiceItems_pre 
+CREATE PROCEDURE ste_0510_Misc_ServiceItems_pre 
 	@PackageLogID INT
 AS
 BEGIN
@@ -33,10 +34,11 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_0511_Misc_ServiceItems_post
+drop procedure if exists ste_0511_Misc_ServiceItems_post;
+drop procedure if exists ste_0510_Misc_ServiceItems_post;
 GO
 
-CREATE PROCEDURE ste_0511_Misc_ServiceItems_post
+CREATE PROCEDURE ste_0510_Misc_ServiceItems_post
   @PackageLogID INT
 AS
 BEGIN
@@ -88,7 +90,7 @@ INSERT INTO [dbo].[ste_migration_params]
            ,[modified_on]
            ,[modified_by])
      VALUES
-           ('0511_Misc_ServiceItems'
+           ('0510_Misc_ServiceItems'
            ,'version'
            ,'1'
            ,getdate()

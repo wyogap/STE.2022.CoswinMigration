@@ -116,7 +116,7 @@ INSERT INTO [dbo].[ste_migration_params]
            ,[modified_on]
            ,[modified_by])
      VALUES
-           ('0010_Master_Item'
+           ('0010_Master_Item_ItemOrgInfo'
            ,'version'
            ,'2'
            ,getdate()

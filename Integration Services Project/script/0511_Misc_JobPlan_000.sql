@@ -14,10 +14,11 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_0510_Misc_JobPlan_pre
+drop procedure if exists ste_0510_Misc_JobPlan_pre;
+drop procedure if exists ste_0511_Misc_JobPlan_pre;
 GO
 
-CREATE PROCEDURE ste_0510_Misc_JobPlan_pre 
+CREATE PROCEDURE ste_0511_Misc_JobPlan_pre 
 	@PackageLogID INT
 AS
 BEGIN
@@ -35,10 +36,11 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_0510_Misc_JobPlan_post
+drop procedure if exists ste_0510_Misc_JobPlan_post;
+drop procedure if exists ste_0511_Misc_JobPlan_post
 GO
 
-CREATE PROCEDURE ste_0510_Misc_JobPlan_post
+CREATE PROCEDURE ste_0511_Misc_JobPlan_post
   @PackageLogID INT
 AS
 BEGIN
@@ -94,7 +96,7 @@ INSERT INTO [dbo].[ste_migration_params]
            ,[modified_on]
            ,[modified_by])
      VALUES
-           ('0510_Misc_JobPlan'
+           ('0511_Misc_JobPlan'
            ,'version'
            ,'1'
            ,getdate()
