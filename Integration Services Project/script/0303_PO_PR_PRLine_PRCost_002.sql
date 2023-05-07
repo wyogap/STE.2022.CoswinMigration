@@ -14,7 +14,7 @@ INSERT INTO [dbo].[ste_migration_params]
            ,[modified_on]
            ,[modified_by])
      VALUES
-           ('0303_PO_PR_PRLine'
+           ('0303_PO_PR_PRLine_PRCost'
            ,'version'
            ,'3'
            ,getdate()
