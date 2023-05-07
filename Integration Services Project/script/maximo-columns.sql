@@ -238,3 +238,46 @@ ALTER TABLE [workorder]
 ADD ste_cswnafcjrnum varchar(20) default null,
 	ste_cswnoldsernum varchar(20) default null,
 	ste_cswnnewsernum varchar(20) default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.jobplan'), 'STE_CSWNAVPRTM', 'ColumnId') is null
+ALTER TABLE jobplan
+ADD STE_CSWNAVPRTM	SMALLINT default null,
+	STE_CSWNCC	varchar(16) default null,
+	STE_CSWNDAY	SMALLINT default null,
+	STE_CSWNDURATIONUNIT	varchar(5) default null,
+	STE_CSWNENWK	SMALLINT default null,
+	STE_CSWNHAZARD	SMALLINT default null,
+	STE_CSWNJBBHU	SMALLINT default null,
+	STE_CSWNJOBCLASS	varchar(6) default null,
+	STE_CSWNJOBTYPE	varchar(6) default null,
+	STE_CSWNLABORCOST	numeric(10) default null,
+	STE_CSWNLJML	FLOAT default null,
+	STE_CSWNMATERIALCOST	NUMERIC(10) default null,
+	STE_CSWNMIPRTM	SMALLINT default null,
+	STE_CSWNMTID	varchar(16) default null,
+	STE_CSWNMTPRML	DECIMAL(15) default null,
+	STE_CSWNMXPRTM	SMALLINT default null,
+	STE_CSWNNOWO	SMALLINT default null,
+	STE_CSWNPR_UNIT	SMALLINT default null,
+	STE_CSWNPRJREF	varchar(10) default null,
+	STE_CSWNSERVICECOST	numeric(10) default null,
+	STE_CSWNSTWK	SMALLINT default null,
+	STE_CSWNWOID	varchar(10) default null;
+	
+IF COLUMNPROPERTY(OBJECT_ID('dbo.jobplan'), 'STE_CSWNWORKDAY', 'ColumnId') is null
+ALTER TABLE jobplan
+ADD STE_CSWNWORKDAY	SMALLINT default null,
+	STE_CSWNWPTYPE	varchar(10) default null,
+	STE_CWEQCODE	varchar(25) default null;
+	
+IF COLUMNPROPERTY(OBJECT_ID('dbo.jpassetsplink'), 'STE_CWEQCODE', 'ColumnId') is null
+ALTER TABLE jpassetsplink
+ADD STE_CWEQCODE	varchar(25) default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.jobtask'), 'STE_CWEQCODE', 'ColumnId') is null
+ALTER TABLE jobtask
+ADD STE_CWEQCODE	varchar(25) default null,
+	STE_CSWNINTERVAL	numeric(12) default null,
+	STE_CSWNINTERVALUNIT	varchar(8) default null;
+
+	

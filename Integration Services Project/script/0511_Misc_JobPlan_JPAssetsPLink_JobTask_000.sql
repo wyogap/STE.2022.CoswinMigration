@@ -96,7 +96,7 @@ INSERT INTO [dbo].[ste_migration_params]
            ,[modified_on]
            ,[modified_by])
      VALUES
-           ('0511_Misc_JobPlan'
+           ('0511_Misc_JobPlan_JPAssetsPLink_JobTask'
            ,'version'
            ,'1'
            ,getdate()
