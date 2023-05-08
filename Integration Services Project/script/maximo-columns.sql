@@ -280,4 +280,23 @@ ADD STE_CWEQCODE	varchar(25) default null,
 	STE_CSWNINTERVAL	numeric(12) default null,
 	STE_CSWNINTERVALUNIT	varchar(8) default null;
 
+IF COLUMNPROPERTY(OBJECT_ID('dbo.pm'), 'STE_CSWNCC', 'ColumnId') is null
+ALTER TABLE pm
+ADD STE_CSWNCC	varchar(16) default null,
+	STE_CSWNCOSTYPE	varchar(10) default null,
+	STE_CSWNINTERVALUNIT	varchar(8) default null,
+	STE_CSWNJOBBEHAVIOUR	SMALLINT default null,
+	STE_CSWNJOBLEVEL	SMALLINT default null,
+	STE_CSWNLASTWONUM	varchar(10) default null,
+	STE_CSWNMAXINTERVAL	numeric(12) default null,
+	STE_CSWNMININTERVAL	numeric(12) default null,
+	STE_CSWNMULT	SMALLINT default null,
+	STE_CSWNSHIFT	SMALLINT default null,
+	STE_CSWNWORKDAY	SMALLINT default null,
+	STE_CWEQCODE	varchar(25) default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.pmmeter'), 'STE_CSWNFREQUNIT', 'ColumnId') is null
+ALTER TABLE pmmeter
+ADD STE_CSWNFREQUNIT	smallint default null;
+
 	

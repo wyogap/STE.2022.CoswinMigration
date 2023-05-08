@@ -32,6 +32,52 @@
 --	STE_CSWNWPTYPE	varchar(10) default null,
 --	STE_CWEQCODE	varchar(25) default null;
 
+-- Create pre-task
+-- ---------------
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+drop procedure if exists ste_0511_Misc_JobPlan_pre;
+GO
+
+CREATE PROCEDURE ste_0511_Misc_JobPlan_pre 
+	@PackageLogID INT
+AS
+BEGIN
+	declare @v_seed bigint;
+	declare @v_max_id bigint;
+
+	-- truncate existing data
+	delete from jobplan where STE_MIGRATIONID is not null;
+
+	-- create autokey if not exist
+	select @v_seed=seed from [dbo].[autokey] where [autokeyname]='JPNUM';
+	if (@v_seed is null)
+	begin
+		select @v_max_id=maxreserved from [dbo].[maxsequence] where [tbname]='AUTOKEY' and [name]='AUTOKEYID';
+		
+		insert into [dbo].[autokey] (
+			[seed]
+			,[autokeyname]
+			,[langcode]
+			,[autokeyid]
+		)
+		values (
+			1000
+			,'JPNUM'
+			,'EN'
+			,@v_max_id + 1
+		);
+
+		update maxsequence set maxreserved=@v_max_id+1 where tbname='AUTOKEY' and name='AUTOKEYID';
+	end;
+
+END
+
+GO
+
 -- --------------
 -- JPASSETSPLINK
 -- --------------

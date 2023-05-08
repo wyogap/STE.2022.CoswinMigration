@@ -117,10 +117,11 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_0703_Audit_AuditTables3_pre
+drop procedure if exists ste_0703_Audit_AuditTables3_pre;
+drop procedure if exists ste_0703_Others_AuditTables3_pre;
 GO
 
-CREATE PROCEDURE ste_0703_Audit_AuditTables3_pre 
+CREATE PROCEDURE ste_0703_Others_AuditTables3_pre 
 	@PackageLogID INT
 AS
 BEGIN
@@ -147,10 +148,11 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_0703_Audit_AuditTables3_post
+drop procedure if exists ste_0703_Audit_AuditTables3_post;
+drop procedure if exists ste_0703_Others_AuditTables3_post;
 GO
 
-CREATE PROCEDURE ste_0703_Audit_AuditTables3_post
+CREATE PROCEDURE ste_0703_Others_AuditTables3_post
   @PackageLogID INT
 AS
 BEGIN
@@ -178,8 +180,8 @@ BEGIN
 		@PackageName
 		, @PackageLogID
 		, 'audit_job_catg_int'
-		, 'LOG'
-		, CONCAT('COUNT: ', @v_cnt, ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
+		, 'COMPLETED'
+		, CONCAT('COUNT: ', coalesce(@v_cnt,0), ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
 	);
 
 	select @v_start_id=min(pk_value), @v_end_id=max(pk_value), @v_cnt=count(pk_value) from cswn_audit_job_dir;
@@ -195,8 +197,8 @@ BEGIN
 		@PackageName
 		, @PackageLogID
 		, 'audit_job_dir'
-		, 'LOG'
-		, CONCAT('COUNT: ', @v_cnt, ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
+		, 'COMPLETED'
+		, CONCAT('COUNT: ', coalesce(@v_cnt,0), ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
 	);
 
 	select @v_start_id=min(pk_value), @v_end_id=max(pk_value), @v_cnt=count(pk_value) from cswn_audit_job_manr;
@@ -212,8 +214,8 @@ BEGIN
 		@PackageName
 		, @PackageLogID
 		, 'audit_job_manr'
-		, 'LOG'
-		, CONCAT('COUNT: ', @v_cnt, ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
+		, 'COMPLETED'
+		, CONCAT('COUNT: ', coalesce(@v_cnt,0), ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
 	);
 
 	select @v_start_id=min(pk_value), @v_end_id=max(pk_value), @v_cnt=count(pk_value) from cswn_audit_job_stokr;
@@ -229,8 +231,8 @@ BEGIN
 		@PackageName
 		, @PackageLogID
 		, 'audit_job_stokr'
-		, 'LOG'
-		, CONCAT('COUNT: ', @v_cnt, ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
+		, 'COMPLETED'
+		, CONCAT('COUNT: ', coalesce(@v_cnt,0), ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
 	);
 
 	select @v_start_id=min(pk_value), @v_end_id=max(pk_value), @v_cnt=count(pk_value) from cswn_audit_neg_inv;
@@ -246,8 +248,8 @@ BEGIN
 		@PackageName
 		, @PackageLogID
 		, 'audit_neg_inv'
-		, 'LOG'
-		, CONCAT('COUNT: ', @v_cnt, ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
+		, 'COMPLETED'
+		, CONCAT('COUNT: ', coalesce(@v_cnt,0), ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
 	);
 
 	select @v_start_id=min(pk_value), @v_end_id=max(pk_value), @v_cnt=count(pk_value) from cswn_audit_neg_inv_cc;
@@ -263,8 +265,8 @@ BEGIN
 		@PackageName
 		, @PackageLogID
 		, 'audit_neg_inv_cc'
-		, 'LOG'
-		, CONCAT('COUNT: ', @v_cnt, ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
+		, 'COMPLETED'
+		, CONCAT('COUNT: ', coalesce(@v_cnt,0), ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
 	);
 
 	select @v_start_id=min(pk_value), @v_end_id=max(pk_value), @v_cnt=count(pk_value) from cswn_audit_plan_id;
@@ -280,8 +282,8 @@ BEGIN
 		@PackageName
 		, @PackageLogID
 		, 'audit_plan_id'
-		, 'LOG'
-		, CONCAT('COUNT: ', @v_cnt, ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
+		, 'COMPLETED'
+		, CONCAT('COUNT: ', coalesce(@v_cnt,0), ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
 	);
 
 	select @v_start_id=min(pk_value), @v_end_id=max(pk_value), @v_cnt=count(pk_value) from cswn_audit_plan_jobs;
@@ -297,8 +299,8 @@ BEGIN
 		@PackageName
 		, @PackageLogID
 		, 'audit_plan_jobs'
-		, 'LOG'
-		, CONCAT('COUNT: ', @v_cnt, ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
+		, 'COMPLETED'
+		, CONCAT('COUNT: ', coalesce(@v_cnt,0), ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
 	);
 
 	select @v_start_id=min(pk_value), @v_end_id=max(pk_value), @v_cnt=count(pk_value) from cswn_audit_porder_;
@@ -314,8 +316,8 @@ BEGIN
 		@PackageName
 		, @PackageLogID
 		, 'audit_porder_'
-		, 'LOG'
-		, CONCAT('COUNT: ', @v_cnt, ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
+		, 'COMPLETED'
+		, CONCAT('COUNT: ', coalesce(@v_cnt,0), ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
 	);
 
 	select @v_start_id=min(pk_value), @v_end_id=max(pk_value), @v_cnt=count(pk_value) from cswn_audit_po_items;
@@ -331,8 +333,8 @@ BEGIN
 		@PackageName
 		, @PackageLogID
 		, 'audit_po_items'
-		, 'LOG'
-		, CONCAT('COUNT: ', @v_cnt, ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
+		, 'COMPLETED'
+		, CONCAT('COUNT: ', coalesce(@v_cnt,0), ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
 	);
 
 	UPDATE [dbo].[ste_migration_logs] SET
@@ -354,7 +356,7 @@ INSERT INTO [dbo].[ste_migration_params]
            ,[modified_on]
            ,[modified_by])
      VALUES
-           ('0703_Audit_AuditTables3'
+           ('0703_Others_AuditTables3'
            ,'version'
            ,'1'
            ,getdate()

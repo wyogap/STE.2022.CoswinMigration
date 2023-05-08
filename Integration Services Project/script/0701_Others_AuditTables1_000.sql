@@ -1,8 +1,29 @@
 /****** Object:  Table [dbo].[ste_migration_params]    Script Date: 25/01/2023 17:46:34 ******/
+-- coswin.audit_alt_items definition
+IF OBJECT_ID(N'dbo.cswn_audit_alt_items', N'U') IS NULL
+create table cswn_audit_alt_items 
+   (	pk_value bigint, 
+	username varchar(30), 
+	modificationdate date, 
+	operation numeric(5,0), 
+	status varchar(6), 
+	details varchar(4000)
+   ) ;
+  
+-- coswin.audit_batch_ definition
+IF OBJECT_ID(N'dbo.cswn_audit_batch_', N'U') IS NULL
+create table cswn_audit_batch_ 
+   (	pk_value bigint, 
+	username varchar(30), 
+	modificationdate date, 
+	operation numeric(5,0), 
+	status varchar(6), 
+	details varchar(4000)
+   );
 
--- coswin.audit_eqp_jobs definition
-IF OBJECT_ID(N'dbo.cswn_audit_eqp_jobs', N'U') IS NULL
-create table cswn_audit_eqp_jobs 
+-- coswin.audit_count_ definition
+IF OBJECT_ID(N'dbo.cswn_audit_count_', N'U') IS NULL
+create table cswn_audit_count_ 
    (	pk_value bigint, 
 	username varchar(30), 
 	modificationdate date, 
@@ -11,10 +32,9 @@ create table cswn_audit_eqp_jobs
 	details varchar(4000)
    ) ;
 
-
--- coswin.audit_eqp_move definition
-IF OBJECT_ID(N'dbo.cswn_audit_eqp_move', N'U') IS NULL
-create table cswn_audit_eqp_move 
+-- coswin.audit_dem_iss definition
+IF OBJECT_ID(N'dbo.cswn_audit_dem_iss', N'U') IS NULL
+create table cswn_audit_dem_iss 
    (	pk_value bigint, 
 	username varchar(30), 
 	modificationdate date, 
@@ -23,9 +43,20 @@ create table cswn_audit_eqp_move
 	details varchar(4000)
    ) ;
 
--- coswin.audit_eqp_srl definition
-IF OBJECT_ID(N'dbo.cswn_audit_eqp_srl', N'U') IS NULL
-create table cswn_audit_eqp_srl 
+-- coswin.audit_dem_items definition
+IF OBJECT_ID(N'dbo.cswn_audit_dem_items', N'U') IS NULL
+create table cswn_audit_dem_items 
+   (	pk_value bigint, 
+	username varchar(30), 
+	modificationdate date, 
+	operation numeric(5,0), 
+	status varchar(6), 
+	details varchar(4000)
+   ) ;
+
+-- coswin.audit_devis definition
+IF OBJECT_ID(N'dbo.cswn_audit_devis', N'U') IS NULL
+create table cswn_audit_devis 
    (	pk_value bigint, 
 	username varchar(30), 
 	modificationdate date, 
@@ -34,9 +65,9 @@ create table cswn_audit_eqp_srl
 	details varchar(4000)
    ) ;
    
--- coswin.audit_eqp_topo definition
-IF OBJECT_ID(N'dbo.cswn_audit_eqp_topo', N'U') IS NULL
-create table cswn_audit_eqp_topo 
+-- coswin.audit_dv_items definition
+IF OBJECT_ID(N'dbo.cswn_audit_dv_items', N'U') IS NULL
+create table cswn_audit_dv_items 
    (	pk_value bigint, 
 	username varchar(30), 
 	modificationdate date, 
@@ -45,9 +76,9 @@ create table cswn_audit_eqp_topo
 	details varchar(4000)
    ) ;
 
--- coswin.audit_his_ho definition
-IF OBJECT_ID(N'dbo.cswn_audit_his_ho', N'U') IS NULL
-create table cswn_audit_his_ho 
+-- coswin.audit_eqp_defr definition
+IF OBJECT_ID(N'dbo.cswn_audit_eqp_defr', N'U') IS NULL
+create table cswn_audit_eqp_defr 
    (	pk_value bigint, 
 	username varchar(30), 
 	modificationdate date, 
@@ -56,63 +87,28 @@ create table cswn_audit_his_ho
 	details varchar(4000)
    ) ;
 
-
--- coswin.audit_invoice_ definition
-IF OBJECT_ID(N'dbo.cswn_audit_invoice_', N'U') IS NULL
-create table cswn_audit_invoice_ 
+-- coswin.audit_eqp_group definition
+IF OBJECT_ID(N'dbo.cswn_audit_eqp_group', N'U') IS NULL
+create table cswn_audit_eqp_group 
    (	pk_value bigint, 
 	username varchar(30), 
 	modificationdate date, 
 	operation numeric(5,0), 
 	status varchar(6), 
-	details varchar(4000)
-   ) ;
-
-
--- coswin.audit_inv_items definition
-IF OBJECT_ID(N'dbo.cswn_audit_inv_items', N'U') IS NULL
-create table cswn_audit_inv_items 
-   (	pk_value bigint, 
-	username varchar(30), 
-	modificationdate date, 
-	operation numeric(5,0), 
-	status varchar(6), 
-	details varchar(4000)
-   ) ;
-
--- coswin.audit_iss_items definition
-IF OBJECT_ID(N'dbo.cswn_audit_iss_items', N'U') IS NULL
-create table cswn_audit_iss_items 
-   (	pk_value bigint, 
-	username varchar(30), 
-	modificationdate date, 
-	operation numeric(5,0), 
-	status varchar(6), 
-	details varchar(4000)
-   ) ;
-
--- coswin.audit_item_ definition
-IF OBJECT_ID(N'dbo.cswn_audit_item_', N'U') IS NULL
-create table cswn_audit_item_ 
-   (	pk_value bigint, 
-	username varchar(30), 
-	modificationdate date, 
-	operation numeric(5,0), 
-	status varchar(6), 
-	details varchar(4000)
-   ) ;
-
--- coswin.audit_job_actn definition
-IF OBJECT_ID(N'dbo.cswn_audit_job_actn', N'U') IS NULL
-create table cswn_audit_job_actn 
-   (	pk_value bigint, 
-	username varchar(30), 
-	modificationdate date, 
-	operation numeric(5,0), 
-	status varchar(20), 
 	details varchar(4000)
    ) ;
    
+-- coswin.audit_eqp_jobr definition
+IF OBJECT_ID(N'dbo.cswn_audit_eqp_jobr', N'U') IS NULL
+create table cswn_audit_eqp_jobr 
+   (	pk_value bigint, 
+	username varchar(30), 
+	modificationdate date, 
+	operation numeric(5,0), 
+	status varchar(6), 
+	details varchar(4000)
+   );
+
 
 -- Create pre-task
 -- ---------------
@@ -121,24 +117,25 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_0702_Audit_AuditTables2_pre
+drop procedure if exists ste_0701_Audit_AuditTables1_pre;
+drop procedure if exists ste_0701_Others_AuditTables1_pre;
 GO
 
-CREATE PROCEDURE ste_0702_Audit_AuditTables2_pre 
+CREATE PROCEDURE ste_0701_Others_AuditTables1_pre 
 	@PackageLogID INT
 AS
 BEGIN
 	-- truncate existing data
-	truncate table cswn_audit_eqp_jobs;
-	truncate table cswn_audit_eqp_move;
-	truncate table cswn_audit_eqp_srl;
-	truncate table cswn_audit_eqp_topo;
-	truncate table cswn_audit_his_ho;
-	truncate table cswn_audit_invoice_;
-	truncate table cswn_audit_inv_items;
-	truncate table cswn_audit_iss_items;
-	truncate table cswn_audit_item_;
-	truncate table cswn_audit_job_actn;
+	truncate table cswn_audit_alt_items;
+	truncate table cswn_audit_batch_;
+	truncate table cswn_audit_count_;
+	truncate table cswn_audit_dem_iss;
+	truncate table cswn_audit_dem_items;
+	truncate table cswn_audit_devis;
+	truncate table cswn_audit_dv_items;
+	truncate table cswn_audit_eqp_defr;
+	truncate table cswn_audit_eqp_group;
+	truncate table cswn_audit_eqp_jobr;
 
 END
 
@@ -151,10 +148,11 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_0702_Audit_AuditTables2_post
+drop procedure if exists ste_0701_Audit_AuditTables1_post;
+drop procedure if exists ste_0701_Others_AuditTables1_post;
 GO
 
-CREATE PROCEDURE ste_0702_Audit_AuditTables2_post
+CREATE PROCEDURE ste_0701_Others_AuditTables1_post
   @PackageLogID INT
 AS
 BEGIN
@@ -169,7 +167,7 @@ BEGIN
 	if (@PackageName is null) return;
 
 	-- update start_id and end_id for ITEM_
-	select @v_start_id=min(pk_value), @v_end_id=max(pk_value), @v_cnt=count(pk_value) from cswn_audit_eqp_jobs;
+	select @v_start_id=min(pk_value), @v_end_id=max(pk_value), @v_cnt=count(pk_value) from cswn_audit_alt_items;
 
 	insert into [dbo].[ste_migration_log_details] (
 		[package_name]
@@ -181,12 +179,12 @@ BEGIN
 	values (
 		@PackageName
 		, @PackageLogID
-		, 'audit_eqp_jobs'
-		, 'LOG'
-		, CONCAT('COUNT: ', @v_cnt, ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
+		, 'audit_alt_items'
+		, 'COMPLETED'
+		, CONCAT('COUNT: ', coalesce(@v_cnt,0), ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
 	);
 
-	select @v_start_id=min(pk_value), @v_end_id=max(pk_value), @v_cnt=count(pk_value) from cswn_audit_eqp_move;
+	select @v_start_id=min(pk_value), @v_end_id=max(pk_value), @v_cnt=count(pk_value) from cswn_audit_batch_;
 
 	insert into [dbo].[ste_migration_log_details] (
 		[package_name]
@@ -198,12 +196,12 @@ BEGIN
 	values (
 		@PackageName
 		, @PackageLogID
-		, 'audit_eqp_move'
-		, 'LOG'
-		, CONCAT('COUNT: ', @v_cnt, ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
+		, 'audit_batch_'
+		, 'COMPLETED'
+		, CONCAT('COUNT: ', coalesce(@v_cnt,0), ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
 	);
 
-	select @v_start_id=min(pk_value), @v_end_id=max(pk_value), @v_cnt=count(pk_value) from cswn_audit_eqp_srl;
+	select @v_start_id=min(pk_value), @v_end_id=max(pk_value), @v_cnt=count(pk_value) from cswn_audit_count_;
 
 	insert into [dbo].[ste_migration_log_details] (
 		[package_name]
@@ -215,12 +213,12 @@ BEGIN
 	values (
 		@PackageName
 		, @PackageLogID
-		, 'audit_eqp_srl'
-		, 'LOG'
-		, CONCAT('COUNT: ', @v_cnt, ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
+		, 'audit_count_'
+		, 'COMPLETED'
+		, CONCAT('COUNT: ', coalesce(@v_cnt,0), ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
 	);
 
-	select @v_start_id=min(pk_value), @v_end_id=max(pk_value), @v_cnt=count(pk_value) from cswn_audit_eqp_topo;
+	select @v_start_id=min(pk_value), @v_end_id=max(pk_value), @v_cnt=count(pk_value) from cswn_audit_dem_iss;
 
 	insert into [dbo].[ste_migration_log_details] (
 		[package_name]
@@ -232,12 +230,12 @@ BEGIN
 	values (
 		@PackageName
 		, @PackageLogID
-		, 'audit_eqp_topo'
-		, 'LOG'
-		, CONCAT('COUNT: ', @v_cnt, ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
+		, 'audit_dem_iss'
+		, 'COMPLETED'
+		, CONCAT('COUNT: ', coalesce(@v_cnt,0), ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
 	);
 
-	select @v_start_id=min(pk_value), @v_end_id=max(pk_value), @v_cnt=count(pk_value) from cswn_audit_his_ho;
+	select @v_start_id=min(pk_value), @v_end_id=max(pk_value), @v_cnt=count(pk_value) from cswn_audit_dem_items;
 
 	insert into [dbo].[ste_migration_log_details] (
 		[package_name]
@@ -249,12 +247,12 @@ BEGIN
 	values (
 		@PackageName
 		, @PackageLogID
-		, 'audit_his_ho'
-		, 'LOG'
-		, CONCAT('COUNT: ', @v_cnt, ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
+		, 'audit_dem_items'
+		, 'COMPLETED'
+		, CONCAT('COUNT: ', coalesce(@v_cnt,0), ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
 	);
 
-	select @v_start_id=min(pk_value), @v_end_id=max(pk_value), @v_cnt=count(pk_value) from cswn_audit_invoice_;
+	select @v_start_id=min(pk_value), @v_end_id=max(pk_value), @v_cnt=count(pk_value) from cswn_audit_devis;
 
 	insert into [dbo].[ste_migration_log_details] (
 		[package_name]
@@ -266,12 +264,12 @@ BEGIN
 	values (
 		@PackageName
 		, @PackageLogID
-		, 'audit_invoice_'
-		, 'LOG'
-		, CONCAT('COUNT: ', @v_cnt, ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
+		, 'audit_devis'
+		, 'COMPLETED'
+		, CONCAT('COUNT: ', coalesce(@v_cnt,0), ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
 	);
 
-	select @v_start_id=min(pk_value), @v_end_id=max(pk_value), @v_cnt=count(pk_value) from cswn_audit_inv_items;
+	select @v_start_id=min(pk_value), @v_end_id=max(pk_value), @v_cnt=count(pk_value) from cswn_audit_dv_items;
 
 	insert into [dbo].[ste_migration_log_details] (
 		[package_name]
@@ -283,12 +281,12 @@ BEGIN
 	values (
 		@PackageName
 		, @PackageLogID
-		, 'audit_inv_items'
-		, 'LOG'
-		, CONCAT('COUNT: ', @v_cnt, ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
+		, 'audit_dv_items'
+		, 'COMPLETED'
+		, CONCAT('COUNT: ', coalesce(@v_cnt,0), ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
 	);
 
-	select @v_start_id=min(pk_value), @v_end_id=max(pk_value), @v_cnt=count(pk_value) from cswn_audit_iss_items;
+	select @v_start_id=min(pk_value), @v_end_id=max(pk_value), @v_cnt=count(pk_value) from cswn_audit_eqp_defr;
 
 	insert into [dbo].[ste_migration_log_details] (
 		[package_name]
@@ -300,12 +298,12 @@ BEGIN
 	values (
 		@PackageName
 		, @PackageLogID
-		, 'audit_iss_items'
-		, 'LOG'
-		, CONCAT('COUNT: ', @v_cnt, ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
+		, 'audit_eqp_defr'
+		, 'COMPLETED'
+		, CONCAT('COUNT: ', coalesce(@v_cnt,0), ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
 	);
 
-	select @v_start_id=min(pk_value), @v_end_id=max(pk_value), @v_cnt=count(pk_value) from cswn_audit_item_;
+	select @v_start_id=min(pk_value), @v_end_id=max(pk_value), @v_cnt=count(pk_value) from cswn_audit_eqp_group;
 
 	insert into [dbo].[ste_migration_log_details] (
 		[package_name]
@@ -317,12 +315,12 @@ BEGIN
 	values (
 		@PackageName
 		, @PackageLogID
-		, 'audit_item_'
-		, 'LOG'
-		, CONCAT('COUNT: ', @v_cnt, ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
+		, 'audit_eqp_group'
+		, 'COMPLETED'
+		, CONCAT('COUNT: ', coalesce(@v_cnt,0), ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
 	);
 
-	select @v_start_id=min(pk_value), @v_end_id=max(pk_value), @v_cnt=count(pk_value) from cswn_audit_job_actn;
+	select @v_start_id=min(pk_value), @v_end_id=max(pk_value), @v_cnt=count(pk_value) from cswn_audit_eqp_jobr;
 
 	insert into [dbo].[ste_migration_log_details] (
 		[package_name]
@@ -334,9 +332,9 @@ BEGIN
 	values (
 		@PackageName
 		, @PackageLogID
-		, 'audit_job_actn'
-		, 'LOG'
-		, CONCAT('COUNT: ', @v_cnt, ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
+		, 'audit_eqp_jobr'
+		, 'COMPLETED'
+		, CONCAT('COUNT: ', coalesce(@v_cnt,0), ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
 	);
 
 	UPDATE [dbo].[ste_migration_logs] SET
@@ -358,7 +356,7 @@ INSERT INTO [dbo].[ste_migration_params]
            ,[modified_on]
            ,[modified_by])
      VALUES
-           ('0702_Audit_AuditTables2'
+           ('0701_Others_AuditTables1'
            ,'version'
            ,'1'
            ,getdate()
