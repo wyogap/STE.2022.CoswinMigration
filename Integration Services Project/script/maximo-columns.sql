@@ -137,7 +137,7 @@ ADD ste_cswnactionauth varchar(16) default null,
 	ste_eqpphone varchar(13) default null;
 
 --ALTER TABLE workorder
---ALTER COLUMN [route] varchar(20) NOT NULL;
+--ALTER COLUMN [route] varchar(20);
 
 ---- delete index dependent to problemcode
 --drop index [workorder_ndx7] ON [dbo].[workorder];
@@ -307,3 +307,11 @@ ADD STE_REPLFLAG varchar(3) default null,
 IF COLUMNPROPERTY(OBJECT_ID('dbo.COMPCONTACTMSTR'), 'ste_contacttype', 'ColumnId') IS NULL
 ALTER TABLE COMPCONTACTMSTR
 ADD ste_contacttype VARCHAR(20) default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.jobplan'), 'STE_CSWNJOBID', 'ColumnId') is null
+ALTER TABLE jobplan
+ADD STE_CSWNJOBID	varchar(16) default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.jobtask'), 'STE_CSWNACTCODE', 'ColumnId') is null
+ALTER TABLE jobtask
+ADD STE_CSWNACTCODE varchar(10) default null;
