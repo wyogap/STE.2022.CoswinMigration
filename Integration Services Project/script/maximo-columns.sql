@@ -299,4 +299,11 @@ IF COLUMNPROPERTY(OBJECT_ID('dbo.pmmeter'), 'STE_CSWNFREQUNIT', 'ColumnId') is n
 ALTER TABLE pmmeter
 ADD STE_CSWNFREQUNIT	smallint default null;
 
-	
+IF COLUMNPROPERTY(OBJECT_ID('dbo.matusetrans'), 'STE_REPLFLAG', 'ColumnId') is null
+ALTER TABLE matusetrans
+ADD STE_REPLFLAG varchar(3) default null,
+	STE_PLNFLAG varchar(3) default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.COMPCONTACTMSTR'), 'ste_contacttype', 'ColumnId') IS NULL
+ALTER TABLE COMPCONTACTMSTR
+ADD ste_contacttype VARCHAR(20) default null;

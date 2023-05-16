@@ -114,6 +114,11 @@ ALTER TABLE COMPCONTACTMSTR
 ADD STE_MIGRATIONSOURCE VARCHAR(20) default null;
 ;
 
+IF COLUMNPROPERTY(OBJECT_ID('dbo.COMPCONTACTMSTR'), 'ste_contacttype', 'ColumnId') IS NULL
+ALTER TABLE COMPCONTACTMSTR
+ADD ste_contacttype VARCHAR(20) default null;
+
+;
 -- Create post-task
 -- ---------------
 SET ANSI_NULLS ON
