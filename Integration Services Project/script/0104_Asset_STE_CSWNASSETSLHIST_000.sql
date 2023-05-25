@@ -3,8 +3,8 @@ IF OBJECT_ID(N'dbo.ste_cswnassetslhist', N'U') IS NULL
 CREATE TABLE [dbo].ste_cswnassetslhist (
 	ste_cweqcode [varchar](25) NOT NULL,
 	ste_cswnsno [varchar](24) NOT NULL,
-	ste_siteid [varchar](8) NULL,
 	ste_cswnsnodate datetime NOT NULL,
+	ste_siteid [varchar](8) NULL,
 	hasld smallint NOT NULL,
 	[description] varchar(50) NULL,
 	description_longdescription text NULL,
@@ -33,10 +33,33 @@ CREATE PROCEDURE ste_0104_Asset_STE_CSWNASSETSLHIST_pre
 	@PackageLogID INT
 AS
 BEGIN
+	declare @v_seed bigint;
 	declare @v_max_id bigint;
 
 	-- truncate existing data
 	delete from dbo.ste_cswnassetslhist where STE_MIGRATIONID is not null;
+
+	-- TODO: create sequence key
+	select @v_seed=seed from [dbo].[autokey] where [autokeyname]='WONUM';
+	if (@v_seed is null)
+	begin
+		select @v_max_id=maxreserved from [dbo].[maxsequence] where [tbname]='AUTOKEY' and [name]='AUTOKEYID';
+		
+		insert into [dbo].[autokey] (
+			[seed]
+			,[autokeyname]
+			,[langcode]
+			,[autokeyid]
+		)
+		values (
+			1000
+			,'WONUM'
+			,'EN'
+			,@v_max_id + 1
+		);
+
+		update maxsequence set maxreserved=@v_max_id+1 where tbname='AUTOKEY' and name='AUTOKEYID';
+	end;
 
 END
 
