@@ -1,32 +1,4 @@
 /****** Object:  Table [dbo].[ste_migration_params]    Script Date: 25/01/2023 17:46:34 ******/
--- Add custom columns
--- ------------------
-IF COLUMNPROPERTY(OBJECT_ID('dbo.jobitem'), 'STE_MIGRATIONID', 'ColumnId') is null
-ALTER TABLE jobitem
-ADD STE_MIGRATIONID bigint default null,
-    STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
-
--- Create pre-task
--- ---------------
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-
-drop procedure if exists ste_0513_Misc_JobMaterial_pre
-GO
-
-CREATE PROCEDURE ste_0513_Misc_JobMaterial_pre 
-	@PackageLogID INT
-AS
-BEGIN
-	-- truncate existing data
-	delete from jobitem where STE_MIGRATIONID is not null and linetype='ITEM';
-
-END
-
-GO
-
 -- Create post-task
 -- ---------------
 SET ANSI_NULLS ON
@@ -96,7 +68,7 @@ INSERT INTO [dbo].[ste_migration_params]
      VALUES
            ('0513_Misc_JobMaterial'
            ,'version'
-           ,'1'
+           ,'2'
            ,getdate()
            ,'ssis'
            ,NULL
