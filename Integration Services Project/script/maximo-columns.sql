@@ -315,3 +315,15 @@ ADD STE_CSWNJOBID	varchar(16) default null;
 IF COLUMNPROPERTY(OBJECT_ID('dbo.jobtask'), 'STE_CSWNACTCODE', 'ColumnId') is null
 ALTER TABLE jobtask
 ADD STE_CSWNACTCODE varchar(10) default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.pm'), 'STE_CSWNJOBID', 'ColumnId') is null
+ALTER TABLE pm
+ADD STE_CSWNJOBID varchar(16) default null;
+
+--alter table dbo.pm
+--alter column pmnum varchar(16);
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.pmseasons'), 'STE_CSWNSTARTWK', 'ColumnId') is null
+ALTER TABLE pmseasons
+ADD STE_CSWNSTARTWK smallint default null,
+    STE_CSWNENDWK smallint default null;
