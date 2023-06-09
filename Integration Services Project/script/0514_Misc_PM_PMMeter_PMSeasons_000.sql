@@ -280,7 +280,7 @@ INSERT INTO [dbo].[ste_migration_params]
            ,[modified_on]
            ,[modified_by])
      VALUES
-           ('0514_Misc_PM_PMMeter_PMSeason'
+           ('0514_Misc_PM_PMMeter_PMSeasons'
            ,'version'
            ,'1'
            ,getdate()
