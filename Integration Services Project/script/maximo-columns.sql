@@ -25,7 +25,7 @@ ADD ste_cswnmodelnum VARCHAR(24) default null;
 	
 IF COLUMNPROPERTY(OBJECT_ID('dbo.prline'), 'ste_cswnapglcode', 'ColumnId') IS NULL
 ALTER TABLE prline
-ADD ste_cswnapglcode varchar(20) default null,
+ADD ste_cswnsapgl varchar(20) default null,
 	ste_cswnwbsnum varchar(20) default null,
 	ste_cswnprefsupl varchar(20) default null,
 	ste_cswncurrencycode varchar(8) default null,
@@ -43,7 +43,7 @@ ADD ste_cswndnref varchar(10) default null,
 
 IF COLUMNPROPERTY(OBJECT_ID('dbo.po'), 'ste_cswnapglcode', 'ColumnId') IS NULL
 ALTER TABLE [po]
-ADD ste_cswnapglcode varchar(20) default null,
+ADD ste_cswnsapgl varchar(20) default null,
     ste_cswnpotype smallint default null;
 	
 IF COLUMNPROPERTY(OBJECT_ID('dbo.poline'), 'ste_cswnpendingqty', 'ColumnId') IS NULL
@@ -327,3 +327,9 @@ IF COLUMNPROPERTY(OBJECT_ID('dbo.pmseasons'), 'STE_CSWNSTARTWK', 'ColumnId') is 
 ALTER TABLE pmseasons
 ADD STE_CSWNSTARTWK smallint default null,
     STE_CSWNENDWK smallint default null;
+	
+--alter table dbo.prline
+--alter column prnum varchar(16);
+
+--alter table dbo.rfqline
+--alter column rfqnum varchar(16);
