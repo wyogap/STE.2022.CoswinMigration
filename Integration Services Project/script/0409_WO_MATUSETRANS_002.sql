@@ -17,10 +17,11 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_0206_inventory_matusetrans_post
+drop procedure if exists ste_0206_inventory_matusetrans_post;
+drop procedure if exists ste_0409_wo_matusetrans_post;
 GO
 
-CREATE PROCEDURE ste_0206_inventory_matusetrans_post
+CREATE PROCEDURE ste_0409_wo_matusetrans_post
   @PackageLogID INT
 AS
 BEGIN
@@ -39,9 +40,10 @@ BEGIN
 	if (@PackageName is null) return;
 
 	-- update start_id and end_id for ITEM_
-	select @v_cnt=count(STE_MIGRATIONID) from matusetrans
-	where STE_MIGRATIONID is not null
-		and coalesce(STE_MIGRATIONREFWO,0)!=0 and refwo is null;
+	select @v_cnt=count(a.STE_MIGRATIONID) from matusetrans a 
+	left join workorder b on b.wonum=a.refwo
+	where a.STE_MIGRATIONREFWO!=0 and a.STE_MIGRATIONREFWO is not null
+		and b.workorderid is null;
 
 	insert into [dbo].[ste_migration_log_details] (
 		[package_name]
@@ -54,6 +56,24 @@ BEGIN
 		@PackageName
 		, @PackageLogID
 		, 'NOMATCH-REFWO'
+		, 'LOG'
+		, CONCAT('COUNT: ', coalesce(@v_cnt,0))
+	);
+
+	select @v_cnt=count(STE_MIGRATIONID) from matusetrans a 
+	where STE_MIGRATIONREFWO=0 or STE_MIGRATIONREFWO is null;
+
+	insert into [dbo].[ste_migration_log_details] (
+		[package_name]
+		,[log_id]
+		,[event]
+		,[event_type]
+		,[event_description]
+	)
+	values (
+		@PackageName
+		, @PackageLogID
+		, 'INVALID-REFWO'
 		, 'LOG'
 		, CONCAT('COUNT: ', coalesce(@v_cnt,0))
 	);
@@ -96,9 +116,9 @@ INSERT INTO [dbo].[ste_migration_params]
            ,[modified_on]
            ,[modified_by])
      VALUES
-           ('0206_Inventory_MATUSETRANS'
+           ('0409_WO_MATUSETRANS'
            ,'version'
-           ,'2'
+           ,'3'
            ,getdate()
            ,'ssis'
            ,NULL

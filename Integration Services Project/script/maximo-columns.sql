@@ -239,97 +239,174 @@ ADD ste_cswnafcjrnum varchar(20) default null,
 	ste_cswnoldsernum varchar(20) default null,
 	ste_cswnnewsernum varchar(20) default null;
 
-IF COLUMNPROPERTY(OBJECT_ID('dbo.jobplan'), 'STE_CSWNAVPRTM', 'ColumnId') is null
-ALTER TABLE jobplan
-ADD STE_CSWNAVPRTM	SMALLINT default null,
-	STE_CSWNCC	varchar(16) default null,
-	STE_CSWNDAY	SMALLINT default null,
-	STE_CSWNDURATIONUNIT	varchar(5) default null,
-	STE_CSWNENWK	SMALLINT default null,
-	STE_CSWNHAZARD	SMALLINT default null,
-	STE_CSWNJBBHU	SMALLINT default null,
-	STE_CSWNJOBCLASS	varchar(6) default null,
-	STE_CSWNJOBTYPE	varchar(6) default null,
-	STE_CSWNLABORCOST	numeric(10) default null,
-	STE_CSWNLJML	FLOAT default null,
-	STE_CSWNMATERIALCOST	NUMERIC(10) default null,
-	STE_CSWNMIPRTM	SMALLINT default null,
-	STE_CSWNMTID	varchar(16) default null,
-	STE_CSWNMTPRML	DECIMAL(15) default null,
-	STE_CSWNMXPRTM	SMALLINT default null,
-	STE_CSWNNOWO	SMALLINT default null,
-	STE_CSWNPR_UNIT	SMALLINT default null,
-	STE_CSWNPRJREF	varchar(10) default null,
-	STE_CSWNSERVICECOST	numeric(10) default null,
-	STE_CSWNSTWK	SMALLINT default null,
-	STE_CSWNWOID	varchar(10) default null;
-	
-IF COLUMNPROPERTY(OBJECT_ID('dbo.jobplan'), 'STE_CSWNWORKDAY', 'ColumnId') is null
-ALTER TABLE jobplan
-ADD STE_CSWNWORKDAY	SMALLINT default null,
-	STE_CSWNWPTYPE	varchar(10) default null,
-	STE_CWEQCODE	varchar(25) default null;
-	
-IF COLUMNPROPERTY(OBJECT_ID('dbo.jpassetsplink'), 'STE_CWEQCODE', 'ColumnId') is null
-ALTER TABLE jpassetsplink
-ADD STE_CWEQCODE	varchar(25) default null;
-
-IF COLUMNPROPERTY(OBJECT_ID('dbo.jobtask'), 'STE_CWEQCODE', 'ColumnId') is null
-ALTER TABLE jobtask
-ADD STE_CWEQCODE	varchar(25) default null,
-	STE_CSWNINTERVAL	numeric(12) default null,
-	STE_CSWNINTERVALUNIT	varchar(8) default null;
-
-IF COLUMNPROPERTY(OBJECT_ID('dbo.pm'), 'STE_CSWNCC', 'ColumnId') is null
-ALTER TABLE pm
-ADD STE_CSWNCC	varchar(16) default null,
-	STE_CSWNCOSTYPE	varchar(10) default null,
-	STE_CSWNINTERVALUNIT	varchar(8) default null,
-	STE_CSWNJOBBEHAVIOUR	SMALLINT default null,
-	STE_CSWNJOBLEVEL	SMALLINT default null,
-	STE_CSWNLASTWONUM	varchar(10) default null,
-	STE_CSWNMAXINTERVAL	numeric(12) default null,
-	STE_CSWNMININTERVAL	numeric(12) default null,
-	STE_CSWNMULT	SMALLINT default null,
-	STE_CSWNSHIFT	SMALLINT default null,
-	STE_CSWNWORKDAY	SMALLINT default null,
-	STE_CWEQCODE	varchar(25) default null;
-
-IF COLUMNPROPERTY(OBJECT_ID('dbo.pmmeter'), 'STE_CSWNFREQUNIT', 'ColumnId') is null
-ALTER TABLE pmmeter
-ADD STE_CSWNFREQUNIT	smallint default null;
-
-IF COLUMNPROPERTY(OBJECT_ID('dbo.matusetrans'), 'STE_REPLFLAG', 'ColumnId') is null
-ALTER TABLE matusetrans
-ADD STE_REPLFLAG varchar(3) default null,
-	STE_PLNFLAG varchar(3) default null;
-
 IF COLUMNPROPERTY(OBJECT_ID('dbo.COMPCONTACTMSTR'), 'ste_contacttype', 'ColumnId') IS NULL
 ALTER TABLE COMPCONTACTMSTR
 ADD ste_contacttype VARCHAR(20) default null;
 
-IF COLUMNPROPERTY(OBJECT_ID('dbo.jobplan'), 'STE_CSWNJOBID', 'ColumnId') is null
+-- to fix
+IF COLUMNPROPERTY(OBJECT_ID('dbo.jobplan'), 'ste_cswnjobid', 'ColumnId') is null
 ALTER TABLE jobplan
-ADD STE_CSWNJOBID	varchar(16) default null;
+ADD ste_cswnjobid varchar(16) default null;
 
-IF COLUMNPROPERTY(OBJECT_ID('dbo.jobtask'), 'STE_CSWNACTCODE', 'ColumnId') is null
+IF COLUMNPROPERTY(OBJECT_ID('dbo.jobtask'), 'ste_cswnactcode', 'ColumnId') is null
 ALTER TABLE jobtask
-ADD STE_CSWNACTCODE varchar(10) default null;
+ADD ste_cswnactcode varchar(10) default null;
 
-IF COLUMNPROPERTY(OBJECT_ID('dbo.pm'), 'STE_CSWNJOBID', 'ColumnId') is null
+IF COLUMNPROPERTY(OBJECT_ID('dbo.pm'), 'ste_cswnjobid', 'ColumnId') is null
 ALTER TABLE pm
-ADD STE_CSWNJOBID varchar(16) default null;
+ADD ste_cswnjobid varchar(16) default null;
 
 --alter table dbo.pm
 --alter column pmnum varchar(16);
 
-IF COLUMNPROPERTY(OBJECT_ID('dbo.pmseasons'), 'STE_CSWNSTARTWK', 'ColumnId') is null
+IF COLUMNPROPERTY(OBJECT_ID('dbo.pmseasons'), 'ste_cswnstartwk', 'ColumnId') is null
 ALTER TABLE pmseasons
-ADD STE_CSWNSTARTWK smallint default null,
-    STE_CSWNENDWK smallint default null;
+ADD ste_cswnstartwk smallint default null,
+    ste_cswnendwk smallint default null;
 	
 --alter table dbo.prline
 --alter column prnum varchar(16);
 
 --alter table dbo.rfqline
 --alter column rfqnum varchar(16);
+
+--alter table dbo.pm
+--alter column pmnum varchar(16);
+
+--alter table dbo.prline
+--alter column prnum varchar(16);
+
+--alter table dbo.rfqline
+--alter column rfqnum varchar(16);
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.meter'), 'ste_cswndefaultvalue', 'ColumnId') is null
+ALTER TABLE meter
+ADD ste_cswndefaultvalue decimal(15,5) default null,
+    ste_cswnmetertype varchar(25) default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.INVOICE'), 'ste_cswnbaseval', 'ColumnId') is null
+ALTER TABLE INVOICE
+ADD ste_cswnbaseval decimal(18,2) default null,
+	ste_cswnlocalhandlingcharge decimal(18,2) default null,
+	ste_cswnothercharges decimal(18,2) default null,
+	ste_cswninvadj decimal(18,2) default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.CURRENCY'), 'ste_cswnctrycd', 'ColumnId') is null
+ALTER TABLE CURRENCY
+ADD ste_cswnctrycd varchar(4) default null,
+	ste_cswnctryname varchar(16) default null,
+	ste_cswndpt smallint default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.matrectrans'), 'ste_cswninspdate', 'ColumnId') is null
+ALTER TABLE matrectrans
+ADD ste_cswninspdate datetime,
+	ste_cswninspstat int,
+	ste_cswngrnref varchar(10);
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.matrectrans'), 'ste_cswndndate', 'ColumnId') is null
+ALTER TABLE matrectrans
+ADD ste_cswndndate datetime default null,
+	ste_cswnrctstatus smallint,
+	ste_cswngrnnum varchar(10) default null,
+	ste_cswngrndate datetime default null,
+	ste_cswnreceipttype smallint default null,
+	ste_cswnsapgl varchar(20) default null,
+	ste_cswncc varchar(16) default null,
+	ste_cswninspref varchar(10) default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.matrectrans'), 'remark_longdescription', 'ColumnId') is null
+ALTER TABLE matrectrans
+ADD remark_longdescription text;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.po'), 'ste_cswnreceiptremark', 'ColumnId') is null
+ALTER TABLE po
+ADD ste_cswnreceiptremark text;
+
+-- to change to lower case!!!
+IF COLUMNPROPERTY(OBJECT_ID('dbo.jobplan'), 'ste_cswnjobid', 'ColumnId') is null
+ALTER TABLE jobplan
+ADD ste_cswnjobid varchar(16) default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.jobtask'), 'ste_cswnactcode', 'ColumnId') is null
+ALTER TABLE jobtask
+ADD ste_cswnactcode varchar(10) default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.pm'), 'ste_cswnjobid', 'ColumnId') is null
+ALTER TABLE pm
+ADD ste_cswnjobid varchar(16) default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.pmseasons'), 'ste_cswnstartwk', 'ColumnId') is null
+ALTER TABLE pmseasons
+ADD ste_cswnstartwk smallint default null,
+    ste_cswnendwk smallint default null;
+	
+IF COLUMNPROPERTY(OBJECT_ID('dbo.jobplan'), 'ste_cswnavprtm', 'ColumnId') is null
+ALTER TABLE jobplan
+ADD ste_cswnavprtm	smallint default null,
+	ste_cswncc	varchar(16) default null,
+	ste_cswnday	smallint default null,
+	ste_cswndurationunit	varchar(5) default null,
+	ste_cswnenwk	smallint default null,
+	ste_cswnhazard	smallint default null,
+	ste_cswnjbbhu	smallint default null,
+	ste_cswnjobclass	varchar(6) default null,
+	ste_cswnjobtype	varchar(6) default null,
+	ste_cswnlaborcost	numeric(10) default null,
+	ste_cswnljml	float default null,
+	ste_cswnmaterialcost	numeric(10) default null,
+	ste_cswnmiprtm	smallint default null,
+	ste_cswnmtid	varchar(16) default null,
+	ste_cswnmtprml	decimal(15) default null,
+	ste_cswnmxprtm	smallint default null,
+	ste_cswnnowo	smallint default null,
+	ste_cswnpr_unit	smallint default null,
+	ste_cswnprjref	varchar(10) default null,
+	ste_cswnservicecost	numeric(10) default null,
+	ste_cswnstwk	smallint default null,
+	ste_cswnwoid	varchar(10) default null;
+	
+IF COLUMNPROPERTY(OBJECT_ID('dbo.jobplan'), 'ste_cswnworkday', 'ColumnId') is null
+ALTER TABLE jobplan
+ADD ste_cswnworkday	smallint default null,
+	ste_cswnwptype	varchar(10) default null,
+	ste_cweqcode	varchar(25) default null;
+	
+IF COLUMNPROPERTY(OBJECT_ID('dbo.jpassetsplink'), 'ste_cweqcode', 'ColumnId') is null
+ALTER TABLE jpassetsplink
+ADD ste_cweqcode	varchar(25) default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.jobtask'), 'ste_cweqcode', 'ColumnId') is null
+ALTER TABLE jobtask
+ADD ste_cweqcode	varchar(25) default null,
+	ste_cswninterval	numeric(12) default null,
+	ste_cswnintervalunit	varchar(8) default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.pm'), 'ste_cswncc', 'ColumnId') is null
+ALTER TABLE pm
+ADD ste_cswncc	varchar(16) default null,
+	ste_cswncostype	varchar(10) default null,
+	ste_cswnintervalunit	varchar(8) default null,
+	ste_cswnjobbehaviour	smallint default null,
+	ste_cswnjoblevel	smallint default null,
+	ste_cswnlastwonum	varchar(10) default null,
+	ste_cswnmaxinterval	numeric(12) default null,
+	ste_cswnmininterval	numeric(12) default null,
+	ste_cswnmult	smallint default null,
+	ste_cswnshift	smallint default null,
+	ste_cswnworkday	smallint default null,
+	ste_cweqcode	varchar(25) default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.pmmeter'), 'ste_cswnfrequnit', 'ColumnId') is null
+ALTER TABLE pmmeter
+ADD ste_cswnfrequnit	smallint default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.matusetrans'), 'ste_replflag', 'ColumnId') is null
+ALTER TABLE matusetrans
+ADD ste_replflag varchar(3) default null,
+	ste_plnflag varchar(3) default null;
+
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.assetmeter'), 'ste_cswnconstant', 'ColumnId') is null
+ALTER TABLE matusetrans
+ADD ste_cswnconstant decimal(15,5) default null,
+	ste_cswnforecast float default null;

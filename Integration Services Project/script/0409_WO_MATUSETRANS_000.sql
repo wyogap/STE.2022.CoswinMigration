@@ -13,10 +13,11 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_0206_inventory_matusetrans_pre
+drop procedure if exists ste_0206_inventory_matusetrans_pre;
+drop procedure if exists ste_0409_wo_matusetrans_pre;
 GO
 
-CREATE PROCEDURE ste_0206_inventory_matusetrans_pre 
+CREATE PROCEDURE ste_0409_wo_matusetrans_pre 
 	@PackageLogID INT
 AS
 BEGIN
@@ -34,10 +35,11 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_0206_inventory_matusetrans_post
+drop procedure if exists ste_0206_inventory_matusetrans_post;
+drop procedure if exists ste_0409_wo_matusetrans_post;
 GO
 
-CREATE PROCEDURE ste_0206_inventory_matusetrans_post
+CREATE PROCEDURE ste_0409_wo_matusetrans_post
   @PackageLogID INT
 AS
 BEGIN
@@ -94,7 +96,7 @@ INSERT INTO [dbo].[ste_migration_params]
            ,[modified_on]
            ,[modified_by])
      VALUES
-           ('0206_Inventory_MATUSETRANS'
+           ('0409_WO_MATUSETRANS'
            ,'version'
            ,'1'
            ,getdate()

@@ -23,6 +23,9 @@ CREATE PROCEDURE ste_0514_Misc_PM_pre
 	@PackageLogID INT
 AS
 BEGIN
+	declare @v_seed bigint;
+	declare @v_max_id bigint;	
+
 	-- truncate existing data
 	delete from pm where STE_MIGRATIONID is not null;
 
