@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="0502_Misc_Exchange"
   DTS:PackageType="5"
-  DTS:VersionBuild="104"
-  DTS:VersionGUID="{53CCF485-705C-4CA6-AC5B-C402238C049A}"
+  DTS:VersionBuild="105"
+  DTS:VersionGUID="{22A16D5A-1CE7-4A9F-AB0B-972BA7D28BF6}"
   DTS:VersionMinor="1">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -30,7 +30,9 @@
       <DTS:ObjectData>
         <DTS:ConnectionManager>
           <OraConnectionString>SERVER=103.149.177.117:1521/COSWINDB;USERNAME=coswin;WINAUTH=0;</OraConnectionString>
-          <tcg/>
+          <OraPassword
+            Sensitive="1"
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAANLS8gHlSkUShYRsXgv9K+AAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAACKdB/ZxqxNEhPEHyOQ8NG51YsQ34TV4IPTcZ1R8mF0sQAAAAAOgAAAAAIAACAAAAD+kmux4OwajKdG4wNhRMvHWGtD8ns14pCSRrjcFuZ1VyAAAAATkzcc/iAU+HyUc+QQmzRltt9o+NigWtQIXvhZPrQpi0AAAAAdsHR8P6cFBxhJpyOA7FYLHyJhEx91vCRo0MiMlHjsR2uiVAjgeQO8pwSv5ekALQpKqIRXzJzRmU6/2f6ERrX+</OraPassword>
           <OraRetain>False</OraRetain>
           <OraInitialCatalog></OraInitialCatalog>
           <OraServerName>103.149.177.117:1521/COSWINDB</OraServerName>
@@ -55,8 +57,11 @@
         <DTS:ConnectionManager
           DTS:ConnectRetryCount="1"
           DTS:ConnectRetryInterval="5"
-          DTS:ConnectionString="Data Source=LENOVO-YOGA\SQLEXPRESS;User ID=maximo;Initial Catalog=maximodb;Provider=SQLNCLI11.1;Persist Security Info=True;Auto Translate=False;Application Name=STE.2022.CoswinMigration-{A2D54055-0CBC-4EA5-9952-7A6ADE49C2F8}.maximodb.maximo;">
-          <tcg/>
+          DTS:ConnectionString="Data Source=DESKTOP-6E4JM7G;Initial Catalog=maximodb;Provider=SQLNCLI11.1;Integrated Security=SSPI;Application Name=SSIS-STE.2022.CoswinMigration-{494A231E-16CB-49D6-BF06-9EC67998BDC4}DESKTOP-6E4JM7G.maximodb;Auto Translate=False;">
+          <DTS:Password
+            DTS:Name="Password"
+            Sensitive="1"
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAANLS8gHlSkUShYRsXgv9K+AAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAADxtWhvXVbyei1P/ECZH6tdiIbYDY1kGCGWox/jrDI8bwAAAAAOgAAAAAIAACAAAABiP5Tc5KDtFNhlIvvj0t0+lsuBy2BnfId0EaAfxYhlHCAAAAD+tN/6dXBw+xKzcRXhXeQPmGtPCYekdXnVjniHYhOAs0AAAAD7ePxN/1mqdNf5U6RbO8HPePO0HdduMR4kW2CvbwtmuE9higc0v08Nj+H7S9mxOas7s7cCMBSEyh5D9RZO/rpb</DTS:Password>
         </DTS:ConnectionManager>
       </DTS:ObjectData>
     </DTS:ConnectionManager>
@@ -898,7 +903,7 @@
 	, c2.CRNCY_CD AS CRNCY_CD_TO
 	, cc.DT_CRNCY_CONV 
 	, cc.TM_CRNCY_CONV 
-	, cc.CONV_BUY_RATE 
+	, case when cc.CONV_BUY_RATE = 0 then 1 else  cc.CONV_BUY_RATE end CONV_BUY_RATE
 FROM COSWIN.CRNCY_CONV cc
 JOIN COSWIN.COUNTRY_ c1 ON c1.PK_COUNTRY_ = cc.S_COUN1_CONV 
 JOIN COSWIN.COUNTRY_ c2 ON c2.PK_COUNTRY_ = cc.S_COUN2_CONV</property>
@@ -1606,10 +1611,6 @@ JOIN COSWIN.COUNTRY_ c2 ON c2.PK_COUNTRY_ = cc.S_COUN2_CONV</property>
       <GraphLayout
         Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
-          Size="177,42"
-          Id="Package\Data Flow Task\OLE DB Destination"
-          TopLeft="11.5,243.5" />
-        <NodeLayout
           Size="149,42"
           Id="Package\Data Flow Task\Oracle Source"
           TopLeft="19.5,19.5" />
@@ -1617,6 +1618,10 @@ JOIN COSWIN.COUNTRY_ c2 ON c2.PK_COUNTRY_ = cc.S_COUN2_CONV</property>
           Size="158,42"
           Id="Package\Data Flow Task\Derived Column"
           TopLeft="213.5,124.5" />
+        <NodeLayout
+          Size="177,42"
+          Id="Package\Data Flow Task\OLE DB Destination"
+          TopLeft="11.5,243.5" />
         <EdgeLayout
           Id="Package\Data Flow Task.Paths[Oracle Source Output]"
           TopLeft="94,61.5">
@@ -1689,7 +1694,7 @@ JOIN COSWIN.COUNTRY_ c2 ON c2.PK_COUNTRY_ = cc.S_COUN2_CONV</property>
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\Data Flow Task\OLE DB Destination">
+    design-time-name="Package\Data Flow Task\Oracle Source">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -1702,7 +1707,7 @@ JOIN COSWIN.COUNTRY_ c2 ON c2.PK_COUNTRY_ = cc.S_COUN2_CONV</property>
     </Properties>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
-    design-time-name="Package\Data Flow Task\Oracle Source">
+    design-time-name="Package\Data Flow Task\OLE DB Destination">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
