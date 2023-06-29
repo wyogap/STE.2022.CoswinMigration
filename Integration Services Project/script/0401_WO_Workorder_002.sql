@@ -86,25 +86,6 @@ BEGIN
 	-- update start_id and end_id for ITEM_
 	select @v_cnt=count(STE_MIGRATIONID) from workorder
 	where STE_MIGRATIONID is not null and woclass='WORKORDER' and istask=0
-		and STE_MIGRATIONTYPE = 'CHILDREN' AND parent IS NULL;
-
-	insert into [dbo].[ste_migration_log_details] (
-		[package_name]
-		,[log_id]
-		,[event]
-		,[event_type]
-		,[event_description]
-	)
-	values (
-		@PackageName
-		, @PackageLogID
-		, 'PARENTWO-NOMATCH'
-		, 'LOG'
-		, CONCAT('COUNT: ', @v_cnt)
-	);
-	
-	select @v_cnt=count(STE_MIGRATIONID) from workorder
-	where STE_MIGRATIONID is not null and woclass='WORKORDER' and istask=0
 		and STE_MIGRATIONTYPE = 'CHILDREN' AND parent IS NOT NULL;
 
 	insert into [dbo].[ste_migration_log_details] (
@@ -124,8 +105,7 @@ BEGIN
 	
 	select @v_cnt=count(STE_MIGRATIONID) from workorder
 	where STE_MIGRATIONID is not null and woclass='WORKORDER' and istask=0
-		and coalesce(STE_MIGRATIONPREVWOID,0) != 0 and STE_MIGRATIONPREVWOID != ste_cswnwoid
-		and origrecordid is null;
+		and STE_MIGRATIONTYPE = 'CHILDREN' AND parent IS NULL;
 
 	insert into [dbo].[ste_migration_log_details] (
 		[package_name]
@@ -137,7 +117,7 @@ BEGIN
 	values (
 		@PackageName
 		, @PackageLogID
-		, 'PREVWO-NOMATCH'
+		, 'PARENTWO-NOMATCH'
 		, 'LOG'
 		, CONCAT('COUNT: ', @v_cnt)
 	);
@@ -158,6 +138,26 @@ BEGIN
 		@PackageName
 		, @PackageLogID
 		, 'PREVWO-MATCH'
+		, 'LOG'
+		, CONCAT('COUNT: ', @v_cnt)
+	);
+	
+	select @v_cnt=count(STE_MIGRATIONID) from workorder
+	where STE_MIGRATIONID is not null and woclass='WORKORDER' and istask=0
+		and coalesce(STE_MIGRATIONPREVWOID,0) != 0 and STE_MIGRATIONPREVWOID != ste_cswnwoid
+		and origrecordid is null;
+
+	insert into [dbo].[ste_migration_log_details] (
+		[package_name]
+		,[log_id]
+		,[event]
+		,[event_type]
+		,[event_description]
+	)
+	values (
+		@PackageName
+		, @PackageLogID
+		, 'PREVWO-NOMATCH'
 		, 'LOG'
 		, CONCAT('COUNT: ', @v_cnt)
 	);
