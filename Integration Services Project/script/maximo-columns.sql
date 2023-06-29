@@ -244,10 +244,6 @@ ALTER TABLE COMPCONTACTMSTR
 ADD ste_contacttype VARCHAR(20) default null;
 
 -- to fix
-IF COLUMNPROPERTY(OBJECT_ID('dbo.jobplan'), 'ste_cswnjobid', 'ColumnId') is null
-ALTER TABLE jobplan
-ADD ste_cswnjobid varchar(16) default null;
-
 IF COLUMNPROPERTY(OBJECT_ID('dbo.jobtask'), 'ste_cswnactcode', 'ColumnId') is null
 ALTER TABLE jobtask
 ADD ste_cswnactcode varchar(10) default null;
@@ -278,11 +274,6 @@ ADD ste_cswnstartwk smallint default null,
 
 --alter table dbo.rfqline
 --alter column rfqnum varchar(16);
-
-IF COLUMNPROPERTY(OBJECT_ID('dbo.meter'), 'ste_cswndefaultvalue', 'ColumnId') is null
-ALTER TABLE meter
-ADD ste_cswndefaultvalue decimal(15,5) default null,
-    ste_cswnmetertype varchar(25) default null;
 
 IF COLUMNPROPERTY(OBJECT_ID('dbo.INVOICE'), 'ste_cswnbaseval', 'ColumnId') is null
 ALTER TABLE INVOICE
@@ -400,13 +391,59 @@ IF COLUMNPROPERTY(OBJECT_ID('dbo.pmmeter'), 'ste_cswnfrequnit', 'ColumnId') is n
 ALTER TABLE pmmeter
 ADD ste_cswnfrequnit	smallint default null;
 
+IF COLUMNPROPERTY(OBJECT_ID('dbo.assetmeter'), 'ste_cswnconstant', 'ColumnId') is null
+ALTER TABLE assetmeter
+ADD ste_cswnconstant decimal(15,5) default null,
+	ste_cswnforecast float default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.meter'), 'ste_cswndefaultvalue', 'ColumnId') is null
+ALTER TABLE meter
+ADD ste_cswndefaultvalue decimal(15,5) default null,
+    ste_cswnmetertype varchar(25) default null;
+
 IF COLUMNPROPERTY(OBJECT_ID('dbo.matusetrans'), 'ste_replflag', 'ColumnId') is null
 ALTER TABLE matusetrans
 ADD ste_replflag varchar(3) default null,
 	ste_plnflag varchar(3) default null;
 
+IF COLUMNPROPERTY(OBJECT_ID('dbo.jobplan'), 'ste_cswnavprtm', 'ColumnId') is null
+ALTER TABLE jobplan
+ADD ste_cswnavprtm	smallint default null,
+	ste_cswncc	varchar(16) default null,
+	ste_cswnday	smallint default null,
+	ste_cswndurationunit	varchar(5) default null,
+	ste_cswnenwk	smallint default null,
+	ste_cswnhazard	smallint default null,
+	ste_cswnjbbhu	smallint default null,
+	ste_cswnjobclass	varchar(6) default null,
+	ste_cswnjobtype	varchar(6) default null,
+	ste_cswnlaborcost	numeric(10) default null,
+	ste_cswnljml	float default null,
+	ste_cswnmaterialcost	numeric(10) default null,
+	ste_cswnmiprtm	smallint default null,
+	ste_cswnmtid	varchar(16) default null,
+	ste_cswnmtprml	decimal(15) default null,
+	ste_cswnmxprtm	smallint default null,
+	ste_cswnnowo	smallint default null,
+	ste_cswnpr_unit	smallint default null,
+	ste_cswnprjref	varchar(10) default null,
+	ste_cswnservicecost	numeric(10) default null,
+	ste_cswnstwk	smallint default null,
+	ste_cswnwoid	varchar(10) default null;
+	
+IF COLUMNPROPERTY(OBJECT_ID('dbo.jobplan'), 'ste_cswnworkday', 'ColumnId') is null
+ALTER TABLE jobplan
+ADD ste_cswnworkday	smallint default null,
+	ste_cswnwptype	varchar(10) default null,
+	ste_cweqcode	varchar(25) default null;
 
-IF COLUMNPROPERTY(OBJECT_ID('dbo.assetmeter'), 'ste_cswnconstant', 'ColumnId') is null
-ALTER TABLE matusetrans
-ADD ste_cswnconstant decimal(15,5) default null,
-	ste_cswnforecast float default null;
+IF COLUMNPROPERTY(OBJECT_ID('dbo.jobplan'), 'ste_cswnjobid', 'ColumnId') is null
+ALTER TABLE jobplan
+ADD ste_cswnjobid varchar(16) default null;
+
+-- use workordernum as autokey
+update autokey 
+set
+	autokeyname='WORKORDERNUM'
+	, orgid='SBST'
+where autokeyname='WONUM';

@@ -1,13 +1,9 @@
 /****** Object:  Table [dbo].[ste_migration_params]    Script Date: 25/01/2023 17:46:34 ******/
 -- Add custom columns
 -- ------------------
-IF COLUMNPROPERTY(OBJECT_ID('dbo.workorder'), 'STE_MIGRATIONPREVWOID', 'ColumnId') IS NULL
+IF COLUMNPROPERTY(OBJECT_ID('dbo.workorder'), 'STE_MIGRATIONREQNO', 'ColumnId') IS NULL
 ALTER TABLE [workorder]
-ADD STE_MIGRATIONPREVWOID varchar(10) default null;
-
---IF COLUMNPROPERTY(OBJECT_ID('dbo.workorder'), 'ste_cswnwoid', 'ColumnId') IS NULL
---ALTER TABLE [workorder]
---ADD ste_cswnwoid varchar(10) default null;
+ADD STE_MIGRATIONREQNO varchar(20) default null;
 
 SET ANSI_NULLS ON
 GO
@@ -102,14 +98,14 @@ BEGIN
 	values (
 		@PackageName
 		, @PackageLogID
-		, 'NOMATCH-PARENTWO'
+		, 'PARENTWO-NOMATCH'
 		, 'LOG'
 		, CONCAT('COUNT: ', @v_cnt)
 	);
 	
 	select @v_cnt=count(STE_MIGRATIONID) from workorder
 	where STE_MIGRATIONID is not null and woclass='WORKORDER' and istask=0
-		and coalesce(STE_MIGRATIONPREVWOID,0) != 0 and origrecordid is null;
+		and STE_MIGRATIONTYPE = 'CHILDREN' AND parent IS NOT NULL;
 
 	insert into [dbo].[ste_migration_log_details] (
 		[package_name]
@@ -121,7 +117,47 @@ BEGIN
 	values (
 		@PackageName
 		, @PackageLogID
-		, 'NOMATCH-PREVWO'
+		, 'PARENTWO-MATCH'
+		, 'LOG'
+		, CONCAT('COUNT: ', @v_cnt)
+	);
+	
+	select @v_cnt=count(STE_MIGRATIONID) from workorder
+	where STE_MIGRATIONID is not null and woclass='WORKORDER' and istask=0
+		and coalesce(STE_MIGRATIONPREVWOID,0) != 0 and STE_MIGRATIONPREVWOID != ste_cswnwoid
+		and origrecordid is null;
+
+	insert into [dbo].[ste_migration_log_details] (
+		[package_name]
+		,[log_id]
+		,[event]
+		,[event_type]
+		,[event_description]
+	)
+	values (
+		@PackageName
+		, @PackageLogID
+		, 'PREVWO-NOMATCH'
+		, 'LOG'
+		, CONCAT('COUNT: ', @v_cnt)
+	);
+	
+	select @v_cnt=count(STE_MIGRATIONID) from workorder
+	where STE_MIGRATIONID is not null and woclass='WORKORDER' and istask=0
+		and coalesce(STE_MIGRATIONPREVWOID,0) != 0 and STE_MIGRATIONPREVWOID != ste_cswnwoid
+		and origrecordid is not null;
+
+	insert into [dbo].[ste_migration_log_details] (
+		[package_name]
+		,[log_id]
+		,[event]
+		,[event_type]
+		,[event_description]
+	)
+	values (
+		@PackageName
+		, @PackageLogID
+		, 'PREVWO-MATCH'
 		, 'LOG'
 		, CONCAT('COUNT: ', @v_cnt)
 	);
@@ -208,7 +244,7 @@ INSERT INTO [dbo].[ste_migration_params]
      VALUES
            ('0401_WO_Workorder'
            ,'version'
-           ,'2'
+           ,'3'
            ,getdate()
            ,'ssis'
            ,NULL
