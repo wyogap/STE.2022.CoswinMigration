@@ -75,7 +75,7 @@ BEGIN
 	declare @PackageName varchar(250);
 
 	-- update autokey
-	select @v_max_id=max(cast(jpnum as int)) from jobplan;
+	select @v_max_id=max(try_cast(jpnum as int)) from jobplan;
 	update autokey set seed=@v_max_id+1 where autokeyname='JPNUM';
 
 	-- update identity column
