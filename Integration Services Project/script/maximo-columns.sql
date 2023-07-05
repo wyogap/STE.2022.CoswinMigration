@@ -441,6 +441,32 @@ IF COLUMNPROPERTY(OBJECT_ID('dbo.jobplan'), 'ste_cswnjobid', 'ColumnId') is null
 ALTER TABLE jobplan
 ADD ste_cswnjobid varchar(16) default null;
 
+IF COLUMNPROPERTY(OBJECT_ID('dbo.ASSET'), 'ste_cswncapacity', 'ColumnId') IS NULL
+ALTER TABLE ASSET
+ADD ste_cswncapacity varchar(50) default null,
+	ste_cswnrating varchar(50) default null,
+	ste_cswnmtbfunit varchar(50) default null,
+	ste_manufactmttr varchar(50) default null,
+	ste_cswnmttrunit varchar(50) default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.ASSET'), 'ste_cswnmeterid', 'ColumnId') IS NULL
+ALTER TABLE ASSET
+ADD ste_cswnmeterid varchar(50) default null,
+	ste_cswnregno varchar(50) default null,
+	ste_cswncountry varchar(50) default null,
+	ste_cswnmanfyy int default null,
+	ste_cswnmanfmm int default null,
+	ste_cswnarrvyy int default null,
+	ste_cswnarrvmm int default null,
+	ste_cswnminlifeyy int default null,
+	ste_cswnminlifemm int default null,
+	ste_cswnminlifemeter int default null,
+	ste_cswnmaxlifeyy int default null,
+	ste_cswnmaxlifemm int default null,
+	ste_cswnmaxlifemeter int default null,
+	ste_cswnserialno varchar(50) default null;
+;
+
 -- use workordernum as autokey
 update autokey 
 set

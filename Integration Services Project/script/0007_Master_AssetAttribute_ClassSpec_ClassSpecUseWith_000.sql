@@ -122,7 +122,7 @@ INSERT INTO [dbo].[ste_migration_params]
            ,[modified_on]
            ,[modified_by])
      VALUES
-           ('0007_Master_AssetAttribute'
+           ('0007_Master_AssetAttribute_ClassSpec_ClassSpecUseWith'
            ,'version'
            ,'1'
            ,getdate()
