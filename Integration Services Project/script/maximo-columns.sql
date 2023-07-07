@@ -54,7 +54,7 @@ ADD ste_cswnpendingqty decimal(15,2) default null,
 IF COLUMNPROPERTY(OBJECT_ID('dbo.rfqvendor'), 'ste_cswnnotes', 'ColumnId') IS NULL
 ALTER TABLE [rfqvendor]
 ADD ste_cswnnotes varchar(100) default null,
-	ste_cswnapglcode varchar(20) default null,
+	ste_cswnsapgl varchar(20) default null,
 	ste_cswnwbsnum varchar(20) default null
 	;
 	
@@ -405,6 +405,26 @@ IF COLUMNPROPERTY(OBJECT_ID('dbo.matusetrans'), 'ste_replflag', 'ColumnId') is n
 ALTER TABLE matusetrans
 ADD ste_replflag varchar(3) default null,
 	ste_plnflag varchar(3) default null;
+
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.invoiceline'), 'STE_CSWNDISCOUNT', 'ColumnId') is null
+ALTER TABLE invoiceline
+ADD
+STE_CSWNDISCOUNT	DECIMAL	(10,2) default null,
+STE_CSWNLOCALHANDLINGCHARGE	DECIMAL	(10,2) default null,
+STE_CSWNOTHERCHARGES	DECIMAL	(10,2) default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.invoice'), 'STE_CSWNBASEVAL', 'ColumnId') is null
+ALTER TABLE invoice
+ADD STE_CSWNBASEVAL	DECIMAL	(10,2) default null,
+DISCOUNT			DECIMAL	(10,2) default null,
+STE_CSWNLOCALHANDLINGCHARGE	DECIMAL	(10,2) default null,
+TOTALTAX1			DECIMAL	(10,2) default null,
+TOTALTAX2			DECIMAL	(10,2) default null,
+STE_CSWNOTHERCHARGES	DECIMAL		(10,2) default null,
+STE_CSWNINVADJ	DECIMAL	(10,2) default null,
+TOTALCOST			DECIMAL	(10,2) default null;	
+
 
 IF COLUMNPROPERTY(OBJECT_ID('dbo.jobplan'), 'ste_cswnavprtm', 'ColumnId') is null
 ALTER TABLE jobplan
