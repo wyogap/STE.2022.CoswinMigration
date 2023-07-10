@@ -508,7 +508,7 @@ IF COLUMNPROPERTY(OBJECT_ID('dbo.invoiceline'), 'ste_cswndiscount', 'ColumnId') 
 ALTER TABLE invoiceline add	
 ste_cswndiscount decimal (10, 2) default null,
 ste_cswnlocalhandlingcharge decimal (10, 2)default null,
-ste_cswnothercharges (10, 2)default null,
+ste_cswnothercharges (10, 2)default null
 ;	
 
 
