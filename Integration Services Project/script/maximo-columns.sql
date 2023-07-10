@@ -407,12 +407,6 @@ ADD ste_replflag varchar(3) default null,
 	ste_plnflag varchar(3) default null;
 
 
-IF COLUMNPROPERTY(OBJECT_ID('dbo.invoiceline'), 'STE_CSWNDISCOUNT', 'ColumnId') is null
-ALTER TABLE invoiceline
-ADD
-STE_CSWNDISCOUNT	DECIMAL	(10,2) default null,
-STE_CSWNLOCALHANDLINGCHARGE	DECIMAL	(10,2) default null,
-STE_CSWNOTHERCHARGES	DECIMAL	(10,2) default null;
 
 IF COLUMNPROPERTY(OBJECT_ID('dbo.invoice'), 'STE_CSWNBASEVAL', 'ColumnId') is null
 ALTER TABLE invoice
@@ -455,7 +449,7 @@ IF COLUMNPROPERTY(OBJECT_ID('dbo.jobplan'), 'ste_cswnworkday', 'ColumnId') is nu
 ALTER TABLE jobplan
 ADD ste_cswnworkday	smallint default null,
 	ste_cswnwptype	varchar(10) default null,
-	ste_cweqcode	varchar(25) default null;
+	ste_cswneqcode	varchar(25) default null;
 
 IF COLUMNPROPERTY(OBJECT_ID('dbo.jobplan'), 'ste_cswnjobid', 'ColumnId') is null
 ALTER TABLE jobplan
@@ -493,3 +487,31 @@ set
 	autokeyname='WORKORDERNUM'
 	, orgid='SBST'
 where autokeyname='WONUM';
+
+
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.assetmeter'), 'ste_cswnfrequency', 'ColumnId') IS NULL
+ALTER TABLE assetmeter add	
+, ste_cswnfrequency	INTEGER	
+, ste_cswnfrequencyunit	varchar(50)
+, ste_cswnassetid	nvarchar(50)
+ ,ste_cswntotalcumrununit float
+ ,ste_cswnstartdate datetime;
+ 
+ 
+IF COLUMNPROPERTY(OBJECT_ID('dbo.assetmeter'), 'ste_mtlastread', 'ColumnId') IS NULL
+ALTER TABLE assetmeter add	
+ste_mtlastread varchar(50);	
+
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.invoiceline'), 'ste_cswndiscount', 'ColumnId') IS NULL
+ALTER TABLE invoiceline add	
+ste_cswndiscount decimal (10, 2) default null,
+ste_cswnlocalhandlingcharge decimal (10, 2)default null,
+ste_cswnothercharges (10, 2)default null,
+;	
+
+
+
+
+
