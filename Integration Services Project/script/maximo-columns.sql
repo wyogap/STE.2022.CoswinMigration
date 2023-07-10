@@ -23,10 +23,9 @@ IF COLUMNPROPERTY(OBJECT_ID('dbo.ASSET'), 'ste_cswnmodelnum', 'ColumnId') IS NUL
 ALTER TABLE ASSET
 ADD ste_cswnmodelnum VARCHAR(24) default null;
 	
-IF COLUMNPROPERTY(OBJECT_ID('dbo.prline'), 'ste_cswnapglcode', 'ColumnId') IS NULL
+IF COLUMNPROPERTY(OBJECT_ID('dbo.prline'), 'ste_cswnwbsnum', 'ColumnId') IS NULL
 ALTER TABLE prline
-ADD ste_cswnsapgl varchar(20) default null,
-	ste_cswnwbsnum varchar(20) default null,
+ADD ste_cswnwbsnum varchar(20) default null,
 	ste_cswnprefsupl varchar(20) default null,
 	ste_cswncurrencycode varchar(8) default null,
 	ste_cswnprstatus smallint default null,
@@ -41,10 +40,9 @@ ADD ste_cswndnref varchar(10) default null,
 	ste_cswnwbsnum varchar(20) default null
 ;
 
-IF COLUMNPROPERTY(OBJECT_ID('dbo.po'), 'ste_cswnapglcode', 'ColumnId') IS NULL
+IF COLUMNPROPERTY(OBJECT_ID('dbo.po'), 'ste_cswnpotype', 'ColumnId') IS NULL
 ALTER TABLE [po]
-ADD ste_cswnsapgl varchar(20) default null,
-    ste_cswnpotype smallint default null;
+ADD ste_cswnpotype smallint default null;
 	
 IF COLUMNPROPERTY(OBJECT_ID('dbo.poline'), 'ste_cswnpendingqty', 'ColumnId') IS NULL
 ALTER TABLE poline
@@ -54,7 +52,6 @@ ADD ste_cswnpendingqty decimal(15,2) default null,
 IF COLUMNPROPERTY(OBJECT_ID('dbo.rfqvendor'), 'ste_cswnnotes', 'ColumnId') IS NULL
 ALTER TABLE [rfqvendor]
 ADD ste_cswnnotes varchar(100) default null,
-	ste_cswnsapgl varchar(20) default null,
 	ste_cswnwbsnum varchar(20) default null
 	;
 	
@@ -301,7 +298,6 @@ ADD ste_cswndndate datetime default null,
 	ste_cswngrnnum varchar(10) default null,
 	ste_cswngrndate datetime default null,
 	ste_cswnreceipttype smallint default null,
-	ste_cswnsapgl varchar(20) default null,
 	ste_cswncc varchar(16) default null,
 	ste_cswninspref varchar(10) default null;
 
@@ -407,6 +403,12 @@ ADD ste_replflag varchar(3) default null,
 	ste_plnflag varchar(3) default null;
 
 
+IF COLUMNPROPERTY(OBJECT_ID('dbo.invoiceline'), 'STE_CSWNDISCOUNT', 'ColumnId') is null
+ALTER TABLE invoiceline
+ADD
+STE_CSWNDISCOUNT	DECIMAL	(10,2) default null,
+STE_CSWNLOCALHANDLINGCHARGE	DECIMAL	(10,2) default null,
+STE_CSWNOTHERCHARGES	DECIMAL	(10,2) default null;
 
 IF COLUMNPROPERTY(OBJECT_ID('dbo.invoice'), 'STE_CSWNBASEVAL', 'ColumnId') is null
 ALTER TABLE invoice
@@ -449,7 +451,7 @@ IF COLUMNPROPERTY(OBJECT_ID('dbo.jobplan'), 'ste_cswnworkday', 'ColumnId') is nu
 ALTER TABLE jobplan
 ADD ste_cswnworkday	smallint default null,
 	ste_cswnwptype	varchar(10) default null,
-	ste_cswneqcode	varchar(25) default null;
+	ste_cweqcode	varchar(25) default null;
 
 IF COLUMNPROPERTY(OBJECT_ID('dbo.jobplan'), 'ste_cswnjobid', 'ColumnId') is null
 ALTER TABLE jobplan
@@ -488,30 +490,37 @@ set
 	, orgid='SBST'
 where autokeyname='WONUM';
 
+IF COLUMNPROPERTY(OBJECT_ID('dbo.matrectrans'), 'ste_cswnsapgl', 'ColumnId') is null
+ALTER TABLE matrectrans
+ADD ste_cswnsapgl varchar(20) default null;
 
+IF COLUMNPROPERTY(OBJECT_ID('dbo.prline'), 'ste_cswnsapgl', 'ColumnId') IS NULL
+ALTER TABLE prline
+ADD ste_cswnsapgl varchar(20) default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.po'), 'ste_cswnsapgl', 'ColumnId') IS NULL
+ALTER TABLE [po]
+ADD ste_cswnsapgl varchar(20) default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.rfqvendor'), 'ste_cswnsapgl', 'ColumnId') IS NULL
+ALTER TABLE [rfqvendor]
+ADD ste_cswnsapgl varchar(20) default null;
 
 IF COLUMNPROPERTY(OBJECT_ID('dbo.assetmeter'), 'ste_cswnfrequency', 'ColumnId') IS NULL
 ALTER TABLE assetmeter add	
-, ste_cswnfrequency	INTEGER	
-, ste_cswnfrequencyunit	varchar(50)
-, ste_cswnassetid	nvarchar(50)
- ,ste_cswntotalcumrununit float
- ,ste_cswnstartdate datetime;
- 
+	ste_cswnfrequency	INTEGER	
+	,ste_cswnfrequencyunit	varchar(50)
+	,ste_cswnassetid	nvarchar(50)
+	,ste_cswntotalcumrununit float
+	,ste_cswnstartdate datetime;
  
 IF COLUMNPROPERTY(OBJECT_ID('dbo.assetmeter'), 'ste_mtlastread', 'ColumnId') IS NULL
 ALTER TABLE assetmeter add	
-ste_mtlastread varchar(50);	
-
+	ste_mtlastread varchar(50);	
 
 IF COLUMNPROPERTY(OBJECT_ID('dbo.invoiceline'), 'ste_cswndiscount', 'ColumnId') IS NULL
 ALTER TABLE invoiceline add	
-ste_cswndiscount decimal (10, 2) default null,
-ste_cswnlocalhandlingcharge decimal (10, 2)default null,
-ste_cswnothercharges decimal(10, 2)default null
-;	
-
-
-
-
-
+	ste_cswndiscount decimal (10, 2) default null,
+	ste_cswnlocalhandlingcharge decimal (10, 2) default null,
+	ste_cswnothercharges decimal (10, 2)default null
+;
