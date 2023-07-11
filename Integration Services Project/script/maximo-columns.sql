@@ -318,15 +318,6 @@ IF COLUMNPROPERTY(OBJECT_ID('dbo.jobtask'), 'ste_cswnactcode', 'ColumnId') is nu
 ALTER TABLE jobtask
 ADD ste_cswnactcode varchar(10) default null;
 
-IF COLUMNPROPERTY(OBJECT_ID('dbo.pm'), 'ste_cswnjobid', 'ColumnId') is null
-ALTER TABLE pm
-ADD ste_cswnjobid varchar(16) default null;
-
-IF COLUMNPROPERTY(OBJECT_ID('dbo.pmseasons'), 'ste_cswnstartwk', 'ColumnId') is null
-ALTER TABLE pmseasons
-ADD ste_cswnstartwk smallint default null,
-    ste_cswnendwk smallint default null;
-	
 IF COLUMNPROPERTY(OBJECT_ID('dbo.jobplan'), 'ste_cswnavprtm', 'ColumnId') is null
 ALTER TABLE jobplan
 ADD ste_cswnavprtm	smallint default null,
@@ -383,6 +374,15 @@ ADD ste_cswncc	varchar(16) default null,
 	ste_cswnworkday	smallint default null,
 	ste_cweqcode	varchar(25) default null;
 
+IF COLUMNPROPERTY(OBJECT_ID('dbo.pm'), 'ste_cswnjobid', 'ColumnId') is null
+ALTER TABLE pm
+ADD ste_cswnjobid varchar(16) default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.pmseasons'), 'ste_cswnstartwk', 'ColumnId') is null
+ALTER TABLE pmseasons
+ADD ste_cswnstartwk smallint default null,
+    ste_cswnendwk smallint default null;
+	
 IF COLUMNPROPERTY(OBJECT_ID('dbo.pmmeter'), 'ste_cswnfrequnit', 'ColumnId') is null
 ALTER TABLE pmmeter
 ADD ste_cswnfrequnit	smallint default null;
