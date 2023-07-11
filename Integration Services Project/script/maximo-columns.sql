@@ -520,7 +520,17 @@ ALTER TABLE assetmeter add
 
 IF COLUMNPROPERTY(OBJECT_ID('dbo.invoiceline'), 'ste_cswndiscount', 'ColumnId') IS NULL
 ALTER TABLE invoiceline add	
-	ste_cswndiscount decimal (10, 2) default null,
-	ste_cswnlocalhandlingcharge decimal (10, 2) default null,
-	ste_cswnothercharges decimal (10, 2)default null
-;
+ste_cswndiscount decimal (10, 2) default null,
+ste_cswnlocalhandlingcharge decimal (10, 2)default null,
+ste_cswnothercharges decimal(10, 2)default null
+;	
+
+
+
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.po'), 'ste_cswnreceiptchangedate', 'ColumnId') IS NULL
+ALTER TABLE [po]
+ADD ste_cswnreceiptchangedate datetime default null,
+	ste_cswnreceiptforwarder varchar(20) default null,
+	ste_cswnrecwo varchar(20) default null
+	;
