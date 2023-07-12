@@ -510,3 +510,7 @@ ADD ste_cswnreceiptchangedate datetime default null,
 	ste_cswnreceiptforwarder varchar(20) default null,
 	ste_cswnrecwo varchar(20) default null
 	;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.invoicecost'), 'ste_cswncc', 'ColumnId') IS NULL
+ALTER TABLE invoicecost
+ADD ste_cswncc VARCHAR(16) default null;
