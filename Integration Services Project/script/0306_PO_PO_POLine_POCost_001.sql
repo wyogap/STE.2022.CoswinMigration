@@ -1,13 +1,5 @@
 /****** Object:  Table [dbo].[ste_migration_params]    Script Date: 25/01/2023 17:46:34 ******/
 
-IF COLUMNPROPERTY(OBJECT_ID('dbo.po'), 'STE_MIGRATIONREQBY', 'ColumnId') is null
-ALTER TABLE [po]
-ADD STE_MIGRATIONREQBY varchar(16) default null;
-
-IF COLUMNPROPERTY(OBJECT_ID('dbo.poline'), 'STE_MIGRATIONAMDWHO', 'ColumnId') is null
-ALTER TABLE [poline]
-ADD STE_MIGRATIONAMDWHO varchar(16) default null;
-
 -- update migration params
 -- -----------------------
 INSERT INTO [dbo].[ste_migration_params]
@@ -19,9 +11,9 @@ INSERT INTO [dbo].[ste_migration_params]
            ,[modified_on]
            ,[modified_by])
      VALUES
-           ('0306_PO_PO_POLine'
+           ('0306_PO_PO_POLine_POCost'
            ,'version'
-           ,'3'
+           ,'2'
            ,getdate()
            ,'ssis'
            ,NULL

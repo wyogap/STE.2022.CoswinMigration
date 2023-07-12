@@ -190,7 +190,7 @@ INSERT INTO [dbo].[ste_migration_params]
            ,[modified_on]
            ,[modified_by])
      VALUES
-           ('0306_PO_PO_POLine'
+           ('0306_PO_PO_POLine_POCost'
            ,'version'
            ,'1'
            ,getdate()
