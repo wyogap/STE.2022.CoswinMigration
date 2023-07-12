@@ -32,14 +32,6 @@ ADD ste_cswnwbsnum varchar(20) default null,
 	ste_cswncostcenter varchar(16) default null
 ;
 
-IF COLUMNPROPERTY(OBJECT_ID('dbo.invoice'), 'ste_cswndnref', 'ColumnId') IS NULL
-ALTER TABLE [invoice]
-ADD ste_cswndnref varchar(10) default null,
-	ste_cswndonum varchar(10) default null,
-	ste_cswndodate datetime default null,
-	ste_cswnwbsnum varchar(20) default null
-;
-
 IF COLUMNPROPERTY(OBJECT_ID('dbo.po'), 'ste_cswnpotype', 'ColumnId') IS NULL
 ALTER TABLE [po]
 ADD ste_cswnpotype smallint default null;
@@ -55,12 +47,6 @@ ADD ste_cswnnotes varchar(100) default null,
 	ste_cswnwbsnum varchar(20) default null
 	;
 	
-IF COLUMNPROPERTY(OBJECT_ID('dbo.invoice'), 'ste_cswndnref', 'ColumnId') IS NULL
-ALTER TABLE quotationline
-ADD ste_cswnaltprice1 decimal(10,2) default null,
-	ste_cswnaltprice2 decimal(10,2) default null
-;
-
 IF COLUMNPROPERTY(OBJECT_ID('dbo.COMPANIES'), 'ste_cswncountry', 'ColumnId') IS NULL
 ALTER TABLE COMPANIES
 ADD ste_cswncountry varchar(50) default null;
@@ -272,13 +258,6 @@ ADD ste_cswnstartwk smallint default null,
 --alter table dbo.rfqline
 --alter column rfqnum varchar(16);
 
-IF COLUMNPROPERTY(OBJECT_ID('dbo.INVOICE'), 'ste_cswnbaseval', 'ColumnId') is null
-ALTER TABLE INVOICE
-ADD ste_cswnbaseval decimal(18,2) default null,
-	ste_cswnlocalhandlingcharge decimal(18,2) default null,
-	ste_cswnothercharges decimal(18,2) default null,
-	ste_cswninvadj decimal(18,2) default null;
-
 IF COLUMNPROPERTY(OBJECT_ID('dbo.CURRENCY'), 'ste_cswnctrycd', 'ColumnId') is null
 ALTER TABLE CURRENCY
 ADD ste_cswnctrycd varchar(4) default null,
@@ -402,26 +381,6 @@ ALTER TABLE matusetrans
 ADD ste_replflag varchar(3) default null,
 	ste_plnflag varchar(3) default null;
 
-
-IF COLUMNPROPERTY(OBJECT_ID('dbo.invoiceline'), 'STE_CSWNDISCOUNT', 'ColumnId') is null
-ALTER TABLE invoiceline
-ADD
-STE_CSWNDISCOUNT	DECIMAL	(10,2) default null,
-STE_CSWNLOCALHANDLINGCHARGE	DECIMAL	(10,2) default null,
-STE_CSWNOTHERCHARGES	DECIMAL	(10,2) default null;
-
-IF COLUMNPROPERTY(OBJECT_ID('dbo.invoice'), 'STE_CSWNBASEVAL', 'ColumnId') is null
-ALTER TABLE invoice
-ADD STE_CSWNBASEVAL	DECIMAL	(10,2) default null,
-DISCOUNT			DECIMAL	(10,2) default null,
-STE_CSWNLOCALHANDLINGCHARGE	DECIMAL	(10,2) default null,
-TOTALTAX1			DECIMAL	(10,2) default null,
-TOTALTAX2			DECIMAL	(10,2) default null,
-STE_CSWNOTHERCHARGES	DECIMAL		(10,2) default null,
-STE_CSWNINVADJ	DECIMAL	(10,2) default null,
-TOTALCOST			DECIMAL	(10,2) default null;	
-
-
 IF COLUMNPROPERTY(OBJECT_ID('dbo.jobplan'), 'ste_cswnavprtm', 'ColumnId') is null
 ALTER TABLE jobplan
 ADD ste_cswnavprtm	smallint default null,
@@ -520,13 +479,30 @@ ALTER TABLE assetmeter add
 
 IF COLUMNPROPERTY(OBJECT_ID('dbo.invoiceline'), 'ste_cswndiscount', 'ColumnId') IS NULL
 ALTER TABLE invoiceline add	
-ste_cswndiscount decimal (10, 2) default null,
-ste_cswnlocalhandlingcharge decimal (10, 2)default null,
-ste_cswnothercharges decimal(10, 2)default null
-;	
+	ste_cswndiscount decimal (10, 2) default null,
+	ste_cswnlocalhandlingcharge decimal (10, 2) default null,
+	ste_cswnothercharges decimal (10, 2)default null
+;
 
+IF COLUMNPROPERTY(OBJECT_ID('dbo.INVOICE'), 'ste_cswnbaseval', 'ColumnId') is null
+ALTER TABLE INVOICE
+ADD ste_cswnbaseval decimal(18,2) default null,
+	ste_cswnlocalhandlingcharge decimal(18,2) default null,
+	ste_cswnothercharges decimal(18,2) default null,
+	ste_cswninvadj decimal(18,2) default null;
 
+IF COLUMNPROPERTY(OBJECT_ID('dbo.invoice'), 'ste_cswndnref', 'ColumnId') IS NULL
+ALTER TABLE [invoice]
+ADD ste_cswndnref varchar(10) default null,
+	ste_cswndonum varchar(10) default null,
+	ste_cswndodate datetime default null,
+	ste_cswnwbsnum varchar(20) default null;
 
+IF COLUMNPROPERTY(OBJECT_ID('dbo.quotationline'), 'ste_cswnaltprice1', 'ColumnId') IS NULL
+ALTER TABLE quotationline
+ADD ste_cswnaltprice1 decimal(10,2) default null,
+	ste_cswnaltprice2 decimal(10,2) default null
+;
 
 IF COLUMNPROPERTY(OBJECT_ID('dbo.po'), 'ste_cswnreceiptchangedate', 'ColumnId') IS NULL
 ALTER TABLE [po]
@@ -534,3 +510,7 @@ ADD ste_cswnreceiptchangedate datetime default null,
 	ste_cswnreceiptforwarder varchar(20) default null,
 	ste_cswnrecwo varchar(20) default null
 	;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.invoicecost'), 'ste_cswncc', 'ColumnId') IS NULL
+ALTER TABLE invoicecost
+ADD ste_cswncc VARCHAR(16) default null;
