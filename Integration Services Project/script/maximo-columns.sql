@@ -535,3 +535,8 @@ ADD ste_cswnfwdr varchar(15) default null,
 	ste_cswnreceiptforwarder varchar(20) default null,
 	ste_cswnrecwo varchar(20) default null
 	;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.[labor]'), 'ste_cswnpaidhrs', 'ColumnId') IS NULL
+ALTER TABLE labor
+ADD ste_cswnpaidhrs int default null,
+	ste_cswnwrenchhrs int default null;
