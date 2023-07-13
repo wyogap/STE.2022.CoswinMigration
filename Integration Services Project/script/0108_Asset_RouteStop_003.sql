@@ -66,7 +66,7 @@ INSERT INTO [dbo].[ste_migration_params]
      VALUES
            ('0108_Asset_RouteStop'
            ,'version'
-           ,'3'
+           ,'4'
            ,getdate()
            ,'ssis'
            ,NULL

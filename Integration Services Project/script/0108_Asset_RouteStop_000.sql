@@ -91,8 +91,8 @@ BEGIN
 	declare @v_max_id bigint;
 
 	-- update identity column
-	select @v_max_id=max(routestopid) from [ROUTE_STOP];
-	update maxsequence set maxreserved=@v_max_id+1 where tbname='ROUTE_STOP' and name='ROUTESTOPID';
+	select @v_max_id=max(route_stopid) from [ROUTE_STOP];
+	update maxsequence set maxreserved=@v_max_id+1 where tbname='ROUTE_STOP' and name='ROUTE_STOPID';
 
 	-- update start_id and end_id
 	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID) from [ROUTE_STOP];
