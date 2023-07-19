@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="0004_Master_Person"
   DTS:PackageType="5"
-  DTS:VersionBuild="137"
-  DTS:VersionGUID="{77D10C02-4463-4179-A7D6-1D9F4C2E4EC3}"
+  DTS:VersionBuild="138"
+  DTS:VersionGUID="{91DFADFD-85B8-4FCC-A753-2D56D777C3F4}"
   DTS:VersionMajor="7"
   DTS:VersionMinor="2">
   <DTS:Property
@@ -33,7 +33,7 @@
           <OraConnectionString>SERVER=103.149.177.117:1521/COSWINDB;USERNAME=coswin;WINAUTH=0;</OraConnectionString>
           <OraPassword
             Sensitive="1"
-            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAKvkDySftt02HPyXdTmqSiwAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAADXLMnrwCeQjDMYvj/LOhDjYAiL/hd9RjQ8ySk5J50J0QAAAAAOgAAAAAIAACAAAACr71hh8AK4jX57wg3976aYLek3b+0F+rKi0u3NjJ4DqyAAAAAeHbLTkbB7F9M/ejfs0pd4pXN2Bozf1OuAcvgb2iWo4UAAAABjFBO0mlHMeLfnfPPVCOBL43eK89QT9mMk7r8o1F/vzpWYHbNd6ROersZ9HFuouUao4qwdy3lYiFXP+riv/ADc</OraPassword>
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAANLS8gHlSkUShYRsXgv9K+AAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAD8IaND1HigziHbBwAoG7F5kZSW1MQm1xleObs+DmsmDAAAAAAOgAAAAAIAACAAAABies4GUik6nsA1SstAeYtO1obD95lv0NI+bdRrYWCqxCAAAAD21XI4pA4Mz6ExhqAYC2Y0e+sH0Ih2yIN/KFxnsEmLrkAAAADXxIfVHStUCConYKKSht7Bx3SUCdZxKhZG0eTzEN1hWi7YusxkcTyms16JIBZvqKAv9qeQDIvY1v55jA93ToZ5</OraPassword>
           <OraRetain>False</OraRetain>
           <OraInitialCatalog></OraInitialCatalog>
           <OraServerName>103.149.177.117:1521/COSWINDB</OraServerName>
@@ -58,11 +58,11 @@
         <DTS:ConnectionManager
           DTS:ConnectRetryCount="1"
           DTS:ConnectRetryInterval="5"
-          DTS:ConnectionString="Data Source=LENOVO-YOGA;User ID=maximo;Initial Catalog=maximodb;Provider=SQLNCLI11.1;Persist Security Info=True;Auto Translate=False;Application Name=STE.2022.CoswinMigration-{A2D54055-0CBC-4EA5-9952-7A6ADE49C2F8}.maximodb.maximo;">
+          DTS:ConnectionString="Data Source=DESKTOP-6E4JM7G;Initial Catalog=maximodb;Provider=SQLNCLI11.1;Integrated Security=SSPI;Application Name=SSIS-STE.2022.CoswinMigration-{494A231E-16CB-49D6-BF06-9EC67998BDC4}DESKTOP-6E4JM7G.maximodb;Auto Translate=False;">
           <DTS:Password
             DTS:Name="Password"
             Sensitive="1"
-            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAKvkDySftt02HPyXdTmqSiwAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAADb33CpjKCWp6M1jBWNDbyDP70/0z6TQS1y6TWuZQFl3AAAAAAOgAAAAAIAACAAAAA18xHrFAi/yBynr8yzOhnmryJ/L8A3Ymp08nL/qTV0/iAAAACxQ+gn9BPWqXPZJ5KakE94V9hpLO2PcgSr7Z7nrWv1IkAAAAAdjEhLGFiKX5vNAn4bYtoEIbfY+vdF5OX6mhr4ecIr5xz8S2FWAItJ8NdnFy78OfaTenqVuXQTc7vjoSEArsZd</DTS:Password>
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAANLS8gHlSkUShYRsXgv9K+AAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAA09Vwg5a2sqX1NyyNQzlhYDTOLNKfyXhcwhJ3+L+aAKQAAAAAOgAAAAAIAACAAAAAbT8TA1jG65UF1TdkHKdzcgxTLXMKswE2IUNMXY413/iAAAACHs9B7irkZrZwP6vYUQ7hFYBGqzrd1V2JGHCOQKhyCyUAAAAC033sIZJ7inyRiGTWnIwcw4QGmugOqs1U41fj5Pj2s9rBGaNMQW8yQvq6yVwYua0tBjHsvFZ/HzuL7W3GvTSR1</DTS:Password>
         </DTS:ConnectionManager>
       </DTS:ObjectData>
     </DTS:ConnectionManager>
@@ -1489,7 +1489,9 @@
                   UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT re.*
    , CASE WHEN RE_HITY=78 THEN 1
                WHEN RE_HITY=89 THEN 2
-     ELSE RE_HITY END AS EMPLOYEETYPE 
+     ELSE RE_HITY END AS EMPLOYEETYPE
+, CASE WHEN re.RE_SEX IN (0,48) THEN 'MALE'
+	WHEN re.RE_SEX = 49 THEN 'FEMALE' ELSE TO_CHAR(re.RE_SEX) END ste_cswnsex 
 FROM COSWIN.RES_EMPL re
 WHERE 
 -- status = ACTIVE
@@ -1776,6 +1778,14 @@ re.RE_STATUS!=48
                       externalMetadataColumnId="Package\DF - RES_EMPL (ACTIVE)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EMPLOYEETYPE]"
                       lineageId="Package\DF - RES_EMPL (ACTIVE)\Oracle Source.Outputs[Oracle Source Output].Columns[EMPLOYEETYPE]"
                       name="EMPLOYEETYPE" />
+                    <outputColumn
+                      refId="Package\DF - RES_EMPL (ACTIVE)\Oracle Source.Outputs[Oracle Source Output].Columns[STE_CSWNSEX]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\DF - RES_EMPL (ACTIVE)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[STE_CSWNSEX]"
+                      length="40"
+                      lineageId="Package\DF - RES_EMPL (ACTIVE)\Oracle Source.Outputs[Oracle Source Output].Columns[STE_CSWNSEX]"
+                      name="STE_CSWNSEX" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1951,6 +1961,12 @@ re.RE_STATUS!=48
                       refId="Package\DF - RES_EMPL (ACTIVE)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EMPLOYEETYPE]"
                       dataType="r8"
                       name="EMPLOYEETYPE" />
+                    <externalMetadataColumn
+                      refId="Package\DF - RES_EMPL (ACTIVE)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[STE_CSWNSEX]"
+                      codePage="1252"
+                      dataType="str"
+                      length="40"
+                      name="STE_CSWNSEX" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -2198,6 +2214,14 @@ re.RE_STATUS!=48
                       externalMetadataColumnId="Package\DF - RES_EMPL (ACTIVE)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EMPLOYEETYPE]"
                       lineageId="Package\DF - RES_EMPL (ACTIVE)\Oracle Source.Outputs[Oracle Source Error Output].Columns[EMPLOYEETYPE]"
                       name="EMPLOYEETYPE" />
+                    <outputColumn
+                      refId="Package\DF - RES_EMPL (ACTIVE)\Oracle Source.Outputs[Oracle Source Error Output].Columns[STE_CSWNSEX]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\DF - RES_EMPL (ACTIVE)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[STE_CSWNSEX]"
+                      length="40"
+                      lineageId="Package\DF - RES_EMPL (ACTIVE)\Oracle Source.Outputs[Oracle Source Error Output].Columns[STE_CSWNSEX]"
+                      name="STE_CSWNSEX" />
                     <outputColumn
                       refId="Package\DF - RES_EMPL (ACTIVE)\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -3439,7 +3463,9 @@ re.RE_STATUS!=48
                   UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT re.*
    , CASE WHEN RE_HITY=78 THEN 1
                WHEN RE_HITY=89 THEN 2
-     ELSE RE_HITY END AS EMPLOYEETYPE 
+     ELSE RE_HITY END AS EMPLOYEETYPE
+, CASE WHEN re.RE_SEX IN (0,48) THEN 'MALE'
+	WHEN re.RE_SEX = 49 THEN 'FEMALE' ELSE TO_CHAR(re.RE_SEX) END ste_cswnsex 
 FROM COSWIN.RES_EMPL re
 WHERE 
 -- status = INACTIVE
@@ -3726,6 +3752,14 @@ re.RE_STATUS=48
                       externalMetadataColumnId="Package\DF - RES_EMPL (INACTIVE)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EMPLOYEETYPE]"
                       lineageId="Package\DF - RES_EMPL (INACTIVE)\Oracle Source.Outputs[Oracle Source Output].Columns[EMPLOYEETYPE]"
                       name="EMPLOYEETYPE" />
+                    <outputColumn
+                      refId="Package\DF - RES_EMPL (INACTIVE)\Oracle Source.Outputs[Oracle Source Output].Columns[STE_CSWNSEX]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\DF - RES_EMPL (INACTIVE)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[STE_CSWNSEX]"
+                      length="40"
+                      lineageId="Package\DF - RES_EMPL (INACTIVE)\Oracle Source.Outputs[Oracle Source Output].Columns[STE_CSWNSEX]"
+                      name="STE_CSWNSEX" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -3901,6 +3935,12 @@ re.RE_STATUS=48
                       refId="Package\DF - RES_EMPL (INACTIVE)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EMPLOYEETYPE]"
                       dataType="r8"
                       name="EMPLOYEETYPE" />
+                    <externalMetadataColumn
+                      refId="Package\DF - RES_EMPL (INACTIVE)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[STE_CSWNSEX]"
+                      codePage="1252"
+                      dataType="str"
+                      length="40"
+                      name="STE_CSWNSEX" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -4148,6 +4188,14 @@ re.RE_STATUS=48
                       externalMetadataColumnId="Package\DF - RES_EMPL (INACTIVE)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EMPLOYEETYPE]"
                       lineageId="Package\DF - RES_EMPL (INACTIVE)\Oracle Source.Outputs[Oracle Source Error Output].Columns[EMPLOYEETYPE]"
                       name="EMPLOYEETYPE" />
+                    <outputColumn
+                      refId="Package\DF - RES_EMPL (INACTIVE)\Oracle Source.Outputs[Oracle Source Error Output].Columns[STE_CSWNSEX]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\DF - RES_EMPL (INACTIVE)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[STE_CSWNSEX]"
+                      length="40"
+                      lineageId="Package\DF - RES_EMPL (INACTIVE)\Oracle Source.Outputs[Oracle Source Error Output].Columns[STE_CSWNSEX]"
+                      name="STE_CSWNSEX" />
                     <outputColumn
                       refId="Package\DF - RES_EMPL (INACTIVE)\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -23934,40 +23982,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           Id="Package\DF - RES_EMPL (ACTIVE)\Derived Column"
           TopLeft="181,79" />
         <EdgeLayout
-          Id="Package\DF - RES_EMPL (ACTIVE).Paths[Derived Column Output]"
-          TopLeft="260,121">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-159,53.5"
-              Start="0,0"
-              End="-159,46">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,22.75" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,22.75"
-                    Point2="0,26.75"
-                    Point3="-4,26.75" />
-                  <mssgle:LineSegment
-                    End="-155,26.75" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-155,26.75"
-                    Point2="-159,26.75"
-                    Point3="-159,30.75" />
-                  <mssgle:LineSegment
-                    End="-159,46" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
           Id="Package\DF - RES_EMPL (ACTIVE).Paths[Oracle Source Output]"
           TopLeft="94,47.5">
           <EdgeLayout.Curve>
@@ -23993,6 +24007,40 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                     Point3="166,19.75" />
                   <mssgle:LineSegment
                     End="166,24" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - RES_EMPL (ACTIVE).Paths[Derived Column Output]"
+          TopLeft="260,121">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-159,53.5"
+              Start="0,0"
+              End="-159,46">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,22.75" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,22.75"
+                    Point2="0,26.75"
+                    Point3="-4,26.75" />
+                  <mssgle:LineSegment
+                    End="-155,26.75" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-155,26.75"
+                    Point2="-159,26.75"
+                    Point3="-159,30.75" />
+                  <mssgle:LineSegment
+                    End="-159,46" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -24048,40 +24096,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           Id="Package\DF - RES_EMPL (INACTIVE)\Derived Column"
           TopLeft="181,79" />
         <EdgeLayout
-          Id="Package\DF - RES_EMPL (INACTIVE).Paths[Derived Column Output]"
-          TopLeft="260,121">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-159,53.5"
-              Start="0,0"
-              End="-159,46">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,22.75" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,22.75"
-                    Point2="0,26.75"
-                    Point3="-4,26.75" />
-                  <mssgle:LineSegment
-                    End="-155,26.75" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-155,26.75"
-                    Point2="-159,26.75"
-                    Point3="-159,30.75" />
-                  <mssgle:LineSegment
-                    End="-159,46" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
           Id="Package\DF - RES_EMPL (INACTIVE).Paths[Oracle Source Output]"
           TopLeft="94,47.5">
           <EdgeLayout.Curve>
@@ -24107,6 +24121,40 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                     Point3="166,19.75" />
                   <mssgle:LineSegment
                     End="166,24" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - RES_EMPL (INACTIVE).Paths[Derived Column Output]"
+          TopLeft="260,121">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-159,53.5"
+              Start="0,0"
+              End="-159,46">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,22.75" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,22.75"
+                    Point2="0,26.75"
+                    Point3="-4,26.75" />
+                  <mssgle:LineSegment
+                    End="-155,26.75" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-155,26.75"
+                    Point2="-159,26.75"
+                    Point3="-159,30.75" />
+                  <mssgle:LineSegment
+                    End="-159,46" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -24460,9 +24508,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -24496,9 +24542,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -24592,9 +24636,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
@@ -24729,9 +24771,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -24765,9 +24805,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -24861,9 +24899,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
@@ -24972,9 +25008,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -25008,9 +25042,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -25104,9 +25136,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
@@ -25415,9 +25445,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -25451,9 +25479,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -25547,9 +25573,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
@@ -25697,9 +25721,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -25733,9 +25755,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -25829,9 +25849,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
