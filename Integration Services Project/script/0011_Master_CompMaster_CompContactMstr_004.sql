@@ -319,7 +319,7 @@ INSERT INTO [dbo].[ste_migration_params]
      VALUES
            ('0011_Master_CompMaster_CompContactMstr'
            ,'version'
-           ,'4'
+           ,'5'
            ,getdate()
            ,'ssis'
            ,NULL

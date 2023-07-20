@@ -37,11 +37,36 @@ AS
 BEGIN
 	declare @v_start_id int;
 	declare @v_end_id int;
+	declare @v_cnt int;
 	declare @v_max_id bigint;
+	declare @PackageName varchar(250);
 
 	-- update identity column
 	select @v_max_id=max(METERID) from METER;
 	update maxsequence set maxreserved=@v_max_id+1 where tbname='METER' and name='METERID';
+
+	-- get package name
+	select @PackageName = package_name from [dbo].[ste_migration_logs] where id = @PackageLogID;
+	if (@PackageName is null) return;
+
+	-- update start_id and end_id for ITEM_
+	select @v_cnt=count(STE_MIGRATIONID) from person
+	where STE_MIGRATIONID is not null and STE_MIGRATIONSOURCE = 'RES_EMPL' AND STATUS = 'ACTIVE';
+
+	insert into [dbo].[ste_migration_log_details] (
+		[package_name]
+		,[log_id]
+		,[event]
+		,[event_type]
+		,[event_description]
+	)
+	values (
+		@PackageName
+		, @PackageLogID
+		, 'RES_EMPL (ACTIVE)'
+		, 'LOG'
+		, CONCAT('COUNT: ', @v_cnt)
+	);
 
 	-- update start_id and end_id
 	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID) from meter

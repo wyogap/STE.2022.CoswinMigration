@@ -130,7 +130,7 @@ INSERT INTO [dbo].[ste_migration_params]
      VALUES
            ('0003_Master_Locations'
            ,'version'
-           ,'6'
+           ,'7'
            ,getdate()
            ,'ssis'
            ,NULL
