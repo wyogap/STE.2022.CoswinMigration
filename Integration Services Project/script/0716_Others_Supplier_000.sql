@@ -106,7 +106,7 @@ BEGIN
 	values (
 		@PackageName
 		, @PackageLogID
-		, 'm_supplier_'
+		, 'supplier_'
 		, 'COMPLETED'
 		, CONCAT('COUNT: ', coalesce(@v_cnt,0), ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
 	);

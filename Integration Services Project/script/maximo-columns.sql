@@ -22,7 +22,44 @@ ADD ste_cweqcode VARCHAR(100) default null,
 IF COLUMNPROPERTY(OBJECT_ID('dbo.ASSET'), 'ste_cswnmodelnum', 'ColumnId') IS NULL
 ALTER TABLE ASSET
 ADD ste_cswnmodelnum VARCHAR(24) default null;
-	
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.asset'), 'ste_inchrgref', 'ColumnId') is null
+ALTER TABLE asset
+ADD ste_inchrgref varchar(20) default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.ASSET'), 'ste_cswncapacity', 'ColumnId') IS NULL
+ALTER TABLE ASSET
+ADD ste_cswncapacity varchar(50) default null,
+	ste_cswnrating varchar(50) default null,
+	ste_cswnmtbfunit varchar(50) default null,
+	ste_manufactmttr varchar(50) default null,
+	ste_cswnmttrunit varchar(50) default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.ASSET'), 'ste_cswnmeterid', 'ColumnId') IS NULL
+ALTER TABLE ASSET
+ADD ste_cswnmeterid varchar(50) default null,
+	ste_cswnregno varchar(50) default null,
+	ste_cswncountry varchar(50) default null,
+	ste_cswnmanfyy int default null,
+	ste_cswnmanfmm int default null,
+	ste_cswnarrvyy int default null,
+	ste_cswnarrvmm int default null,
+	ste_cswnminlifeyy int default null,
+	ste_cswnminlifemm int default null,
+	ste_cswnminlifemeter int default null,
+	ste_cswnmaxlifeyy int default null,
+	ste_cswnmaxlifemm int default null,
+	ste_cswnmaxlifemeter int default null,
+	ste_cswnserialno varchar(50) default null;
+;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.asset'), 'ste_cswneqpcatg', 'ColumnId') is null
+ALTER TABLE asset
+ADD ste_cswneqpcatg varchar(10) default null;
+
+--ALTER TABLE ASSET
+--ALTER COLUMN pluscmodelnum varchar(24) NOT NULL;
+
 IF COLUMNPROPERTY(OBJECT_ID('dbo.prline'), 'ste_cswnwbsnum', 'ColumnId') IS NULL
 ALTER TABLE prline
 ADD ste_cswnwbsnum varchar(20) default null,
@@ -30,14 +67,6 @@ ADD ste_cswnwbsnum varchar(20) default null,
 	ste_cswncurrencycode varchar(8) default null,
 	ste_cswnprstatus smallint default null,
 	ste_cswncostcenter varchar(16) default null
-;
-
-IF COLUMNPROPERTY(OBJECT_ID('dbo.invoice'), 'ste_cswndnref', 'ColumnId') IS NULL
-ALTER TABLE [invoice]
-ADD ste_cswndnref varchar(10) default null,
-	ste_cswndonum varchar(10) default null,
-	ste_cswndodate datetime default null,
-	ste_cswnwbsnum varchar(20) default null
 ;
 
 IF COLUMNPROPERTY(OBJECT_ID('dbo.po'), 'ste_cswnpotype', 'ColumnId') IS NULL
@@ -55,12 +84,6 @@ ADD ste_cswnnotes varchar(100) default null,
 	ste_cswnwbsnum varchar(20) default null
 	;
 	
-IF COLUMNPROPERTY(OBJECT_ID('dbo.invoice'), 'ste_cswndnref', 'ColumnId') IS NULL
-ALTER TABLE quotationline
-ADD ste_cswnaltprice1 decimal(10,2) default null,
-	ste_cswnaltprice2 decimal(10,2) default null
-;
-
 IF COLUMNPROPERTY(OBJECT_ID('dbo.COMPANIES'), 'ste_cswncountry', 'ColumnId') IS NULL
 ALTER TABLE COMPANIES
 ADD ste_cswncountry varchar(50) default null;
@@ -79,9 +102,6 @@ ALTER TABLE COMPCONTACTMSTR
 ADD ste_cswnvoicephone2 varchar(50) default null,
     ste_contacttype varchar(50) default null;
 	
---ALTER TABLE ASSET
---ALTER COLUMN pluscmodelnum varchar(24) NOT NULL;
-
 --ALTER TABLE prline
 --ALTER COLUMN CONTRACTREFNUM varchar(10) NOT NULL;
 
@@ -204,10 +224,6 @@ IF COLUMNPROPERTY(OBJECT_ID('dbo.qualification'), 'ste_cswnskillskill', 'ColumnI
 ALTER TABLE qualification
 ADD ste_cswnskillskill varchar(10) default null;
 
-IF COLUMNPROPERTY(OBJECT_ID('dbo.asset'), 'ste_inchrgref', 'ColumnId') is null
-ALTER TABLE asset
-ADD ste_inchrgref varchar(20) default null;
-
 IF COLUMNPROPERTY(OBJECT_ID('dbo.workorder'), 'ste_cswnwoid', 'ColumnId') IS NULL
 ALTER TABLE [workorder]
 ADD ste_cswnwoid varchar(10) default null;
@@ -271,13 +287,6 @@ ADD ste_cswnstartwk smallint default null,
 
 --alter table dbo.rfqline
 --alter column rfqnum varchar(16);
-
-IF COLUMNPROPERTY(OBJECT_ID('dbo.INVOICE'), 'ste_cswnbaseval', 'ColumnId') is null
-ALTER TABLE INVOICE
-ADD ste_cswnbaseval decimal(18,2) default null,
-	ste_cswnlocalhandlingcharge decimal(18,2) default null,
-	ste_cswnothercharges decimal(18,2) default null,
-	ste_cswninvadj decimal(18,2) default null;
 
 IF COLUMNPROPERTY(OBJECT_ID('dbo.CURRENCY'), 'ste_cswnctrycd', 'ColumnId') is null
 ALTER TABLE CURRENCY
@@ -410,18 +419,6 @@ STE_CSWNDISCOUNT	DECIMAL	(10,2) default null,
 STE_CSWNLOCALHANDLINGCHARGE	DECIMAL	(10,2) default null,
 STE_CSWNOTHERCHARGES	DECIMAL	(10,2) default null;
 
-IF COLUMNPROPERTY(OBJECT_ID('dbo.invoice'), 'STE_CSWNBASEVAL', 'ColumnId') is null
-ALTER TABLE invoice
-ADD STE_CSWNBASEVAL	DECIMAL	(10,2) default null,
-DISCOUNT			DECIMAL	(10,2) default null,
-STE_CSWNLOCALHANDLINGCHARGE	DECIMAL	(10,2) default null,
-TOTALTAX1			DECIMAL	(10,2) default null,
-TOTALTAX2			DECIMAL	(10,2) default null,
-STE_CSWNOTHERCHARGES	DECIMAL		(10,2) default null,
-STE_CSWNINVADJ	DECIMAL	(10,2) default null,
-TOTALCOST			DECIMAL	(10,2) default null;	
-
-
 IF COLUMNPROPERTY(OBJECT_ID('dbo.jobplan'), 'ste_cswnavprtm', 'ColumnId') is null
 ALTER TABLE jobplan
 ADD ste_cswnavprtm	smallint default null,
@@ -456,32 +453,6 @@ ADD ste_cswnworkday	smallint default null,
 IF COLUMNPROPERTY(OBJECT_ID('dbo.jobplan'), 'ste_cswnjobid', 'ColumnId') is null
 ALTER TABLE jobplan
 ADD ste_cswnjobid varchar(16) default null;
-
-IF COLUMNPROPERTY(OBJECT_ID('dbo.ASSET'), 'ste_cswncapacity', 'ColumnId') IS NULL
-ALTER TABLE ASSET
-ADD ste_cswncapacity varchar(50) default null,
-	ste_cswnrating varchar(50) default null,
-	ste_cswnmtbfunit varchar(50) default null,
-	ste_manufactmttr varchar(50) default null,
-	ste_cswnmttrunit varchar(50) default null;
-
-IF COLUMNPROPERTY(OBJECT_ID('dbo.ASSET'), 'ste_cswnmeterid', 'ColumnId') IS NULL
-ALTER TABLE ASSET
-ADD ste_cswnmeterid varchar(50) default null,
-	ste_cswnregno varchar(50) default null,
-	ste_cswncountry varchar(50) default null,
-	ste_cswnmanfyy int default null,
-	ste_cswnmanfmm int default null,
-	ste_cswnarrvyy int default null,
-	ste_cswnarrvmm int default null,
-	ste_cswnminlifeyy int default null,
-	ste_cswnminlifemm int default null,
-	ste_cswnminlifemeter int default null,
-	ste_cswnmaxlifeyy int default null,
-	ste_cswnmaxlifemm int default null,
-	ste_cswnmaxlifemeter int default null,
-	ste_cswnserialno varchar(50) default null;
-;
 
 -- use workordernum as autokey
 update autokey 
@@ -525,9 +496,6 @@ ste_cswnlocalhandlingcharge decimal (10, 2)default null,
 ste_cswnothercharges decimal(10, 2)default null
 ;	
 
-
-
-
 IF COLUMNPROPERTY(OBJECT_ID('dbo.[matrectrans]'), 'ste_cswnfwdr', 'ColumnId') IS NULL
 ALTER TABLE [matrectrans]
 ADD ste_cswnfwdr varchar(15) default null,
@@ -543,3 +511,30 @@ ADD ste_cswnpaidhrs int default null,
 
 --ALTER TABLE routes
 --ALTER COLUMN [route] varchar(20) NOT NULL;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.invoice'), 'ste_cswndnref', 'ColumnId') IS NULL
+ALTER TABLE [invoice]
+ADD ste_cswndnref varchar(10) default null,
+	ste_cswndonum varchar(10) default null,
+	ste_cswndodate datetime default null,
+	ste_cswnwbsnum varchar(20) default null
+;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.invoice'), 'ste_cswndnref', 'ColumnId') IS NULL
+ALTER TABLE quotationline
+ADD ste_cswnaltprice1 decimal(10,2) default null,
+	ste_cswnaltprice2 decimal(10,2) default null
+;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.INVOICE'), 'ste_cswnbaseval', 'ColumnId') is null
+ALTER TABLE INVOICE
+ADD ste_cswnbaseval decimal(18,2) default null,
+	ste_cswnlocalhandlingcharge decimal(18,2) default null,
+	ste_cswnothercharges decimal(18,2) default null,
+	ste_cswninvadj decimal(18,2) default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.invoice'), 'ste_cswncnstatus', 'ColumnId') IS NULL
+ALTER TABLE INVOICE
+ADD ste_cswncnstatus smallint default null
+;
+
