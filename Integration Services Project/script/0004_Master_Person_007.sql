@@ -1,3 +1,16 @@
+IF OBJECT_ID(N'dbo.[ste_migration_user_lookup]', N'U') IS NULL
+CREATE TABLE [dbo].[ste_migration_user_lookup](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[display_name] [varchar](250) NOT NULL,
+	[personid] [varchar](50) NOT NULL,
+	[persistent] [smallint] NOT NULL default 1,
+	[status] [smallint] NOT NULL default 1,
+	CONSTRAINT [PK_ste_migration_user_lookups] PRIMARY KEY CLUSTERED 
+	(
+		[id] ASC
+	)
+) ON [PRIMARY];
+
 -- Create pre-task
 -- ---------------
 SET ANSI_NULLS ON
