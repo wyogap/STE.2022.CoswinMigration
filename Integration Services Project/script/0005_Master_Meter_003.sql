@@ -1,4 +1,3 @@
-/****** Object:  Table [dbo].[ste_migration_params]    Script Date: 25/01/2023 17:46:34 ******/
 -- Create pre-task
 -- ---------------
 SET ANSI_NULLS ON
@@ -6,16 +5,16 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_009_master_routes_pre;
-drop procedure if exists ste_0009_master_routes_pre;
+drop procedure if exists ste_005_master_meter_pre;
+drop procedure if exists ste_0005_master_meter_pre;
 GO
 
-CREATE PROCEDURE ste_0009_master_routes_pre 
+CREATE PROCEDURE ste_0005_master_meter_pre 
 	@PackageLogID INT
 AS
 BEGIN
 	-- truncate existing data
-	DELETE FROM [routes] WHERE STE_MIGRATIONID IS NOT NULL;
+	delete from meter where STE_MIGRATIONID is not null;
 
 END
 
@@ -28,11 +27,11 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-drop procedure if exists ste_009_master_routes_post;
-drop procedure if exists ste_0009_master_routes_post;
+drop procedure if exists ste_005_master_meter_post;
+drop procedure if exists ste_0005_master_meter_post;
 GO
 
-CREATE PROCEDURE ste_0009_master_routes_post
+CREATE PROCEDURE ste_0005_master_meter_post
   @PackageLogID INT
 AS
 BEGIN
@@ -43,15 +42,15 @@ BEGIN
 	declare @PackageName varchar(250);
 
 	-- update identity column
-	select @v_max_id=max(routesid) from [ROUTES];
-	update maxsequence set maxreserved=@v_max_id+1 where tbname='ROUTES' and name='ROUTESID';
+	select @v_max_id=max(METERID) from METER;
+	update maxsequence set maxreserved=@v_max_id+1 where tbname='METER' and name='METERID';
 
 	-- get package name
 	select @PackageName = package_name from [dbo].[ste_migration_logs] where id = @PackageLogID;
 	if (@PackageName is null) return;
 
-	-- LOGGING
-	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID), @v_cnt=count(STE_MIGRATIONID) from [ROUTES]
+	-- update start_id and end_id for ITEM_
+	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID), @v_cnt=count(STE_MIGRATIONID) from METER
 	where STE_MIGRATIONID is not null;
 
 	insert into [dbo].[ste_migration_log_details] (
@@ -64,14 +63,14 @@ BEGIN
 	values (
 		@PackageName
 		, @PackageLogID
-		, 'ROUTES'
+		, 'METER'
 		, 'COMPLETED'
 		, CONCAT('COUNT: ', @v_cnt, ', START_ID: ', @v_start_id, ', END_ID: ', @v_end_id)
 	);
 
 	-- update start_id and end_id
-	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID) from [ROUTES]
-	WHERE STE_MIGRATIONID IS NOT NULL;
+	select @v_start_id=min(STE_MIGRATIONID), @v_end_id=max(STE_MIGRATIONID) from meter
+	where STE_MIGRATIONID is not null;
 
 	UPDATE [dbo].[ste_migration_logs] SET
 	  [start_id] = @v_start_id
@@ -92,9 +91,9 @@ INSERT INTO [dbo].[ste_migration_params]
            ,[modified_on]
            ,[modified_by])
      VALUES
-           ('0009_Master_Routes'
+           ('0005_Master_Meter'
            ,'version'
-           ,'3'
+           ,'4'
            ,getdate()
            ,'ssis'
            ,NULL

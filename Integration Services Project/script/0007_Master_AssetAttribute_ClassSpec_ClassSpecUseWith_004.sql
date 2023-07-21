@@ -125,13 +125,6 @@ GO
 -- classspec
 -- -----------
 
--- Add custom columns
--- ------------------
-IF COLUMNPROPERTY(OBJECT_ID('dbo.classspec'), 'STE_MIGRATIONID', 'ColumnId') IS NULL
-ALTER TABLE classspec
-ADD STE_MIGRATIONID bigint default null,
-    STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
-
 -- Create pre-task
 -- ---------------
 SET ANSI_NULLS ON
@@ -207,13 +200,6 @@ GO
 -- -----------------
 -- classspecusewith
 -- -----------------
-
--- Add custom columns
--- ------------------
-IF COLUMNPROPERTY(OBJECT_ID('dbo.classspecusewith'), 'STE_MIGRATIONID', 'ColumnId') IS NULL
-ALTER TABLE classspecusewith
-ADD STE_MIGRATIONID bigint default null,
-    STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
 
 -- Create pre-task
 -- ---------------
@@ -300,7 +286,7 @@ INSERT INTO [dbo].[ste_migration_params]
      VALUES
            ('0007_Master_AssetAttribute_ClassSpec_ClassSpecUseWith'
            ,'version'
-           ,'4'
+           ,'5'
            ,getdate()
            ,'ssis'
            ,NULL

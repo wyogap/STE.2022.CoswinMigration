@@ -540,3 +540,6 @@ IF COLUMNPROPERTY(OBJECT_ID('dbo.[labor]'), 'ste_cswnpaidhrs', 'ColumnId') IS NU
 ALTER TABLE labor
 ADD ste_cswnpaidhrs int default null,
 	ste_cswnwrenchhrs int default null;
+
+--ALTER TABLE routes
+--ALTER COLUMN [route] varchar(20) NOT NULL;

@@ -273,7 +273,7 @@ INSERT INTO [dbo].[ste_migration_params]
      VALUES
            ('0004_Master_Person'
            ,'version'
-           ,'7'
+           ,'8'
            ,getdate()
            ,'ssis'
            ,NULL

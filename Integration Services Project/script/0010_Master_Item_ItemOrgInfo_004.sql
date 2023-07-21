@@ -1,13 +1,5 @@
 /****** Object:  Table [dbo].[ste_migration_params]    Script Date: 25/01/2023 17:46:34 ******/
 
--- Add custom columns
--- ------------------
-IF COLUMNPROPERTY(OBJECT_ID('dbo.ITEMORGINFO'), 'STE_MIGRATIONID', 'ColumnId') IS NULL
-ALTER TABLE ITEMORGINFO
-ADD STE_MIGRATIONSOURCE VARCHAR(100) default null,
-	STE_MIGRATIONID bigint default null,
-    STE_MIGRATIONDATE datetime NOT NULL DEFAULT (GETDATE());
-
 -- Create post-task
 -- ---------------
 SET ANSI_NULLS ON
@@ -239,7 +231,7 @@ INSERT INTO [dbo].[ste_migration_params]
      VALUES
            ('0010_Master_Item_ItemOrgInfo'
            ,'version'
-           ,'4'
+           ,'5'
            ,getdate()
            ,'ssis'
            ,NULL

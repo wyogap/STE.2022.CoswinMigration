@@ -94,7 +94,7 @@ INSERT INTO [dbo].[ste_migration_params]
      VALUES
            ('0009_Master_Routes'
            ,'version'
-           ,'3'
+           ,'4'
            ,getdate()
            ,'ssis'
            ,NULL
