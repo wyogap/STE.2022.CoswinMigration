@@ -419,40 +419,6 @@ STE_CSWNDISCOUNT	DECIMAL	(10,2) default null,
 STE_CSWNLOCALHANDLINGCHARGE	DECIMAL	(10,2) default null,
 STE_CSWNOTHERCHARGES	DECIMAL	(10,2) default null;
 
-IF COLUMNPROPERTY(OBJECT_ID('dbo.jobplan'), 'ste_cswnavprtm', 'ColumnId') is null
-ALTER TABLE jobplan
-ADD ste_cswnavprtm	smallint default null,
-	ste_cswncc	varchar(16) default null,
-	ste_cswnday	smallint default null,
-	ste_cswndurationunit	varchar(5) default null,
-	ste_cswnenwk	smallint default null,
-	ste_cswnhazard	smallint default null,
-	ste_cswnjbbhu	smallint default null,
-	ste_cswnjobclass	varchar(6) default null,
-	ste_cswnjobtype	varchar(6) default null,
-	ste_cswnlaborcost	numeric(10) default null,
-	ste_cswnljml	float default null,
-	ste_cswnmaterialcost	numeric(10) default null,
-	ste_cswnmiprtm	smallint default null,
-	ste_cswnmtid	varchar(16) default null,
-	ste_cswnmtprml	decimal(15) default null,
-	ste_cswnmxprtm	smallint default null,
-	ste_cswnnowo	smallint default null,
-	ste_cswnpr_unit	smallint default null,
-	ste_cswnprjref	varchar(10) default null,
-	ste_cswnservicecost	numeric(10) default null,
-	ste_cswnstwk	smallint default null,
-	ste_cswnwoid	varchar(10) default null;
-	
-IF COLUMNPROPERTY(OBJECT_ID('dbo.jobplan'), 'ste_cswnworkday', 'ColumnId') is null
-ALTER TABLE jobplan
-ADD ste_cswnworkday	smallint default null,
-	ste_cswnwptype	varchar(10) default null,
-	ste_cweqcode	varchar(25) default null;
-
-IF COLUMNPROPERTY(OBJECT_ID('dbo.jobplan'), 'ste_cswnjobid', 'ColumnId') is null
-ALTER TABLE jobplan
-ADD ste_cswnjobid varchar(16) default null;
 
 -- use workordernum as autokey
 update autokey 
@@ -535,7 +501,9 @@ ADD ste_cswnbaseval decimal(18,2) default null,
 
 IF COLUMNPROPERTY(OBJECT_ID('dbo.invoice'), 'ste_cswncnstatus', 'ColumnId') IS NULL
 ALTER TABLE invoice
-ADD ste_cswncnstatus smallint default null;
+ADD ste_cswncnstatus smallint default null,
+	ste_cswninvadjstatus smallint default null, 
+	ste_gstcode varchar(20) default null;	
 
 IF COLUMNPROPERTY(OBJECT_ID('dbo.invoicecost'), 'ste_cswncnstatus', 'ColumnId') IS NULL
 ALTER TABLE invoicecost
