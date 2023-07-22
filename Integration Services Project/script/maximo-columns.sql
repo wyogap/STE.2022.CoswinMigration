@@ -534,7 +534,14 @@ ADD ste_cswnbaseval decimal(18,2) default null,
 	ste_cswninvadj decimal(18,2) default null;
 
 IF COLUMNPROPERTY(OBJECT_ID('dbo.invoice'), 'ste_cswncnstatus', 'ColumnId') IS NULL
-ALTER TABLE INVOICE
-ADD ste_cswncnstatus smallint default null
-;
+ALTER TABLE invoice
+ADD ste_cswncnstatus smallint default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.invoicecost'), 'ste_cswncnstatus', 'ColumnId') IS NULL
+ALTER TABLE invoicecost
+ADD ste_cswnsapgl varchar(20) default null;
+	
+IF COLUMNPROPERTY(OBJECT_ID('dbo.invoicecost'), 'ste_cswncc', 'ColumnId') IS NULL
+ALTER TABLE invoicecost
+ADD ste_cswncc varchar(16) default null;
 
