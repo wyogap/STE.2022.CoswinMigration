@@ -548,3 +548,4 @@ ADD ste_cswncc varchar(16) default null;
 IF COLUMNPROPERTY(OBJECT_ID('dbo.labtrans'), 'ste_cswnemplyestatus', 'ColumnId') IS NULL
 ALTER TABLE labtrans
 ADD ste_cswnemplyestatus int default null;
+
