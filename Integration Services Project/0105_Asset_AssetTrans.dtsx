@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="0105_Asset_AssetTrans"
   DTS:PackageType="5"
-  DTS:VersionBuild="80"
-  DTS:VersionGUID="{57AD1654-13DF-4995-B476-4672326215A6}"
+  DTS:VersionBuild="81"
+  DTS:VersionGUID="{25FECFBF-9815-44FE-A6B8-B62E431F3269}"
   DTS:VersionMajor="3">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -32,7 +32,7 @@
           <OraConnectionString>SERVER=103.149.177.117:1521/COSWINDB;USERNAME=coswin;WINAUTH=0;</OraConnectionString>
           <OraPassword
             Sensitive="1"
-            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAANLS8gHlSkUShYRsXgv9K+AAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAC1kGMW8JJCt0TIDnEo21tGaQSosEzWv+UfCnqIXfbhqQAAAAAOgAAAAAIAACAAAABi2iNsKWAx2Eby9MQWCGLtuVhCCEAJDDnmOuIR4YzHjiAAAAD0layYX5xQpigpDxzX6MiaZuc5E0VAqQyc3wur9NiH0kAAAADmp94CD8Cvk60DsWRphr4yvp7NaB19UHNR4lEO4pJQVnG6Nqdmp+bVKHNP9Ff1vuPl/tdAK27nhvnB2Pw/FT4J</OraPassword>
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAANLS8gHlSkUShYRsXgv9K+AAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAD7akUQKEoFw7PU8xdkmPhfUWJH+Pvr2faaxIYvkf5xpgAAAAAOgAAAAAIAACAAAAAS3RXn9JvhWH4/zhXvdWkEv47S4XP2xiYqo2qDMxxYqiAAAAAvfZmtYior2MmTdb67n9PKp32JqWvddNq8ioxPoIlZt0AAAAAnAGdHbYCHHsFM66/I+MZc/8EWL4zPsSZLFbia2G7sF12Xc4/3fnddWzZ9gqE1tLRjB5ogmR6jfzdNfckPwJys</OraPassword>
           <OraRetain>False</OraRetain>
           <OraInitialCatalog></OraInitialCatalog>
           <OraServerName>103.149.177.117:1521/COSWINDB</OraServerName>
@@ -61,7 +61,7 @@
           <DTS:Password
             DTS:Name="Password"
             Sensitive="1"
-            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAANLS8gHlSkUShYRsXgv9K+AAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAC/RfdCreW7QWEEJ20Asx4Wl8SdISMcaSuUNTnMbPdDnwAAAAAOgAAAAAIAACAAAABk6ur6AeMph4iDj0z6huWMkLYjWKkYBM2YEk0c/QiuxSAAAACV1fUT0SueGFULg10BOynM0dKyhSWEJcD1XAZ9/U9G4kAAAACuqUZRx6fD5BwpQkhQpHSlo3jikXDfgBiVrvFiPWi678QXWW50uFS4/Mls+zu8eIO/KnvEhhl7twImxyTDhbkV</DTS:Password>
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAANLS8gHlSkUShYRsXgv9K+AAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAByvssJK+8EWHVZkXccsux3xUeJ8/eA71Pt+/o1b9jr1gAAAAAOgAAAAAIAACAAAAAsYpCFGSclebZI81dodS15ytMYz/uB+qZsltuVu9XbBiAAAABVxHQCStiY9Mgyk4JGNqX60cFsE2DXKUTIhH5kDzHUtEAAAACKcPJ2cFqCIMXnSKRqKQXrL+b5hb7zSkAssdRJCj4gmXAaYu/JajJgKhg/EenxIjHR9G+WCiwzvdrpjHo4q4c3</DTS:Password>
         </DTS:ConnectionManager>
       </DTS:ObjectData>
     </DTS:ConnectionManager>
@@ -905,6 +905,14 @@
                       cachedName="v_Transtype"
                       externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[transtype]"
                       lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[v_Transtype]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[EM_EQCD]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="EM_EQCD"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[toparent]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[EM_EQCD]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1196,7 +1204,8 @@ SELECT
 	,et.EQ_UNIT 
 	-- PO Number
 	,ep.PO_ORD_REF
-	,row_number() over (partition by et.EQ_EQCD order by em.EM_DATE , em.EM_TIME  asc) linenum
+	,row_number() over (partition by et.EQ_EQCD order by em.EM_DATE , em.EM_TIME  asc) linenum 
+,EM_EQCD
 FROM COSWIN.EQP_MOVE em
 JOIN COSWIN.EQP_TOPO et ON et.EQ_EQCD = em.EM_EQCD
 LEFT JOIN COSWIN.EQP_PODP ep ON ep.PO_EQCD = et.EQ_EQCD 
@@ -1342,6 +1351,14 @@ where PK_EQP_TOPO is not NULL;</property>
                       externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[LINENUM]"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[LINENUM]"
                       name="LINENUM" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[EM_EQCD]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EM_EQCD]"
+                      length="20"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[EM_EQCD]"
+                      name="EM_EQCD" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1417,6 +1434,12 @@ where PK_EQP_TOPO is not NULL;</property>
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[LINENUM]"
                       dataType="r8"
                       name="LINENUM" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EM_EQCD]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="EM_EQCD" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -1524,6 +1547,14 @@ where PK_EQP_TOPO is not NULL;</property>
                       externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[LINENUM]"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[LINENUM]"
                       name="LINENUM" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[EM_EQCD]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EM_EQCD]"
+                      length="20"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[EM_EQCD]"
+                      name="EM_EQCD" />
                     <outputColumn
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -2019,17 +2050,17 @@ where PK_EQP_TOPO is not NULL;</property>
       <GraphLayout
         Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
-          Size="177,42"
-          Id="Package\Data Flow Task\OLE DB Destination"
-          TopLeft="11.5,243.5" />
+          Size="149,42"
+          Id="Package\Data Flow Task\Oracle Source"
+          TopLeft="19.5,5.5" />
         <NodeLayout
           Size="158,42"
           Id="Package\Data Flow Task\Derived Column"
           TopLeft="181,114" />
         <NodeLayout
-          Size="149,42"
-          Id="Package\Data Flow Task\Oracle Source"
-          TopLeft="19.5,5.5" />
+          Size="177,42"
+          Id="Package\Data Flow Task\OLE DB Destination"
+          TopLeft="11.5,243.5" />
         <EdgeLayout
           Id="Package\Data Flow Task.Paths[Oracle Source Output]"
           TopLeft="94,47.5">
@@ -2102,7 +2133,7 @@ where PK_EQP_TOPO is not NULL;</property>
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\Data Flow Task\OLE DB Destination">
+    design-time-name="Package\Data Flow Task\Oracle Source">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -2115,7 +2146,7 @@ where PK_EQP_TOPO is not NULL;</property>
     </Properties>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
-    design-time-name="Package\Data Flow Task\Oracle Source">
+    design-time-name="Package\Data Flow Task\OLE DB Destination">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
