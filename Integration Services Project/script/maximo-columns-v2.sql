@@ -242,6 +242,10 @@ IF COLUMNPROPERTY(OBJECT_ID('dbo.invoice'), 'ste_gstcode', 'ColumnId') IS NULL A
 
 IF COLUMNPROPERTY(OBJECT_ID('dbo.matrectrans'), 'ste_cswninspstatus', 'ColumnId') IS NULL ALTER TABLE matrectrans ADD ste_cswninspstatus varchar(20) default null;
 
+IF COLUMNPROPERTY(OBJECT_ID('dbo.invvendor'), 'ste_cswnlastpo', 'ColumnId') IS NULL ALTER TABLE invvendor ADD ste_cswnlastpo varchar(10) default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.jobplan'), 'ste_cswnjobbehaviour', 'ColumnId') is null ALTER TABLE jobplan ADD ste_cswnjobbehaviour	smallint default null;
+
 
 
 	
