@@ -245,8 +245,11 @@ IF COLUMNPROPERTY(OBJECT_ID('dbo.matrectrans'), 'ste_cswninspstatus', 'ColumnId'
 IF COLUMNPROPERTY(OBJECT_ID('dbo.invvendor'), 'ste_cswnlastpo', 'ColumnId') IS NULL ALTER TABLE invvendor ADD ste_cswnlastpo varchar(10) default null;
 
 IF COLUMNPROPERTY(OBJECT_ID('dbo.jobplan'), 'ste_cswnjobbehaviour', 'ColumnId') is null ALTER TABLE jobplan ADD ste_cswnjobbehaviour	smallint default null;
+IF COLUMNPROPERTY(OBJECT_ID('dbo.jobplan'), 'ste_cswnassetnum', 'ColumnId') is null ALTER TABLE jobplan ADD ste_cswnassetnum varchar(20) default null;
 
+IF COLUMNPROPERTY(OBJECT_ID('dbo.exchange'), 'ste_cswnavgrate', 'ColumnId') is null ALTER TABLE exchange ADD ste_cswnavgrate decimal(10,5) default null;
 
+IF COLUMNPROPERTY(OBJECT_ID('dbo.attendance'), 'ste_authority_entrysite', 'ColumnId') is null ALTER TABLE attendance ADD ste_authority_entrysite varchar(16) default null;
 
 	
 -- use workordernum as autokey
