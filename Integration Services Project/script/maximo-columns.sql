@@ -537,7 +537,12 @@ IF COLUMNPROPERTY(OBJECT_ID('dbo.invoice'), 'ste_cswncnstatus', 'ColumnId') IS N
 ALTER TABLE invoice
 ADD ste_cswncnstatus smallint default null;
 
-IF COLUMNPROPERTY(OBJECT_ID('dbo.invoicecost'), 'ste_cswncnstatus', 'ColumnId') IS NULL
+IF COLUMNPROPERTY(OBJECT_ID('dbo.invoice'), 'ste_cswninvadjstatus', 'ColumnId') IS NULL
+ALTER TABLE invoice
+ADD ste_cswninvadjstatus smallint default null, 
+	ste_gstcode varchar(20) default null;	
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.invoicecost'), 'ste_cswnsapgl', 'ColumnId') IS NULL
 ALTER TABLE invoicecost
 ADD ste_cswnsapgl varchar(20) default null;
 	
@@ -548,4 +553,3 @@ ADD ste_cswncc varchar(16) default null;
 IF COLUMNPROPERTY(OBJECT_ID('dbo.labtrans'), 'ste_cswnemplyestatus', 'ColumnId') IS NULL
 ALTER TABLE labtrans
 ADD ste_cswnemplyestatus int default null;
-

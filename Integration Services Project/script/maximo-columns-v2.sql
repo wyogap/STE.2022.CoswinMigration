@@ -63,8 +63,8 @@ IF COLUMNPROPERTY(OBJECT_ID('dbo.compcontact'), 'ste_contacttype', 'ColumnId') I
 --compmaster	
 IF COLUMNPROPERTY(OBJECT_ID('dbo.compmaster'), 'ste_cswncountry', 'ColumnId') IS NULL ALTER TABLE compmaster ADD ste_cswncountry varchar(50) default null;
 --compcontactmaster
-IF COLUMNPROPERTY(OBJECT_ID('dbo.compcontractmstr'), 'ste_cswnvoicephone2', 'ColumnId') IS NULL ALTER TABLE compcontractmstr ADD ste_cswnvoicephone2 varchar(50) default null;
-IF COLUMNPROPERTY(OBJECT_ID('dbo.compcontractmstr'), 'ste_contacttype', 'ColumnId') IS NULL ALTER TABLE compcontractmstr ADD ste_contacttype VARCHAR(20) default null;
+IF COLUMNPROPERTY(OBJECT_ID('dbo.compcontactmstr'), 'ste_cswnvoicephone2', 'ColumnId') IS NULL ALTER TABLE compcontactmstr ADD ste_cswnvoicephone2 varchar(50) default null;
+IF COLUMNPROPERTY(OBJECT_ID('dbo.compcontactmstr'), 'ste_contacttype', 'ColumnId') IS NULL ALTER TABLE compcontactmstr ADD ste_contacttype VARCHAR(20) default null;
 --workorder
 IF COLUMNPROPERTY(OBJECT_ID('dbo.workorder'), 'ste_cswnactionauth', 'ColumnId') IS NULL ALTER TABLE workorder ADD ste_cswnactionauth varchar(16) default null;
 IF COLUMNPROPERTY(OBJECT_ID('dbo.workorder'), 'ste_cswnactiondesc', 'ColumnId') IS NULL ALTER TABLE workorder ADD ste_cswnactiondesc varchar(100) default null;
@@ -129,11 +129,11 @@ IF COLUMNPROPERTY(OBJECT_ID('dbo.currency'), 'ste_cswnctrycd', 'ColumnId') is nu
 IF COLUMNPROPERTY(OBJECT_ID('dbo.currency'), 'ste_cswnctryname', 'ColumnId') is null ALTER TABLE currency ADD ste_cswnctryname varchar(16) default null;
 IF COLUMNPROPERTY(OBJECT_ID('dbo.currency'), 'ste_cswndpt', 'ColumnId') is null ALTER TABLE currency ADD ste_cswndpt smallint default null;
 --matrectrans
-IF COLUMNPROPERTY(OBJECT_ID('dbo.matrectrans'), 'ste_cswninspdate', 'ColumnId') is null ALTER TABLE matrectrans ADD ste_cswninspdate datetime,
-IF COLUMNPROPERTY(OBJECT_ID('dbo.matrectrans'), 'ste_cswninspstat', 'ColumnId') is null ALTER TABLE matrectrans ADD ste_cswninspstat int,
+IF COLUMNPROPERTY(OBJECT_ID('dbo.matrectrans'), 'ste_cswninspdate', 'ColumnId') is null ALTER TABLE matrectrans ADD ste_cswninspdate datetime;
+IF COLUMNPROPERTY(OBJECT_ID('dbo.matrectrans'), 'ste_cswninspstat', 'ColumnId') is null ALTER TABLE matrectrans ADD ste_cswninspstat int;
 IF COLUMNPROPERTY(OBJECT_ID('dbo.matrectrans'), 'ste_cswngrnref', 'ColumnId') is null ALTER TABLE matrectrans ADD ste_cswngrnref varchar(10);
 IF COLUMNPROPERTY(OBJECT_ID('dbo.matrectrans'), 'ste_cswndndate', 'ColumnId') is null ALTER TABLE matrectrans ADD ste_cswndndate datetime default null;
-IF COLUMNPROPERTY(OBJECT_ID('dbo.matrectrans'), 'ste_cswnrctstatus', 'ColumnId') is null ALTER TABLE matrectrans ADD ste_cswnrctstatus smallint,
+IF COLUMNPROPERTY(OBJECT_ID('dbo.matrectrans'), 'ste_cswnrctstatus', 'ColumnId') is null ALTER TABLE matrectrans ADD ste_cswnrctstatus smallint;
 IF COLUMNPROPERTY(OBJECT_ID('dbo.matrectrans'), 'ste_cswngrnnum', 'ColumnId') is null ALTER TABLE matrectrans ADD ste_cswngrnnum varchar(10) default null;
 IF COLUMNPROPERTY(OBJECT_ID('dbo.matrectrans'), 'ste_cswngrndate', 'ColumnId') is null ALTER TABLE matrectrans ADD ste_cswngrndate datetime default null;
 IF COLUMNPROPERTY(OBJECT_ID('dbo.matrectrans'), 'ste_cswnreceipttype', 'ColumnId') is null ALTER TABLE matrectrans ADD ste_cswnreceipttype smallint default null;
@@ -205,16 +205,19 @@ IF COLUMNPROPERTY(OBJECT_ID('dbo.invoice'), 'ste_cswndnref', 'ColumnId') IS NULL
 IF COLUMNPROPERTY(OBJECT_ID('dbo.invoice'), 'ste_cswndonum', 'ColumnId') IS NULL ALTER TABLE invoice ADD ste_cswndonum varchar(10) default null;
 IF COLUMNPROPERTY(OBJECT_ID('dbo.invoice'), 'ste_cswndodate', 'ColumnId') IS NULL ALTER TABLE invoice ADD ste_cswndodate datetime default null;
 IF COLUMNPROPERTY(OBJECT_ID('dbo.invoice'), 'ste_cswnwbsnum', 'ColumnId') IS NULL ALTER TABLE invoice ADD ste_cswnwbsnum varchar(20) default null;
-IF COLUMNPROPERTY(OBJECT_ID('dbo.invoice'), 'ste_cswnaltprice1', 'ColumnId') IS NULL ALTER TABLE quotationline ADD ste_cswnaltprice1 decimal(10,2) default null;
-IF COLUMNPROPERTY(OBJECT_ID('dbo.invoice'), 'ste_cswnaltprice2', 'ColumnId') IS NULL ALTER TABLE quotationline ADD ste_cswnaltprice2 decimal(10,2) default null;
+--IF COLUMNPROPERTY(OBJECT_ID('dbo.invoice'), 'ste_cswnaltprice1', 'ColumnId') IS NULL ALTER TABLE quotationline ADD ste_cswnaltprice1 decimal(10,2) default null;
+--IF COLUMNPROPERTY(OBJECT_ID('dbo.invoice'), 'ste_cswnaltprice2', 'ColumnId') IS NULL ALTER TABLE quotationline ADD ste_cswnaltprice2 decimal(10,2) default null;
 IF COLUMNPROPERTY(OBJECT_ID('dbo.invoice'), 'ste_cswnbaseval', 'ColumnId') is null ALTER TABLE invoice ADD ste_cswnbaseval decimal(18,2) default null;
 IF COLUMNPROPERTY(OBJECT_ID('dbo.invoice'), 'ste_cswnlocalhandlingcharge', 'ColumnId') is null ALTER TABLE invoice ADD ste_cswnlocalhandlingcharge decimal(18,2) default null;
 IF COLUMNPROPERTY(OBJECT_ID('dbo.invoice'), 'ste_cswnothercharges', 'ColumnId') is null ALTER TABLE invoice ADD ste_cswnothercharges decimal(18,2) default null;
 IF COLUMNPROPERTY(OBJECT_ID('dbo.invoice'), 'ste_cswninvadj', 'ColumnId') is null ALTER TABLE invoice ADD ste_cswninvadj decimal(18,2) default null;
 IF COLUMNPROPERTY(OBJECT_ID('dbo.invoice'), 'ste_cswncnstatus', 'ColumnId') IS NULL ALTER TABLE invoice ADD ste_cswncnstatus smallint default null;
 --invoicecost
-IF COLUMNPROPERTY(OBJECT_ID('dbo.invoicecost'), 'ste_cswncnstatus', 'ColumnId') IS NULL ALTER TABLE invoicecost ADD ste_cswnsapgl varchar(20) default null;
+IF COLUMNPROPERTY(OBJECT_ID('dbo.invoicecost'), 'ste_cswnsapgl', 'ColumnId') IS NULL ALTER TABLE invoicecost ADD ste_cswnsapgl varchar(20) default null;
 IF COLUMNPROPERTY(OBJECT_ID('dbo.invoicecost'), 'ste_cswncc', 'ColumnId') IS NULL ALTER TABLE invoicecost ADD ste_cswncc varchar(16) default null;
+-- quotationline
+IF COLUMNPROPERTY(OBJECT_ID('dbo.quotationline'), 'ste_cswnaltprice1', 'ColumnId') IS NULL ALTER TABLE quotationline ADD ste_cswnaltprice1 decimal(10,2) default null;
+IF COLUMNPROPERTY(OBJECT_ID('dbo.quotationline'), 'ste_cswnaltprice2', 'ColumnId') IS NULL ALTER TABLE quotationline ADD ste_cswnaltprice2 decimal(10,2) default null;
 --labtrans	
 IF COLUMNPROPERTY(OBJECT_ID('dbo.labtrans'), 'ste_cswnemplyestatus', 'ColumnId') IS NULL ALTER TABLE labtrans ADD ste_cswnemplyestatus int default null;
 
