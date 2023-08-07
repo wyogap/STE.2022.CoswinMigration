@@ -12,9 +12,9 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="0604_LD_PR"
   DTS:PackageType="5"
-  DTS:VersionBuild="112"
-  DTS:VersionGUID="{10873987-A3AA-4336-BF64-D703A5D8032B}"
-  DTS:VersionMinor="1">
+  DTS:VersionBuild="114"
+  DTS:VersionGUID="{EA1FF9A1-E4AD-4446-ABC2-1DABAC97129F}"
+  DTS:VersionMinor="2">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -142,7 +142,9 @@
       <DTS:ObjectData>
         <DTS:ConnectionManager>
           <OraConnectionString>SERVER=103.149.177.117:1521/COSWINDB;USERNAME=coswin;WINAUTH=0;</OraConnectionString>
-          <tcg/>
+          <OraPassword
+            Sensitive="1"
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAKvkDySftt02HPyXdTmqSiwAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAAV9EB6uOIIUfKQW7XRnnIyjQ8l6E0jonNZOYITZtwdHQAAAAAOgAAAAAIAACAAAABjpkO0uyV6ZgemulLERdvUoleeRoOKfmiRr8jwaPjTESAAAADD8SyiA3EB44vc7Rp7puM8yE+57urQS3Brim8UVIKnn0AAAABD7kNW7ehegeQb8da52wbZbIS5bRiApUssHM49Y65Hv043LwT6jlUEoGZEITyZWI8I0fhNNwnLuy0iWc0OEV/+</OraPassword>
           <OraRetain>False</OraRetain>
           <OraInitialCatalog></OraInitialCatalog>
           <OraServerName>103.149.177.117:1521/COSWINDB</OraServerName>
@@ -167,8 +169,11 @@
         <DTS:ConnectionManager
           DTS:ConnectRetryCount="1"
           DTS:ConnectRetryInterval="5"
-          DTS:ConnectionString="Data Source=LENOVO-YOGA\SQLEXPRESS;User ID=maximo;Initial Catalog=maximodb;Provider=SQLNCLI11.1;Persist Security Info=True;Auto Translate=False;Application Name=STE.2022.CoswinMigration-{A2D54055-0CBC-4EA5-9952-7A6ADE49C2F8}.maximodb.maximo;">
-          <tcg/>
+          DTS:ConnectionString="Data Source=LENOVO-YOGA;User ID=maximo;Initial Catalog=maximodb;Provider=SQLNCLI11.1;Persist Security Info=True;Auto Translate=False;Application Name=STE.2022.CoswinMigration-{A2D54055-0CBC-4EA5-9952-7A6ADE49C2F8}.maximodb.maximo;">
+          <DTS:Password
+            DTS:Name="Password"
+            Sensitive="1"
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAKvkDySftt02HPyXdTmqSiwAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAACENAulq1fxhKrWeQnnoiQLuxiOEW2U5sGIpBz3PI8LnwAAAAAOgAAAAAIAACAAAACR4XrL/GxPbTgg8fT2JfuqCM5ek6BfQID9lIRBhLlFKyAAAAD4LF4p7RfiobAqQH/uz/62RLmgSUHAzNLQuZWZ2OKQTUAAAAByhW8WPcTmWQA8f7j06M9A/I8rM/UKvy6O7TCIucfIDPV41A3pKKpU/2xC+6EzRnV+dZBW6v0mRBHmUibkUM/v</DTS:Password>
         </DTS:ConnectionManager>
       </DTS:ObjectData>
     </DTS:ConnectionManager>
@@ -1725,15 +1730,20 @@ where [refTable].[prnum] = ?</property>
                   description="The SQL command to be executed."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT 
-	p.PK_PREQUEST 
-	, p.PR_REF
-	, pr.PK_PR_RMK
-	, pr.S_PR_RMK
-	, pr.PR_TXT 
-FROM COSWIN.PREQUEST p
-JOIN COSWIN.PR_RMK pr ON pr.S_PR_RMK = p.PK_PREQUEST
-order by p.PK_PREQUEST 
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT *
+FROM (
+	SELECT 
+		p.PK_PREQUEST 
+		, p.PR_REF
+		, pr.PK_PR_RMK
+		, pr.S_PR_RMK
+		, pr.PR_TXT 
+		, ROW_NUMBER() OVER (PARTITION BY p.PK_PREQUEST ORDER BY pr.PK_PR_RMK) rn
+	FROM COSWIN.PREQUEST p
+	JOIN COSWIN.PR_RMK pr ON pr.S_PR_RMK = p.PK_PREQUEST
+) x
+WHERE x.rn=1
+order by x.PK_PREQUEST 
 ;</property>
                 <property
                   dataType="System.Int32"
@@ -1808,6 +1818,12 @@ order by p.PK_PREQUEST
                       externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_PR_RMK]"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[PK_PR_RMK]"
                       name="PK_PR_RMK" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[RN]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[RN]"
+                      name="RN" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1833,6 +1849,10 @@ order by p.PK_PREQUEST
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_PR_RMK]"
                       dataType="i4"
                       name="PK_PR_RMK" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
+                      dataType="r8"
+                      name="RN" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -1872,6 +1892,12 @@ order by p.PK_PREQUEST
                       externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_PR_RMK]"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_PR_RMK]"
                       name="PK_PR_RMK" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[RN]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[RN]"
+                      name="RN" />
                     <outputColumn
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"

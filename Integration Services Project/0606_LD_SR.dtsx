@@ -12,9 +12,10 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="0606_LD_SR"
   DTS:PackageType="5"
-  DTS:VersionBuild="147"
-  DTS:VersionGUID="{67B3B680-ADB7-43DE-9822-CD01A1CE9904}"
-  DTS:VersionMajor="2">
+  DTS:VersionBuild="150"
+  DTS:VersionGUID="{0697ECBF-DB6C-49DE-93B8-8F153181BE55}"
+  DTS:VersionMajor="2"
+  DTS:VersionMinor="1">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -30,7 +31,9 @@
       <DTS:ObjectData>
         <DTS:ConnectionManager>
           <OraConnectionString>SERVER=103.149.177.117:1521/COSWINDB;USERNAME=coswin;WINAUTH=0;</OraConnectionString>
-          <tcg/>
+          <OraPassword
+            Sensitive="1"
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAKvkDySftt02HPyXdTmqSiwAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAADV3YUgIATjhImjB5EFKDJ3tcm/xjcqCr8hFKr/L0qYuQAAAAAOgAAAAAIAACAAAAAB96fOXHBBHstysh2fX4bDozQmAmfT7gPnHELg7f1ibCAAAACCTU5m0o+b+EmRUt+qDlDjkMq29kZeCRWy+MEbb9C/kkAAAABlxYPumu/pGT378NRJNgQDLE38a3lrJ9PS1BtEoO8MmwR2Fp5B/8BVVG8ikgngUTTMF9Jyl4tguQNp+EzdmZBB</OraPassword>
           <OraRetain>False</OraRetain>
           <OraInitialCatalog></OraInitialCatalog>
           <OraServerName>103.149.177.117:1521/COSWINDB</OraServerName>
@@ -55,8 +58,11 @@
         <DTS:ConnectionManager
           DTS:ConnectRetryCount="1"
           DTS:ConnectRetryInterval="5"
-          DTS:ConnectionString="Data Source=LENOVO-YOGA\SQLEXPRESS;User ID=maximo;Initial Catalog=maximodb;Provider=SQLNCLI11.1;Persist Security Info=True;Auto Translate=False;Application Name=STE.2022.CoswinMigration-{A2D54055-0CBC-4EA5-9952-7A6ADE49C2F8}.maximodb.maximo;">
-          <tcg/>
+          DTS:ConnectionString="Data Source=LENOVO-YOGA;User ID=maximo;Initial Catalog=maximodb;Provider=SQLNCLI11.1;Persist Security Info=True;Auto Translate=False;Application Name=STE.2022.CoswinMigration-{A2D54055-0CBC-4EA5-9952-7A6ADE49C2F8}.maximodb.maximo;">
+          <DTS:Password
+            DTS:Name="Password"
+            Sensitive="1"
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAKvkDySftt02HPyXdTmqSiwAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAA9hdo6/d25Vxi3MFhdI5ow5FH4TXiJgcBQPLSnRoLbPQAAAAAOgAAAAAIAACAAAADliy5W3NMc5Y/iA5cMcqtSWkq9Qx+IjdlZW8ReMzyHNiAAAADZQ1vboHK8OHH4RlOBlethG7B2KHxwYTDWk/0f+4lGLUAAAADhdIerBOidW0ZUrM+ByfIjRCv71zpzwaczkL2QxuQDsJYdL1rNfK7fOAyUsmIoC5KLXB6NCEM6Ey5Kh0zGYCcr</DTS:Password>
         </DTS:ConnectionManager>
       </DTS:ObjectData>
     </DTS:ConnectionManager>
@@ -1737,17 +1743,23 @@ where [refTable].[ticketid] = ?</property>
                   description="The SQL command to be executed."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT 
-	ej.PK_EQP_JOBR 
-	, ej.JR_REF_NO 
-	, ej.JR_EQCD  
-	, ja.PK_JOB_ACTV
-	, ja.JR_JA_38 
-	, ja.JA_TEXT 
-	--, NULL as JA_TEXT 
-FROM COSWIN.EQP_JOBR ej 
-JOIN COSWIN.JOB_ACTV ja ON ja.JR_JA_38 = ej.PK_EQP_JOBR
-ORDER BY ej.PK_EQP_JOBR</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT *
+FROM (
+	SELECT 
+		ej.PK_EQP_JOBR 
+		, ej.JR_REF_NO 
+		, ej.JR_EQCD  
+		, ja.PK_JOB_ACTV
+		, ja.JR_JA_38 
+		, ja.JA_TEXT 
+		--, NULL as JA_TEXT 
+		, ROW_NUMBER() OVER (PARTITION BY ej.PK_EQP_JOBR ORDER BY ja.PK_JOB_ACTV) rn
+	FROM COSWIN.EQP_JOBR ej 
+	JOIN COSWIN.JOB_ACTV ja ON ja.JR_JA_38 = ej.PK_EQP_JOBR
+) x 
+WHERE x.rn=1
+ORDER BY x.PK_EQP_JOBR
+;</property>
                 <property
                   dataType="System.Int32"
                   description="Specify the number of rows fetched per batch."
@@ -1829,6 +1841,12 @@ ORDER BY ej.PK_EQP_JOBR</property>
                       externalMetadataColumnId="Package\DF - JOB_ACTV\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_JOB_ACTV]"
                       lineageId="Package\DF - JOB_ACTV\Oracle Source.Outputs[Oracle Source Output].Columns[PK_JOB_ACTV]"
                       name="PK_JOB_ACTV" />
+                    <outputColumn
+                      refId="Package\DF - JOB_ACTV\Oracle Source.Outputs[Oracle Source Output].Columns[RN]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\DF - JOB_ACTV\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
+                      lineageId="Package\DF - JOB_ACTV\Oracle Source.Outputs[Oracle Source Output].Columns[RN]"
+                      name="RN" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1860,6 +1878,10 @@ ORDER BY ej.PK_EQP_JOBR</property>
                       refId="Package\DF - JOB_ACTV\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_JOB_ACTV]"
                       dataType="i4"
                       name="PK_JOB_ACTV" />
+                    <externalMetadataColumn
+                      refId="Package\DF - JOB_ACTV\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
+                      dataType="r8"
+                      name="RN" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -1907,6 +1929,12 @@ ORDER BY ej.PK_EQP_JOBR</property>
                       externalMetadataColumnId="Package\DF - JOB_ACTV\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_JOB_ACTV]"
                       lineageId="Package\DF - JOB_ACTV\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_JOB_ACTV]"
                       name="PK_JOB_ACTV" />
+                    <outputColumn
+                      refId="Package\DF - JOB_ACTV\Oracle Source.Outputs[Oracle Source Error Output].Columns[RN]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\DF - JOB_ACTV\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
+                      lineageId="Package\DF - JOB_ACTV\Oracle Source.Outputs[Oracle Source Error Output].Columns[RN]"
+                      name="RN" />
                     <outputColumn
                       refId="Package\DF - JOB_ACTV\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorColumn]"
                       dataType="i4"
@@ -4166,18 +4194,23 @@ where [refTable].[ticketid] = ?</property>
                   description="The SQL command to be executed."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT 
-	ej.PK_EQP_JOBR 
-	, ej.JR_REF_NO 
-	, ej.JR_EQCD  
-	, jr.PK_JOBR_RMK 
-	, jr.S_TRANSFER_REASON 
-	, jr.JOBR_TEXT  
-	--, NULL as JOBR_TEXT 
-FROM COSWIN.EQP_JOBR ej 
-JOIN COSWIN.JOBR_RMK jr ON jr.S_TRANSFER_REASON = ej.PK_EQP_JOBR
-WHERE jr.JOBR_TEXT IS NOT NULL AND jr.S_TRANSFER_REASON IS NOT NULL 
-ORDER BY ej.PK_EQP_JOBR
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT *
+FROM (
+	SELECT 
+		ej.PK_EQP_JOBR 
+		, ej.JR_REF_NO 
+		, ej.JR_EQCD  
+		, jr.PK_JOBR_RMK 
+		, jr.S_TRANSFER_REASON 
+		, jr.JOBR_TEXT  
+		--, NULL as JOBR_TEXT 
+		, ROW_NUMBER() OVER (PARTITION BY ej.PK_EQP_JOBR ORDER BY jr.PK_JOBR_RMK) rn
+	FROM COSWIN.EQP_JOBR ej 
+	JOIN COSWIN.JOBR_RMK jr ON jr.S_TRANSFER_REASON = ej.PK_EQP_JOBR
+	WHERE jr.JOBR_TEXT IS NOT NULL AND jr.S_TRANSFER_REASON IS NOT NULL 
+) x
+WHERE x.rn=1
+ORDER BY x.PK_EQP_JOBR
 ;</property>
                 <property
                   dataType="System.Int32"
@@ -4260,6 +4293,12 @@ ORDER BY ej.PK_EQP_JOBR
                       externalMetadataColumnId="Package\DF - TRANSFER_REASON\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[JOBR_TEXT]"
                       lineageId="Package\DF - TRANSFER_REASON\Oracle Source.Outputs[Oracle Source Output].Columns[JOBR_TEXT]"
                       name="JOBR_TEXT" />
+                    <outputColumn
+                      refId="Package\DF - TRANSFER_REASON\Oracle Source.Outputs[Oracle Source Output].Columns[RN]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\DF - TRANSFER_REASON\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
+                      lineageId="Package\DF - TRANSFER_REASON\Oracle Source.Outputs[Oracle Source Output].Columns[RN]"
+                      name="RN" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -4291,6 +4330,10 @@ ORDER BY ej.PK_EQP_JOBR
                       refId="Package\DF - TRANSFER_REASON\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[JOBR_TEXT]"
                       dataType="image"
                       name="JOBR_TEXT" />
+                    <externalMetadataColumn
+                      refId="Package\DF - TRANSFER_REASON\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
+                      dataType="r8"
+                      name="RN" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -4338,6 +4381,12 @@ ORDER BY ej.PK_EQP_JOBR
                       externalMetadataColumnId="Package\DF - TRANSFER_REASON\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[JOBR_TEXT]"
                       lineageId="Package\DF - TRANSFER_REASON\Oracle Source.Outputs[Oracle Source Error Output].Columns[JOBR_TEXT]"
                       name="JOBR_TEXT" />
+                    <outputColumn
+                      refId="Package\DF - TRANSFER_REASON\Oracle Source.Outputs[Oracle Source Error Output].Columns[RN]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\DF - TRANSFER_REASON\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
+                      lineageId="Package\DF - TRANSFER_REASON\Oracle Source.Outputs[Oracle Source Error Output].Columns[RN]"
+                      name="RN" />
                     <outputColumn
                       refId="Package\DF - TRANSFER_REASON\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -5671,6 +5720,10 @@ where ticketuid=?</property>
           Id="Package\DF - JOB_ACTV"
           TopLeft="884.5,286.25" />
         <NodeLayout
+          Size="223,42"
+          Id="Package\DF - TRANSFER_REASON"
+          TopLeft="1127.83333333333,287.5" />
+        <NodeLayout
           Size="173,42"
           Id="Package\End ETL (Success)"
           TopLeft="61.2142857142859,512.5" />
@@ -5678,6 +5731,10 @@ where ticketuid=?</property>
           Size="134,42"
           Id="Package\Get Max ID"
           TopLeft="902,201.5" />
+        <NodeLayout
+          Size="134,42"
+          Id="Package\Get Max ID 1"
+          TopLeft="1145.33333333333,202.75" />
         <NodeLayout
           Size="191,42"
           Id="Package\Post-Task\Post SP"
@@ -5752,6 +5809,40 @@ where ticketuid=?</property>
                   Capacity="5">
                   <mssgle:LineSegment
                     End="0,35" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="999.833333333333,286.25">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="191.5,-41.4999999999999"
+              Start="0,0"
+              End="191.5,-33.9999999999999">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,-16.6793044706664" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,-16.6793044706664"
+                    Point2="0,-20.6793044706664"
+                    Point3="4,-20.6793044706664" />
+                  <mssgle:LineSegment
+                    End="187.5,-20.6793044706664" />
+                  <mssgle:CubicBezierSegment
+                    Point1="187.5,-20.6793044706664"
+                    Point2="191.5,-20.6793044706664"
+                    Point3="191.5,-24.6793044706664" />
+                  <mssgle:LineSegment
+                    End="191.5,-33.9999999999999" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -5864,48 +5955,6 @@ where ticketuid=?</property>
                   Capacity="5">
                   <mssgle:LineSegment
                     End="0,37.7857142857143" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="134,42"
-          Id="Package\Get Max ID 1"
-          TopLeft="1145.33333333333,202.75" />
-        <NodeLayout
-          Size="223,42"
-          Id="Package\DF - TRANSFER_REASON"
-          TopLeft="1127.83333333333,287.5" />
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 2]"
-          TopLeft="999.833333333333,286.25">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="191.5,-41.4999999999999"
-              Start="0,0"
-              End="191.5,-33.9999999999999">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,-16.6793044706664" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,-16.6793044706664"
-                    Point2="0,-20.6793044706664"
-                    Point3="4,-20.6793044706664" />
-                  <mssgle:LineSegment
-                    End="187.5,-20.6793044706664" />
-                  <mssgle:CubicBezierSegment
-                    Point1="187.5,-20.6793044706664"
-                    Point2="191.5,-20.6793044706664"
-                    Point3="191.5,-24.6793044706664" />
-                  <mssgle:LineSegment
-                    End="191.5,-33.9999999999999" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -6451,13 +6500,13 @@ where ticketuid=?</property>
           Id="Package\DF - TRANSFER_REASON\Multicast 1"
           TopLeft="672,131" />
         <NodeLayout
-          Size="176,42"
-          Id="Package\DF - TRANSFER_REASON\Flat File Destination"
-          TopLeft="654,298" />
-        <NodeLayout
           Size="115,42"
           Id="Package\DF - TRANSFER_REASON\Lookup"
           TopLeft="501,125" />
+        <NodeLayout
+          Size="176,42"
+          Id="Package\DF - TRANSFER_REASON\Flat File Destination"
+          TopLeft="654,298" />
         <NodeLayout
           Size="123,42"
           Id="Package\DF - TRANSFER_REASON\Multicast"

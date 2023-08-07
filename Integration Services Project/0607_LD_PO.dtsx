@@ -12,9 +12,9 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="0607_LD_PO"
   DTS:PackageType="5"
-  DTS:VersionBuild="148"
-  DTS:VersionGUID="{2C3AB471-11D1-4F38-8692-9BDB5BEFD933}"
-  DTS:VersionMinor="1">
+  DTS:VersionBuild="150"
+  DTS:VersionGUID="{4B4A01DC-EB61-4476-B290-57E3DB5A5CD8}"
+  DTS:VersionMinor="2">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -142,7 +142,9 @@
       <DTS:ObjectData>
         <DTS:ConnectionManager>
           <OraConnectionString>SERVER=103.149.177.117:1521/COSWINDB;USERNAME=coswin;WINAUTH=0;</OraConnectionString>
-          <tcg/>
+          <OraPassword
+            Sensitive="1"
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAKvkDySftt02HPyXdTmqSiwAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAADsK1nIBktZtp6UAgskhGNJZUYD05CiH/bVsEpYTvR3BgAAAAAOgAAAAAIAACAAAAAKNUA9Y79JbpKxf2AKXCfqyGtGtnOtjW+8MRA+QOfwwCAAAABg7RgB9PgPRiS59zptQkUxR8MLVjONQkz3KAcaoPbZuUAAAAAZHhotrajKmjeDLBackY7HSBarlOo4M8aJtcTRixN6sOnQLUoO2LokNQ02kiAkrXFhFexqm/qdTV7k9mSHc/DW</OraPassword>
           <OraRetain>False</OraRetain>
           <OraInitialCatalog></OraInitialCatalog>
           <OraServerName>103.149.177.117:1521/COSWINDB</OraServerName>
@@ -262,8 +264,11 @@
         <DTS:ConnectionManager
           DTS:ConnectRetryCount="1"
           DTS:ConnectRetryInterval="5"
-          DTS:ConnectionString="Data Source=LENOVO-YOGA\SQLEXPRESS;User ID=maximo;Initial Catalog=maximodb;Provider=SQLNCLI11.1;Persist Security Info=True;Auto Translate=False;Application Name=STE.2022.CoswinMigration-{A2D54055-0CBC-4EA5-9952-7A6ADE49C2F8}.maximodb.maximo;">
-          <tcg/>
+          DTS:ConnectionString="Data Source=LENOVO-YOGA;User ID=maximo;Initial Catalog=maximodb;Provider=SQLNCLI11.1;Persist Security Info=True;Auto Translate=False;Application Name=STE.2022.CoswinMigration-{A2D54055-0CBC-4EA5-9952-7A6ADE49C2F8}.maximodb.maximo;">
+          <DTS:Password
+            DTS:Name="Password"
+            Sensitive="1"
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAKvkDySftt02HPyXdTmqSiwAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAAMqqDd+BtPBFtTaVINwZ0t4UPGfdUyZhb1tKlzUfKt4wAAAAAOgAAAAAIAACAAAAAIYBkCxPBs6j+KHMmgyLEDC+9fyIgopJFcNn1K1nAukSAAAADOICa4bIQQZLwCpq3Zg+PTPt9mYv58aEFgHVAgr6hyj0AAAAAmHjGTz2RUG3W3jD/AgoX5w/3c2XO0wUCO9jxKRSyYzw4hLNOvJiToYLoZfkL4lXFnW375JlqrDrE3sD1GYfYK</DTS:Password>
         </DTS:ConnectionManager>
       </DTS:ObjectData>
     </DTS:ConnectionManager>
@@ -2018,16 +2023,22 @@ where [refTable].[ponum] = ?</property>
                   description="The SQL command to be executed."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT 
-	po.PK_PORDER_ 
-	, po.PO_REF 
-	, po.PO_DT 
-	, pr.PK_PO_RMK 
-	, pr.S_PO_FOLLOW 
-	, pr.PO_TXT 
-	--, NULL AS PO_TXT
-FROM PO_RMK pr 
-JOIN PORDER_ po ON po.PK_PORDER_ = pr.S_PO_FOLLOW</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT *
+FROM (
+	SELECT 
+		po.PK_PORDER_ 
+		, po.PO_REF 
+		, po.PO_DT 
+		, pr.PK_PO_RMK 
+		, pr.S_PO_FOLLOW 
+		, pr.PO_TXT 
+		--, NULL AS PO_TXT
+		, ROW_NUMBER() OVER (PARTITION BY po.PK_PORDER_ ORDER BY pr.PK_PO_RMK) rn
+	FROM PO_RMK pr 
+	JOIN PORDER_ po ON po.PK_PORDER_ = pr.S_PO_FOLLOW
+) x
+WHERE x.rn=1
+;</property>
                 <property
                   dataType="System.Int32"
                   description="Specify the number of rows fetched per batch."
@@ -2108,6 +2119,12 @@ JOIN PORDER_ po ON po.PK_PORDER_ = pr.S_PO_FOLLOW</property>
                       externalMetadataColumnId="Package\DF - FOLLOWUP\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_PO_FOLLOW]"
                       lineageId="Package\DF - FOLLOWUP\Oracle Source.Outputs[Oracle Source Output].Columns[S_PO_FOLLOW]"
                       name="S_PO_FOLLOW" />
+                    <outputColumn
+                      refId="Package\DF - FOLLOWUP\Oracle Source.Outputs[Oracle Source Output].Columns[RN]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\DF - FOLLOWUP\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
+                      lineageId="Package\DF - FOLLOWUP\Oracle Source.Outputs[Oracle Source Output].Columns[RN]"
+                      name="RN" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -2138,6 +2155,10 @@ JOIN PORDER_ po ON po.PK_PORDER_ = pr.S_PO_FOLLOW</property>
                       refId="Package\DF - FOLLOWUP\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_PO_FOLLOW]"
                       dataType="i4"
                       name="S_PO_FOLLOW" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FOLLOWUP\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
+                      dataType="r8"
+                      name="RN" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -2184,6 +2205,12 @@ JOIN PORDER_ po ON po.PK_PORDER_ = pr.S_PO_FOLLOW</property>
                       externalMetadataColumnId="Package\DF - FOLLOWUP\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_PO_FOLLOW]"
                       lineageId="Package\DF - FOLLOWUP\Oracle Source.Outputs[Oracle Source Error Output].Columns[S_PO_FOLLOW]"
                       name="S_PO_FOLLOW" />
+                    <outputColumn
+                      refId="Package\DF - FOLLOWUP\Oracle Source.Outputs[Oracle Source Error Output].Columns[RN]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\DF - FOLLOWUP\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
+                      lineageId="Package\DF - FOLLOWUP\Oracle Source.Outputs[Oracle Source Error Output].Columns[RN]"
+                      name="RN" />
                     <outputColumn
                       refId="Package\DF - FOLLOWUP\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -4451,16 +4478,21 @@ where [refTable].[ponum] = ?</property>
                   description="The SQL command to be executed."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT 
-	po.PK_PORDER_ 
-	, po.PO_REF 
-	, po.PO_DT 
-	, pr.PK_PO_RMK 
-	, pr.S_PO_RMK 
-	, pr.PO_TXT 
-	--, NULL AS PO_TXT
-FROM PO_RMK pr 
-JOIN PORDER_ po ON po.PK_PORDER_ = pr.S_PO_RMK</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT *
+FROM (
+	SELECT 
+		po.PK_PORDER_ 
+		, po.PO_REF 
+		, po.PO_DT 
+		, pr.PK_PO_RMK 
+		, pr.S_PO_RMK 
+		, pr.PO_TXT 
+		--, NULL AS PO_TXT
+		, ROW_NUMBER() OVER (PARTITION BY po.PK_PORDER_ ORDER BY pr.PK_PO_RMK) rn
+	FROM PO_RMK pr 
+	JOIN PORDER_ po ON po.PK_PORDER_ = pr.S_PO_RMK
+) x
+WHERE x.rn=1;</property>
                 <property
                   dataType="System.Int32"
                   description="Specify the number of rows fetched per batch."
@@ -4541,6 +4573,12 @@ JOIN PORDER_ po ON po.PK_PORDER_ = pr.S_PO_RMK</property>
                       externalMetadataColumnId="Package\DF - REMARK\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PO_TXT]"
                       lineageId="Package\DF - REMARK\Oracle Source.Outputs[Oracle Source Output].Columns[PO_TXT]"
                       name="PO_TXT" />
+                    <outputColumn
+                      refId="Package\DF - REMARK\Oracle Source.Outputs[Oracle Source Output].Columns[RN]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\DF - REMARK\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
+                      lineageId="Package\DF - REMARK\Oracle Source.Outputs[Oracle Source Output].Columns[RN]"
+                      name="RN" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -4571,6 +4609,10 @@ JOIN PORDER_ po ON po.PK_PORDER_ = pr.S_PO_RMK</property>
                       refId="Package\DF - REMARK\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PO_TXT]"
                       dataType="image"
                       name="PO_TXT" />
+                    <externalMetadataColumn
+                      refId="Package\DF - REMARK\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
+                      dataType="r8"
+                      name="RN" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -4617,6 +4659,12 @@ JOIN PORDER_ po ON po.PK_PORDER_ = pr.S_PO_RMK</property>
                       externalMetadataColumnId="Package\DF - REMARK\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PO_TXT]"
                       lineageId="Package\DF - REMARK\Oracle Source.Outputs[Oracle Source Error Output].Columns[PO_TXT]"
                       name="PO_TXT" />
+                    <outputColumn
+                      refId="Package\DF - REMARK\Oracle Source.Outputs[Oracle Source Error Output].Columns[RN]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\DF - REMARK\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
+                      lineageId="Package\DF - REMARK\Oracle Source.Outputs[Oracle Source Error Output].Columns[RN]"
+                      name="RN" />
                     <outputColumn
                       refId="Package\DF - REMARK\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"

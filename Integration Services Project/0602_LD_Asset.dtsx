@@ -12,9 +12,9 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="0602_LD_Asset"
   DTS:PackageType="5"
-  DTS:VersionBuild="107"
-  DTS:VersionGUID="{2EAD3AFB-E1A5-4FEB-A7D6-236FC406B9BD}"
-  DTS:VersionMinor="1">
+  DTS:VersionBuild="108"
+  DTS:VersionGUID="{B50359C9-F4DA-485C-9D08-844F9F8F7B93}"
+  DTS:VersionMinor="2">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -229,7 +229,9 @@
       <DTS:ObjectData>
         <DTS:ConnectionManager>
           <OraConnectionString>SERVER=103.149.177.117:1521/COSWINDB;USERNAME=coswin;WINAUTH=0;</OraConnectionString>
-          <tcg/>
+          <OraPassword
+            Sensitive="1"
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAKvkDySftt02HPyXdTmqSiwAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAC4Cw9UM+JMBojzuB92LASH/LhHkmczsYV+8WCptfMNKQAAAAAOgAAAAAIAACAAAAAXy8yhXvznorgraeHS42RCf/jzOXhSzR1+adHOQaWs5yAAAADddYPZpMtqVRSJD9ArCtcuyTx+QCigG7mQ9ySBnN2whkAAAADUZPp0Mt+R1ux9fssaRr8Ht1t+c0pQ086CGBao0umR7C/MTCwSw31Ma5LEHPimSj3mwoEFlX6H6Gg92UcqsOUN</OraPassword>
           <OraRetain>False</OraRetain>
           <OraInitialCatalog></OraInitialCatalog>
           <OraServerName>103.149.177.117:1521/COSWINDB</OraServerName>
@@ -254,8 +256,11 @@
         <DTS:ConnectionManager
           DTS:ConnectRetryCount="1"
           DTS:ConnectRetryInterval="5"
-          DTS:ConnectionString="Data Source=LENOVO-YOGA\SQLEXPRESS;User ID=maximo;Initial Catalog=maximodb;Provider=SQLNCLI11.1;Persist Security Info=True;Auto Translate=False;Application Name=STE.2022.CoswinMigration-{A2D54055-0CBC-4EA5-9952-7A6ADE49C2F8}.maximodb.maximo;">
-          <tcg/>
+          DTS:ConnectionString="Data Source=LENOVO-YOGA;User ID=maximo;Initial Catalog=maximodb;Provider=SQLNCLI11.1;Persist Security Info=True;Auto Translate=False;Application Name=STE.2022.CoswinMigration-{A2D54055-0CBC-4EA5-9952-7A6ADE49C2F8}.maximodb.maximo;">
+          <DTS:Password
+            DTS:Name="Password"
+            Sensitive="1"
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAKvkDySftt02HPyXdTmqSiwAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAABrvoXJk1bejqGIPvUyxgLJpflwBh6ZvIuheBYfp1X5vQAAAAAOgAAAAAIAACAAAAAKs5cRxfruR+NQFhQosyuXqhfcFnHqZXax26TM0bdTZCAAAABYs5N6LY0mtjjX5tbLay2kplPc203Ldm6+DVCsnSK9mkAAAAAb0q1ROrIcsUUnH9jd1J6A3ksbGntZO5V/VweQAJrSNq4qdhnGd/IBuqBLD77rgO2RQCvFk5V+IZxZat9m1d5S</DTS:Password>
         </DTS:ConnectionManager>
       </DTS:ObjectData>
     </DTS:ConnectionManager>
@@ -1778,16 +1783,21 @@ where [refTable].[assetnum] = ?</property>
                   description="The SQL command to be executed."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT 
-	et.PK_EQP_TOPO 
-	, et.EQ_EQCD 
-	, et.EQ_ASSET_ID 
-	, et.EQ_LEVL 
-	, ja.PK_JOB_ACTV
-	, ja.EQ_JA_24 
-	, ja.JA_TEXT 
-FROM COSWIN.EQP_TOPO et 
-JOIN COSWIN.JOB_ACTV ja ON ja.EQ_JA_24 = et.PK_EQP_TOPO</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT * 
+FROM (
+	SELECT 
+		et.PK_EQP_TOPO 
+		, et.EQ_EQCD 
+		, et.EQ_ASSET_ID 
+		, et.EQ_LEVL 
+		, ja.PK_JOB_ACTV
+		, ja.EQ_JA_24 
+		, ja.JA_TEXT 
+		, ROW_NUMBER() OVER (PARTITION BY et.PK_EQP_TOPO ORDER BY ja.PK_JOB_ACTV) rn
+	FROM COSWIN.EQP_TOPO et  
+	JOIN COSWIN.JOB_ACTV ja ON ja.EQ_JA_24 = et.PK_EQP_TOPO
+) x
+WHERE x.rn=1</property>
                 <property
                   dataType="System.Int32"
                   description="Specify the number of rows fetched per batch."
@@ -1875,6 +1885,12 @@ JOIN COSWIN.JOB_ACTV ja ON ja.EQ_JA_24 = et.PK_EQP_TOPO</property>
                       externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_JOB_ACTV]"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[PK_JOB_ACTV]"
                       name="PK_JOB_ACTV" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[RN]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[RN]"
+                      name="RN" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1910,6 +1926,10 @@ JOIN COSWIN.JOB_ACTV ja ON ja.EQ_JA_24 = et.PK_EQP_TOPO</property>
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_JOB_ACTV]"
                       dataType="i4"
                       name="PK_JOB_ACTV" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
+                      dataType="r8"
+                      name="RN" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -1963,6 +1983,12 @@ JOIN COSWIN.JOB_ACTV ja ON ja.EQ_JA_24 = et.PK_EQP_TOPO</property>
                       externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_JOB_ACTV]"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_JOB_ACTV]"
                       name="PK_JOB_ACTV" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[RN]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[RN]"
+                      name="RN" />
                     <outputColumn
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -3502,18 +3528,6 @@ where assetuid=?</property>
       <GraphLayout
         Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
-          Size="123,42"
-          Id="Package\Data Flow Task\Multicast"
-          TopLeft="272,215" />
-        <NodeLayout
-          Size="149,42"
-          Id="Package\Data Flow Task\Oracle Source"
-          TopLeft="19.5,19.5" />
-        <NodeLayout
-          Size="177,42"
-          Id="Package\Data Flow Task\OLE DB Destination"
-          TopLeft="50.5,315.5" />
-        <NodeLayout
           Size="162,42"
           Id="Package\Data Flow Task\Running Number"
           TopLeft="262,29" />
@@ -3522,9 +3536,17 @@ where assetuid=?</property>
           Id="Package\Data Flow Task\Multicast 1"
           TopLeft="672,139" />
         <NodeLayout
+          Size="177,42"
+          Id="Package\Data Flow Task\OLE DB Destination"
+          TopLeft="50.5,315.5" />
+        <NodeLayout
           Size="176,42"
           Id="Package\Data Flow Task\Flat File Destination"
           TopLeft="654,306" />
+        <NodeLayout
+          Size="115,42"
+          Id="Package\Data Flow Task\Lookup"
+          TopLeft="501,133" />
         <NodeLayout
           Size="158,42"
           Id="Package\Data Flow Task\Derived Column"
@@ -3538,21 +3560,25 @@ where assetuid=?</property>
           Id="Package\Data Flow Task\LookupKey"
           TopLeft="479,32" />
         <NodeLayout
-          Size="142,42"
-          Id="Package\Data Flow Task\Log nomatch"
-          TopLeft="868.5,303.5" />
-        <NodeLayout
-          Size="115,42"
-          Id="Package\Data Flow Task\Lookup"
-          TopLeft="501,133" />
-        <NodeLayout
           Size="173,42"
           Id="Package\Data Flow Task\Update hasld column"
           TopLeft="282,311" />
         <NodeLayout
+          Size="142,42"
+          Id="Package\Data Flow Task\Log nomatch"
+          TopLeft="868.5,303.5" />
+        <NodeLayout
+          Size="123,42"
+          Id="Package\Data Flow Task\Multicast"
+          TopLeft="272,215" />
+        <NodeLayout
           Size="130,42"
           Id="Package\Data Flow Task\Aggregate"
           TopLeft="873,140" />
+        <NodeLayout
+          Size="149,42"
+          Id="Package\Data Flow Task\Oracle Source"
+          TopLeft="19.5,19.5" />
         <EdgeLayout
           Id="Package\Data Flow Task.Paths[Output 0]"
           TopLeft="424,51.5">
@@ -3897,19 +3923,6 @@ where assetuid=?</property>
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\Data Flow Task\Oracle Source">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
     design-time-name="Package\Data Flow Task\OLE DB Destination">
     <Properties>
       <Property>
@@ -3942,6 +3955,19 @@ where assetuid=?</property>
       </Property>
       <Property>
         <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Data Flow Task\Oracle Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
       </Property>
     </Properties>
   </PipelineComponentMetadata>

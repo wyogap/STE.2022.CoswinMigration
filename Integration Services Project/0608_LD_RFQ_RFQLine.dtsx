@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="0608_LD_RFQ_RFQLine"
   DTS:PackageType="5"
-  DTS:VersionBuild="120"
-  DTS:VersionGUID="{9C9E61AA-51E2-4777-B69A-DDBC7B45D0D9}"
+  DTS:VersionBuild="121"
+  DTS:VersionGUID="{D9682714-0B9E-40C1-A69B-2FE677AF0315}"
   DTS:VersionMinor="1">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -30,7 +30,9 @@
       <DTS:ObjectData>
         <DTS:ConnectionManager>
           <OraConnectionString>SERVER=103.149.177.117:1521/COSWINDB;USERNAME=coswin;WINAUTH=0;</OraConnectionString>
-          <tcg/>
+          <OraPassword
+            Sensitive="1"
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAKvkDySftt02HPyXdTmqSiwAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAABLIasAhU4v/OSK1VPsDBywUpn5rV3PpMiLvmvTRSD9LwAAAAAOgAAAAAIAACAAAABYbAbR2+ulvS2Om9Oi410OPGj1Wbpm+Y0JFO11MDv1CiAAAACqFL9nVFKfKDkvWCc5iZMxA9c1ocwaeU9woFjgmkrnp0AAAADBcl/uujRbQyQ7aw1fggxYIKL/KLKXpMl4Lg2yXJebNd2ml8HkhkkdJLrmwid64c/feKJuXMoGgEKIODABW6lL</OraPassword>
           <OraRetain>False</OraRetain>
           <OraInitialCatalog></OraInitialCatalog>
           <OraServerName>103.149.177.117:1521/COSWINDB</OraServerName>
@@ -55,8 +57,11 @@
         <DTS:ConnectionManager
           DTS:ConnectRetryCount="1"
           DTS:ConnectRetryInterval="5"
-          DTS:ConnectionString="Data Source=LENOVO-YOGA\SQLEXPRESS;User ID=maximo;Initial Catalog=maximodb;Provider=SQLNCLI11.1;Persist Security Info=True;Auto Translate=False;Application Name=STE.2022.CoswinMigration-{A2D54055-0CBC-4EA5-9952-7A6ADE49C2F8}.maximodb.maximo;">
-          <tcg/>
+          DTS:ConnectionString="Data Source=LENOVO-YOGA;User ID=maximo;Initial Catalog=maximodb;Provider=SQLNCLI11.1;Persist Security Info=True;Auto Translate=False;Application Name=STE.2022.CoswinMigration-{A2D54055-0CBC-4EA5-9952-7A6ADE49C2F8}.maximodb.maximo;">
+          <DTS:Password
+            DTS:Name="Password"
+            Sensitive="1"
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAKvkDySftt02HPyXdTmqSiwAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAB0wEYD0fwnHl8NruzNOplT6HJf8+iLnZS2/518YDNriQAAAAAOgAAAAAIAACAAAACdnwl0sJg8e/+i5oOvRvNiU2g4dqdy61pc51DNOvT9ZyAAAADMfksf8Ow/GWBKvGzThXJbpbXaJSwpsYGO7SBV1uCNJEAAAADVWY8oAvEapD5exJDTUiB851wzDqU4SMFBTmqC/a3pKovCKLAKCFWkQ5/GgG1wuNPomdmO/BorT1iy6tzV5DTv</DTS:Password>
         </DTS:ConnectionManager>
       </DTS:ObjectData>
     </DTS:ConnectionManager>
@@ -1754,16 +1759,22 @@ where [refTable].[rfqnum] = ?</property>
                   description="The SQL command to be executed."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT 
-	d.PK_DEVIS 
-	, d.DEVIS_CD 
-	, dr.PK_DV_RMK 
-	, dr.S_DV_RMK 
-	, dr.DEV_TEXT 
-	--, NULL as DEV_TEXT 
-FROM COSWIN.DV_RMK dr  
-JOIN COSWIN.DEVIS d ON dr.S_DV_RMK = d.PK_DEVIS 
-WHERE dr.S_DV_RMK IS NOT NULL;</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT *
+FROM (
+	SELECT 
+		d.PK_DEVIS 
+		, d.DEVIS_CD 
+		, dr.PK_DV_RMK 
+		, dr.S_DV_RMK 
+		, dr.DEV_TEXT 
+		--, NULL as DEV_TEXT 
+		, ROW_NUMBER() OVER (PARTITION BY d.PK_DEVIS ORDER BY dr.PK_DV_RMK) rn
+	FROM COSWIN.DV_RMK dr  
+	JOIN COSWIN.DEVIS d ON dr.S_DV_RMK = d.PK_DEVIS 
+	WHERE dr.S_DV_RMK IS NOT NULL
+) x 
+WHERE x.rn=1
+;</property>
                 <property
                   dataType="System.Int32"
                   description="Specify the number of rows fetched per batch."
@@ -1837,6 +1848,12 @@ WHERE dr.S_DV_RMK IS NOT NULL;</property>
                       externalMetadataColumnId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DEV_TEXT]"
                       lineageId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Output].Columns[DEV_TEXT]"
                       name="DEV_TEXT" />
+                    <outputColumn
+                      refId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Output].Columns[RN]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
+                      lineageId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Output].Columns[RN]"
+                      name="RN" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1862,6 +1879,10 @@ WHERE dr.S_DV_RMK IS NOT NULL;</property>
                       refId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DEV_TEXT]"
                       dataType="image"
                       name="DEV_TEXT" />
+                    <externalMetadataColumn
+                      refId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
+                      dataType="r8"
+                      name="RN" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -1901,6 +1922,12 @@ WHERE dr.S_DV_RMK IS NOT NULL;</property>
                       externalMetadataColumnId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DEV_TEXT]"
                       lineageId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Error Output].Columns[DEV_TEXT]"
                       name="DEV_TEXT" />
+                    <outputColumn
+                      refId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Error Output].Columns[RN]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
+                      lineageId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Error Output].Columns[RN]"
+                      name="RN" />
                     <outputColumn
                       refId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"

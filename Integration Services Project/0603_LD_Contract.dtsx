@@ -12,9 +12,9 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="0603_LD_Contract"
   DTS:PackageType="5"
-  DTS:VersionBuild="105"
-  DTS:VersionGUID="{E338460C-DDF2-4D4B-B3AE-A1A258E03BD6}"
-  DTS:VersionMinor="1">
+  DTS:VersionBuild="107"
+  DTS:VersionGUID="{002F496B-E752-42C9-AB8C-83CF529EA46A}"
+  DTS:VersionMinor="2">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -126,7 +126,9 @@
       <DTS:ObjectData>
         <DTS:ConnectionManager>
           <OraConnectionString>SERVER=103.149.177.117:1521/COSWINDB;USERNAME=coswin;WINAUTH=0;</OraConnectionString>
-          <tcg/>
+          <OraPassword
+            Sensitive="1"
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAKvkDySftt02HPyXdTmqSiwAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAADdP6DCu/aLEt98pNTZsdtfxpbs2cCXiYSbiXJpkvMvrgAAAAAOgAAAAAIAACAAAAB7S/bxsDe+BhA+0PILwkTueZ4Div/tY4+JLPZ503aAjiAAAAAeArOJsq1l6s81J8Hu85WwfvhW+wRPkNpvvHkRwdsViEAAAADrouclSrDRiGiY6GeL3SMgEhi15J65w6+jfIXC9TzNlyyBgXnNfZQdyPC6bCVB4r0KCGTuBDSK7q5kLF4rMpfZ</OraPassword>
           <OraRetain>False</OraRetain>
           <OraInitialCatalog></OraInitialCatalog>
           <OraServerName>103.149.177.117:1521/COSWINDB</OraServerName>
@@ -151,8 +153,11 @@
         <DTS:ConnectionManager
           DTS:ConnectRetryCount="1"
           DTS:ConnectRetryInterval="5"
-          DTS:ConnectionString="Data Source=LENOVO-YOGA\SQLEXPRESS;User ID=maximo;Initial Catalog=maximodb;Provider=SQLNCLI11.1;Persist Security Info=True;Auto Translate=False;Application Name=STE.2022.CoswinMigration-{A2D54055-0CBC-4EA5-9952-7A6ADE49C2F8}.maximodb.maximo;">
-          <tcg/>
+          DTS:ConnectionString="Data Source=LENOVO-YOGA;User ID=maximo;Initial Catalog=maximodb;Provider=SQLNCLI11.1;Persist Security Info=True;Auto Translate=False;Application Name=STE.2022.CoswinMigration-{A2D54055-0CBC-4EA5-9952-7A6ADE49C2F8}.maximodb.maximo;">
+          <DTS:Password
+            DTS:Name="Password"
+            Sensitive="1"
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAKvkDySftt02HPyXdTmqSiwAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAA4/daY+tW/T4DfnTaLh9UiBuK2+zZd89qKEs3HFthQwwAAAAAOgAAAAAIAACAAAABcxjvbp9W3frspFivVjI7/HGaXgSUYihsjL0LB9qbNQCAAAABf1M76CQfAH/t6h+7XlJBIKiBag1/FW6HsxJTnPsP6w0AAAAAI1YmcHAw2zhF4i8htPPm568e+T1Yo3ldwrjNlmc0qv+rQfTi9yWQpPY0b2+l/gIgEX9eljiIXyVjS0QX9iuiS</DTS:Password>
         </DTS:ConnectionManager>
       </DTS:ObjectData>
     </DTS:ConnectionManager>
@@ -1677,19 +1682,24 @@ where [refTable].[contractnum] = ?</property>
                   description="The SQL command to be executed."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT 
-	sa.PK_SUPPL_AGREE
-	, sup.SUPL_CD 
-	, sup.S_CURR_CD 
-	, sa.SAGREE_CODE
-	, sa.SAGREE_STATUS
-	, sar.PK_SUPPL_AGREE_RMK
-	, sar.S_SAGREE_TO_RMK
-	, sar.SAGREE_TXT
-FROM COSWIN.SUPPL_AGREE sa
-LEFT JOIN COSWIN.SUPPLIER_ sup ON sup.PK_SUPPLIER_ = sa.S_SUPP_TO_SAGREE 
-JOIN COSWIN.SUPPL_AGREE_RMK sar ON sar.S_SAGREE_TO_RMK = sa.PK_SUPPL_AGREE
-ORDER BY sa.PK_SUPPL_AGREE;</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT *
+FROM (
+	SELECT 
+		sa.PK_SUPPL_AGREE
+		, sup.SUPL_CD 
+		, sup.S_CURR_CD 
+		, sa.SAGREE_CODE
+		, sa.SAGREE_STATUS
+		, sar.PK_SUPPL_AGREE_RMK
+		, sar.S_SAGREE_TO_RMK
+		, sar.SAGREE_TXT
+		, ROW_NUMBER() OVER (PARTITION BY sa.PK_SUPPL_AGREE ORDER BY sar.PK_SUPPL_AGREE_RMK) rn
+	FROM COSWIN.SUPPL_AGREE sa
+	LEFT JOIN COSWIN.SUPPLIER_ sup ON sup.PK_SUPPLIER_ = sa.S_SUPP_TO_SAGREE 
+	JOIN COSWIN.SUPPL_AGREE_RMK sar ON sar.S_SAGREE_TO_RMK = sa.PK_SUPPL_AGREE
+) x
+WHERE x.rn=1
+ORDER BY x.PK_SUPPL_AGREE;</property>
                 <property
                   dataType="System.Int32"
                   description="Specify the number of rows fetched per batch."
@@ -1785,6 +1795,12 @@ ORDER BY sa.PK_SUPPL_AGREE;</property>
                       externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_SUPPL_AGREE_RMK]"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[PK_SUPPL_AGREE_RMK]"
                       name="PK_SUPPL_AGREE_RMK" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[RN]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[RN]"
+                      name="RN" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1826,6 +1842,10 @@ ORDER BY sa.PK_SUPPL_AGREE;</property>
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_SUPPL_AGREE_RMK]"
                       dataType="i4"
                       name="PK_SUPPL_AGREE_RMK" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
+                      dataType="r8"
+                      name="RN" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -1887,6 +1907,12 @@ ORDER BY sa.PK_SUPPL_AGREE;</property>
                       externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_SUPPL_AGREE_RMK]"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_SUPPL_AGREE_RMK]"
                       name="PK_SUPPL_AGREE_RMK" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[RN]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[RN]"
+                      name="RN" />
                     <outputColumn
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -3426,17 +3452,13 @@ where contractid=?</property>
       <GraphLayout
         Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
-          Size="149,42"
-          Id="Package\Data Flow Task\Oracle Source"
-          TopLeft="19.5,19.5" />
-        <NodeLayout
           Size="177,42"
           Id="Package\Data Flow Task\OLE DB Destination"
           TopLeft="39.5,308.5" />
         <NodeLayout
-          Size="162,42"
-          Id="Package\Data Flow Task\Running Number"
-          TopLeft="251,22" />
+          Size="176,42"
+          Id="Package\Data Flow Task\Flat File Destination"
+          TopLeft="643,299" />
         <NodeLayout
           Size="132,42"
           Id="Package\Data Flow Task\Multicast 1"
@@ -3462,43 +3484,25 @@ where contractid=?</property>
           Id="Package\Data Flow Task\LookupKey"
           TopLeft="468,25" />
         <NodeLayout
+          Size="173,42"
+          Id="Package\Data Flow Task\Update hasld column"
+          TopLeft="271,304" />
+        <NodeLayout
           Size="142,42"
           Id="Package\Data Flow Task\Log nomatch"
           TopLeft="857.5,296.5" />
         <NodeLayout
-          Size="173,42"
-          Id="Package\Data Flow Task\Update hasld column"
-          TopLeft="271,304" />
+          Size="149,42"
+          Id="Package\Data Flow Task\Oracle Source"
+          TopLeft="19.5,19.5" />
         <NodeLayout
           Size="130,42"
           Id="Package\Data Flow Task\Aggregate"
           TopLeft="862,133" />
         <NodeLayout
-          Size="176,42"
-          Id="Package\Data Flow Task\Flat File Destination"
-          TopLeft="643,299" />
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Output 0]"
-          TopLeft="413,44.5">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="55,0"
-              Start="0,0"
-              End="47.5,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="47.5,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
+          Size="162,42"
+          Id="Package\Data Flow Task\Running Number"
+          TopLeft="251,22" />
         <EdgeLayout
           Id="Package\Data Flow Task.Paths[Oracle Source Output]"
           TopLeft="168.5,41.75">
@@ -3805,22 +3809,31 @@ where contractid=?</property>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Output 0]"
+          TopLeft="413,44.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="55,0"
+              Start="0,0"
+              End="47.5,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="47.5,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
-  <PipelineComponentMetadata
-    design-time-name="Package\Data Flow Task\Oracle Source">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
   <PipelineComponentMetadata
     design-time-name="Package\Data Flow Task\OLE DB Destination">
     <Properties>
@@ -3854,6 +3867,19 @@ where contractid=?</property>
       </Property>
       <Property>
         <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Data Flow Task\Oracle Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
       </Property>
     </Properties>
   </PipelineComponentMetadata>

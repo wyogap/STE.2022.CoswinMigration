@@ -12,9 +12,9 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="0610_LD_Invoice"
   DTS:PackageType="5"
-  DTS:VersionBuild="116"
-  DTS:VersionGUID="{B49AFD3A-280C-45C8-8E4C-AA0645F308C0}"
-  DTS:VersionMinor="1">
+  DTS:VersionBuild="118"
+  DTS:VersionGUID="{4DF11639-F216-49B5-AD9F-85D36DDE515C}"
+  DTS:VersionMinor="2">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -30,7 +30,9 @@
       <DTS:ObjectData>
         <DTS:ConnectionManager>
           <OraConnectionString>SERVER=103.149.177.117:1521/COSWINDB;USERNAME=coswin;WINAUTH=0;</OraConnectionString>
-          <tcg/>
+          <OraPassword
+            Sensitive="1"
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAKvkDySftt02HPyXdTmqSiwAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAADSWJioCOb5EO6tbUSLrp13hb7w47fP0Tn7n5u06x2Q6QAAAAAOgAAAAAIAACAAAADEOzWshDvpzYjY0XZpp05fzuKErHoiLdVZo98M1stQLyAAAACam6GpoVK1hV0cbhs5/wugMfkKiFCtTryRHbNAC50TVEAAAADbSrVFbnQiDA9ayO+xiBoT11as80h0cRSqHPeM8Dl+F+1RE4DBKdgMsJ5GdThjXjoOW6Sacp3dSA4uI58r6jP4</OraPassword>
           <OraRetain>False</OraRetain>
           <OraInitialCatalog></OraInitialCatalog>
           <OraServerName>103.149.177.117:1521/COSWINDB</OraServerName>
@@ -158,8 +160,11 @@
         <DTS:ConnectionManager
           DTS:ConnectRetryCount="1"
           DTS:ConnectRetryInterval="5"
-          DTS:ConnectionString="Data Source=LENOVO-YOGA\SQLEXPRESS;User ID=maximo;Initial Catalog=maximodb;Provider=SQLNCLI11.1;Persist Security Info=True;Auto Translate=False;Application Name=STE.2022.CoswinMigration-{A2D54055-0CBC-4EA5-9952-7A6ADE49C2F8}.maximodb.maximo;">
-          <tcg/>
+          DTS:ConnectionString="Data Source=LENOVO-YOGA;User ID=maximo;Initial Catalog=maximodb;Provider=SQLNCLI11.1;Persist Security Info=True;Auto Translate=False;Application Name=STE.2022.CoswinMigration-{A2D54055-0CBC-4EA5-9952-7A6ADE49C2F8}.maximodb.maximo;">
+          <DTS:Password
+            DTS:Name="Password"
+            Sensitive="1"
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAKvkDySftt02HPyXdTmqSiwAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAD4U2KuY4pyIwXXrSDnC1+jqlocXXP77fit0JjzRE3oewAAAAAOgAAAAAIAACAAAACApKZMXp/LmJpkyasVLm0WQ0u0hGUK5wfX6mIqUkRGBSAAAAA/JVdopvWUW+bh5WzBdB02PqG/D86iDqOrSPUQ+HQH6EAAAABLEcqiFjof54a9oTB5+T/jyy9oN167c0TEfpAUbteNMFE379oxLulgh1WA0YxkPao8uSF9OmwxMKxNZvEIe3jd</DTS:Password>
         </DTS:ConnectionManager>
       </DTS:ObjectData>
     </DTS:ConnectionManager>
@@ -1670,17 +1675,22 @@ where [refTable].[invoicenum] = ?</property>
                   description="The SQL command to be executed."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT 
-	i.PK_INVOICE_
-	, i.INV_REF 
-	, ir.PK_INV_RMK 
-	, ir.S_INV_RMK
-	--, ir.INV_TXT
-	, NULL as INV_TXT
-FROM COSWIN.INVOICE_ i
-JOIN COSWIN.INV_RMK ir ON ir.S_INV_RMK = i.PK_INVOICE_
-WHERE ir.S_INV_RMK IS NOT NULL AND ir.INV_TXT IS NOT NULL
-order by i.PK_INVOICE_ 
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT *
+FROM (
+	SELECT 
+		i.PK_INVOICE_
+		, i.INV_REF 
+		, ir.PK_INV_RMK 
+		, ir.S_INV_RMK
+		, ir.INV_TXT
+		--, NULL as INV_TXT
+		, ROW_NUMBER() OVER (PARTITION BY i.PK_INVOICE_ ORDER BY ir.PK_INV_RMK) rn
+	FROM COSWIN.INVOICE_ i
+	JOIN COSWIN.INV_RMK ir ON ir.S_INV_RMK = i.PK_INVOICE_
+	WHERE ir.S_INV_RMK IS NOT NULL AND ir.INV_TXT IS NOT NULL
+) x
+WHERE x.rn = 1
+order by x.PK_INVOICE_ 
 ;</property>
                 <property
                   dataType="System.Int32"
@@ -1755,6 +1765,12 @@ order by i.PK_INVOICE_
                       externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[INV_TXT]"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[INV_TXT]"
                       name="INV_TXT" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[RN]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[RN]"
+                      name="RN" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1778,10 +1794,12 @@ order by i.PK_INVOICE_
                       name="S_INV_RMK" />
                     <externalMetadataColumn
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[INV_TXT]"
-                      codePage="1252"
-                      dataType="str"
-                      length="4"
+                      dataType="image"
                       name="INV_TXT" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
+                      dataType="r8"
+                      name="RN" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -1817,12 +1835,16 @@ order by i.PK_INVOICE_
                       name="S_INV_RMK" />
                     <outputColumn
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[INV_TXT]"
-                      codePage="1252"
-                      dataType="str"
+                      dataType="image"
                       externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[INV_TXT]"
-                      length="4"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[INV_TXT]"
                       name="INV_TXT" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[RN]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[RN]"
+                      name="RN" />
                     <outputColumn
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -3350,10 +3372,6 @@ where invoiceid=?</property>
       <GraphLayout
         Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
-          Size="173,42"
-          Id="Package\Data Flow Task\Update hasld column"
-          TopLeft="288,315" />
-        <NodeLayout
           Size="149,42"
           Id="Package\Data Flow Task\Oracle Source"
           TopLeft="19.5,29.5" />
@@ -3361,10 +3379,6 @@ where invoiceid=?</property>
           Size="177,42"
           Id="Package\Data Flow Task\OLE DB Destination"
           TopLeft="56.5,319.5" />
-        <NodeLayout
-          Size="176,42"
-          Id="Package\Data Flow Task\Flat File Destination"
-          TopLeft="660,310" />
         <NodeLayout
           Size="132,42"
           Id="Package\Data Flow Task\Multicast 1"
@@ -3377,6 +3391,10 @@ where invoiceid=?</property>
           Size="115,42"
           Id="Package\Data Flow Task\Lookup"
           TopLeft="507,137" />
+        <NodeLayout
+          Size="176,42"
+          Id="Package\Data Flow Task\Flat File Destination"
+          TopLeft="660,310" />
         <NodeLayout
           Size="123,42"
           Id="Package\Data Flow Task\Multicast"
@@ -3397,6 +3415,10 @@ where invoiceid=?</property>
           Size="142,42"
           Id="Package\Data Flow Task\Log nomatch"
           TopLeft="874.5,307.5" />
+        <NodeLayout
+          Size="173,42"
+          Id="Package\Data Flow Task\Update hasld column"
+          TopLeft="288,315" />
         <NodeLayout
           Size="130,42"
           Id="Package\Data Flow Task\Aggregate"
@@ -3764,7 +3786,7 @@ where invoiceid=?</property>
       <Property>
         <Name>OverwriteParamsSQLProp</Name>
         <Value
-          type="q2:boolean">false</Value>
+          type="q2:string">false</Value>
       </Property>
       <Property>
         <Name>UsedTableName</Name>
@@ -3774,7 +3796,7 @@ where invoiceid=?</property>
       <Property>
         <Name>TableInfoObjectType</Name>
         <Value
-          type="q4:int">0</Value>
+          type="q4:string">0</Value>
       </Property>
       <Property>
         <Name>DataSourceViewID</Name>
