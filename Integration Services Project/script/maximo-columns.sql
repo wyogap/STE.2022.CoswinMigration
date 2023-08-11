@@ -44,7 +44,6 @@ IF COLUMNPROPERTY(OBJECT_ID('dbo.prline'), 'ste_cswnwbsnum', 'ColumnId') IS NULL
 IF COLUMNPROPERTY(OBJECT_ID('dbo.prline'), 'ste_cswnprefsupl', 'ColumnId') is null ALTER TABLE prline ADD ste_cswnprefsupl varchar(20) default null;
 IF COLUMNPROPERTY(OBJECT_ID('dbo.prline'), 'ste_cswncurrencycode', 'ColumnId') is null ALTER TABLE prline ADD ste_cswncurrencycode varchar(8) default null;
 IF COLUMNPROPERTY(OBJECT_ID('dbo.prline'), 'ste_cswnprstatus', 'ColumnId') is null ALTER TABLE prline ADD ste_cswnprstatus smallint default null;
-IF COLUMNPROPERTY(OBJECT_ID('dbo.prline'), 'ste_cswncostcenter', 'ColumnId') is null ALTER TABLE prline ADD ste_cswncostcenter varchar(16) default null;
 --po
 IF COLUMNPROPERTY(OBJECT_ID('dbo.po'), 'ste_cswnpotype', 'ColumnId') IS NULL ALTER TABLE po ADD ste_cswnpotype smallint default null;
 IF COLUMNPROPERTY(OBJECT_ID('dbo.po'), 'ste_cswnsapgl', 'ColumnId') IS NULL ALTER TABLE po ADD ste_cswnsapgl varchar(20) default null;
