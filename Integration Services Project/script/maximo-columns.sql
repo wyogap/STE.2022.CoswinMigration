@@ -253,6 +253,8 @@ IF COLUMNPROPERTY(OBJECT_ID('dbo.exchange'), 'ste_cswnavgrate', 'ColumnId') is n
 
 IF COLUMNPROPERTY(OBJECT_ID('dbo.attendance'), 'ste_authority_entrysite', 'ColumnId') is null ALTER TABLE attendance ADD ste_authority_entrysite varchar(16) default null;
 
+IF COLUMNPROPERTY(OBJECT_ID('dbo.meterreading'), 'ste_cswnmreading', 'ColumnId') is null ALTER TABLE meterreading ADD ste_cswnmreading varchar(400) default null;
+
 	
 -- use workordernum as autokey
 update autokey 
