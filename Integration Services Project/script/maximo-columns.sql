@@ -255,7 +255,57 @@ IF COLUMNPROPERTY(OBJECT_ID('dbo.attendance'), 'ste_authority_entrysite', 'Colum
 
 IF COLUMNPROPERTY(OBJECT_ID('dbo.meterreading'), 'ste_cswnmreading', 'ColumnId') is null ALTER TABLE meterreading ADD ste_cswnmreading varchar(400) default null;
 
+-- Added based on feedback from Gareth (18/Oct/2023)
+IF COLUMNPROPERTY(OBJECT_ID('dbo.LOCATIONS'), 'ste_isptwloc', 'ColumnId') is null ALTER TABLE LOCATIONS ADD ste_isptwloc smallint default null;
+IF COLUMNPROPERTY(OBJECT_ID('dbo.LOCATIONS'), 'ste_istrackloc', 'ColumnId') is null ALTER TABLE LOCATIONS ADD ste_istrackloc smallint default null;
 	
+IF COLUMNPROPERTY(OBJECT_ID('dbo.ITEM'), 'ste_countitem', 'ColumnId') is null ALTER TABLE ITEM ADD ste_countitem smallint default null;
+IF COLUMNPROPERTY(OBJECT_ID('dbo.ITEM'), 'ste_is_critical', 'ColumnId') is null ALTER TABLE ITEM ADD ste_is_critical smallint default null;
+IF COLUMNPROPERTY(OBJECT_ID('dbo.ITEM'), 'ste_is_overhau', 'ColumnId') is null ALTER TABLE ITEM ADD ste_is_overhau smallint default null;
+IF COLUMNPROPERTY(OBJECT_ID('dbo.ITEM'), 'ste_is_proprietary', 'ColumnId') is null ALTER TABLE ITEM ADD ste_is_proprietary smallint default null;
+IF COLUMNPROPERTY(OBJECT_ID('dbo.ITEM'), 'ste_is_safety_related', 'ColumnId') is null ALTER TABLE ITEM ADD ste_is_safety_related smallint default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.PERSONGROUP'), 'ste_ismaintentity', 'ColumnId') is null ALTER TABLE PERSONGROUP ADD ste_ismaintentity smallint default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.ASSET'), 'ste_calequip', 'ColumnId') is null ALTER TABLE ASSET ADD ste_calequip smallint default null;
+IF COLUMNPROPERTY(OBJECT_ID('dbo.ASSET'), 'ste_calrequire', 'ColumnId') is null ALTER TABLE ASSET ADD ste_calrequire smallint default null;
+IF COLUMNPROPERTY(OBJECT_ID('dbo.ASSET'), 'ste_criticalasse', 'ColumnId') is null ALTER TABLE ASSET ADD ste_criticalasse smallint default null;
+IF COLUMNPROPERTY(OBJECT_ID('dbo.ASSET'), 'ste_kpi', 'ColumnId') is null ALTER TABLE ASSET ADD ste_kpi smallint default null;
+IF COLUMNPROPERTY(OBJECT_ID('dbo.ASSET'), 'ste_lru', 'ColumnId') is null ALTER TABLE ASSET ADD ste_lru smallint default null;
+IF COLUMNPROPERTY(OBJECT_ID('dbo.ASSET'), 'ste_ops', 'ColumnId') is null ALTER TABLE ASSET ADD ste_ops smallint default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.INVENTORY'), 'ste_carequired', 'ColumnId') is null ALTER TABLE INVENTORY ADD ste_carequired smallint default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.PR'), 'ste_tobeendorsed', 'ColumnId') is null ALTER TABLE PR ADD ste_tobeendorsed smallint default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.PRLINE'), 'ste_alitemallowed', 'ColumnId') is null ALTER TABLE PRLINE ADD ste_alitemallowed smallint default null;
+IF COLUMNPROPERTY(OBJECT_ID('dbo.PRLINE'), 'ste_iscontracted', 'ColumnId') is null ALTER TABLE PRLINE ADD ste_iscontracted smallint default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.RFQLINE'), 'ste_alitemallowed', 'ColumnId') is null ALTER TABLE RFQLINE ADD ste_alitemallowed smallint default null;
+IF COLUMNPROPERTY(OBJECT_ID('dbo.RFQLINE'), 'ste_altitemquoted', 'ColumnId') is null ALTER TABLE RFQLINE ADD ste_altitemquoted smallint default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.QUOTATIONLINE'), 'ste_altitemallowed', 'ColumnId') is null ALTER TABLE QUOTATIONLINE ADD ste_altitemallowed smallint default null;
+IF COLUMNPROPERTY(OBJECT_ID('dbo.QUOTATIONLINE'), 'ste_altitemquoted', 'ColumnId') is null ALTER TABLE QUOTATIONLINE ADD ste_altitemquoted smallint default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.WORKORDER'), 'ste_kpieqptfailure', 'ColumnId') is null ALTER TABLE WORKORDER ADD ste_kpieqptfailure smallint default null;
+IF COLUMNPROPERTY(OBJECT_ID('dbo.WORKORDER'), 'ste_move_swap', 'ColumnId') is null ALTER TABLE WORKORDER ADD ste_move_swap smallint default null;
+IF COLUMNPROPERTY(OBJECT_ID('dbo.WORKORDER'), 'ste_opseqptfailure', 'ColumnId') is null ALTER TABLE WORKORDER ADD ste_opseqptfailure smallint default null;
+IF COLUMNPROPERTY(OBJECT_ID('dbo.WORKORDER'), 'ste_serviceaffect2', 'ColumnId') is null ALTER TABLE WORKORDER ADD ste_serviceaffect2 smallint default null;
+IF COLUMNPROPERTY(OBJECT_ID('dbo.WORKORDER'), 'ste_serviceaffect5', 'ColumnId') is null ALTER TABLE WORKORDER ADD ste_serviceaffect5 smallint default null;
+IF COLUMNPROPERTY(OBJECT_ID('dbo.WORKORDER'), 'ste_tar_req', 'ColumnId') is null ALTER TABLE WORKORDER ADD ste_tar_req smallint default null;
+IF COLUMNPROPERTY(OBJECT_ID('dbo.WORKORDER'), 'ste_tsrimposed', 'ColumnId') is null ALTER TABLE WORKORDER ADD ste_tsrimposed smallint default null;
+IF COLUMNPROPERTY(OBJECT_ID('dbo.WORKORDER'), 'ste_tsrlifted', 'ColumnId') is null ALTER TABLE WORKORDER ADD ste_tsrlifted smallint default null;
+IF COLUMNPROPERTY(OBJECT_ID('dbo.WORKORDER'), 'ste_cannibalised', 'ColumnId') is null ALTER TABLE WORKORDER ADD ste_cannibalised smallint default null;
+IF COLUMNPROPERTY(OBJECT_ID('dbo.WORKORDER'), 'ste_frommobile', 'ColumnId') is null ALTER TABLE WORKORDER ADD ste_frommobile smallint default null;
+IF COLUMNPROPERTY(OBJECT_ID('dbo.WORKORDER'), 'ste_manpwrwait', 'ColumnId') is null ALTER TABLE WORKORDER ADD ste_manpwrwait smallint default null;
+IF COLUMNPROPERTY(OBJECT_ID('dbo.WORKORDER'), 'ste_istrainrestrict', 'ColumnId') is null ALTER TABLE WORKORDER ADD ste_istrainrestrict smallint default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.TICKET'), 'ste_autoalarm', 'ColumnId') is null ALTER TABLE TICKET ADD ste_autoalarm smallint default null;
+IF COLUMNPROPERTY(OBJECT_ID('dbo.TICKET'), 'ste_autoclose', 'ColumnId') is null ALTER TABLE TICKET ADD ste_autoclose smallint default null;
+
+IF COLUMNPROPERTY(OBJECT_ID('dbo.PM'), 'ste_pm_activatedbefore', 'ColumnId') is null ALTER TABLE PM ADD ste_pm_activatedbefore smallint default null;
+-- End of feedback from Gareth (18/Oct/2023)
+
 -- use workordernum as autokey
 update autokey 
 set

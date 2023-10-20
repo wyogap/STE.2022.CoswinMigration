@@ -79,11 +79,11 @@ BEGIN
 	declare @PackageName varchar(250);
 
 	-- update ClassStructureID autokey
-	select @v_max_id=max(assetattrid) from assetattribute;
+	select @v_max_id=max(try_cast(assetattrid as bigint)) from assetattribute;
 	update autokey set seed=@v_max_id+1 where autokeyname='ASSETATTRID';
 
 	-- update identity column
-	select @v_max_id=max(assetattributeId) from assetattribute;
+	select @v_max_id=max(try_cast(assetattributeId as bigint)) from assetattribute;
 	update maxsequence set maxreserved=@v_max_id+1 where tbname='assetattribute' and name='assetattributeID';
 
 	-- get package name
