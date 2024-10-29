@@ -1,0 +1,2448 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="1/17/2023 4:41:00 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="KARANGANYAR"
+  DTS:CreatorName="KARANGANYAR\ssis"
+  DTS:DTSID="{5B4F7357-CAC7-47D1-8FD5-C63B7F5072FE}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:FailParentOnFailure="True"
+  DTS:LastModifiedProductVersion="15.0.2000.170"
+  DTS:LocaleID="1057"
+  DTS:ObjectName="DB2_0515_Misc_Shift_ShiftPatternDay_CLEAN"
+  DTS:PackageType="5"
+  DTS:VersionBuild="116"
+  DTS:VersionGUID="{405924DD-7CFD-42A7-BE48-02994D5B7592}"
+  DTS:VersionMinor="2">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[coswindb]"
+      DTS:CreationName="ORACLE"
+      DTS:DTSID="{8CD5A75A-3C4C-4861-9D9F-BF340E4090CD}"
+      DTS:ObjectName="coswindb">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[$Project::COSWINDB_ConnectionString]</DTS:PropertyExpression>
+      <DTS:PropertyExpression
+        DTS:Name="Password">@[$Project::COSWINDB_Password]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager>
+          <OraConnectionString>SERVER=172.17.123.201:1521/TRN1;USERNAME=coswin;WINAUTH=0;</OraConnectionString>
+          <OraPassword
+            Sensitive="1"
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAC/OdBqVPHUe3Cma4HDVe/AAAAAAIAAAARABUAFMAAAADZgAAwAAAABAAAADc0Xa9lDoV5ojiM966+UzkAAAAAASAAACgAAAAEAAAAEAPTXtcHyFBF0Xa98Fye2UQAAAABPgkoI9NzkZStwXVb5z57xQAAACyA2ICahMMJJK1FN/KI7hzokJDOA</OraPassword>
+          <OraRetain>False</OraRetain>
+          <OraInitialCatalog></OraInitialCatalog>
+          <OraServerName>172.17.123.201:1521/TRN1</OraServerName>
+          <OraUserName>coswin</OraUserName>
+          <OraOracleHome></OraOracleHome>
+          <OraOracleHome64></OraOracleHome64>
+          <OraWinAuthentication>False</OraWinAuthentication>
+          <OraEnableDetailedTracing>False</OraEnableDetailedTracing>
+        </DTS:ConnectionManager>
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[maximodb]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{EA2FE567-0EAE-4F7C-A1DE-859400AEAE21}"
+      DTS:ObjectName="maximodb">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[$Project::Maximodb_ConnectionString]</DTS:PropertyExpression>
+      <DTS:PropertyExpression
+        DTS:Name="Password">@[$Project::Maximodb_Password]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectRetryCount="1"
+          DTS:ConnectRetryInterval="5"
+          DTS:ConnectionString="Data Source=172.17.123.146, 1435;User ID=ssis;Initial Catalog=maxdb76;Provider=SQLNCLI11.1;Auto Translate=False;">
+          <DTS:Password
+            DTS:Name="Password"
+            Sensitive="1"
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAC/OdBqVPHUe3Cma4HDVe/AAAAAAIAAAARABUAFMAAAADZgAAwAAAABAAAACOORFqK6GWQHGcQuuxX/3vAAAAAASAAACgAAAAEAAAAMoeWfPW3F4mYcTbHJX+mRgQAAAA6mDuuTUfZVwGz2KJbX1kYxQAAADxj0tWfttjGnW62lSPvm4sFPtlGQ</DTS:Password>
+        </DTS:ConnectionManager>
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[_Test_Table_000.sql]"
+      DTS:CreationName="FILE"
+      DTS:DTSID="{58EAC670-D126-4204-8680-258704AD20E2}"
+      DTS:ObjectName="_Test_Table_000.sql">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">"C:\\ssis\\coswinmigration\\scripts\\" + @[System::PackageName] +"_"+ RIGHT( REPLICATE( "0", 3) + (DT_WSTR, 3) @[User::cv_version], 3 ) + ".sql"</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="C:\ssis\coswinmigration\scripts\DB2_0515_Misc_Shift_ShiftPatternDay_CLEAN_000.sql" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:LogProviders>
+    <DTS:LogProvider
+      DTS:ConfigString="maximodb"
+      DTS:CreationName="Microsoft.LogProviderSQLServer"
+      DTS:Description="Writes log entries for events to a SQL Server database"
+      DTS:DTSID="{4369A0BB-7CF7-4117-96B4-9B7137179C4A}"
+      DTS:ObjectName="SSIS log provider for SQL Server">
+      <DTS:ObjectData>
+        <InnerObject />
+      </DTS:ObjectData>
+    </DTS:LogProvider>
+  </DTS:LogProviders>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{B1C65658-6D5E-410A-9AA1-9C4C890903B7}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="cv_version">
+      <DTS:VariableValue
+        DTS:DataType="20">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{CFCCBBD1-4125-4684-89F6-17F926A54F8A}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="log_id">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{25C63D92-7BCC-47C7-9EA9-5FF3865449FA}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="max_id">
+      <DTS:VariableValue
+        DTS:DataType="20">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{AB118BFC-5F3B-4A63-B210-E44CD0B675EC}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="min_id">
+      <DTS:VariableValue
+        DTS:DataType="20">0</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:LoggingOptions
+    DTS:FilterKind="0"
+    DTS:LoggingMode="2" />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\DF - Shift"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{5634DA93-B448-425F-89D9-29F7F862C909}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="DF - Shift">
+      <DTS:Variables />
+      <DTS:LoggingOptions
+        DTS:FilterKind="0"
+        DTS:LoggingMode="2" />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\DF - Shift\ADO NET Destination"
+              componentClassID="Microsoft.ManagedComponentHost"
+              contactInfo="Loads data into an ADO.NET-compliant database that uses a database table or view. Load data into a new or existing table. For example, use an ADO.NET provider for ODBC to load data into an ODBC destination.;Microsoft Corporation; Microsoft SQL Server; © Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;2"
+              description="Loads data into an ADO.NET-compliant database that uses a database table or view. Load data into a new or existing table. For example, use an ADO.NET provider for ODBC to load data into an ODBC destination."
+              name="ADO NET Destination"
+              usesDispositions="true"
+              version="2">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The Destination database table name."
+                  expressionType="Notify"
+                  name="TableOrViewName"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">"MAXIMO"."SHIFT"</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows per batch. The default is 0 which uses the same size as SSIS internal buffer. "
+                  expressionType="Notify"
+                  name="BatchSize">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out. A value of 0 indicates infinite time-out. "
+                  expressionType="Notify"
+                  name="CommandTimeout">30</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Specifies whether to use the SqlBulkCopy interface to improve the performance of bulk insert operations. Only certain providers support this interface."
+                  expressionType="Notify"
+                  name="UseBulkInsertWhenPossible">true</property>
+                <property
+                  dataType="System.String"
+                  name="UserComponentTypeName">Microsoft.ADONETDestination</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\DF - Shift\ADO NET Destination.Connections[IDbConnection]"
+                  connectionManagerID="{3F167782-ACEE-4E5E-B395-0831924ED019}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[172.17.123.146_25000.BLUDB.maximo1]"
+                  description="Managed connection manager"
+                  name="IDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\DF - Shift\ADO NET Destination.Inputs[ADO NET Destination Input]"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="ADO NET Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DF - Shift\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[SHIFT_DESCRIPTION]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="SHIFT_DESCRIPTION"
+                      externalMetadataColumnId="Package\DF - Shift\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[DESCRIPTION]"
+                      lineageId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].Columns[SHIFT_DESCRIPTION]" />
+                    <inputColumn
+                      refId="Package\DF - Shift\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[v_hasld]"
+                      cachedDataType="i4"
+                      cachedName="v_hasld"
+                      externalMetadataColumnId="Package\DF - Shift\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[HASLD]"
+                      lineageId="Package\DF - Shift\Derived Column.Outputs[Derived Column Output].Columns[v_hasld]" />
+                    <inputColumn
+                      refId="Package\DF - Shift\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[v_langcode]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="4"
+                      cachedName="v_langcode"
+                      externalMetadataColumnId="Package\DF - Shift\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[LANGCODE]"
+                      lineageId="Package\DF - Shift\Derived Column.Outputs[Derived Column Output].Columns[v_langcode]" />
+                    <inputColumn
+                      refId="Package\DF - Shift\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[v_orgid]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8"
+                      cachedName="v_orgid"
+                      externalMetadataColumnId="Package\DF - Shift\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[ORGID]"
+                      lineageId="Package\DF - Shift\Derived Column.Outputs[Derived Column Output].Columns[v_orgid]" />
+                    <inputColumn
+                      refId="Package\DF - Shift\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[v_shiftid]"
+                      cachedDataType="i8"
+                      cachedName="v_shiftid"
+                      externalMetadataColumnId="Package\DF - Shift\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[SHIFTID]"
+                      lineageId="Package\DF - Shift\Derived Column.Outputs[Derived Column Output].Columns[v_shiftid]" />
+                    <inputColumn
+                      refId="Package\DF - Shift\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[SHIFT_CODE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="6"
+                      cachedName="SHIFT_CODE"
+                      externalMetadataColumnId="Package\DF - Shift\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[SHIFTNUM]"
+                      lineageId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].Columns[SHIFT_CODE]" />
+                    <inputColumn
+                      refId="Package\DF - Shift\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[v_startday]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="12"
+                      cachedName="v_startday"
+                      externalMetadataColumnId="Package\DF - Shift\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[STARTDAY]"
+                      lineageId="Package\DF - Shift\Derived Column.Outputs[Derived Column Output].Columns[v_startday]" />
+                    <inputColumn
+                      refId="Package\DF - Shift\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[V_MIGRATIONDATE]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="V_MIGRATIONDATE"
+                      externalMetadataColumnId="Package\DF - Shift\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
+                      lineageId="Package\DF - Shift\Derived Column.Outputs[Derived Column Output].Columns[V_MIGRATIONDATE]" />
+                    <inputColumn
+                      refId="Package\DF - Shift\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[PK_SHIFT]"
+                      cachedDataType="i4"
+                      cachedName="PK_SHIFT"
+                      externalMetadataColumnId="Package\DF - Shift\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONID]"
+                      lineageId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].Columns[PK_SHIFT]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\DF - Shift\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[SHIFTNUM]"
+                      dataType="wstr"
+                      length="8"
+                      name="SHIFTNUM" />
+                    <externalMetadataColumn
+                      refId="Package\DF - Shift\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[DESCRIPTION]"
+                      dataType="wstr"
+                      length="100"
+                      name="DESCRIPTION" />
+                    <externalMetadataColumn
+                      refId="Package\DF - Shift\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[STARTDAY]"
+                      dataType="wstr"
+                      length="10"
+                      name="STARTDAY" />
+                    <externalMetadataColumn
+                      refId="Package\DF - Shift\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[ORGID]"
+                      dataType="wstr"
+                      length="8"
+                      name="ORGID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - Shift\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[SHIFTID]"
+                      dataType="i8"
+                      name="SHIFTID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - Shift\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[LANGCODE]"
+                      dataType="wstr"
+                      length="4"
+                      name="LANGCODE" />
+                    <externalMetadataColumn
+                      refId="Package\DF - Shift\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[HASLD]"
+                      dataType="i4"
+                      name="HASLD" />
+                    <externalMetadataColumn
+                      refId="Package\DF - Shift\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[ROWSTAMP]"
+                      dataType="i8"
+                      name="ROWSTAMP" />
+                    <externalMetadataColumn
+                      refId="Package\DF - Shift\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONID]"
+                      dataType="i8"
+                      name="STE_MIGRATIONID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - Shift\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
+                      dataType="dbTimeStamp"
+                      name="STE_MIGRATIONDATE" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - Shift\ADO NET Destination.Outputs[ADO NET Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="ADO NET Destination Error Output"
+                  synchronousInputId="Package\DF - Shift\ADO NET Destination.Inputs[ADO NET Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - Shift\ADO NET Destination.Outputs[ADO NET Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF - Shift\ADO NET Destination.Outputs[ADO NET Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF - Shift\ADO NET Destination.Outputs[ADO NET Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF - Shift\ADO NET Destination.Outputs[ADO NET Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DF - Shift\Derived Column"
+              componentClassID="Microsoft.DerivedColumn"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="Derived Column"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\DF - Shift\Derived Column.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DF - Shift\Derived Column.Inputs[Derived Column Input].Columns[PK_SHIFT]"
+                      cachedDataType="i4"
+                      cachedName="PK_SHIFT"
+                      lineageId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].Columns[PK_SHIFT]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - Shift\Derived Column.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\DF - Shift\Derived Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - Shift\Derived Column.Outputs[Derived Column Output].Columns[v_shiftid]"
+                      dataType="i8"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\DF - Shift\Derived Column.Outputs[Derived Column Output].Columns[v_shiftid]"
+                      name="v_shiftid"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">#{Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].Columns[PK_SHIFT]} + [REPLACENULL](@[User::max_id],0)</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">PK_SHIFT + REPLACENULL(@[User::max_id],0)</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\DF - Shift\Derived Column.Outputs[Derived Column Output].Columns[V_MIGRATIONDATE]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\DF - Shift\Derived Column.Outputs[Derived Column Output].Columns[V_MIGRATIONDATE]"
+                      name="V_MIGRATIONDATE"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_DBTIMESTAMP)[GETDATE]()</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_DBTIMESTAMP)GETDATE()</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\DF - Shift\Derived Column.Outputs[Derived Column Output].Columns[v_langcode]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="4"
+                      lineageId="Package\DF - Shift\Derived Column.Outputs[Derived Column Output].Columns[v_langcode]"
+                      name="v_langcode"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_STR,4,1252)"EN"</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_STR,4,1252)"EN"</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\DF - Shift\Derived Column.Outputs[Derived Column Output].Columns[v_orgid]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="8"
+                      lineageId="Package\DF - Shift\Derived Column.Outputs[Derived Column Output].Columns[v_orgid]"
+                      name="v_orgid"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_STR,8,1252)"SBST"</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_STR,8,1252)"SBST"</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\DF - Shift\Derived Column.Outputs[Derived Column Output].Columns[v_hasld]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\DF - Shift\Derived Column.Outputs[Derived Column Output].Columns[v_hasld]"
+                      name="v_hasld"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">0</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">0</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\DF - Shift\Derived Column.Outputs[Derived Column Output].Columns[v_startday]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="12"
+                      lineageId="Package\DF - Shift\Derived Column.Outputs[Derived Column Output].Columns[v_startday]"
+                      name="v_startday"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_STR,12,1252)"MONDAY"</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_STR,12,1252)"MONDAY"</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - Shift\Derived Column.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\DF - Shift\Derived Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - Shift\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF - Shift\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF - Shift\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF - Shift\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DF - Shift\Oracle Source"
+              componentClassID="Microsoft.SSISOracleSrc"
+              contactInfo="Oracle Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
+              description="Oracle Source"
+              name="Oracle Source"
+              usesDispositions="true"
+              version="1">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The name of the table to be fetched."
+                  expressionType="Notify"
+                  name="TableName">"COSWIN"."STE_TEST_TABLE"</property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT * FROM SHIFT s</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows fetched per batch."
+                  expressionType="Notify"
+                  name="BatchSize">1000</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines the chunk size allocation for LOB columns"
+                  expressionType="Notify"
+                  name="LobChunkSize">32768</property>
+                <property
+                  dataType="System.Int32"
+                  description="The code page to use when code page information is unavailable from the data source."
+                  expressionType="Notify"
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Int32"
+                  description="Number of pre-fetched rows."
+                  expressionType="Notify"
+                  name="PrefetchCount">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">1</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\DF - Shift\Oracle Source.Connections[ORACLEConnection]"
+                  connectionManagerID="{1BBC9476-D9E4-4553-8563-89CF216CBE10}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[Oracle Connection Manager]"
+                  description="The ORACLE runtime connection used to access the database."
+                  name="ORACLEConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output]"
+                  errorRowDisposition="FailComponent"
+                  name="Oracle Source Output"
+                  truncationRowDisposition="FailComponent">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].Columns[TIMESTAMP]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[TIMESTAMP]"
+                      lineageId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].Columns[TIMESTAMP]"
+                      name="TIMESTAMP"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].Columns[PK_SHIFT]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_SHIFT]"
+                      lineageId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].Columns[PK_SHIFT]"
+                      name="PK_SHIFT" />
+                    <outputColumn
+                      refId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].Columns[SHIFT_CODE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SHIFT_CODE]"
+                      length="6"
+                      lineageId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].Columns[SHIFT_CODE]"
+                      name="SHIFT_CODE" />
+                    <outputColumn
+                      refId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].Columns[SHIFT_DESCRIPTION]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SHIFT_DESCRIPTION]"
+                      length="100"
+                      lineageId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].Columns[SHIFT_DESCRIPTION]"
+                      name="SHIFT_DESCRIPTION" />
+                    <outputColumn
+                      refId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].Columns[SHIFT_START]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SHIFT_START]"
+                      lineageId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].Columns[SHIFT_START]"
+                      name="SHIFT_START"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].Columns[SHIFT_END]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SHIFT_END]"
+                      lineageId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].Columns[SHIFT_END]"
+                      name="SHIFT_END"
+                      precision="10" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[TIMESTAMP]"
+                      dataType="numeric"
+                      name="TIMESTAMP"
+                      precision="10" />
+                    <externalMetadataColumn
+                      refId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_SHIFT]"
+                      dataType="i4"
+                      name="PK_SHIFT" />
+                    <externalMetadataColumn
+                      refId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SHIFT_CODE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="6"
+                      name="SHIFT_CODE" />
+                    <externalMetadataColumn
+                      refId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SHIFT_DESCRIPTION]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="SHIFT_DESCRIPTION" />
+                    <externalMetadataColumn
+                      refId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SHIFT_START]"
+                      dataType="numeric"
+                      name="SHIFT_START"
+                      precision="10" />
+                    <externalMetadataColumn
+                      refId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SHIFT_END]"
+                      dataType="numeric"
+                      name="SHIFT_END"
+                      precision="10" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Error Output]"
+                  isErrorOut="true"
+                  name="Oracle Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Error Output].Columns[TIMESTAMP]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[TIMESTAMP]"
+                      lineageId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Error Output].Columns[TIMESTAMP]"
+                      name="TIMESTAMP"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_SHIFT]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_SHIFT]"
+                      lineageId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_SHIFT]"
+                      name="PK_SHIFT" />
+                    <outputColumn
+                      refId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Error Output].Columns[SHIFT_CODE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SHIFT_CODE]"
+                      length="6"
+                      lineageId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Error Output].Columns[SHIFT_CODE]"
+                      name="SHIFT_CODE" />
+                    <outputColumn
+                      refId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Error Output].Columns[SHIFT_DESCRIPTION]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SHIFT_DESCRIPTION]"
+                      length="100"
+                      lineageId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Error Output].Columns[SHIFT_DESCRIPTION]"
+                      name="SHIFT_DESCRIPTION" />
+                    <outputColumn
+                      refId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Error Output].Columns[SHIFT_START]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SHIFT_START]"
+                      lineageId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Error Output].Columns[SHIFT_START]"
+                      name="SHIFT_START"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Error Output].Columns[SHIFT_END]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SHIFT_END]"
+                      lineageId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Error Output].Columns[SHIFT_END]"
+                      name="SHIFT_END"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\DF - Shift.Paths[Derived Column Output]"
+              endId="Package\DF - Shift\ADO NET Destination.Inputs[ADO NET Destination Input]"
+              name="Derived Column Output"
+              startId="Package\DF - Shift\Derived Column.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - Shift.Paths[Oracle Source Output]"
+              endId="Package\DF - Shift\Derived Column.Inputs[Derived Column Input]"
+              name="Oracle Source Output"
+              startId="Package\DF - Shift\Oracle Source.Outputs[Oracle Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\DF - ShiftPatternDay"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{66B9235F-B019-4FE5-81C1-082CDDBDF051}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="DF - ShiftPatternDay">
+      <DTS:Variables />
+      <DTS:LoggingOptions
+        DTS:FilterKind="0"
+        DTS:LoggingMode="2" />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\DF - ShiftPatternDay\ADO NET Destination"
+              componentClassID="Microsoft.ManagedComponentHost"
+              contactInfo="Loads data into an ADO.NET-compliant database that uses a database table or view. Load data into a new or existing table. For example, use an ADO.NET provider for ODBC to load data into an ODBC destination.;Microsoft Corporation; Microsoft SQL Server; © Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;2"
+              description="Loads data into an ADO.NET-compliant database that uses a database table or view. Load data into a new or existing table. For example, use an ADO.NET provider for ODBC to load data into an ODBC destination."
+              name="ADO NET Destination"
+              usesDispositions="true"
+              version="2">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The Destination database table name."
+                  expressionType="Notify"
+                  name="TableOrViewName"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">"MAXIMO"."SHIFTPATTERNDAY"</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows per batch. The default is 0 which uses the same size as SSIS internal buffer. "
+                  expressionType="Notify"
+                  name="BatchSize">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out. A value of 0 indicates infinite time-out. "
+                  expressionType="Notify"
+                  name="CommandTimeout">30</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Specifies whether to use the SqlBulkCopy interface to improve the performance of bulk insert operations. Only certain providers support this interface."
+                  expressionType="Notify"
+                  name="UseBulkInsertWhenPossible">true</property>
+                <property
+                  dataType="System.String"
+                  name="UserComponentTypeName">Microsoft.ADONETDestination</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\DF - ShiftPatternDay\ADO NET Destination.Connections[IDbConnection]"
+                  connectionManagerID="{3F167782-ACEE-4E5E-B395-0831924ED019}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[172.17.123.146_25000.BLUDB.maximo1]"
+                  description="Managed connection manager"
+                  name="IDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input]"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="ADO NET Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[PATTERNDAYSEQ]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="3"
+                      cachedName="PATTERNDAYSEQ"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[PATTERNDAYSEQ]"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[PATTERNDAYSEQ]" />
+                    <inputColumn
+                      refId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[WORKHOURS]"
+                      cachedDataType="r8"
+                      cachedName="WORKHOURS"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[WORKHOURS]"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[WORKHOURS]" />
+                    <inputColumn
+                      refId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[v_endtime]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="v_endtime"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[ENDTIME]"
+                      lineageId="Package\DF - ShiftPatternDay\Derived Column.Outputs[Derived Column Output].Columns[v_endtime]" />
+                    <inputColumn
+                      refId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[v_org]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8"
+                      cachedName="v_org"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[ORGID]"
+                      lineageId="Package\DF - ShiftPatternDay\Derived Column.Outputs[Derived Column Output].Columns[v_org]" />
+                    <inputColumn
+                      refId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[SHIFT_CODE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="6"
+                      cachedName="SHIFT_CODE"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[SHIFTNUM]"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[SHIFT_CODE]" />
+                    <inputColumn
+                      refId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[v_shiftpatterndayid]"
+                      cachedDataType="i8"
+                      cachedName="v_shiftpatterndayid"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[SHIFTPATTERNDAYID]"
+                      lineageId="Package\DF - ShiftPatternDay\Derived Column.Outputs[Derived Column Output].Columns[v_shiftpatterndayid]" />
+                    <inputColumn
+                      refId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[V_MIGRATIONDATE]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="V_MIGRATIONDATE"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
+                      lineageId="Package\DF - ShiftPatternDay\Derived Column.Outputs[Derived Column Output].Columns[V_MIGRATIONDATE]" />
+                    <inputColumn
+                      refId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[PK_DAILY_SHIFT]"
+                      cachedDataType="i4"
+                      cachedName="PK_DAILY_SHIFT"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONID]"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DAILY_SHIFT]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[SHIFTNUM]"
+                      dataType="wstr"
+                      length="8"
+                      name="SHIFTNUM" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[PATTERNDAYSEQ]"
+                      dataType="wstr"
+                      length="10"
+                      name="PATTERNDAYSEQ" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[STARTTIME]"
+                      dataType="dbTime2"
+                      name="STARTTIME" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[ENDTIME]"
+                      dataType="dbTime2"
+                      name="ENDTIME" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[WORKHOURS]"
+                      dataType="r8"
+                      name="WORKHOURS" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[ORGID]"
+                      dataType="wstr"
+                      length="8"
+                      name="ORGID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[SHIFTPATTERNDAYID]"
+                      dataType="i8"
+                      name="SHIFTPATTERNDAYID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[ROWSTAMP]"
+                      dataType="i8"
+                      name="ROWSTAMP" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[PATTERNDAYNAME]"
+                      dataType="wstr"
+                      length="3"
+                      name="PATTERNDAYNAME" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_CSWNASSISTANTS]"
+                      dataType="i4"
+                      name="STE_CSWNASSISTANTS" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_CSWNLEADERS]"
+                      dataType="i4"
+                      name="STE_CSWNLEADERS" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_CSWNREQUIRED]"
+                      dataType="i4"
+                      name="STE_CSWNREQUIRED" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_CSWNSTAFF]"
+                      dataType="i4"
+                      name="STE_CSWNSTAFF" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_CSWNTDCD]"
+                      dataType="wstr"
+                      length="10"
+                      name="STE_CSWNTDCD" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONID]"
+                      dataType="i8"
+                      name="STE_MIGRATIONID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
+                      dataType="dbTimeStamp"
+                      name="STE_MIGRATIONDATE" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - ShiftPatternDay\ADO NET Destination.Outputs[ADO NET Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="ADO NET Destination Error Output"
+                  synchronousInputId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\ADO NET Destination.Outputs[ADO NET Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF - ShiftPatternDay\ADO NET Destination.Outputs[ADO NET Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\ADO NET Destination.Outputs[ADO NET Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF - ShiftPatternDay\ADO NET Destination.Outputs[ADO NET Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DF - ShiftPatternDay\Derived Column"
+              componentClassID="Microsoft.DerivedColumn"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="Derived Column"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\DF - ShiftPatternDay\Derived Column.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DF - ShiftPatternDay\Derived Column.Inputs[Derived Column Input].Columns[PK_DAILY_SHIFT]"
+                      cachedDataType="i4"
+                      cachedName="PK_DAILY_SHIFT"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DAILY_SHIFT]" />
+                    <inputColumn
+                      refId="Package\DF - ShiftPatternDay\Derived Column.Inputs[Derived Column Input].Columns[SHIFT_START]"
+                      cachedDataType="numeric"
+                      cachedName="SHIFT_START"
+                      cachedPrecision="10"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[SHIFT_START]" />
+                    <inputColumn
+                      refId="Package\DF - ShiftPatternDay\Derived Column.Inputs[Derived Column Input].Columns[SHIFT_END]"
+                      cachedDataType="numeric"
+                      cachedName="SHIFT_END"
+                      cachedPrecision="10"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[SHIFT_END]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - ShiftPatternDay\Derived Column.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\DF - ShiftPatternDay\Derived Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Derived Column.Outputs[Derived Column Output].Columns[v_shiftpatterndayid]"
+                      dataType="i8"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\DF - ShiftPatternDay\Derived Column.Outputs[Derived Column Output].Columns[v_shiftpatterndayid]"
+                      name="v_shiftpatterndayid"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">#{Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DAILY_SHIFT]} + [REPLACENULL](@[User::max_id],0)</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">PK_DAILY_SHIFT + REPLACENULL(@[User::max_id],0)</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Derived Column.Outputs[Derived Column Output].Columns[V_MIGRATIONDATE]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\DF - ShiftPatternDay\Derived Column.Outputs[Derived Column Output].Columns[V_MIGRATIONDATE]"
+                      name="V_MIGRATIONDATE"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_DBTIMESTAMP)[GETDATE]()</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_DBTIMESTAMP)GETDATE()</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Derived Column.Outputs[Derived Column Output].Columns[v_starttime]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\DF - ShiftPatternDay\Derived Column.Outputs[Derived Column Output].Columns[v_starttime]"
+                      name="v_starttime"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">[DATEADD]("ss",(DT_I8)#{Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[SHIFT_START]},(DT_DBTIMESTAMP)"1970-01-01")</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">DATEADD("ss",(DT_I8)SHIFT_START,(DT_DBTIMESTAMP)"1970-01-01")</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Derived Column.Outputs[Derived Column Output].Columns[v_endtime]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\DF - ShiftPatternDay\Derived Column.Outputs[Derived Column Output].Columns[v_endtime]"
+                      name="v_endtime"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">[DATEADD]("ss",(DT_I8)#{Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[SHIFT_END]},(DT_DBTIMESTAMP)"1970-01-01")</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">DATEADD("ss",(DT_I8)SHIFT_END,(DT_DBTIMESTAMP)"1970-01-01")</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Derived Column.Outputs[Derived Column Output].Columns[v_org]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="8"
+                      lineageId="Package\DF - ShiftPatternDay\Derived Column.Outputs[Derived Column Output].Columns[v_org]"
+                      name="v_org"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_STR,8,1252)"SBST"</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_STR,8,1252)"SBST"</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - ShiftPatternDay\Derived Column.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\DF - ShiftPatternDay\Derived Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF - ShiftPatternDay\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF - ShiftPatternDay\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DF - ShiftPatternDay\Oracle Source"
+              componentClassID="Microsoft.SSISOracleSrc"
+              contactInfo="Oracle Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
+              description="Oracle Source"
+              name="Oracle Source"
+              usesDispositions="true"
+              version="1">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The name of the table to be fetched."
+                  expressionType="Notify"
+                  name="TableName">"COSWIN"."STE_TEST_TABLE"</property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT PK_DAILY_SHIFT
+	--, ds."TIMESTAMP"
+	, S_SHP_DSH
+	, sp.PK_SHIFT_PATTERN 
+	, sp.SHP_CODE 
+	, sp.SHP_DESCRIPTION 
+	, S_SHIFT_DSH
+	, s.PK_SHIFT 
+	, s.SHIFT_CODE 
+	, s.SHIFT_DESCRIPTION 
+	, s.SHIFT_START 
+	, s.SHIFT_END 
+	, LPAD(DSH_DAY, 3, '0') AS PATTERNDAYSEQ
+	, round((SHIFT_END - SHIFT_START) / 3600, 2) AS workhours
+	, DSH_ASSISTANTS, DSH_DAY, DSH_LEADERS, DSH_STAFF
+FROM COSWIN.DAILY_SHIFT ds
+JOIN COSWIN.SHIFT s ON s.PK_SHIFT = ds.S_SHIFT_DSH
+LEFT JOIN COSWIN.SHIFT_PATTERN sp ON sp.PK_SHIFT_PATTERN = ds.S_SHP_DSH;</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows fetched per batch."
+                  expressionType="Notify"
+                  name="BatchSize">1000</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines the chunk size allocation for LOB columns"
+                  expressionType="Notify"
+                  name="LobChunkSize">32768</property>
+                <property
+                  dataType="System.Int32"
+                  description="The code page to use when code page information is unavailable from the data source."
+                  expressionType="Notify"
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Int32"
+                  description="Number of pre-fetched rows."
+                  expressionType="Notify"
+                  name="PrefetchCount">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">1</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\DF - ShiftPatternDay\Oracle Source.Connections[ORACLEConnection]"
+                  connectionManagerID="{1BBC9476-D9E4-4553-8563-89CF216CBE10}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[Oracle Connection Manager]"
+                  description="The ORACLE runtime connection used to access the database."
+                  name="ORACLEConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output]"
+                  errorRowDisposition="FailComponent"
+                  name="Oracle Source Output"
+                  truncationRowDisposition="FailComponent">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DAILY_SHIFT]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DAILY_SHIFT]"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DAILY_SHIFT]"
+                      name="PK_DAILY_SHIFT" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[S_SHP_DSH]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_SHP_DSH]"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[S_SHP_DSH]"
+                      name="S_SHP_DSH" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[PK_SHIFT_PATTERN]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_SHIFT_PATTERN]"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[PK_SHIFT_PATTERN]"
+                      name="PK_SHIFT_PATTERN" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[SHP_CODE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SHP_CODE]"
+                      length="10"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[SHP_CODE]"
+                      name="SHP_CODE" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[SHP_DESCRIPTION]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SHP_DESCRIPTION]"
+                      length="100"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[SHP_DESCRIPTION]"
+                      name="SHP_DESCRIPTION" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[S_SHIFT_DSH]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_SHIFT_DSH]"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[S_SHIFT_DSH]"
+                      name="S_SHIFT_DSH" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[PK_SHIFT]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_SHIFT]"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[PK_SHIFT]"
+                      name="PK_SHIFT" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[SHIFT_CODE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SHIFT_CODE]"
+                      length="6"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[SHIFT_CODE]"
+                      name="SHIFT_CODE" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[SHIFT_DESCRIPTION]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SHIFT_DESCRIPTION]"
+                      length="100"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[SHIFT_DESCRIPTION]"
+                      name="SHIFT_DESCRIPTION" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[SHIFT_START]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SHIFT_START]"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[SHIFT_START]"
+                      name="SHIFT_START"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[SHIFT_END]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SHIFT_END]"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[SHIFT_END]"
+                      name="SHIFT_END"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[DSH_ASSISTANTS]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DSH_ASSISTANTS]"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[DSH_ASSISTANTS]"
+                      name="DSH_ASSISTANTS" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[DSH_DAY]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DSH_DAY]"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[DSH_DAY]"
+                      name="DSH_DAY" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[DSH_LEADERS]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DSH_LEADERS]"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[DSH_LEADERS]"
+                      name="DSH_LEADERS" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[DSH_STAFF]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DSH_STAFF]"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[DSH_STAFF]"
+                      name="DSH_STAFF" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[PATTERNDAYSEQ]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PATTERNDAYSEQ]"
+                      length="3"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[PATTERNDAYSEQ]"
+                      name="PATTERNDAYSEQ" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[WORKHOURS]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WORKHOURS]"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[WORKHOURS]"
+                      name="WORKHOURS" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DAILY_SHIFT]"
+                      dataType="i4"
+                      name="PK_DAILY_SHIFT" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_SHP_DSH]"
+                      dataType="i4"
+                      name="S_SHP_DSH" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_SHIFT_PATTERN]"
+                      dataType="i4"
+                      name="PK_SHIFT_PATTERN" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SHP_CODE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="SHP_CODE" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SHP_DESCRIPTION]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="SHP_DESCRIPTION" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_SHIFT_DSH]"
+                      dataType="i4"
+                      name="S_SHIFT_DSH" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_SHIFT]"
+                      dataType="i4"
+                      name="PK_SHIFT" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SHIFT_CODE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="6"
+                      name="SHIFT_CODE" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SHIFT_DESCRIPTION]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="SHIFT_DESCRIPTION" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SHIFT_START]"
+                      dataType="numeric"
+                      name="SHIFT_START"
+                      precision="10" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SHIFT_END]"
+                      dataType="numeric"
+                      name="SHIFT_END"
+                      precision="10" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DSH_ASSISTANTS]"
+                      dataType="i4"
+                      name="DSH_ASSISTANTS" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DSH_DAY]"
+                      dataType="i4"
+                      name="DSH_DAY" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DSH_LEADERS]"
+                      dataType="i4"
+                      name="DSH_LEADERS" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DSH_STAFF]"
+                      dataType="i4"
+                      name="DSH_STAFF" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PATTERNDAYSEQ]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="PATTERNDAYSEQ" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WORKHOURS]"
+                      dataType="r8"
+                      name="WORKHOURS" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output]"
+                  isErrorOut="true"
+                  name="Oracle Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_DAILY_SHIFT]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DAILY_SHIFT]"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_DAILY_SHIFT]"
+                      name="PK_DAILY_SHIFT" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[S_SHP_DSH]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_SHP_DSH]"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[S_SHP_DSH]"
+                      name="S_SHP_DSH" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_SHIFT_PATTERN]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_SHIFT_PATTERN]"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_SHIFT_PATTERN]"
+                      name="PK_SHIFT_PATTERN" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[SHP_CODE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SHP_CODE]"
+                      length="10"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[SHP_CODE]"
+                      name="SHP_CODE" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[SHP_DESCRIPTION]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SHP_DESCRIPTION]"
+                      length="100"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[SHP_DESCRIPTION]"
+                      name="SHP_DESCRIPTION" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[S_SHIFT_DSH]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_SHIFT_DSH]"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[S_SHIFT_DSH]"
+                      name="S_SHIFT_DSH" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_SHIFT]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_SHIFT]"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_SHIFT]"
+                      name="PK_SHIFT" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[SHIFT_CODE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SHIFT_CODE]"
+                      length="6"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[SHIFT_CODE]"
+                      name="SHIFT_CODE" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[SHIFT_DESCRIPTION]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SHIFT_DESCRIPTION]"
+                      length="100"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[SHIFT_DESCRIPTION]"
+                      name="SHIFT_DESCRIPTION" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[SHIFT_START]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SHIFT_START]"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[SHIFT_START]"
+                      name="SHIFT_START"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[SHIFT_END]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SHIFT_END]"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[SHIFT_END]"
+                      name="SHIFT_END"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[DSH_ASSISTANTS]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DSH_ASSISTANTS]"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[DSH_ASSISTANTS]"
+                      name="DSH_ASSISTANTS" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[DSH_DAY]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DSH_DAY]"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[DSH_DAY]"
+                      name="DSH_DAY" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[DSH_LEADERS]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DSH_LEADERS]"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[DSH_LEADERS]"
+                      name="DSH_LEADERS" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[DSH_STAFF]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DSH_STAFF]"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[DSH_STAFF]"
+                      name="DSH_STAFF" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[PATTERNDAYSEQ]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PATTERNDAYSEQ]"
+                      length="3"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[PATTERNDAYSEQ]"
+                      name="PATTERNDAYSEQ" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[WORKHOURS]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WORKHOURS]"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[WORKHOURS]"
+                      name="WORKHOURS" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\DF - ShiftPatternDay.Paths[Derived Column Output]"
+              endId="Package\DF - ShiftPatternDay\ADO NET Destination.Inputs[ADO NET Destination Input]"
+              name="Derived Column Output"
+              startId="Package\DF - ShiftPatternDay\Derived Column.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - ShiftPatternDay.Paths[Oracle Source Output]"
+              endId="Package\DF - ShiftPatternDay\Derived Column.Inputs[Derived Column Input]"
+              name="Oracle Source Output"
+              startId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Execute SQL Task"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{C27673A9-6AB3-4082-AF94-1703C756029E}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Execute SQL Task"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{3F167782-ACEE-4E5E-B395-0831924ED019}"
+          SQLTask:SqlStatementSource="update maxsequence set maxreserved=&#xA;(select max(shiftid) from shift) &#xA;where tbname='SHIFT' and name='SHIFTID';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Execute SQL Task 1"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{0B975606-000F-4709-86FA-9150513CA112}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Execute SQL Task 1"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{3F167782-ACEE-4E5E-B395-0831924ED019}"
+          SQLTask:SqlStatementSource="update maxsequence set maxreserved=&#xA;(select max(shiftpatterndayid)+1 from shiftpatternday) &#xA;where tbname='SHIFTPATTERNDAY' and name='SHIFTPATTERNDAYID';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Post-Task"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:Disabled="True"
+      DTS:DTSID="{0ACD12A0-F6F5-47AC-B33C-EBCF6602DE49}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Post-Task">
+      <DTS:Variables />
+      <DTS:LoggingOptions
+        DTS:FilterKind="0"
+        DTS:LoggingMode="2" />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Post-Task\Exec Post SP"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{439F662F-BD2A-4949-AE21-457C4E86B141}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Exec Post SP"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:LoggingOptions
+            DTS:FilterKind="0"
+            DTS:LoggingMode="2" />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{EA2FE567-0EAE-4F7C-A1DE-859400AEAE21}"
+              SQLTask:SqlStatementSource="exec ste_0515_misc_shift_post ?" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="0"
+                SQLTask:DtsVariableName="User::log_id"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Pre-Task"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{DEE074C2-6DA1-4A81-A414-704E93FC1D45}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Pre-Task">
+      <DTS:Variables />
+      <DTS:LoggingOptions
+        DTS:FilterKind="0"
+        DTS:LoggingMode="2" />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Pre-Task\Exec Pre SP"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:Disabled="True"
+          DTS:DTSID="{B4A257F0-8A56-4C3E-AA5A-A53C1170992C}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Exec Pre SP"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:LoggingOptions
+            DTS:FilterKind="0"
+            DTS:LoggingMode="2" />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{EA2FE567-0EAE-4F7C-A1DE-859400AEAE21}"
+              SQLTask:SqlStatementSource="exec ste_0515_misc_shift_pre ?" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="0"
+                SQLTask:DtsVariableName="User::log_id"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Pre-Task\Execute SQL Task"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{1ED4A7F0-E790-4D7F-AF07-7BB6F4550C75}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Execute SQL Task"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{3F167782-ACEE-4E5E-B395-0831924ED019}"
+              SQLTask:SqlStatementSource="delete from shift where STE_MIGRATIONID is not NULL" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Pre-Task\Get Max ID"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{E444DA5F-C666-4F4C-A6B7-143C5EB65C8D}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Get Max ID"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{3F167782-ACEE-4E5E-B395-0831924ED019}"
+              SQLTask:SqlStatementSource="select ifnull(max(shiftid),1) as max_id from shift"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="0"
+                SQLTask:DtsVariableName="User::max_id" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Pre-Task.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{779B92E6-0F27-4321-9E33-4903E606D22F}"
+          DTS:From="Package\Pre-Task\Exec Pre SP"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\Pre-Task\Execute SQL Task" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Pre-Task.PrecedenceConstraints[Constraint 1]"
+          DTS:CreationName=""
+          DTS:DTSID="{49AE47D5-9DF8-48E8-A170-8D0160E2BE56}"
+          DTS:From="Package\Pre-Task\Execute SQL Task"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 1"
+          DTS:To="Package\Pre-Task\Get Max ID" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Pre-Task 1"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{5143EDCF-0E65-4608-8B82-565BA2C4154E}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Pre-Task 1">
+      <DTS:Variables />
+      <DTS:LoggingOptions
+        DTS:FilterKind="0"
+        DTS:LoggingMode="2" />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Pre-Task 1\Exec Pre SP"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:Disabled="True"
+          DTS:DTSID="{2AA63DCB-5295-40B7-BBBF-3D3CD6F5C5BA}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Exec Pre SP"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:LoggingOptions
+            DTS:FilterKind="0"
+            DTS:LoggingMode="2" />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{EA2FE567-0EAE-4F7C-A1DE-859400AEAE21}"
+              SQLTask:SqlStatementSource="exec ste_0515_misc_shiftpatternday_pre ?" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="0"
+                SQLTask:DtsVariableName="User::log_id"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Pre-Task 1\Execute SQL Task"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{1D30B1CF-4AAC-4FBE-8C33-197A509C9E35}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Execute SQL Task"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{3F167782-ACEE-4E5E-B395-0831924ED019}"
+              SQLTask:SqlStatementSource="delete from shiftpatternday where STE_MIGRATIONID is not NULL" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Pre-Task 1\Get Max ID"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{8929FF7A-1A33-4E7B-A58E-70FCCFA9A60A}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Get Max ID"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{3F167782-ACEE-4E5E-B395-0831924ED019}"
+              SQLTask:SqlStatementSource="select ifnull(max(shiftpatterndayid),1) as max_id from shiftpatternday"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="0"
+                SQLTask:DtsVariableName="User::max_id" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Pre-Task 1.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{FA9E486F-AD63-466D-AC0B-8E2B587DDD53}"
+          DTS:From="Package\Pre-Task 1\Exec Pre SP"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\Pre-Task 1\Execute SQL Task" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Pre-Task 1.PrecedenceConstraints[Constraint 1]"
+          DTS:CreationName=""
+          DTS:DTSID="{3B3EFDC5-6231-4BDC-99A8-EFAD67E11811}"
+          DTS:From="Package\Pre-Task 1\Execute SQL Task"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 1"
+          DTS:To="Package\Pre-Task 1\Get Max ID" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{56417CBC-8334-4D74-A6E6-55457275C08D}"
+      DTS:From="Package\DF - ShiftPatternDay"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Execute SQL Task" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{596E5CA6-F141-4490-B62C-887C5B025E8C}"
+      DTS:From="Package\Pre-Task"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\DF - Shift" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{70324517-2D26-4404-B468-D8DDD95DCB80}"
+      DTS:From="Package\Pre-Task 1"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1 1"
+      DTS:To="Package\DF - ShiftPatternDay" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{EB298D9B-CBE7-47BC-9D53-755267B925ED}"
+      DTS:From="Package\DF - Shift"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\Post-Task" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
+      DTS:CreationName=""
+      DTS:DTSID="{0A1AB589-7C59-40AB-8F43-9609C589D374}"
+      DTS:From="Package\Post-Task"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 3"
+      DTS:To="Package\Pre-Task 1" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 4]"
+      DTS:CreationName=""
+      DTS:DTSID="{6729CAB4-7FFD-45FF-9759-3625BDAE1D6A}"
+      DTS:From="Package\Execute SQL Task"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 4"
+      DTS:To="Package\Execute SQL Task 1" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="124.8,41.6"
+          Id="Package\DF - Shift"
+          TopLeft="44.3000000000001,414.3" />
+        <NodeLayout
+          Size="168.8,41.6"
+          Id="Package\DF - ShiftPatternDay"
+          TopLeft="22.3000000000001,1130.3" />
+        <NodeLayout
+          Size="164.8,41.6"
+          Id="Package\Execute SQL Task"
+          TopLeft="14.9999994039536,1211.26666973167" />
+        <NodeLayout
+          Size="164.8,41.6"
+          Id="Package\Execute SQL Task 1"
+          TopLeft="5.50000000000009,1312.86666973167" />
+        <NodeLayout
+          Size="191.2,41.6"
+          Id="Package\Post-Task\Exec Post SP"
+          TopLeft="5.5,5.49999999999995" />
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="202.4,102.4"
+          Size="202.4,145.6"
+          Id="Package\Post-Task"
+          TopLeft="5.50000000000009,515.9" />
+        <NodeLayout
+          Size="190.4,41.6"
+          Id="Package\Pre-Task\Exec Pre SP"
+          TopLeft="5.50000000000001,5.49999999999995" />
+        <NodeLayout
+          Size="164.8,41.6"
+          Id="Package\Pre-Task\Execute SQL Task"
+          TopLeft="18.3,107.1" />
+        <NodeLayout
+          Size="134.4,41.6"
+          Id="Package\Pre-Task\Get Max ID"
+          TopLeft="33.5,208.7" />
+        <EdgeLayout
+          Id="Package\Pre-Task.PrecedenceConstraints[Constraint]"
+          TopLeft="100.7,47.1">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,59.9999999999999"
+              Start="0,0"
+              End="0,52.4999999999999">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.4999999999999" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Pre-Task.PrecedenceConstraints[Constraint 1]"
+          TopLeft="100.7,148.7">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,59.9999999999999"
+              Start="0,0"
+              End="0,52.4999999999999">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.4999999999999" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="201.6,305.6"
+          Size="201.6,348.8"
+          Id="Package\Pre-Task"
+          TopLeft="5.90000000000003,5.50000000000009" />
+        <NodeLayout
+          Size="190.4,41.6"
+          Id="Package\Pre-Task 1\Exec Pre SP"
+          TopLeft="5.50000000000001,5.49999999999995" />
+        <NodeLayout
+          Size="164.8,41.6"
+          Id="Package\Pre-Task 1\Execute SQL Task"
+          TopLeft="18.3,107.1" />
+        <NodeLayout
+          Size="134.4,41.6"
+          Id="Package\Pre-Task 1\Get Max ID"
+          TopLeft="33.5,208.7" />
+        <EdgeLayout
+          Id="Package\Pre-Task 1.PrecedenceConstraints[Constraint]"
+          TopLeft="100.7,47.1">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,59.9999999999999"
+              Start="0,0"
+              End="0,52.4999999999999">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.4999999999999" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Pre-Task 1.PrecedenceConstraints[Constraint 1]"
+          TopLeft="100.7,148.7">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,59.9999999999999"
+              Start="0,0"
+              End="0,52.4999999999999">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.4999999999999" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="201.6,305.6"
+          Size="201.6,348.8"
+          Id="Package\Pre-Task 1"
+          TopLeft="5.90000000000012,721.5" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="106.7,1171.9">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-9.30000059604656,39.3666697316698"
+              Start="0,0"
+              End="-9.30000059604656,31.8666697316698">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,15.6833348658349" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,15.6833348658349"
+                    Point2="0,19.6833348658349"
+                    Point3="-4,19.6833348658349" />
+                  <mssgle:LineSegment
+                    End="-5.30000059604656,19.6833348658349" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-5.30000059604656,19.6833348658349"
+                    Point2="-9.30000059604656,19.6833348658349"
+                    Point3="-9.30000059604656,23.6833348658349" />
+                  <mssgle:LineSegment
+                    End="-9.30000059604656,31.8666697316698" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="106.7,354.3">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60.0000000000001"
+              Start="0,0"
+              End="0,52.5000000000001">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5000000000001" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1 1]"
+          TopLeft="106.7,1070.3">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="106.7,455.9">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,59.9999999999999"
+              Start="0,0"
+              End="0,52.4999999999999">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.4999999999999" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 3]"
+          TopLeft="106.7,661.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,59.9999999999999"
+              Start="0,0"
+              End="0,52.4999999999999">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.4999999999999" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 4]"
+          TopLeft="97.3999994039536,1252.86666973167">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-9.4999994039535,60"
+              Start="0,0"
+              End="-9.4999994039535,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,26" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,26"
+                    Point2="0,30"
+                    Point3="-4,30" />
+                  <mssgle:LineSegment
+                    End="-5.4999994039535,30" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-5.4999994039535,30"
+                    Point2="-9.4999994039535,30"
+                    Point3="-9.4999994039535,34" />
+                  <mssgle:LineSegment
+                    End="-9.4999994039535,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\DF - Shift">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="158.4,41.6"
+          Id="Package\DF - Shift\Derived Column"
+          TopLeft="257.5,128.5" />
+        <NodeLayout
+          Size="179.2,41.6"
+          Id="Package\DF - Shift\ADO NET Destination"
+          TopLeft="142.499994337559,240.066668574545" />
+        <NodeLayout
+          Size="148.8,41.6"
+          Id="Package\DF - Shift\Oracle Source"
+          TopLeft="61,60" />
+        <EdgeLayout
+          Id="Package\DF - Shift.Paths[Oracle Source Output]"
+          TopLeft="135.5,102">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="201,26.5"
+              Start="0,0"
+              End="201,19">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,9.25" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,9.25"
+                    Point2="0,13.25"
+                    Point3="4,13.25" />
+                  <mssgle:LineSegment
+                    End="197,13.25" />
+                  <mssgle:CubicBezierSegment
+                    Point1="197,13.25"
+                    Point2="201,13.25"
+                    Point3="201,17.25" />
+                  <mssgle:LineSegment
+                    End="201,19" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - Shift.Paths[Derived Column Output]"
+          TopLeft="336.7,170.1">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-104.600005662441,69.9666685745452"
+              Start="0,0"
+              End="-104.600005662441,62.4666685745452">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,30.9833342872726" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,30.9833342872726"
+                    Point2="0,34.9833342872726"
+                    Point3="-4,34.9833342872726" />
+                  <mssgle:LineSegment
+                    End="-100.600005662441,34.9833342872726" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-100.600005662441,34.9833342872726"
+                    Point2="-104.600005662441,34.9833342872726"
+                    Point3="-104.600005662441,38.9833342872726" />
+                  <mssgle:LineSegment
+                    End="-104.600005662441,62.4666685745452" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - Shift\ADO NET Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - Shift\Oracle Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\DF - ShiftPatternDay">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="148.8,41.6"
+          Id="Package\DF - ShiftPatternDay\Oracle Source"
+          TopLeft="61,60" />
+        <NodeLayout
+          Size="158.4,41.6"
+          Id="Package\DF - ShiftPatternDay\Derived Column"
+          TopLeft="257.5,128.5" />
+        <NodeLayout
+          Size="179.2,41.6"
+          Id="Package\DF - ShiftPatternDay\ADO NET Destination"
+          TopLeft="143,258" />
+        <EdgeLayout
+          Id="Package\DF - ShiftPatternDay.Paths[Oracle Source Output]"
+          TopLeft="135.5,102">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="201,26.5"
+              Start="0,0"
+              End="201,19">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,9.25" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,9.25"
+                    Point2="0,13.25"
+                    Point3="4,13.25" />
+                  <mssgle:LineSegment
+                    End="197,13.25" />
+                  <mssgle:CubicBezierSegment
+                    Point1="197,13.25"
+                    Point2="201,13.25"
+                    Point3="201,17.25" />
+                  <mssgle:LineSegment
+                    End="201,19" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - ShiftPatternDay.Paths[Derived Column Output]"
+          TopLeft="336.7,170.1">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-104.1,87.9"
+              Start="0,0"
+              End="-104.1,80.4">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,39.95" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,39.95"
+                    Point2="0,43.95"
+                    Point3="-4,43.95" />
+                  <mssgle:LineSegment
+                    End="-100.1,43.95" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-100.1,43.95"
+                    Point2="-104.1,43.95"
+                    Point3="-104.1,47.95" />
+                  <mssgle:LineSegment
+                    End="-104.1,80.4" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - ShiftPatternDay\Oracle Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - ShiftPatternDay\ADO NET Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
