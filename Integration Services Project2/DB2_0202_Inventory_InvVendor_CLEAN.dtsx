@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0202_Inventory_InvVendor_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="92"
-  DTS:VersionGUID="{6E4BAEAE-3317-4F48-821F-FA6F5798D7BB}"
+  DTS:VersionBuild="101"
+  DTS:VersionGUID="{2DFC7BEC-02B7-44D5-B5DC-9DAEE7B38AC2}"
   DTS:VersionMinor="1">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -92,26 +92,25 @@
                       refId="Package\Data Flow Task\Derived Column.Inputs[Derived Column Input].Columns[PK_SUPL_ITEMS]"
                       cachedDataType="i4"
                       cachedName="PK_SUPL_ITEMS"
-                      cachedSortKeyPosition="1"
-                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[PK_SUPL_ITEMS]" />
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[PK_SUPL_ITEMS]" />
                     <inputColumn
                       refId="Package\Data Flow Task\Derived Column.Inputs[Derived Column Input].Columns[S_L_DT_PO]"
                       cachedDataType="numeric"
                       cachedName="S_L_DT_PO"
                       cachedPrecision="10"
-                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[S_L_DT_PO]" />
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[S_L_DT_PO]" />
                     <inputColumn
                       refId="Package\Data Flow Task\Derived Column.Inputs[Derived Column Input].Columns[S_LAT_UNIT_RATE]"
                       cachedDataType="r8"
                       cachedName="S_LAT_UNIT_RATE"
-                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[S_LAT_UNIT_RATE]" />
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[S_LAT_UNIT_RATE]" />
                     <inputColumn
                       refId="Package\Data Flow Task\Derived Column.Inputs[Derived Column Input].Columns[ITEM_DS]"
                       cachedCodepage="1252"
                       cachedDataType="str"
                       cachedLength="100"
                       cachedName="ITEM_DS"
-                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[ITEM_DS]" />
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_DS]" />
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -137,7 +136,7 @@
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">#{Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[PK_SUPL_ITEMS]} + [REPLACENULL](@[User::max_id],0)</property>
+                          name="Expression">#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[PK_SUPL_ITEMS]} + [REPLACENULL](@[User::max_id],0)</property>
                         <property
                           containsID="true"
                           dataType="System.String"
@@ -166,28 +165,6 @@
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
                           name="FriendlyExpression">(DT_DBTIMESTAMP)GETDATE()</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[V_PROMDELIVERYTIME]"
-                      dataType="i4"
-                      errorOrTruncationOperation="Computation"
-                      errorRowDisposition="FailComponent"
-                      lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[V_PROMDELIVERYTIME]"
-                      name="V_PROMDELIVERYTIME"
-                      truncationRowDisposition="FailComponent">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.String"
-                          description="Derived Column Expression"
-                          name="Expression">0</property>
-                        <property
-                          containsID="true"
-                          dataType="System.String"
-                          description="Derived Column Friendly Expression"
-                          expressionType="Notify"
-                          name="FriendlyExpression">0</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
@@ -319,13 +296,13 @@
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">[DATEADD]("dd",(DT_I8)#{Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[S_L_DT_PO]},(DT_DBTIMESTAMP)"1899-12-31")</property>
+                          name="Expression">[ISNULL](#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[S_L_DT_PO]}) ? NULL(DT_DBTIMESTAMP) : [DATEADD]("dd",(DT_I8)#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[S_L_DT_PO]},(DT_DBTIMESTAMP)"1899-12-31")</property>
                         <property
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
-                          name="FriendlyExpression">DATEADD("dd",(DT_I8)S_L_DT_PO,(DT_DBTIMESTAMP)"1899-12-31")</property>
+                          name="FriendlyExpression">ISNULL(S_L_DT_PO) ? NULL(DT_DBTIMESTAMP) : DATEADD("dd",(DT_I8)S_L_DT_PO,(DT_DBTIMESTAMP)"1899-12-31")</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
@@ -341,13 +318,13 @@
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">[DATEADD]("dd",(DT_I8)#{Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[S_L_DT_PO]},(DT_DBTIMESTAMP)"1899-12-31")</property>
+                          name="Expression">[ISNULL](#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[S_L_DT_PO]}) ? NULL(DT_DBTIMESTAMP) : [DATEADD]("dd",(DT_I8)#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[S_L_DT_PO]},(DT_DBTIMESTAMP)"1899-12-31")</property>
                         <property
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
-                          name="FriendlyExpression">DATEADD("dd",(DT_I8)S_L_DT_PO,(DT_DBTIMESTAMP)"1899-12-31")</property>
+                          name="FriendlyExpression">ISNULL(S_L_DT_PO) ? NULL(DT_DBTIMESTAMP) : DATEADD("dd",(DT_I8)S_L_DT_PO,(DT_DBTIMESTAMP)"1899-12-31")</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
@@ -363,7 +340,7 @@
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">[REPLACENULL](#{Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[S_LAT_UNIT_RATE]},0)</property>
+                          name="Expression">[REPLACENULL](#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[S_LAT_UNIT_RATE]},0)</property>
                         <property
                           containsID="true"
                           dataType="System.String"
@@ -387,7 +364,7 @@
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">(DT_STR,100,1252)([LEFT](#{Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[ITEM_DS]},96))</property>
+                          name="Expression">(DT_STR,100,1252)([LEFT](#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_DS]},96))</property>
                         <property
                           containsID="true"
                           dataType="System.String"
@@ -398,7 +375,7 @@
                     </outputColumn>
                     <outputColumn
                       refId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[V_LASTPRICE]"
-                      dataType="i4"
+                      dataType="r8"
                       errorOrTruncationOperation="Computation"
                       errorRowDisposition="FailComponent"
                       lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[V_LASTPRICE]"
@@ -409,13 +386,13 @@
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">0</property>
+                          name="Expression">#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[S_LAT_UNIT_RATE]} &gt; 0 ? #{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[S_LAT_UNIT_RATE]} : 0</property>
                         <property
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
-                          name="FriendlyExpression">0</property>
+                          name="FriendlyExpression">S_LAT_UNIT_RATE &gt; 0 ? S_LAT_UNIT_RATE : 0</property>
                       </properties>
                     </outputColumn>
                   </outputColumns>
@@ -537,7 +514,7 @@
                       cachedLength="20"
                       cachedName="S_ITEM_REF"
                       externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CATALOGCODE]"
-                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[S_ITEM_REF]" />
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[S_ITEM_REF]" />
                     <inputColumn
                       refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_description]"
                       cachedCodepage="1252"
@@ -565,7 +542,7 @@
                       cachedLength="20"
                       cachedName="ITEM_CD"
                       externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ITEMNUM]"
-                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[ITEM_CD]" />
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_CD]" />
                     <inputColumn
                       refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[V_ITEMSETID]"
                       cachedCodepage="1252"
@@ -579,7 +556,7 @@
                       cachedDataType="r8"
                       cachedName="S_LAT_UNIT_RATE"
                       externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LASTCOST]"
-                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[S_LAT_UNIT_RATE]" />
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[S_LAT_UNIT_RATE]" />
                     <inputColumn
                       refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[V_LASTDATE]"
                       cachedDataType="dbTimeStamp"
@@ -593,7 +570,7 @@
                       cachedLength="6"
                       cachedName="S_ITEM_UNIT"
                       externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ORDERUNIT]"
-                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[S_ITEM_UNIT]" />
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[S_ITEM_UNIT]" />
                     <inputColumn
                       refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[V_ORGID]"
                       cachedCodepage="1252"
@@ -602,12 +579,6 @@
                       cachedName="V_ORGID"
                       externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ORGID]"
                       lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[V_ORGID]" />
-                    <inputColumn
-                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[V_PROMDELIVERYTIME]"
-                      cachedDataType="i4"
-                      cachedName="V_PROMDELIVERYTIME"
-                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PROMDELIVERYTIME]"
-                      lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[V_PROMDELIVERYTIME]" />
                     <inputColumn
                       refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[V_SITEID]"
                       cachedCodepage="1252"
@@ -626,15 +597,14 @@
                       refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PK_SUPL_ITEMS]"
                       cachedDataType="i4"
                       cachedName="PK_SUPL_ITEMS"
-                      cachedSortKeyPosition="1"
                       externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONID]"
-                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[PK_SUPL_ITEMS]" />
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[PK_SUPL_ITEMS]" />
                     <inputColumn
                       refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[I_VAT_CD]"
                       cachedDataType="i2"
                       cachedName="I_VAT_CD"
                       externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[TAX1CODE]"
-                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[I_VAT_CD]" />
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[I_VAT_CD]" />
                     <inputColumn
                       refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[V_TAXEXEMPT]"
                       cachedDataType="i4"
@@ -648,7 +618,21 @@
                       cachedLength="20"
                       cachedName="SUPL_CD"
                       externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[VENDOR]"
-                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[SUPL_CD]" />
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[SUPL_CD]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[S_L_PO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="S_L_PO"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_CSWNLASTPO]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[S_L_PO]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[MAX_LEAD_TIME]"
+                      cachedDataType="i4"
+                      cachedName="MAX_LEAD_TIME"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PROMDELIVERYTIME]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[MAX_LEAD_TIME]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -934,26 +918,43 @@
 	si.PK_SUPL_ITEMS
 	, si.S_ITEM_REF
 	, si.S_ITEM_UNIT
-	, si.S_LAT_UNIT_RATE
+	, CASE WHEN COALESCE(si.S_LAT_UNIT_RATE,0)=0 THEN it.BUY_PRICE 
+		ELSE si.S_LAT_UNIT_RATE
+	  END AS S_LAT_UNIT_RATE
 	, si.S_L_DT_PO
 	, si.S_L_PO
 	, CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_CD ELSE it.ITEM_CD END AS ITEM_CD
 	, CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_SHORT ELSE it.ITEM_SHORT END AS ITEM_DS
+	, CASE WHEN ns.PK_NSITEM IS NOT NULL THEN 0 ELSE it.BUY_PRICE END AS ITEM_UNIT_RATE
 	, s.SUPL_CD 
 	, it.PK_ITEM_ 
-                , it.I_VAT_CD
-	, IF.AVG_LEAD_TIME 
-	, IF.MIN_LEAD_TIME 
-	, IF.MAX_LEAD_TIME 
+	, it.I_VAT_CD
+	, COALESCE (ii.AVG_LEAD_TIME,0) AS AVG_LEAD_TIME
+	, COALESCE (ii.MIN_LEAD_TIME,0) AS MIN_LEAD_TIME
+	, COALESCE (ii.MAX_LEAD_TIME,0) AS MAX_LEAD_TIME
 	, it.PLAN_DAYS
+	, x.SUPL_TXT
 FROM COSWIN.SUPL_ITEMS si
 LEFT JOIN COSWIN.ITEM_ it ON it.PK_ITEM_ = si.S_ITEM_SUPL  
-LEFT JOIN ITEM_INFO IF ON IF.S_ITEM_INFO = it.PK_ITEM_ 
+LEFT JOIN ITEM_INFO ii ON ii.S_ITEM_INFO = it.PK_ITEM_
 LEFT JOIN COSWIN.NSITEM ns ON ns.PK_NSITEM = si.S_NSITEM_SUPL  
 LEFT JOIN COSWIN.SUPPLIER_ s ON s.PK_SUPPLIER_ = si.S_SUPL_ITEM 
+LEFT JOIN (
+	SELECT 
+		si.PK_SUPL_ITEMS 
+		, rmk.PK_SUPL_RMK 
+		, rmk.S_SUPLITEM_RMK 
+		, rmk.SUPL_TXT 
+		--, NULL as DEV_TEXT 
+		, ROW_NUMBER() OVER (PARTITION BY si.PK_SUPL_ITEMS ORDER BY rmk.PK_SUPL_RMK) rn
+	FROM COSWIN.SUPL_RMK rmk  
+	JOIN COSWIN.SUPL_ITEMS si ON si.PK_SUPL_ITEMS = rmk.S_SUPLITEM_RMK 
+	WHERE rmk.S_SUPLITEM_RMK IS NOT NULL
+) x ON x.rn=1 AND x.PK_SUPL_ITEMS=si.PK_SUPL_ITEMS
 -- must be valid item
 WHERE (CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_CD ELSE it.ITEM_CD END) IS NOT NULL
 --and si.PK_SUPL_ITEMS &gt; 197410
+--AND it.BUY_PRICE&gt;0
 order by si.PK_SUPL_ITEMS</property>
                 <property
                   dataType="System.Int32"
@@ -1099,6 +1100,18 @@ order by si.PK_SUPL_ITEMS</property>
                       externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[I_VAT_CD]"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[I_VAT_CD]"
                       name="I_VAT_CD" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_UNIT_RATE]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ITEM_UNIT_RATE]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_UNIT_RATE]"
+                      name="ITEM_UNIT_RATE" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[SUPL_TXT]"
+                      dataType="image"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SUPL_TXT]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[SUPL_TXT]"
+                      name="SUPL_TXT" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1157,15 +1170,15 @@ order by si.PK_SUPL_ITEMS</property>
                       name="PK_ITEM_" />
                     <externalMetadataColumn
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[AVG_LEAD_TIME]"
-                      dataType="i4"
+                      dataType="r8"
                       name="AVG_LEAD_TIME" />
                     <externalMetadataColumn
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[MIN_LEAD_TIME]"
-                      dataType="i4"
+                      dataType="r8"
                       name="MIN_LEAD_TIME" />
                     <externalMetadataColumn
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[MAX_LEAD_TIME]"
-                      dataType="i4"
+                      dataType="r8"
                       name="MAX_LEAD_TIME" />
                     <externalMetadataColumn
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PLAN_DAYS]"
@@ -1175,6 +1188,14 @@ order by si.PK_SUPL_ITEMS</property>
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[I_VAT_CD]"
                       dataType="i2"
                       name="I_VAT_CD" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ITEM_UNIT_RATE]"
+                      dataType="r8"
+                      name="ITEM_UNIT_RATE" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SUPL_TXT]"
+                      dataType="image"
+                      name="SUPL_TXT" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -1257,19 +1278,19 @@ order by si.PK_SUPL_ITEMS</property>
                       name="PK_ITEM_" />
                     <outputColumn
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[AVG_LEAD_TIME]"
-                      dataType="i4"
+                      dataType="r8"
                       externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[AVG_LEAD_TIME]"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[AVG_LEAD_TIME]"
                       name="AVG_LEAD_TIME" />
                     <outputColumn
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[MIN_LEAD_TIME]"
-                      dataType="i4"
+                      dataType="r8"
                       externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[MIN_LEAD_TIME]"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[MIN_LEAD_TIME]"
                       name="MIN_LEAD_TIME" />
                     <outputColumn
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[MAX_LEAD_TIME]"
-                      dataType="i4"
+                      dataType="r8"
                       externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[MAX_LEAD_TIME]"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[MAX_LEAD_TIME]"
                       name="MAX_LEAD_TIME" />
@@ -1285,6 +1306,18 @@ order by si.PK_SUPL_ITEMS</property>
                       externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[I_VAT_CD]"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[I_VAT_CD]"
                       name="I_VAT_CD" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[ITEM_UNIT_RATE]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ITEM_UNIT_RATE]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[ITEM_UNIT_RATE]"
+                      name="ITEM_UNIT_RATE" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[SUPL_TXT]"
+                      dataType="image"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SUPL_TXT]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[SUPL_TXT]"
+                      name="SUPL_TXT" />
                     <outputColumn
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -1302,477 +1335,6 @@ order by si.PK_SUPL_ITEMS</property>
                 </output>
               </outputs>
             </component>
-            <component
-              refId="Package\Data Flow Task\Sort"
-              componentClassID="Microsoft.Sort"
-              contactInfo="Sort;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
-              description="Sorts input data in ascending or descending order when it cannot be sorted at its source. For example, sort sales data by 'customer id' before it is written to a flat file and delivered to another department. Note: We do not recommend this transformation for large data flows."
-              name="Sort"
-              version="1">
-              <properties>
-                <property
-                  dataType="System.Boolean"
-                  description="Indicates whether the Sort transformation removes rows with duplicate sort values."
-                  name="EliminateDuplicates">false</property>
-                <property
-                  dataType="System.Int32"
-                  description="Specifies the maximum number of threads to use for sorting."
-                  expressionType="Notify"
-                  name="MaximumThreads">-1</property>
-              </properties>
-              <inputs>
-                <input
-                  refId="Package\Data Flow Task\Sort.Inputs[Sort Input]"
-                  name="Sort Input">
-                  <inputColumns>
-                    <inputColumn
-                      refId="Package\Data Flow Task\Sort.Inputs[Sort Input].Columns[PK_SUPL_ITEMS]"
-                      cachedDataType="i4"
-                      cachedName="PK_SUPL_ITEMS"
-                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[PK_SUPL_ITEMS]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">1</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\Data Flow Task\Sort.Inputs[Sort Input].Columns[S_ITEM_REF]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="20"
-                      cachedName="S_ITEM_REF"
-                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[S_ITEM_REF]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\Data Flow Task\Sort.Inputs[Sort Input].Columns[S_ITEM_UNIT]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="6"
-                      cachedName="S_ITEM_UNIT"
-                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[S_ITEM_UNIT]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\Data Flow Task\Sort.Inputs[Sort Input].Columns[S_LAT_UNIT_RATE]"
-                      cachedDataType="r8"
-                      cachedName="S_LAT_UNIT_RATE"
-                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[S_LAT_UNIT_RATE]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\Data Flow Task\Sort.Inputs[Sort Input].Columns[S_L_DT_PO]"
-                      cachedDataType="numeric"
-                      cachedName="S_L_DT_PO"
-                      cachedPrecision="10"
-                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[S_L_DT_PO]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\Data Flow Task\Sort.Inputs[Sort Input].Columns[S_L_PO]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="10"
-                      cachedName="S_L_PO"
-                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[S_L_PO]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\Data Flow Task\Sort.Inputs[Sort Input].Columns[ITEM_CD]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="20"
-                      cachedName="ITEM_CD"
-                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_CD]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\Data Flow Task\Sort.Inputs[Sort Input].Columns[ITEM_DS]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="100"
-                      cachedName="ITEM_DS"
-                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_DS]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\Data Flow Task\Sort.Inputs[Sort Input].Columns[SUPL_CD]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="20"
-                      cachedName="SUPL_CD"
-                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[SUPL_CD]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\Data Flow Task\Sort.Inputs[Sort Input].Columns[AVG_LEAD_TIME]"
-                      cachedDataType="i4"
-                      cachedName="AVG_LEAD_TIME"
-                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[AVG_LEAD_TIME]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\Data Flow Task\Sort.Inputs[Sort Input].Columns[MIN_LEAD_TIME]"
-                      cachedDataType="i4"
-                      cachedName="MIN_LEAD_TIME"
-                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[MIN_LEAD_TIME]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\Data Flow Task\Sort.Inputs[Sort Input].Columns[MAX_LEAD_TIME]"
-                      cachedDataType="i4"
-                      cachedName="MAX_LEAD_TIME"
-                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[MAX_LEAD_TIME]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\Data Flow Task\Sort.Inputs[Sort Input].Columns[PLAN_DAYS]"
-                      cachedDataType="i4"
-                      cachedName="PLAN_DAYS"
-                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[PLAN_DAYS]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\Data Flow Task\Sort.Inputs[Sort Input].Columns[I_VAT_CD]"
-                      cachedDataType="i2"
-                      cachedName="I_VAT_CD"
-                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[I_VAT_CD]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                  </inputColumns>
-                  <externalMetadataColumns />
-                </input>
-              </inputs>
-              <outputs>
-                <output
-                  refId="Package\Data Flow Task\Sort.Outputs[Sort Output]"
-                  isSorted="true"
-                  name="Sort Output">
-                  <outputColumns>
-                    <outputColumn
-                      refId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[PK_SUPL_ITEMS]"
-                      dataType="i4"
-                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[PK_SUPL_ITEMS]"
-                      name="PK_SUPL_ITEMS"
-                      sortKeyPosition="1">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[PK_SUPL_ITEMS]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[S_ITEM_REF]"
-                      codePage="1252"
-                      dataType="str"
-                      length="20"
-                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[S_ITEM_REF]"
-                      name="S_ITEM_REF">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[S_ITEM_REF]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[S_ITEM_UNIT]"
-                      codePage="1252"
-                      dataType="str"
-                      length="6"
-                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[S_ITEM_UNIT]"
-                      name="S_ITEM_UNIT">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[S_ITEM_UNIT]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[S_LAT_UNIT_RATE]"
-                      dataType="r8"
-                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[S_LAT_UNIT_RATE]"
-                      name="S_LAT_UNIT_RATE">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[S_LAT_UNIT_RATE]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[S_L_DT_PO]"
-                      dataType="numeric"
-                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[S_L_DT_PO]"
-                      name="S_L_DT_PO"
-                      precision="10">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[S_L_DT_PO]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[S_L_PO]"
-                      codePage="1252"
-                      dataType="str"
-                      length="10"
-                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[S_L_PO]"
-                      name="S_L_PO">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[S_L_PO]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[ITEM_CD]"
-                      codePage="1252"
-                      dataType="str"
-                      length="20"
-                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[ITEM_CD]"
-                      name="ITEM_CD">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_CD]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[ITEM_DS]"
-                      codePage="1252"
-                      dataType="str"
-                      length="100"
-                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[ITEM_DS]"
-                      name="ITEM_DS">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_DS]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[SUPL_CD]"
-                      codePage="1252"
-                      dataType="str"
-                      length="20"
-                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[SUPL_CD]"
-                      name="SUPL_CD">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[SUPL_CD]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[AVG_LEAD_TIME]"
-                      dataType="i4"
-                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[AVG_LEAD_TIME]"
-                      name="AVG_LEAD_TIME">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[AVG_LEAD_TIME]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[MIN_LEAD_TIME]"
-                      dataType="i4"
-                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[MIN_LEAD_TIME]"
-                      name="MIN_LEAD_TIME">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[MIN_LEAD_TIME]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[MAX_LEAD_TIME]"
-                      dataType="i4"
-                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[MAX_LEAD_TIME]"
-                      name="MAX_LEAD_TIME">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[MAX_LEAD_TIME]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[PLAN_DAYS]"
-                      dataType="i4"
-                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[PLAN_DAYS]"
-                      name="PLAN_DAYS">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[PLAN_DAYS]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[I_VAT_CD]"
-                      dataType="i2"
-                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[I_VAT_CD]"
-                      name="I_VAT_CD">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[I_VAT_CD]}</property>
-                      </properties>
-                    </outputColumn>
-                  </outputColumns>
-                  <externalMetadataColumns />
-                </output>
-              </outputs>
-            </component>
           </components>
           <paths>
             <path
@@ -1782,14 +1344,9 @@ order by si.PK_SUPL_ITEMS</property>
               startId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output]" />
             <path
               refId="Package\Data Flow Task.Paths[Oracle Source Output]"
-              endId="Package\Data Flow Task\Sort.Inputs[Sort Input]"
+              endId="Package\Data Flow Task\Derived Column.Inputs[Derived Column Input]"
               name="Oracle Source Output"
               startId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output]" />
-            <path
-              refId="Package\Data Flow Task.Paths[Sort Output]"
-              endId="Package\Data Flow Task\Derived Column.Inputs[Derived Column Input]"
-              name="Sort Output"
-              startId="Package\Data Flow Task\Sort.Outputs[Sort Output]" />
           </paths>
         </pipeline>
       </DTS:ObjectData>
@@ -1907,19 +1464,19 @@ order by si.PK_SUPL_ITEMS</property>
       <GraphLayout
         Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
-          Size="155,42"
+          Size="155.2,41.6"
           Id="Package\Data Flow Task"
           TopLeft="15.9000000000001,312.7" />
         <NodeLayout
-          Size="165,42"
+          Size="164.8,41.6"
           Id="Package\Execute SQL Task"
           TopLeft="11.1000000000001,414.3" />
         <NodeLayout
-          Size="165,42"
+          Size="164.8,41.6"
           Id="Package\Pre-Task\Execute SQL Task"
           TopLeft="3.833333424396,4.63333333935997" />
         <NodeLayout
-          Size="134,42"
+          Size="134.4,41.6"
           Id="Package\Pre-Task\Get Max ID"
           TopLeft="20.7,107.1" />
         <EdgeLayout
@@ -1948,7 +1505,7 @@ order by si.PK_SUPL_ITEMS</property>
           HeaderHeight="43"
           IsExpanded="True"
           PanelSize="176,204"
-          Size="176,247"
+          Size="176,247.2"
           Id="Package\Pre-Task"
           TopLeft="5.50000000000003,5.50000000000003" />
         <EdgeLayout
@@ -2002,95 +1559,19 @@ order by si.PK_SUPL_ITEMS</property>
     design-time-name="Package\Data Flow Task">
     <LayoutInfo>
       <GraphLayout
-        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
-          Size="98,42"
-          Id="Package\Data Flow Task\Sort"
-          TopLeft="53.3333312140572,72.8000005785624" />
-        <NodeLayout
-          Size="171,42"
-          Id="Package\Data Flow Task\OLE DB Destination"
-          TopLeft="362.16664717926,184.899998752475" />
-        <NodeLayout
-          Size="149,42"
+          Size="148.8,41.6"
           Id="Package\Data Flow Task\Oracle Source"
           TopLeft="19.5,5.5" />
         <NodeLayout
-          Size="158,42"
+          Size="171.2,41.6"
+          Id="Package\Data Flow Task\OLE DB Destination"
+          TopLeft="362.16664717926,184.899998752475" />
+        <NodeLayout
+          Size="158.4,41.6"
           Id="Package\Data Flow Task\Derived Column"
           TopLeft="197.666666004393,111.933333595064" />
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Sort Output]"
-          TopLeft="150.933331214057,93.6000005785624">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="46.7333347903358,39.1333330165016"
-              Start="0,0"
-              End="39.2333347903358,39.1333330165016">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="19.3666673951679,0" />
-                  <mssgle:CubicBezierSegment
-                    Point1="19.3666673951679,0"
-                    Point2="23.3666673951679,0"
-                    Point3="23.3666673951679,4" />
-                  <mssgle:LineSegment
-                    End="23.3666673951679,35.1333330165016" />
-                  <mssgle:CubicBezierSegment
-                    Point1="23.3666673951679,35.1333330165016"
-                    Point2="23.3666673951679,39.1333330165016"
-                    Point3="27.3666673951679,39.1333330165016" />
-                  <mssgle:LineSegment
-                    End="39.2333347903358,39.1333330165016" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-4.5609888548321,-17.2431640625,55.8553125,11.2431640625"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Oracle Source Output]"
-          TopLeft="93.9,47.1">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="8.23333121405722,25.7000005785624"
-              Start="0,0"
-              End="8.23333121405722,18.2000005785624">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,8.85000028928119" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,8.85000028928119"
-                    Point2="0,12.8500002892812"
-                    Point3="4,12.8500002892812" />
-                  <mssgle:LineSegment
-                    End="4.23333121405722,12.8500002892812" />
-                  <mssgle:CubicBezierSegment
-                    Point1="4.23333121405722,12.8500002892812"
-                    Point2="8.23333121405722,12.8500002892812"
-                    Point3="8.23333121405722,16.8500002892812" />
-                  <mssgle:LineSegment
-                    End="8.23333121405722,18.2000005785624" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-26.1528070492214,17.8500002892812,60.5389453125,11.2236328125"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
         <EdgeLayout
           Id="Package\Data Flow Task.Paths[Derived Column Output]"
           TopLeft="276.866666004393,153.533333595064">
@@ -2122,16 +1603,48 @@ order by si.PK_SUPL_ITEMS</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="57.6614944936835,20.6833325787054,55.5769921875,11.2431640625"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Oracle Source Output]"
+          TopLeft="93.9,47.1">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="182.966666004393,64.833333595064"
+              Start="0,0"
+              End="182.966666004393,57.333333595064">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,28.416666797532" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,28.416666797532"
+                    Point2="0,32.416666797532"
+                    Point3="4,32.416666797532" />
+                  <mssgle:LineSegment
+                    End="178.966666004393,32.416666797532" />
+                  <mssgle:CubicBezierSegment
+                    Point1="178.966666004393,32.416666797532"
+                    Point2="182.966666004393,32.416666797532"
+                    Point3="182.966666004393,36.416666797532" />
+                  <mssgle:LineSegment
+                    End="182.966666004393,57.333333595064" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\Data Flow Task\OLE DB Destination">
+    design-time-name="Package\Data Flow Task\Oracle Source">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -2144,7 +1657,7 @@ order by si.PK_SUPL_ITEMS</property>
     </Properties>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
-    design-time-name="Package\Data Flow Task\Oracle Source">
+    design-time-name="Package\Data Flow Task\OLE DB Destination">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>

@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
   DTS:refId="Package"
   DTS:CreationDate="1/17/2023 4:41:00 PM"
@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0608_LD_RFQ_RFQLine_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="143"
-  DTS:VersionGUID="{36CEAD62-D978-498C-B183-CF46C1AE149A}"
+  DTS:VersionBuild="148"
+  DTS:VersionGUID="{C21E4300-C10B-450D-8FA9-8ACB487ECFE0}"
   DTS:VersionMinor="1">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -41,10 +41,13 @@
         DTS:Name="Password">@[$Project::COSWINDB_Password]</DTS:PropertyExpression>
       <DTS:ObjectData>
         <DTS:ConnectionManager>
-          <OraConnectionString>SERVER=172.17.100.201:1521/TRN1;USERNAME=coswin;WINAUTH=0;</OraConnectionString>
+          <OraConnectionString>SERVER=172.17.123.201:1521/TRN1;USERNAME=coswin;WINAUTH=0;</OraConnectionString>
+          <OraPassword
+            Sensitive="1"
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAbAMznzDzjEuWJ0fLxihFTwAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAABcJU1R4OLnbCkdi/1SmIb+dF08bqbkXoi0+ueSWUG/aAAAAAAOgAAAAAIAACAAAACJotEKoqjVwqWDG+yQD3izsz6IA9Y5UXNFQCnY7BDjOBAAAAD7H/gA6CqzmQoqHMd/qtSgQAAAAJtp7ZYNr8rUhv4s8hbxU/GPB5jNg2Db28E1hgzEDhTmYpX5K31noHF2Je7D6djEQmszbWVO52wsj5kd6TcxE5Q</OraPassword>
           <OraRetain>False</OraRetain>
           <OraInitialCatalog></OraInitialCatalog>
-          <OraServerName>172.17.100.201:1521/TRN1</OraServerName>
+          <OraServerName>172.17.123.201:1521/TRN1</OraServerName>
           <OraUserName>coswin</OraUserName>
           <OraOracleHome></OraOracleHome>
           <OraOracleHome64></OraOracleHome64>
@@ -138,7 +141,12 @@
         <DTS:ConnectionManager
           DTS:ConnectRetryCount="1"
           DTS:ConnectRetryInterval="5"
-          DTS:ConnectionString="Data Source=172.17.100.146, 1435;User ID=ssis;Initial Catalog=maxdb76;Provider=SQLNCLI11.1;Auto Translate=False;" />
+          DTS:ConnectionString="Data Source=172.17.123.146, 1435;User ID=ssis;Initial Catalog=maxdb76;Provider=SQLNCLI11.1;Auto Translate=False;">
+          <DTS:Password
+            DTS:Name="Password"
+            Sensitive="1"
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAbAMznzDzjEuWJ0fLxihFTwAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAADDytFNX9MzfC/SSZR4NZJqQeQpB0B90LXbdbO9lP/6JgAAAAAOgAAAAAIAACAAAAC9aO1rziYNgxVUl8Gi2fL1o4XVySC0cUaPAGyAmKSKhxAAAABeoc8X7bcSOs36eYXWDXXaQAAAAFQ+xbBGIHJe6CgzZ7fNxU61WDh1Rk7Lv6d26iBWE6NFnYI+m3MkjgTeOUo+fgFVd54nCfdjJnoH8Pufmb5Abvs</DTS:Password>
+        </DTS:ConnectionManager>
       </DTS:ObjectData>
     </DTS:ConnectionManager>
     <DTS:ConnectionManager
@@ -402,6 +410,7 @@
       DTS:refId="Package\Convert IMAGE To TEXT"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
       DTS:Description="Execute SQL Task"
+      DTS:Disabled="True"
       DTS:DTSID="{1617FB79-A55D-4E9D-8940-13A6CEDF7280}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:LocaleID="-1"
@@ -428,14 +437,15 @@
       <DTS:Variables />
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
-          SQLTask:Connection="{3F167782-ACEE-4E5E-B395-0831924ED019}"
-          SQLTask:SqlStatementSource="-- faster to update in bulk here than to convert it row by row in data flow&#xA;--&#xA;update longdescription&#xA;set&#xA;&#x9;ldtext = cast(ste_migrationvalue3 as clob)&#xA;where ste_migrationid is not null  and LDOWNERTABLE ='RFQLINE';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="-- faster to update in bulk here than to convert it row by row in data flow&#xA;--&#xA;update MAXIMO.longdescription&#xA;set&#xA;&#x9;ldtext = cast(ste_migrationvalue3 as clob)&#xA;where ste_migrationid is not null  and LDOWNERTABLE ='RFQLINE';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
       DTS:refId="Package\DF - RFQ"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:Description="Data Flow Task"
+      DTS:Disabled="True"
       DTS:DTSID="{58D9B171-A349-4B42-882B-127EAEC3DF88}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="-1"
@@ -1377,13 +1387,13 @@
                   description="Specifies the SQL statement that generates the lookup table."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT RFQNUM, RFQTERMID FROM RFQTERM</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT RFQNUM, RFQTERMID FROM RFQTERM</property>
                 <property
                   dataType="System.String"
                   description="Specifies a SQL statement that uses parameters to generate the lookup table."
                   expressionType="Notify"
                   name="SqlCommandParam"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">select * from (SELECT RFQNUM, RFQTERMID FROM RFQTERM) "refTable"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (SELECT RFQNUM, RFQTERMID FROM RFQTERM) "refTable"
 where "refTable"."RFQNUM" = ?</property>
                 <property
                   dataType="System.Int32"
@@ -1745,8 +1755,8 @@ WHERE x.rn=1
               <connections>
                 <connection
                   refId="Package\DF - RFQ\Oracle Source.Connections[ORACLEConnection]"
-                  connectionManagerID="{1BBC9476-D9E4-4553-8563-89CF216CBE10}:invalid"
-                  connectionManagerRefId="{1BBC9476-D9E4-4553-8563-89CF216CBE10}:invalid"
+                  connectionManagerID="{1BBC9476-D9E4-4553-8563-89CF216CBE10}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[Oracle Connection Manager]"
                   description="The ORACLE runtime connection used to access the database."
                   name="ORACLEConnection" />
               </connections>
@@ -1892,7 +1902,7 @@ WHERE x.rn=1
               contactInfo="Includes and runs custom script code. For example, apply a business rule that limits the range of valid values in an &quot;income&quot; column or add values in two columns and calculate the average of the sum.;Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;13"
               description="Includes and runs custom script code. For example, apply a business rule that limits the range of valid values in an &quot;income&quot; column or add values in two columns and calculate the average of the sum."
               name="Running Number"
-              version="12">
+              version="13">
               <properties>
                 <property
                   dataType="System.String"
@@ -2256,10 +2266,10 @@ public class Input0Buffer: ScriptBuffer
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.SqlServer.TxScript, Version=15.0.0.0, Culture=Neutral, PublicKeyToken=89845dcd8080cc91" />
-    <Reference Include="Microsoft.SqlServer.DTSRuntimeWrap, Version=15.0.0.0, Culture=Neutral, PublicKeyToken=89845dcd8080cc91" />
-    <Reference Include="Microsoft.SqlServer.DTSPipelineWrap, Version=15.0.0.0, Culture=Neutral, PublicKeyToken=89845dcd8080cc91" />
-    <Reference Include="Microsoft.SqlServer.PipelineHost, Version=15.0.0.0, Culture=Neutral, PublicKeyToken=89845dcd8080cc91" />
+    <Reference Include="Microsoft.SqlServer.TxScript, Version=16.0.0.0, Culture=Neutral, PublicKeyToken=89845dcd8080cc91" />
+    <Reference Include="Microsoft.SqlServer.DTSRuntimeWrap, Version=16.0.0.0, Culture=Neutral, PublicKeyToken=89845dcd8080cc91" />
+    <Reference Include="Microsoft.SqlServer.DTSPipelineWrap, Version=16.0.0.0, Culture=Neutral, PublicKeyToken=89845dcd8080cc91" />
+    <Reference Include="Microsoft.SqlServer.PipelineHost, Version=16.0.0.0, Culture=Neutral, PublicKeyToken=89845dcd8080cc91" />
     <Compile Include="main.cs" />
     <Compile Include="BufferWrapper.cs" />
     <Compile Include="ComponentWrapper.cs" />
@@ -2295,7 +2305,7 @@ public class Input0Buffer: ScriptBuffer
         <ProjectProperties HostName="ScriptComponent" HostPackage="{B3A685AA-7EAF-4BC6-9940-57959FA5AC07}" ApplicationType="usd" Language="cs" TemplatesPath="" DebugInfoExeName="" DebugInfoCommandLine="" DebugInfoWorkingDir="" IconImageList="" />
         <Host Name="ScriptComponent" GeneratedNamespace="SC_59225e3dad994011b7bc959556647f15" IconIndex="0"></Host>
         <ProjectClient>
-          <HostIdentifier>SSIS_SC150</HostIdentifier>
+          <HostIdentifier>SSIS_SC160</HostIdentifier>
         </ProjectClient>
       </FlavorProperties>
     </VisualStudio>
@@ -2345,7 +2355,7 @@ namespace SC_59225e3dad994011b7bc959556647f15.Properties {
     <msb:CodeName>SC_59225e3dad994011b7bc959556647f15</msb:CodeName>
     <msb:Language>msBuild</msb:Language>
     <msb:DisplayName>SC_59225e3dad994011b7bc959556647f15</msb:DisplayName>
-    <msb:ProjectId>{E31436EA-9766-411A-A060-E183203AA1C5}</msb:ProjectId>
+    <msb:ProjectId>{9507E6A2-3806-4AB1-976D-842345FDABFF}</msb:ProjectId>
   </msb:PropertyGroup>
   <msb:ItemGroup>
     <msb:Project Include="SC_59225e3dad994011b7bc959556647f15.csproj" />
@@ -2492,7 +2502,7 @@ namespace SC_59225e3dad994011b7bc959556647f15.Properties {
                     <arrayElement
                       dataType="System.String"><![CDATA[TVqQAAMAAAAEAAAA//8AALgAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAgAAAAA4fug4AtAnNIbgBTM0hVGhpcyBwcm9ncmFtIGNhbm5vdCBiZSBydW4gaW4gRE9TIG1v
-ZGUuDQ0KJAAAAAAAAABQRQAATAEDADBHJGcAAAAAAAAAAOAAIiALATAAABIAAAAIAAAAAAAAGjEA
+ZGUuDQ0KJAAAAAAAAABQRQAATAEDAIxmLWcAAAAAAAAAAOAAIiALATAAABIAAAAIAAAAAAAAGjEA
 AAAgAAAAQAAAAAAAEAAgAAAAAgAABAAAAAAAAAAGAAAAAAAAAACAAAAAAgAAAAAAAAMAYIUAABAA
 ABAAAAAAEAAAEAAAAAAAABAAAAAAAAAAAAAAAMgwAABPAAAAAEAAAEgEAAAAAAAAAAAAAAAAAAAA
 AAAAAGAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
@@ -2530,7 +2540,7 @@ QwChACoESQDBACoEBgAuAAsAyQAuABMA0gAuABsA8QAuACMA+gAuACsAIwEuADMAIwEuADsAIwEu
 AEMA+gAuAEsAKQEuAFMAIwEuAFsAQAFDAGMAigFpAHMA8QCJAHMA8QDjAGsAigEBAXsAigEDAAEA
 BwADAAgABQAAAMMDsgAAABwDtgAAABoEugAAAMkAvwAAAF4FxAABAAYAAwABAAcABQACABEABwAC
 ABIACQABABMACQACABQACwAEgAAAAQAAAAAAAAAAAAAAAAABAAAABAAAAAAAAAAAAAAAUQA8AAAA
-AAAPAAAAAAAAAAAAAABaAJ0FAAAAAA8AAAAAAAAAAAAAAFoAugUAAAAABAAAAAAAAAAAAAAAUQA6
+AAAQAAAAAAAAAAAAAABaAJ0FAAAAABAAAAAAAAAAAAAAAFoAugUAAAAABAAAAAAAAAAAAAAAUQA6
 AwAAAAAAAAAAAQAAAHsEAAAAAABTQ19BQkMyQjhGNjFERDg0MkQ5OTM5NDk0NDNGM0NFQjJEMQBJ
 bnQzMgA8TW9kdWxlPgBJbnB1dElEAG1zY29ybGliAGRlZmF1bHRJbnN0YW5jZQBSdW50aW1lVHlw
 ZUhhbmRsZQBHZXRUeXBlRnJvbUhhbmRsZQBJbnB1dE5hbWUATWljcm9zb2Z0LlNxbFNlcnZlci5E
@@ -2563,8 +2573,8 @@ bAAgAHAAcgBvAHAAZQByAHQAeQAgAGMAYQBuAG4AbwB0ACAAYgBlACAAcwBlAHQAIAB0AG8AIABG
 AGEAbABzAGUALgAgAEEAcwBzAGkAZwBuACAAYQAgAHYAYQBsAHUAZQAgAHQAbwAgAHQAaABlACAA
 YwBvAGwAdQBtAG4AIABpAG4AcwB0AGUAYQBkAC4AAA9JAG4AcAB1AHQAIAAwAABxUwBDAF8ANQA5
 ADIAMgA1AGUAMwBkAGEAZAA5ADkANAAwADEAMQBiADcAYgBjADkANQA5ADUANQA2ADYANAA3AGYA
-MQA1AC4AUAByAG8AcABlAHIAdABpAGUAcwAuAFIAZQBzAG8AdQByAGMAZQBzAABD6EJezCp1RZMs
-91E1zpN8AAQgAQEIAyAAAQUgAQEREQQgAQEOBSABARFZCSADARI9HQgSQQUgAgEIHAMgAAIGIAIC
+MQA1AC4AUAByAG8AcABlAHIAdABpAGUAcwAuAFIAZQBzAG8AdQByAGMAZQBzAAAfnGDHL3EcSp/X
+9jviDHjkAAQgAQEIAyAAAQUgAQEREQQgAQEOBSABARFZCSADARI9HQgSQQUgAgEIHAMgAAIGIAIC
 DhF1BSABHQgIBgABEnkRfQUgABKAgQcgAgEOEoCBCLd6XFYZNOCJCImEXc2AgMyRAgYIAwYSFAMG
 EhgDBhJFAwYSUQMGElUDBhIgBSABARIMBCABAQIJIAQBCA4SPRJBBSABARJFBAAAElEEAAASVQUA
 AQESVQQAABIgAwAAAQMoAAgDKAACBAgAElEECAASVQQIABIgCAEACAAAAAAAHgEAAQBUAhZXcmFw
@@ -2795,7 +2805,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                   description="The SQL command to be executed."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">update RFQTERM
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">update RFQTERM
 set
 	hasld=1
 where RFQTERMID=?</property>
@@ -2967,210 +2977,6 @@ where RFQTERMID=?</property>
         <pipeline
           version="1">
           <components>
-            <component
-              refId="Package\DF - RFQLine\ADO NET Destination"
-              componentClassID="Microsoft.ManagedComponentHost"
-              contactInfo="Loads data into an ADO.NET-compliant database that uses a database table or view. Load data into a new or existing table. For example, use an ADO.NET provider for ODBC to load data into an ODBC destination.;Microsoft Corporation; Microsoft SQL Server; © Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;2"
-              description="Loads data into an ADO.NET-compliant database that uses a database table or view. Load data into a new or existing table. For example, use an ADO.NET provider for ODBC to load data into an ODBC destination."
-              name="ADO NET Destination"
-              usesDispositions="true"
-              version="2">
-              <properties>
-                <property
-                  dataType="System.String"
-                  description="The Destination database table name."
-                  expressionType="Notify"
-                  name="TableOrViewName"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">"MAXIMO"."LONGDESCRIPTION"</property>
-                <property
-                  dataType="System.Int32"
-                  description="Specify the number of rows per batch. The default is 0 which uses the same size as SSIS internal buffer. "
-                  expressionType="Notify"
-                  name="BatchSize">0</property>
-                <property
-                  dataType="System.Int32"
-                  description="The number of seconds before a command times out. A value of 0 indicates infinite time-out. "
-                  expressionType="Notify"
-                  name="CommandTimeout">30</property>
-                <property
-                  dataType="System.Boolean"
-                  description="Specifies whether to use the SqlBulkCopy interface to improve the performance of bulk insert operations. Only certain providers support this interface."
-                  expressionType="Notify"
-                  name="UseBulkInsertWhenPossible">true</property>
-                <property
-                  dataType="System.String"
-                  name="UserComponentTypeName">Microsoft.ADONETDestination</property>
-              </properties>
-              <connections>
-                <connection
-                  refId="Package\DF - RFQLine\ADO NET Destination.Connections[IDbConnection]"
-                  connectionManagerID="{3F167782-ACEE-4E5E-B395-0831924ED019}:invalid"
-                  connectionManagerRefId="{3F167782-ACEE-4E5E-B395-0831924ED019}:invalid"
-                  description="Managed connection manager"
-                  name="IDbConnection" />
-              </connections>
-              <inputs>
-                <input
-                  refId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input]"
-                  errorRowDisposition="FailComponent"
-                  hasSideEffects="true"
-                  name="ADO NET Destination Input">
-                  <inputColumns>
-                    <inputColumn
-                      refId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[v_contentuid]"
-                      cachedDataType="i8"
-                      cachedName="v_contentuid"
-                      externalMetadataColumnId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[CONTENTUID]"
-                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_contentuid]" />
-                    <inputColumn
-                      refId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[v_langcode]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="4"
-                      cachedName="v_langcode"
-                      externalMetadataColumnId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[LANGCODE]"
-                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_langcode]" />
-                    <inputColumn
-                      refId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[v_ldkey]"
-                      cachedDataType="i8"
-                      cachedName="v_ldkey"
-                      externalMetadataColumnId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[LDKEY]"
-                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_ldkey]" />
-                    <inputColumn
-                      refId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[v_ldownercol]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="20"
-                      cachedName="v_ldownercol"
-                      externalMetadataColumnId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[LDOWNERCOL]"
-                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_ldownercol]" />
-                    <inputColumn
-                      refId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[v_ldownertable]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="20"
-                      cachedName="v_ldownertable"
-                      externalMetadataColumnId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[LDOWNERTABLE]"
-                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_ldownertable]" />
-                    <inputColumn
-                      refId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[v_longdescriptionid]"
-                      cachedDataType="i8"
-                      cachedName="v_longdescriptionid"
-                      externalMetadataColumnId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[LONGDESCRIPTIONID]"
-                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_longdescriptionid]" />
-                    <inputColumn
-                      refId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[V_MIGRATIONDATE]"
-                      cachedDataType="dbTimeStamp"
-                      cachedName="V_MIGRATIONDATE"
-                      externalMetadataColumnId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
-                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[V_MIGRATIONDATE]" />
-                    <inputColumn
-                      refId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[PK_DV_RMK]"
-                      cachedDataType="i4"
-                      cachedName="PK_DV_RMK"
-                      externalMetadataColumnId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONID]"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DV_RMK]" />
-                    <inputColumn
-                      refId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[V_MIGRATIONSOURCE]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="16"
-                      cachedName="V_MIGRATIONSOURCE"
-                      externalMetadataColumnId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONSOURCE]"
-                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[V_MIGRATIONSOURCE]" />
-                    <inputColumn
-                      refId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[DEV_TEXT]"
-                      cachedCodepage="1252"
-                      cachedDataType="text"
-                      cachedName="DEV_TEXT"
-                      externalMetadataColumnId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONVALUE3]"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[DEV_TEXT]" />
-                  </inputColumns>
-                  <externalMetadataColumns
-                    isUsed="True">
-                    <externalMetadataColumn
-                      refId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[LDKEY]"
-                      dataType="i8"
-                      name="LDKEY" />
-                    <externalMetadataColumn
-                      refId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[LDOWNERTABLE]"
-                      dataType="wstr"
-                      length="30"
-                      name="LDOWNERTABLE" />
-                    <externalMetadataColumn
-                      refId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[LDOWNERCOL]"
-                      dataType="wstr"
-                      length="30"
-                      name="LDOWNERCOL" />
-                    <externalMetadataColumn
-                      refId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[LDTEXT]"
-                      dataType="wstr"
-                      length="1073741824"
-                      name="LDTEXT" />
-                    <externalMetadataColumn
-                      refId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[LANGCODE]"
-                      dataType="wstr"
-                      length="4"
-                      name="LANGCODE" />
-                    <externalMetadataColumn
-                      refId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[LONGDESCRIPTIONID]"
-                      dataType="i8"
-                      name="LONGDESCRIPTIONID" />
-                    <externalMetadataColumn
-                      refId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[CONTENTUID]"
-                      dataType="wstr"
-                      length="50"
-                      name="CONTENTUID" />
-                    <externalMetadataColumn
-                      refId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[ROWSTAMP]"
-                      dataType="i8"
-                      name="ROWSTAMP" />
-                    <externalMetadataColumn
-                      refId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONID]"
-                      dataType="i8"
-                      name="STE_MIGRATIONID" />
-                    <externalMetadataColumn
-                      refId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
-                      dataType="dbTimeStamp"
-                      name="STE_MIGRATIONDATE" />
-                    <externalMetadataColumn
-                      refId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONVALUE3]"
-                      dataType="wstr"
-                      length="32000"
-                      name="STE_MIGRATIONVALUE3" />
-                    <externalMetadataColumn
-                      refId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONSOURCE]"
-                      dataType="wstr"
-                      length="20"
-                      name="STE_MIGRATIONSOURCE" />
-                  </externalMetadataColumns>
-                </input>
-              </inputs>
-              <outputs>
-                <output
-                  refId="Package\DF - RFQLine\ADO NET Destination.Outputs[ADO NET Destination Error Output]"
-                  exclusionGroup="1"
-                  isErrorOut="true"
-                  name="ADO NET Destination Error Output"
-                  synchronousInputId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input]">
-                  <outputColumns>
-                    <outputColumn
-                      refId="Package\DF - RFQLine\ADO NET Destination.Outputs[ADO NET Destination Error Output].Columns[ErrorCode]"
-                      dataType="i4"
-                      lineageId="Package\DF - RFQLine\ADO NET Destination.Outputs[ADO NET Destination Error Output].Columns[ErrorCode]"
-                      name="ErrorCode"
-                      specialFlags="1" />
-                    <outputColumn
-                      refId="Package\DF - RFQLine\ADO NET Destination.Outputs[ADO NET Destination Error Output].Columns[ErrorColumn]"
-                      dataType="i4"
-                      lineageId="Package\DF - RFQLine\ADO NET Destination.Outputs[ADO NET Destination Error Output].Columns[ErrorColumn]"
-                      name="ErrorColumn"
-                      specialFlags="2" />
-                  </outputColumns>
-                  <externalMetadataColumns />
-                </output>
-              </outputs>
-            </component>
             <component
               refId="Package\DF - RFQLine\Aggregate"
               componentClassID="Microsoft.Aggregate"
@@ -3958,13 +3764,13 @@ where RFQTERMID=?</property>
                   description="Specifies the SQL statement that generates the lookup table."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">select * from "MAXIMO"."RFQLINE"</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from "MAXIMO"."RFQLINE"</property>
                 <property
                   dataType="System.String"
                   description="Specifies a SQL statement that uses parameters to generate the lookup table."
                   expressionType="Notify"
                   name="SqlCommandParam"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">select * from (select * from "MAXIMO"."RFQLINE") "refTable"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (select * from "MAXIMO"."RFQLINE") "refTable"
 where "refTable"."STE_MIGRATIONID" = ?</property>
                 <property
                   dataType="System.Int32"
@@ -3996,7 +3802,7 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
                 <property
                   dataType="System.String"
                   description="Indicates whether to reference metadata in an XML format."
-                  name="ReferenceMetadataXml">&lt;referenceMetadata&gt;&lt;referenceColumns&gt;&lt;referenceColumn name="RFQNUM" dataType="DT_STR" length="15" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQLINENUM" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="ITEMNUM" dataType="DT_STR" length="30" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STORELOC" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="DESCRIPTION" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ORDERQTY" dataType="DT_DECIMAL" length="0" precision="15" scale="2" codePage="0"/&gt;&lt;referenceColumn name="ORDERUNIT" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="REQDELIVERYDATE" dataType="DT_DBDATE" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="ENTERDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="ENTERBY" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQL1" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQL2" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQL3" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQL4" dataType="DT_DECIMAL" length="0" precision="15" scale="2" codePage="0"/&gt;&lt;referenceColumn name="RFQL5" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PONUM" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="POLINENUM" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="ASSETNUM" dataType="DT_STR" length="13" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="REQUESTEDBY" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ISSUE" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="RFQLIN1" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQLIN2" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQLIN3" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQLIN4" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="RFQLIN5" dataType="DT_DECIMAL" length="0" precision="15" scale="2" codePage="0"/&gt;&lt;referenceColumn name="CHARGESTORE" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="GLDEBITACCT" dataType="DT_STR" length="110" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RECEIPTREQD" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="CATEGORY" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="REMARK" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="LOCATION" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="MANUFACTURER" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="MODELNUM" dataType="DT_STR" length="8" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="AWARDDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="VENDOR" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="SUPERVISOR" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PRORATESERVICE" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="UNITCOST" dataType="DT_DECIMAL" length="0" precision="10" scale="2" codePage="0"/&gt;&lt;referenceColumn name="LINECOST" dataType="DT_DECIMAL" length="0" precision="10" scale="2" codePage="0"/&gt;&lt;referenceColumn name="RFQLINEID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="INSPECTIONREQUIRED" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="POLINEID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="MRNUM" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="MRLINENUM" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="RFQL6" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQL7" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQL8" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQL9" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQL10" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQLIN6" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQLIN7" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQLIN8" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQLIN9" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="FINCNTRLID" dataType="DT_STR" length="8" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="VENDORPACKCODE" dataType="DT_STR" length="12" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="VENDORPACKQUANTITY" dataType="DT_STR" length="12" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="VENDORWAREHOUSE" dataType="DT_STR" length="12" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ORGID" dataType="DT_STR" length="8" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="SITEID" dataType="DT_STR" length="8" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="REFWO" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ENTEREDASTASK" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="LINETYPE" dataType="DT_STR" length="15" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ITEMSETID" dataType="DT_STR" length="8" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="CONDITIONCODE" dataType="DT_STR" length="30" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="CONTRACTNUM" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="CONTRACTLINENUM" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="CONTRACTLINEID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="COMMODITYGROUP" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="COMMODITY" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="CONVERTTOCONTRACT" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="CONTRACTREV" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="LANGCODE" dataType="DT_STR" length="4" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="CONVERSION" dataType="DT_DECIMAL" length="0" precision="15" scale="2" codePage="0"/&gt;&lt;referenceColumn name="CONTRACTID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="HASLD" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="MKTPLCITEM" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="CLASSSTRUCTUREID" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="POREVISIONNUM" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="PLUSTCOMP" dataType="DT_STR" length="15" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PLUSTREASON" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PLUSTFAILURE" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PLUSTPOS" dataType="DT_STR" length="15" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PLUSTACCOMP" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PLUSTHASWARRANTY" dataType="DT_STR" length="2" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_ALITEMALLOWED" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_ALTITEMDESC" dataType="DT_STR" length="250" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_ALTITEMNUM" dataType="DT_STR" length="30" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_ALTITEMQUOTED" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_WBSNO" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ROWSTAMP" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_CSWNCC" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_MIGRATIONID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_MIGRATIONDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="STE_MIGRATIONITEMPK" dataType="DT_STR" length="200" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_MIGRATIONNSITEMPK" dataType="DT_STR" length="200" precision="0" scale="0" codePage="1252"/&gt;&lt;/referenceColumns&gt;&lt;/referenceMetadata&gt;</property>
+                  name="ReferenceMetadataXml">&lt;referenceMetadata&gt;&lt;referenceColumns&gt;&lt;referenceColumn name="RFQNUM" dataType="DT_STR" length="15" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQLINENUM" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="ITEMNUM" dataType="DT_STR" length="30" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STORELOC" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="DESCRIPTION" dataType="DT_STR" length="104" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ORDERQTY" dataType="DT_DECIMAL" length="0" precision="15" scale="2" codePage="0"/&gt;&lt;referenceColumn name="ORDERUNIT" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="REQDELIVERYDATE" dataType="DT_DBDATE" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="ENTERDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="ENTERBY" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQL1" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQL2" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQL3" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQL4" dataType="DT_DECIMAL" length="0" precision="15" scale="2" codePage="0"/&gt;&lt;referenceColumn name="RFQL5" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PONUM" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="POLINENUM" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="ASSETNUM" dataType="DT_STR" length="13" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="REQUESTEDBY" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ISSUE" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="RFQLIN1" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQLIN2" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQLIN3" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQLIN4" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="RFQLIN5" dataType="DT_DECIMAL" length="0" precision="15" scale="2" codePage="0"/&gt;&lt;referenceColumn name="CHARGESTORE" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="GLDEBITACCT" dataType="DT_STR" length="110" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RECEIPTREQD" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="CATEGORY" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="REMARK" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="LOCATION" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="MANUFACTURER" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="MODELNUM" dataType="DT_STR" length="8" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="AWARDDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="VENDOR" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="SUPERVISOR" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PRORATESERVICE" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="UNITCOST" dataType="DT_DECIMAL" length="0" precision="10" scale="2" codePage="0"/&gt;&lt;referenceColumn name="LINECOST" dataType="DT_DECIMAL" length="0" precision="10" scale="2" codePage="0"/&gt;&lt;referenceColumn name="RFQLINEID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="INSPECTIONREQUIRED" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="POLINEID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="MRNUM" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="MRLINENUM" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="RFQL6" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQL7" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQL8" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQL9" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQL10" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQLIN6" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQLIN7" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQLIN8" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQLIN9" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="FINCNTRLID" dataType="DT_STR" length="8" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="VENDORPACKCODE" dataType="DT_STR" length="12" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="VENDORPACKQUANTITY" dataType="DT_STR" length="12" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="VENDORWAREHOUSE" dataType="DT_STR" length="12" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ORGID" dataType="DT_STR" length="8" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="SITEID" dataType="DT_STR" length="8" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="REFWO" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ENTEREDASTASK" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="LINETYPE" dataType="DT_STR" length="15" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ITEMSETID" dataType="DT_STR" length="8" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="CONDITIONCODE" dataType="DT_STR" length="30" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="CONTRACTNUM" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="CONTRACTLINENUM" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="CONTRACTLINEID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="COMMODITYGROUP" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="COMMODITY" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="CONVERTTOCONTRACT" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="CONTRACTREV" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="LANGCODE" dataType="DT_STR" length="4" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="CONVERSION" dataType="DT_DECIMAL" length="0" precision="18" scale="5" codePage="0"/&gt;&lt;referenceColumn name="CONTRACTID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="HASLD" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="MKTPLCITEM" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="CLASSSTRUCTUREID" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="POREVISIONNUM" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="PLUSTCOMP" dataType="DT_STR" length="15" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PLUSTREASON" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PLUSTFAILURE" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PLUSTPOS" dataType="DT_STR" length="15" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PLUSTACCOMP" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PLUSTHASWARRANTY" dataType="DT_STR" length="2" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_ALITEMALLOWED" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_ALTITEMDESC" dataType="DT_STR" length="250" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_ALTITEMNUM" dataType="DT_STR" length="30" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_ALTITEMQUOTED" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_WBSNO" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ROWSTAMP" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_CSWNCC" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_MIGRATIONID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_MIGRATIONDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="STE_MIGRATIONITEMPK" dataType="DT_STR" length="200" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_MIGRATIONNSITEMPK" dataType="DT_STR" length="200" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_COSC" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_CSWNSAPGL" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;/referenceColumns&gt;&lt;/referenceMetadata&gt;</property>
                 <property
                   containsID="true"
                   dataType="System.String"
@@ -4014,8 +3820,8 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
               <connections>
                 <connection
                   refId="Package\DF - RFQLine\Lookup.Connections[OleDbConnection]"
-                  connectionManagerID="{329D3F58-DF79-4D78-80D9-E7ABD9303348}:invalid"
-                  connectionManagerRefId="{329D3F58-DF79-4D78-80D9-E7ABD9303348}:invalid"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
                   description="Connection manager used to access lookup data."
                   name="OleDbConnection" />
               </connections>
@@ -4265,17 +4071,17 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
                   <externalMetadataColumns />
                 </output>
                 <output
-                  refId="Package\DF - RFQLine\Multicast.Outputs[Multicast Output 3]"
+                  refId="Package\DF - RFQLine\Multicast.Outputs[Multicast Output 1]"
                   deleteOutputOnPathDetached="true"
-                  name="Multicast Output 3"
+                  name="Multicast Output 1"
                   synchronousInputId="Package\DF - RFQLine\Multicast.Inputs[Multicast Input 1]">
                   <externalMetadataColumns />
                 </output>
                 <output
-                  refId="Package\DF - RFQLine\Multicast.Outputs[Multicast Output 1]"
+                  refId="Package\DF - RFQLine\Multicast.Outputs[Multicast Output 3]"
                   dangling="true"
                   deleteOutputOnPathDetached="true"
-                  name="Multicast Output 1"
+                  name="Multicast Output 3"
                   synchronousInputId="Package\DF - RFQLine\Multicast.Inputs[Multicast Input 1]">
                   <externalMetadataColumns />
                 </output>
@@ -4315,6 +4121,247 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
                   deleteOutputOnPathDetached="true"
                   name="Multicast Output 3"
                   synchronousInputId="Package\DF - RFQLine\Multicast 1.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DF - RFQLine\OLE DB Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="OLE DB Destination"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">"MAXIMO"."LONGDESCRIPTION"</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">0</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\DF - RFQLine\OLE DB Destination.Connections[OleDbConnection]"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_ldkey]"
+                      cachedDataType="i8"
+                      cachedName="v_ldkey"
+                      externalMetadataColumnId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LDKEY]"
+                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_ldkey]" />
+                    <inputColumn
+                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_ldownertable]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="v_ldownertable"
+                      externalMetadataColumnId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LDOWNERTABLE]"
+                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_ldownertable]" />
+                    <inputColumn
+                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_ldownercol]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="v_ldownercol"
+                      externalMetadataColumnId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LDOWNERCOL]"
+                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_ldownercol]" />
+                    <inputColumn
+                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_ldtext]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="4"
+                      cachedName="v_ldtext"
+                      externalMetadataColumnId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LDTEXT]"
+                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_ldtext]" />
+                    <inputColumn
+                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_langcode]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="4"
+                      cachedName="v_langcode"
+                      externalMetadataColumnId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LANGCODE]"
+                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_langcode]" />
+                    <inputColumn
+                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_longdescriptionid]"
+                      cachedDataType="i8"
+                      cachedName="v_longdescriptionid"
+                      externalMetadataColumnId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LONGDESCRIPTIONID]"
+                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_longdescriptionid]" />
+                    <inputColumn
+                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_contentuid]"
+                      cachedDataType="i8"
+                      cachedName="v_contentuid"
+                      externalMetadataColumnId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CONTENTUID]"
+                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_contentuid]" />
+                    <inputColumn
+                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PK_DV_RMK]"
+                      cachedDataType="i4"
+                      cachedName="PK_DV_RMK"
+                      externalMetadataColumnId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONID]"
+                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DV_RMK]" />
+                    <inputColumn
+                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[V_MIGRATIONDATE]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="V_MIGRATIONDATE"
+                      externalMetadataColumnId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
+                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[V_MIGRATIONDATE]" />
+                    <inputColumn
+                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[V_MIGRATIONSOURCE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="16"
+                      cachedName="V_MIGRATIONSOURCE"
+                      externalMetadataColumnId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONSOURCE]"
+                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[V_MIGRATIONSOURCE]" />
+                    <inputColumn
+                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DEV_TEXT]"
+                      cachedCodepage="1252"
+                      cachedDataType="text"
+                      cachedName="DEV_TEXT"
+                      externalMetadataColumnId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONVALUE3]"
+                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[DEV_TEXT]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LDKEY]"
+                      dataType="i8"
+                      name="LDKEY" />
+                    <externalMetadataColumn
+                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LDOWNERTABLE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="30"
+                      name="LDOWNERTABLE" />
+                    <externalMetadataColumn
+                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LDOWNERCOL]"
+                      codePage="1252"
+                      dataType="str"
+                      length="30"
+                      name="LDOWNERCOL" />
+                    <externalMetadataColumn
+                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LDTEXT]"
+                      codePage="1252"
+                      dataType="text"
+                      name="LDTEXT" />
+                    <externalMetadataColumn
+                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LANGCODE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="4"
+                      name="LANGCODE" />
+                    <externalMetadataColumn
+                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LONGDESCRIPTIONID]"
+                      dataType="i8"
+                      name="LONGDESCRIPTIONID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CONTENTUID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="CONTENTUID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ROWSTAMP]"
+                      dataType="i8"
+                      name="ROWSTAMP" />
+                    <externalMetadataColumn
+                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONID]"
+                      dataType="i8"
+                      name="STE_MIGRATIONID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
+                      dataType="dbTimeStamp2"
+                      name="STE_MIGRATIONDATE"
+                      scale="7" />
+                    <externalMetadataColumn
+                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONVALUE3]"
+                      codePage="1252"
+                      dataType="text"
+                      name="STE_MIGRATIONVALUE3" />
+                    <externalMetadataColumn
+                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONSOURCE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="STE_MIGRATIONSOURCE" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - RFQLine\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - RFQLine\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF - RFQLine\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF - RFQLine\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF - RFQLine\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
                   <externalMetadataColumns />
                 </output>
               </outputs>
@@ -4383,8 +4430,8 @@ ORDER BY d.PK_DEVIS, COALESCE(n.NSITEM_CD, i.ITEM_CD);</property>
               <connections>
                 <connection
                   refId="Package\DF - RFQLine\Oracle Source.Connections[ORACLEConnection]"
-                  connectionManagerID="{1BBC9476-D9E4-4553-8563-89CF216CBE10}:invalid"
-                  connectionManagerRefId="{1BBC9476-D9E4-4553-8563-89CF216CBE10}:invalid"
+                  connectionManagerID="{1BBC9476-D9E4-4553-8563-89CF216CBE10}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[Oracle Connection Manager]"
                   description="The ORACLE runtime connection used to access the database."
                   name="ORACLEConnection" />
               </connections>
@@ -4569,7 +4616,7 @@ ORDER BY d.PK_DEVIS, COALESCE(n.NSITEM_CD, i.ITEM_CD);</property>
               contactInfo="Includes and runs custom script code. For example, apply a business rule that limits the range of valid values in an &quot;income&quot; column or add values in two columns and calculate the average of the sum.;Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;13"
               description="Includes and runs custom script code. For example, apply a business rule that limits the range of valid values in an &quot;income&quot; column or add values in two columns and calculate the average of the sum."
               name="Running Number"
-              version="12">
+              version="13">
               <properties>
                 <property
                   dataType="System.String"
@@ -4933,10 +4980,10 @@ public class Input0Buffer: ScriptBuffer
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.SqlServer.TxScript, Version=15.0.0.0, Culture=Neutral, PublicKeyToken=89845dcd8080cc91" />
-    <Reference Include="Microsoft.SqlServer.DTSRuntimeWrap, Version=15.0.0.0, Culture=Neutral, PublicKeyToken=89845dcd8080cc91" />
-    <Reference Include="Microsoft.SqlServer.DTSPipelineWrap, Version=15.0.0.0, Culture=Neutral, PublicKeyToken=89845dcd8080cc91" />
-    <Reference Include="Microsoft.SqlServer.PipelineHost, Version=15.0.0.0, Culture=Neutral, PublicKeyToken=89845dcd8080cc91" />
+    <Reference Include="Microsoft.SqlServer.TxScript, Version=16.0.0.0, Culture=Neutral, PublicKeyToken=89845dcd8080cc91" />
+    <Reference Include="Microsoft.SqlServer.DTSRuntimeWrap, Version=16.0.0.0, Culture=Neutral, PublicKeyToken=89845dcd8080cc91" />
+    <Reference Include="Microsoft.SqlServer.DTSPipelineWrap, Version=16.0.0.0, Culture=Neutral, PublicKeyToken=89845dcd8080cc91" />
+    <Reference Include="Microsoft.SqlServer.PipelineHost, Version=16.0.0.0, Culture=Neutral, PublicKeyToken=89845dcd8080cc91" />
     <Compile Include="main.cs" />
     <Compile Include="BufferWrapper.cs" />
     <Compile Include="ComponentWrapper.cs" />
@@ -4972,7 +5019,7 @@ public class Input0Buffer: ScriptBuffer
         <ProjectProperties HostName="ScriptComponent" HostPackage="{B3A685AA-7EAF-4BC6-9940-57959FA5AC07}" ApplicationType="usd" Language="cs" TemplatesPath="" DebugInfoExeName="" DebugInfoCommandLine="" DebugInfoWorkingDir="" IconImageList="" />
         <Host Name="ScriptComponent" GeneratedNamespace="SC_59225e3dad994011b7bc959556647f15" IconIndex="0"></Host>
         <ProjectClient>
-          <HostIdentifier>SSIS_SC150</HostIdentifier>
+          <HostIdentifier>SSIS_SC160</HostIdentifier>
         </ProjectClient>
       </FlavorProperties>
     </VisualStudio>
@@ -5022,7 +5069,7 @@ namespace SC_59225e3dad994011b7bc959556647f15.Properties {
     <msb:CodeName>SC_59225e3dad994011b7bc959556647f15</msb:CodeName>
     <msb:Language>msBuild</msb:Language>
     <msb:DisplayName>SC_59225e3dad994011b7bc959556647f15</msb:DisplayName>
-    <msb:ProjectId>{36B09D1F-95F7-46B8-B860-EDA3D692558B}</msb:ProjectId>
+    <msb:ProjectId>{3E1B2CB2-EF37-408C-802F-0EBFB3BFA3BF}</msb:ProjectId>
   </msb:PropertyGroup>
   <msb:ItemGroup>
     <msb:Project Include="SC_59225e3dad994011b7bc959556647f15.csproj" />
@@ -5169,7 +5216,7 @@ namespace SC_59225e3dad994011b7bc959556647f15.Properties {
                     <arrayElement
                       dataType="System.String"><![CDATA[TVqQAAMAAAAEAAAA//8AALgAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAgAAAAA4fug4AtAnNIbgBTM0hVGhpcyBwcm9ncmFtIGNhbm5vdCBiZSBydW4gaW4gRE9TIG1v
-ZGUuDQ0KJAAAAAAAAABQRQAATAEDADVHJGcAAAAAAAAAAOAAIiALATAAABIAAAAIAAAAAAAAGjEA
+ZGUuDQ0KJAAAAAAAAABQRQAATAEDAI5mLWcAAAAAAAAAAOAAIiALATAAABIAAAAIAAAAAAAAGjEA
 AAAgAAAAQAAAAAAAEAAgAAAAAgAABAAAAAAAAAAGAAAAAAAAAACAAAAAAgAAAAAAAAMAYIUAABAA
 ABAAAAAAEAAAEAAAAAAAABAAAAAAAAAAAAAAAMgwAABPAAAAAEAAAEgEAAAAAAAAAAAAAAAAAAAA
 AAAAAGAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
@@ -5207,7 +5254,7 @@ QwChACoESQDBACoEBgAuAAsAyQAuABMA0gAuABsA8QAuACMA+gAuACsAIwEuADMAIwEuADsAIwEu
 AEMA+gAuAEsAKQEuAFMAIwEuAFsAQAFDAGMAigFpAHMA8QCJAHMA8QDjAGsAigEBAXsAigEDAAEA
 BwADAAgABQAAAMMDsgAAABwDtgAAABoEugAAAMkAvwAAAF4FxAABAAYAAwABAAcABQACABEABwAC
 ABIACQABABMACQACABQACwAEgAAAAQAAAAAAAAAAAAAAAAABAAAABAAAAAAAAAAAAAAAUQA8AAAA
-AAAPAAAAAAAAAAAAAABaAJ0FAAAAAA8AAAAAAAAAAAAAAFoAugUAAAAABAAAAAAAAAAAAAAAUQA6
+AAAQAAAAAAAAAAAAAABaAJ0FAAAAABAAAAAAAAAAAAAAAFoAugUAAAAABAAAAAAAAAAAAAAAUQA6
 AwAAAAAAAAAAAQAAAHsEAAAAAABTQ19BQkMyQjhGNjFERDg0MkQ5OTM5NDk0NDNGM0NFQjJEMQBJ
 bnQzMgA8TW9kdWxlPgBJbnB1dElEAG1zY29ybGliAGRlZmF1bHRJbnN0YW5jZQBSdW50aW1lVHlw
 ZUhhbmRsZQBHZXRUeXBlRnJvbUhhbmRsZQBJbnB1dE5hbWUATWljcm9zb2Z0LlNxbFNlcnZlci5E
@@ -5240,8 +5287,8 @@ bAAgAHAAcgBvAHAAZQByAHQAeQAgAGMAYQBuAG4AbwB0ACAAYgBlACAAcwBlAHQAIAB0AG8AIABG
 AGEAbABzAGUALgAgAEEAcwBzAGkAZwBuACAAYQAgAHYAYQBsAHUAZQAgAHQAbwAgAHQAaABlACAA
 YwBvAGwAdQBtAG4AIABpAG4AcwB0AGUAYQBkAC4AAA9JAG4AcAB1AHQAIAAwAABxUwBDAF8ANQA5
 ADIAMgA1AGUAMwBkAGEAZAA5ADkANAAwADEAMQBiADcAYgBjADkANQA5ADUANQA2ADYANAA3AGYA
-MQA1AC4AUAByAG8AcABlAHIAdABpAGUAcwAuAFIAZQBzAG8AdQByAGMAZQBzAABtdRkTXRc9TpfF
-20hrhsNvAAQgAQEIAyAAAQUgAQEREQQgAQEOBSABARFZCSADARI9HQgSQQUgAgEIHAMgAAIGIAIC
+MQA1AC4AUAByAG8AcABlAHIAdABpAGUAcwAuAFIAZQBzAG8AdQByAGMAZQBzAACbSDV20QdiQqTo
+HgtJ3+hzAAQgAQEIAyAAAQUgAQEREQQgAQEOBSABARFZCSADARI9HQgSQQUgAgEIHAMgAAIGIAIC
 DhF1BSABHQgIBgABEnkRfQUgABKAgQcgAgEOEoCBCLd6XFYZNOCJCImEXc2AgMyRAgYIAwYSFAMG
 EhgDBhJFAwYSUQMGElUDBhIgBSABARIMBCABAQIJIAQBCA4SPRJBBSABARJFBAAAElEEAAASVQUA
 AQESVQQAABIgAwAAAQMoAAgDKAACBAgAElEECAASVQQIABIgCAEACAAAAAAAHgEAAQBUAhZXcmFw
@@ -5472,7 +5519,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                   description="The SQL command to be executed."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">update rfqline
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">update MAXIMO.rfqline
 set
 	hasld=1
 where rfqlineid=?</property>
@@ -5484,8 +5531,8 @@ where rfqlineid=?</property>
               <connections>
                 <connection
                   refId="Package\DF - RFQLine\Update hasld column.Connections[OleDbConnection]"
-                  connectionManagerID="{329D3F58-DF79-4D78-80D9-E7ABD9303348}:invalid"
-                  connectionManagerRefId="{329D3F58-DF79-4D78-80D9-E7ABD9303348}:invalid"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -5595,6 +5642,11 @@ where rfqlineid=?</property>
               name="Multicast Output 1"
               startId="Package\DF - RFQLine\Multicast 1.Outputs[Multicast Output 1]" />
             <path
+              refId="Package\DF - RFQLine.Paths[Multicast Output 11]"
+              endId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input]"
+              name="Multicast Output 1"
+              startId="Package\DF - RFQLine\Multicast.Outputs[Multicast Output 1]" />
+            <path
               refId="Package\DF - RFQLine.Paths[Multicast Output 2]"
               endId="Package\DF - RFQLine\Aggregate.Inputs[Aggregate Input 1]"
               name="Multicast Output 2"
@@ -5604,11 +5656,6 @@ where rfqlineid=?</property>
               endId="Package\DF - RFQLine\Update hasld column.Inputs[OLE DB Command Input]"
               name="Multicast Output 2"
               startId="Package\DF - RFQLine\Multicast.Outputs[Multicast Output 2]" />
-            <path
-              refId="Package\DF - RFQLine.Paths[Multicast Output 3]"
-              endId="Package\DF - RFQLine\ADO NET Destination.Inputs[ADO NET Destination Input]"
-              name="Multicast Output 3"
-              startId="Package\DF - RFQLine\Multicast.Outputs[Multicast Output 3]" />
             <path
               refId="Package\DF - RFQLine.Paths[Oracle Source Output]"
               endId="Package\DF - RFQLine\Running Number.Inputs[Input 0]"
@@ -6799,7 +6846,7 @@ where rfqlineid=?</property>
       <Property>
         <Name>OverwriteParamsSQLProp</Name>
         <Value
-          type="q2:boolean">false</Value>
+          type="q2:string">false</Value>
       </Property>
       <Property>
         <Name>UsedTableName</Name>
@@ -6838,215 +6885,73 @@ where rfqlineid=?</property>
           Id="Package\DF - RFQLine\Aggregate"
           TopLeft="1024.66666063997,140" />
         <NodeLayout
-          Size="123.2,41.6"
-          Id="Package\DF - RFQLine\Multicast"
-          TopLeft="423.666660639975,215" />
+          Size="97.6,41.6"
+          Id="Package\DF - RFQLine\Sort"
+          TopLeft="117.49999533097,234.666668429905" />
         <NodeLayout
           Size="167.2,41.6"
           Id="Package\DF - RFQLine\Derived Column 1"
           TopLeft="999.666660639975,214" />
         <NodeLayout
-          Size="115.2,41.6"
-          Id="Package\DF - RFQLine\Lookup"
-          TopLeft="652.666660639975,133" />
+          Size="179.2,41.6"
+          Id="Package\DF - RFQLine\Flat File Destination 1"
+          TopLeft="8.5265128291212E-14,294.666669008467" />
         <NodeLayout
           Size="158.4,41.6"
           Id="Package\DF - RFQLine\Derived Column"
           TopLeft="420.666660639975,130" />
         <NodeLayout
-          Size="172.8,41.6"
-          Id="Package\DF - RFQLine\Update hasld column"
-          TopLeft="492.83332495557,308.399999979337" />
-        <NodeLayout
           Size="134.4,41.6"
           Id="Package\DF - RFQLine\LookupKey"
           TopLeft="630.666660639975,32" />
-        <NodeLayout
-          Size="153.6,41.6"
-          Id="Package\DF - RFQLine\Conditional Split"
-          TopLeft="194.666660639975,173" />
         <NodeLayout
           Size="148.8,41.6"
           Id="Package\DF - RFQLine\Oracle Source"
           TopLeft="171.166660639975,19.5" />
         <NodeLayout
-          Size="132,41.6"
-          Id="Package\DF - RFQLine\Multicast 1"
-          TopLeft="823.666660639975,139" />
+          Size="115.2,41.6"
+          Id="Package\DF - RFQLine\Lookup"
+          TopLeft="653.499993927777,132.13333333936" />
         <NodeLayout
-          Size="179.2,41.6"
-          Id="Package\DF - RFQLine\ADO NET Destination"
-          TopLeft="276.999990363916,325.466666797532" />
+          Size="153.6,41.6"
+          Id="Package\DF - RFQLine\Conditional Split"
+          TopLeft="194.666660639975,173" />
         <NodeLayout
           Size="161.6,41.6"
           Id="Package\DF - RFQLine\Running Number"
           TopLeft="413.666660639975,29" />
+        <NodeLayout
+          Size="132,41.6"
+          Id="Package\DF - RFQLine\Multicast 1"
+          TopLeft="823.666660639975,139" />
+        <NodeLayout
+          Size="172.8,41.6"
+          Id="Package\DF - RFQLine\Update hasld column"
+          TopLeft="492.83332495557,308.399999979337" />
+        <NodeLayout
+          Size="123.2,41.6"
+          Id="Package\DF - RFQLine\Multicast"
+          TopLeft="423.666660639975,215" />
         <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Lookup No Match Output]"
-          TopLeft="767.666660639975,157">
+          Id="Package\DF - RFQLine.Paths[Sort Output]"
+          TopLeft="117.49999533097,255.466668429905">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="56,0"
+              EndConnector="-27.8999953309697,39.2000005785623"
               Start="0,0"
-              End="48.5,0">
+              End="-27.8999953309697,31.7000005785623">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="48.5,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-31.55638671875,5,111.6127734375,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Lookup Match Output]"
-          TopLeft="652.666660639975,152.5">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-74,0"
-              Start="0,0"
-              End="-66.5,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="-66.5,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-81.44138671875,5,96.3827734375,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[LDLENGTH &lt; 32000]"
-          TopLeft="348.266660639975,199.4">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="75.4,36.4"
-              Start="0,0"
-              End="67.9,36.4">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="27.8355555555556,0" />
+                    End="-23.8999953309697,0" />
                   <mssgle:CubicBezierSegment
-                    Point1="27.8355555555556,0"
-                    Point2="31.8355555555556,0"
-                    Point3="31.8355555555556,4" />
+                    Point1="-23.8999953309697,0"
+                    Point2="-27.8999953309697,0"
+                    Point3="-27.8999953309697,4" />
                   <mssgle:LineSegment
-                    End="31.8355555555556,32.4" />
-                  <mssgle:CubicBezierSegment
-                    Point1="31.8355555555556,32.4"
-                    Point2="31.8355555555556,36.4"
-                    Point3="35.8355555555556,36.4" />
-                  <mssgle:LineSegment
-                    End="67.9,36.4" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-13.1526475694444,-15.5732421875,89.97640625,9.5732421875"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Derived Column Output1]"
-          TopLeft="420.666660639975,150.8">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-72.4,43"
-              Start="0,0"
-              End="-64.9,43">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="-32.2,0" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-32.2,0"
-                    Point2="-36.2,0"
-                    Point3="-36.2,4" />
-                  <mssgle:LineSegment
-                    End="-36.2,39" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-36.2,39"
-                    Point2="-36.2,43"
-                    Point3="-40.2,43" />
-                  <mssgle:LineSegment
-                    End="-64.9,43" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Derived Column Output]"
-          TopLeft="697.666660639975,74">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="12.5,59"
-              Start="0,0"
-              End="12.5,51.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,25.5" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,25.5"
-                    Point2="0,29.5"
-                    Point3="4,29.5" />
-                  <mssgle:LineSegment
-                    End="8.5,29.5" />
-                  <mssgle:CubicBezierSegment
-                    Point1="8.5,29.5"
-                    Point2="12.5,29.5"
-                    Point3="12.5,33.5" />
-                  <mssgle:LineSegment
-                    End="12.5,51.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Aggregate Output 1]"
-          TopLeft="1086.41666063998,182">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,32"
-              Start="0,0"
-              End="0,24.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,24.5" />
+                    End="-27.8999953309697,31.7000005785623" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -7103,40 +7008,6 @@ where rfqlineid=?</property>
                     Point3="50.75,9.5" />
                   <mssgle:LineSegment
                     End="86,9.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Multicast Output 3]"
-          TopLeft="466.066660639975,256.6">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-99.4666702760587,68.866666797532"
-              Start="0,0"
-              End="-99.4666702760587,61.366666797532">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,24.076410309763" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,24.076410309763"
-                    Point2="0,28.076410309763"
-                    Point3="-4,28.076410309763" />
-                  <mssgle:LineSegment
-                    End="-95.4666702760587,28.076410309763" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-95.4666702760587,28.076410309763"
-                    Point2="-99.4666702760587,28.076410309763"
-                    Point3="-99.4666702760587,32.076410309763" />
-                  <mssgle:LineSegment
-                    End="-99.4666702760587,61.366666797532" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -7223,10 +7094,158 @@ where rfqlineid=?</property>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="97.6,41.6"
-          Id="Package\DF - RFQLine\Sort"
-          TopLeft="117.49999533097,234.666668429905" />
+        <EdgeLayout
+          Id="Package\DF - RFQLine.Paths[Lookup No Match Output]"
+          TopLeft="768.699993927777,156.36666666968">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="54.9666667121979,0"
+              Start="0,0"
+              End="47.4666667121979,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="47.4666667121979,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-32.073053362651,5,111.6127734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - RFQLine.Paths[Lookup Match Output]"
+          TopLeft="653.499993927777,151.86666666968">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-74.433333287802,0"
+              Start="0,0"
+              End="-66.933333287802,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="-66.933333287802,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-81.658053362651,5,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - RFQLine.Paths[LDLENGTH &lt; 32000]"
+          TopLeft="348.266660639975,199.4">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="75.4,36.4"
+              Start="0,0"
+              End="67.9,36.4">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="27.8355555555556,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="27.8355555555556,0"
+                    Point2="31.8355555555556,0"
+                    Point3="31.8355555555556,4" />
+                  <mssgle:LineSegment
+                    End="31.8355555555556,32.4" />
+                  <mssgle:CubicBezierSegment
+                    Point1="31.8355555555556,32.4"
+                    Point2="31.8355555555556,36.4"
+                    Point3="35.8355555555556,36.4" />
+                  <mssgle:LineSegment
+                    End="67.9,36.4" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-13.1526475694444,-15.5732421875,89.97640625,9.5732421875"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - RFQLine.Paths[Derived Column Output1]"
+          TopLeft="420.666660639975,150.8">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-72.4,43"
+              Start="0,0"
+              End="-64.9,43">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="-32.2,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-32.2,0"
+                    Point2="-36.2,0"
+                    Point3="-36.2,4" />
+                  <mssgle:LineSegment
+                    End="-36.2,39" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-36.2,39"
+                    Point2="-36.2,43"
+                    Point3="-40.2,43" />
+                  <mssgle:LineSegment
+                    End="-64.9,43" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - RFQLine.Paths[Derived Column Output]"
+          TopLeft="697.866660639975,73.6">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="13.233333287802,58.53333333936"
+              Start="0,0"
+              End="13.233333287802,51.03333333936">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,25.26666666968" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,25.26666666968"
+                    Point2="0,29.26666666968"
+                    Point3="4,29.26666666968" />
+                  <mssgle:LineSegment
+                    End="9.233333287802,29.26666666968" />
+                  <mssgle:CubicBezierSegment
+                    Point1="9.233333287802,29.26666666968"
+                    Point2="13.233333287802,29.26666666968"
+                    Point3="13.233333287802,33.26666666968" />
+                  <mssgle:LineSegment
+                    End="13.233333287802,51.03333333936" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - RFQLine.Paths[Conditional Split Default Output]"
           TopLeft="194.666660639975,193.8">
@@ -7257,30 +7276,58 @@ where rfqlineid=?</property>
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="179.2,41.6"
-          Id="Package\DF - RFQLine\Flat File Destination 1"
-          TopLeft="8.5265128291212E-14,294.666669008467" />
         <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Sort Output]"
-          TopLeft="117.49999533097,255.466668429905">
+          Id="Package\DF - RFQLine.Paths[Aggregate Output 1]"
+          TopLeft="1086.41666063998,182">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-27.8999953309697,39.2000005785623"
+              EndConnector="0,32"
               Start="0,0"
-              End="-27.8999953309697,31.7000005785623">
+              End="0,24.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="-23.8999953309697,0" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-23.8999953309697,0"
-                    Point2="-27.8999953309697,0"
-                    Point3="-27.8999953309697,4" />
+                    End="0,24.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="171.2,41.6"
+          Id="Package\DF - RFQLine\OLE DB Destination"
+          TopLeft="295.833317169713,306.466664997273" />
+        <EdgeLayout
+          Id="Package\DF - RFQLine.Paths[Multicast Output 11]"
+          TopLeft="466.066660639975,256.6">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-84.6333434702617,49.8666649972731"
+              Start="0,0"
+              End="-84.6333434702617,42.3666649972731">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
                   <mssgle:LineSegment
-                    End="-27.8999953309697,31.7000005785623" />
+                    End="0,16.3302557296575" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,16.3302557296575"
+                    Point2="0,20.3302557296575"
+                    Point3="-4,20.3302557296575" />
+                  <mssgle:LineSegment
+                    End="-80.6333434702617,20.3302557296575" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-80.6333434702617,20.3302557296575"
+                    Point2="-84.6333434702617,20.3302557296575"
+                    Point3="-84.6333434702617,24.3302557296575" />
+                  <mssgle:LineSegment
+                    End="-84.6333434702617,42.3666649972731" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -7293,12 +7340,20 @@ where rfqlineid=?</property>
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
+    design-time-name="Package\DF - RFQLine\Oracle Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
     design-time-name="Package\DF - RFQLine\Lookup">
     <Properties>
       <Property>
         <Name>OverwriteParamsSQLProp</Name>
         <Value
-          type="q2:string">false</Value>
+          type="q2:boolean">false</Value>
       </Property>
       <Property>
         <Name>UsedTableName</Name>
@@ -7308,7 +7363,7 @@ where rfqlineid=?</property>
       <Property>
         <Name>TableInfoObjectType</Name>
         <Value
-          type="q4:string">0</Value>
+          type="q4:int">0</Value>
       </Property>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -7316,18 +7371,15 @@ where rfqlineid=?</property>
     </Properties>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
-    design-time-name="Package\DF - RFQLine\Oracle Source">
+    design-time-name="Package\DF - RFQLine\OLE DB Destination">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
       </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\DF - RFQLine\ADO NET Destination">
-    <Properties>
       <Property>
-        <Name>DataSourceViewID</Name>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
       </Property>
     </Properties>
   </PipelineComponentMetadata>

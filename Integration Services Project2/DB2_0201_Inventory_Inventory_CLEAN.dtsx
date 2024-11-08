@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0201_Inventory_Inventory_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="98"
-  DTS:VersionGUID="{3B3D6C46-D65B-4BCA-9668-4DAE02E6A63C}"
+  DTS:VersionBuild="106"
+  DTS:VersionGUID="{4B9CC145-F1D0-4DCC-87C9-F56C85BE1261}"
   DTS:VersionMajor="2"
   DTS:VersionMinor="2">
   <DTS:Property
@@ -136,6 +136,12 @@
                       cachedDataType="r8"
                       cachedName="MIN_QTY"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[MIN_QTY]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\Derived Column.Inputs[Derived Column Input].Columns[DT_FIRST_PROC]"
+                      cachedDataType="numeric"
+                      cachedName="DT_FIRST_PROC"
+                      cachedPrecision="10"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[DT_FIRST_PROC]" />
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -648,6 +654,28 @@
                           name="FriendlyExpression">MAX_QTY</property>
                       </properties>
                     </outputColumn>
+                    <outputColumn
+                      refId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[v_firstprocdate]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[v_firstprocdate]"
+                      name="v_firstprocdate"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">[ISNULL](#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[DT_FIRST_PROC]}) ? NULL(DT_DBTIMESTAMP) : [DATEADD]("dd",(DT_I8)#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[DT_FIRST_PROC]},(DT_DBTIMESTAMP)"1899-12-31")</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">ISNULL(DT_FIRST_PROC) ? NULL(DT_DBTIMESTAMP) : DATEADD("dd",(DT_I8)DT_FIRST_PROC,(DT_DBTIMESTAMP)"1899-12-31")</property>
+                      </properties>
+                    </outputColumn>
                   </outputColumns>
                   <externalMetadataColumns />
                 </output>
@@ -881,14 +909,6 @@
                       externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LOCATION]"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[IS_STOR_CD]" />
                     <inputColumn
-                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[ORG_SUPL_CD]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="20"
-                      cachedName="ORG_SUPL_CD"
-                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[MANUFACTURER]"
-                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ORG_SUPL_CD]" />
-                    <inputColumn
                       refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_maxlevel]"
                       cachedDataType="r8"
                       cachedName="v_maxlevel"
@@ -1002,6 +1022,44 @@
                       cachedName="SUPL_CD"
                       externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[VENDOR]"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[SUPL_CD]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[ORG_SUPL_CD]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="ORG_SUPL_CD"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_CSWNSUPPLIER]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ORG_SUPL_CD]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[I_CYCLE]"
+                      cachedDataType="i4"
+                      cachedName="I_CYCLE"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_NODAYSCYCL]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[I_CYCLE]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[I_CYCLIC_REORDER]"
+                      cachedDataType="i4"
+                      cachedName="I_CYCLIC_REORDER"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_CYCLICREORDER]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[I_CYCLIC_REORDER]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[STKOUT_RISKP]"
+                      cachedDataType="r8"
+                      cachedName="STKOUT_RISKP"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_CSWNSTKRISK]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[STKOUT_RISKP]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_firstprocdate]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="v_firstprocdate"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_FIRSTPROCDATE]"
+                      lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[v_firstprocdate]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[ITEM_NUMBER1]"
+                      cachedDataType="r8"
+                      cachedName="ITEM_NUMBER1"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_CSWNPOPULATION]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_NUMBER1]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1347,6 +1405,34 @@
                       refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ROWSTAMP]"
                       dataType="i8"
                       name="ROWSTAMP" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_CSWNSTKRISK]"
+                      dataType="decimal"
+                      name="STE_CSWNSTKRISK"
+                      scale="10" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_CYCLICREORDER]"
+                      dataType="decimal"
+                      name="STE_CYCLICREORDER" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_NODAYSCYCL]"
+                      dataType="decimal"
+                      name="STE_NODAYSCYCL" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_CSWNSUPPLIER]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="STE_CSWNSUPPLIER" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_FIRSTPROCDATE]"
+                      dataType="dbDate"
+                      name="STE_FIRSTPROCDATE" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_CSWNPOPULATION]"
+                      dataType="decimal"
+                      name="STE_CSWNPOPULATION"
+                      scale="10" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -1405,7 +1491,10 @@
 	--, i.ABC_CLASS
 	, i.CNT_FREQ
 	, i.ORG_SUPL_CD
-	--, ii.PK_ITEM_INFO 
+	, i.STKOUT_RISKP
+	, i.DT_FIRST_PROC 
+	, i.ITEM_NUMBER1  
+	, ii.PK_ITEM_INFO 
 	, ii.MAX_QTY
 	, ii.MIN_QTY
 	, ii.VAL_METHOD
@@ -1418,6 +1507,8 @@
 	--, ii.I_INSP_QTY
 	, ii.REORD_LEVEL
 	, ii.ECON_ORD_QTY
+	, ii.I_CYCLE 
+	, ii.I_CYCLIC_REORDER
 	, ig.PK_ITEM_GROUP 
 	--, ig.GRP_CNT_FREQ
 	, ig.GRP_PR_AUTO
@@ -1434,7 +1525,7 @@ FROM COSWIN.STORES_ITEMS si
 -- MUST BE VALID ITEM
 JOIN COSWIN.ITEM_ i ON i.PK_ITEM_ = si.S_ITEM_STORES
 LEFT JOIN COSWIN.STORES s ON s.PK_STORES = si.S_STORES_ITEM 
-LEFT JOIN COSWIN.ITEM_INFO ii ON ii.S_STORES_ITEM_INFO = si.PK_STORES_ITEMS 
+LEFT JOIN COSWIN.ITEM_INFO ii ON ii.S_ITEM_INFO = i.PK_ITEM_ 
 LEFT JOIN COSWIN.ITEM_GROUP ig ON ig.PK_ITEM_GROUP = i.S_GRP_ITEM 
 LEFT JOIN COSWIN.SUPPLIER_ s2 ON s2.PK_SUPPLIER_ = i.S_PREF_SUPL 
 LEFT JOIN COSWIN.SUPL_ITEMS si2 ON si2.S_SUPL_ITEM = s2.PK_SUPPLIER_ AND si2.S_ITEM_SUPL = i.PK_ITEM_ 
@@ -1447,6 +1538,7 @@ LEFT JOIN COSWIN.SUPL_ITEMS si2 ON si2.S_SUPL_ITEM = s2.PK_SUPPLIER_ AND si2.S_I
 --	FROM COSWIN.ITEM_PTD ip 
 --	WHERE ip.S_STORES_ITEM_PTD IS NOT NULL
 --) ip ON ip.S_STORES_ITEM_PTD = si.PK_STORES_ITEMS AND ip.RN = 1
+-- WHERE ii.MIN_QTY&gt;0
 order by si.PK_STORES_ITEMS</property>
                 <property
                   dataType="System.Int32"
@@ -1651,6 +1743,43 @@ order by si.PK_STORES_ITEMS</property>
                       length="2"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ABCTYPE]"
                       name="ABCTYPE" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[PK_ITEM_INFO]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_ITEM_INFO]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[PK_ITEM_INFO]"
+                      name="PK_ITEM_INFO" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[STKOUT_RISKP]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[STKOUT_RISKP]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[STKOUT_RISKP]"
+                      name="STKOUT_RISKP" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[I_CYCLE]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[I_CYCLE]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[I_CYCLE]"
+                      name="I_CYCLE" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[I_CYCLIC_REORDER]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[I_CYCLIC_REORDER]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[I_CYCLIC_REORDER]"
+                      name="I_CYCLIC_REORDER" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[DT_FIRST_PROC]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DT_FIRST_PROC]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[DT_FIRST_PROC]"
+                      name="DT_FIRST_PROC"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_NUMBER1]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ITEM_NUMBER1]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_NUMBER1]"
+                      name="ITEM_NUMBER1" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1768,6 +1897,31 @@ order by si.PK_STORES_ITEMS</property>
                       dataType="str"
                       length="2"
                       name="ABCTYPE" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_ITEM_INFO]"
+                      dataType="i4"
+                      name="PK_ITEM_INFO" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[STKOUT_RISKP]"
+                      dataType="r8"
+                      name="STKOUT_RISKP" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[I_CYCLE]"
+                      dataType="i4"
+                      name="I_CYCLE" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[I_CYCLIC_REORDER]"
+                      dataType="i4"
+                      name="I_CYCLIC_REORDER" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DT_FIRST_PROC]"
+                      dataType="numeric"
+                      name="DT_FIRST_PROC"
+                      precision="10" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ITEM_NUMBER1]"
+                      dataType="r8"
+                      name="ITEM_NUMBER1" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -1938,6 +2092,43 @@ order by si.PK_STORES_ITEMS</property>
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[ABCTYPE]"
                       name="ABCTYPE" />
                     <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_ITEM_INFO]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_ITEM_INFO]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_ITEM_INFO]"
+                      name="PK_ITEM_INFO" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[STKOUT_RISKP]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[STKOUT_RISKP]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[STKOUT_RISKP]"
+                      name="STKOUT_RISKP" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[I_CYCLE]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[I_CYCLE]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[I_CYCLE]"
+                      name="I_CYCLE" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[I_CYCLIC_REORDER]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[I_CYCLIC_REORDER]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[I_CYCLIC_REORDER]"
+                      name="I_CYCLIC_REORDER" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[DT_FIRST_PROC]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DT_FIRST_PROC]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[DT_FIRST_PROC]"
+                      name="DT_FIRST_PROC"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[ITEM_NUMBER1]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ITEM_NUMBER1]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[ITEM_NUMBER1]"
+                      name="ITEM_NUMBER1" />
+                    <outputColumn
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
@@ -2083,19 +2274,19 @@ order by si.PK_STORES_ITEMS</property>
       <GraphLayout
         Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
-          Size="155,42"
+          Size="155.2,41.6"
           Id="Package\Data Flow Task"
           TopLeft="15.9000000000001,312.7" />
         <NodeLayout
-          Size="165,42"
+          Size="164.8,41.6"
           Id="Package\Execute SQL Task"
           TopLeft="11.1000000000001,414.3" />
         <NodeLayout
-          Size="165,42"
+          Size="164.8,41.6"
           Id="Package\Pre-Task\Execute SQL Task"
           TopLeft="5.50000000000001,5.49999999999995" />
         <NodeLayout
-          Size="134,42"
+          Size="134.4,41.6"
           Id="Package\Pre-Task\Get Max ID"
           TopLeft="20.7,107.1" />
         <EdgeLayout
@@ -2124,7 +2315,7 @@ order by si.PK_STORES_ITEMS</property>
           HeaderHeight="43"
           IsExpanded="True"
           PanelSize="176,204"
-          Size="176,247"
+          Size="176,247.2"
           Id="Package\Pre-Task"
           TopLeft="5.50000000000003,5.50000000000003" />
         <EdgeLayout
@@ -2180,20 +2371,20 @@ order by si.PK_STORES_ITEMS</property>
       <GraphLayout
         Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
-          Size="171,42"
+          Size="171.2,41.6"
           Id="Package\Data Flow Task\OLE DB Destination"
           TopLeft="317.999982925754,154.566665630076" />
         <NodeLayout
-          Size="145,42"
+          Size="144.8,41.6"
           Id="Package\Data Flow Task\Oracle Source"
-          TopLeft="19.5,5.5" />
+          TopLeft="19.5000000000001,5.5" />
         <NodeLayout
-          Size="158,42"
+          Size="158.4,41.6"
           Id="Package\Data Flow Task\Derived Column"
           TopLeft="181,79" />
         <EdgeLayout
           Id="Package\Data Flow Task.Paths[Oracle Source Output]"
-          TopLeft="91.9,47.1">
+          TopLeft="91.9000000000001,47.1">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
