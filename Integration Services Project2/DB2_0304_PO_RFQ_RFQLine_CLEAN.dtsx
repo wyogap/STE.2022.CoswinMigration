@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0304_PO_RFQ_RFQLine_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="196"
-  DTS:VersionGUID="{E2882D84-5942-44F6-AA81-F0D57B42D782}"
+  DTS:VersionBuild="199"
+  DTS:VersionGUID="{83F8DC95-E049-4516-818E-4F5468DE32DA}"
   DTS:VersionMajor="3"
   DTS:VersionMinor="2">
   <DTS:Property
@@ -1320,6 +1320,12 @@
                       dataType="str"
                       length="20"
                       name="STE_CSWNSAPGL" />
+                    <externalMetadataColumn
+                      refId="Package\DF - RFQ\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_REMARKS]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="STE_REMARKS" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -1395,23 +1401,9 @@
 		   WHEN d.DV_STATUS = 3 THEN 'COMP'
 		   ELSE CAST(d.DV_STATUS AS VARCHAR(10))
 	  END AS STATUS_TEXT
-	, x.DEV_TEXT
 FROM COSWIN.DEVIS d
 LEFT JOIN COSWIN.SUPPLIER_ s ON s.PK_SUPPLIER_ = d.S_SUPL_DV
-LEFT JOIN (
-	SELECT 
-		d.PK_DEVIS 
-		, d.DEVIS_CD 
-		, dr.PK_DV_RMK 
-		, dr.S_DV_RMK 
-		, dr.DEV_TEXT 
-		--, NULL as DEV_TEXT 
-		, ROW_NUMBER() OVER (PARTITION BY d.PK_DEVIS ORDER BY dr.PK_DV_RMK) rn
-	FROM COSWIN.DV_RMK dr  
-	JOIN COSWIN.DEVIS d ON dr.S_DV_RMK = d.PK_DEVIS 
-	WHERE dr.S_DV_RMK IS NOT NULL
-) x ON x.rn=1 AND x.PK_DEVIS=d.PK_DEVIS
-order by d.PK_DEVIS asc</property>
+order by d.PK_DEVIS ASC;</property>
                 <property
                   dataType="System.Int32"
                   description="Specify the number of rows fetched per batch."
@@ -1527,12 +1519,6 @@ order by d.PK_DEVIS asc</property>
                       length="20"
                       lineageId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Output].Columns[DV_STRING1]"
                       name="DV_STRING1" />
-                    <outputColumn
-                      refId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Output].Columns[DEV_TEXT]"
-                      dataType="image"
-                      externalMetadataColumnId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DEV_TEXT]"
-                      lineageId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Output].Columns[DEV_TEXT]"
-                      name="DEV_TEXT" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1590,10 +1576,6 @@ order by d.PK_DEVIS asc</property>
                       dataType="str"
                       length="20"
                       name="DV_STRING1" />
-                    <externalMetadataColumn
-                      refId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DEV_TEXT]"
-                      dataType="image"
-                      name="DEV_TEXT" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -1675,12 +1657,6 @@ order by d.PK_DEVIS asc</property>
                       length="20"
                       lineageId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Error Output].Columns[DV_STRING1]"
                       name="DV_STRING1" />
-                    <outputColumn
-                      refId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Error Output].Columns[DEV_TEXT]"
-                      dataType="image"
-                      externalMetadataColumnId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DEV_TEXT]"
-                      lineageId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Error Output].Columns[DEV_TEXT]"
-                      name="DEV_TEXT" />
                     <outputColumn
                       refId="Package\DF - RFQ\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -4931,6 +4907,10 @@ order by di.PK_DV_ITEMS asc
       <GraphLayout
         Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
+          Size="205.6,41.6"
+          Id="Package\Cache - CC to Dept Lookup"
+          TopLeft="281.333318262465,676.700002024969" />
+        <NodeLayout
           Size="155.2,41.6"
           Id="Package\DF - RFQ"
           TopLeft="15.9000000000001,312.7" />
@@ -5099,32 +5079,6 @@ order by di.PK_DV_ITEMS asc
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 4]"
-          TopLeft="93.5000000000001,864.7">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,59.9999999999999"
-              Start="0,0"
-              End="0,52.4999999999999">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,52.4999999999999" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="205.6,41.6"
-          Id="Package\Cache - CC to Dept Lookup"
-          TopLeft="281.333318262465,676.700002024969" />
-        <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 3]"
           TopLeft="181.5,537.9">
           <EdgeLayout.Curve>
@@ -5150,6 +5104,28 @@ order by di.PK_DV_ITEMS asc
                     Point3="53.9166591312326,159.600002024968" />
                   <mssgle:LineSegment
                     End="92.3333182624652,159.600002024968" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 4]"
+          TopLeft="93.5000000000001,864.7">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,59.9999999999999"
+              Start="0,0"
+              End="0,52.4999999999999">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.4999999999999" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -5196,14 +5172,62 @@ order by di.PK_DV_ITEMS asc
     </LayoutInfo>
   </Package>
   <TaskHost
+    design-time-name="Package\Cache - CC to Dept Lookup">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        <NodeLayout
+          Size="164,42"
+          Id="Package\Cache - CC to Dept Lookup\Cache Transform"
+          TopLeft="66,122" />
+        <NodeLayout
+          Size="156,42"
+          Id="Package\Cache - CC to Dept Lookup\Flat File Source"
+          TopLeft="61,32" />
+        <EdgeLayout
+          Id="Package\Cache - CC to Dept Lookup.Paths[Flat File Source Output]"
+          TopLeft="139,74">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="9,48"
+              Start="0,0"
+              End="9,40.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,20" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,20"
+                    Point2="0,24"
+                    Point3="4,24" />
+                  <mssgle:LineSegment
+                    End="5,24" />
+                  <mssgle:CubicBezierSegment
+                    Point1="5,24"
+                    Point2="9,24"
+                    Point3="9,28" />
+                  <mssgle:LineSegment
+                    End="9,40.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <TaskHost
     design-time-name="Package\DF - RFQ">
     <LayoutInfo>
       <GraphLayout
         Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
-        <NodeLayout
-          Size="148.8,41.6"
-          Id="Package\DF - RFQ\Oracle Source"
-          TopLeft="19.4999999999999,5.5" />
         <NodeLayout
           Size="171.2,41.6"
           Id="Package\DF - RFQ\OLE DB Destination"
@@ -5212,15 +5236,19 @@ order by di.PK_DV_ITEMS asc
           Size="158.4,41.6"
           Id="Package\DF - RFQ\Derived Column"
           TopLeft="300.999995231629,82.4666666942173" />
+        <NodeLayout
+          Size="144.8,41.6"
+          Id="Package\DF - RFQ\Oracle Source"
+          TopLeft="19.4999999999999,5.5" />
         <EdgeLayout
           Id="Package\DF - RFQ.Paths[Oracle Source Output]"
-          TopLeft="93.8999999999999,47.1">
+          TopLeft="91.8999999999999,47.1">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="286.299995231629,35.3666666942173"
+              EndConnector="288.299995231629,35.3666666942173"
               Start="0,0"
-              End="286.299995231629,27.8666666942173">
+              End="288.299995231629,27.8666666942173">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
@@ -5231,13 +5259,13 @@ order by di.PK_DV_ITEMS asc
                     Point2="0,17.6833333471086"
                     Point3="4,17.6833333471086" />
                   <mssgle:LineSegment
-                    End="282.299995231629,17.6833333471086" />
+                    End="284.299995231629,17.6833333471086" />
                   <mssgle:CubicBezierSegment
-                    Point1="282.299995231629,17.6833333471086"
-                    Point2="286.299995231629,17.6833333471086"
-                    Point3="286.299995231629,21.6833333471086" />
+                    Point1="284.299995231629,17.6833333471086"
+                    Point2="288.299995231629,17.6833333471086"
+                    Point3="288.299995231629,21.6833333471086" />
                   <mssgle:LineSegment
-                    End="286.299995231629,27.8666666942173" />
+                    End="288.299995231629,27.8666666942173" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -5284,7 +5312,7 @@ order by di.PK_DV_ITEMS asc
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\DF - RFQ\Oracle Source">
+    design-time-name="Package\DF - RFQ\OLE DB Destination">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -5297,7 +5325,7 @@ order by di.PK_DV_ITEMS asc
     </Properties>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
-    design-time-name="Package\DF - RFQ\OLE DB Destination">
+    design-time-name="Package\DF - RFQ\Oracle Source">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -5552,14 +5580,6 @@ order by di.PK_DV_ITEMS asc
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\DF - RFQLine\Oracle Source">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
     design-time-name="Package\DF - RFQLine\OLE DB Destination">
     <Properties>
       <Property>
@@ -5572,65 +5592,21 @@ order by di.PK_DV_ITEMS asc
       </Property>
     </Properties>
   </PipelineComponentMetadata>
-  <TaskHost
-    design-time-name="Package\Cache - CC to Dept Lookup">
-    <LayoutInfo>
-      <GraphLayout
-        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
-        <NodeLayout
-          Size="164,42"
-          Id="Package\Cache - CC to Dept Lookup\Cache Transform"
-          TopLeft="66,122" />
-        <NodeLayout
-          Size="156,42"
-          Id="Package\Cache - CC to Dept Lookup\Flat File Source"
-          TopLeft="61,32" />
-        <EdgeLayout
-          Id="Package\Cache - CC to Dept Lookup.Paths[Flat File Source Output]"
-          TopLeft="139,74">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="9,48"
-              Start="0,0"
-              End="9,40.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,20" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,20"
-                    Point2="0,24"
-                    Point3="4,24" />
-                  <mssgle:LineSegment
-                    End="5,24" />
-                  <mssgle:CubicBezierSegment
-                    Point1="5,24"
-                    Point2="9,24"
-                    Point3="9,28" />
-                  <mssgle:LineSegment
-                    End="9,40.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-      </GraphLayout>
-    </LayoutInfo>
-  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - RFQLine\Oracle Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
   <PipelineComponentMetadata
     design-time-name="Package\DF - RFQLine\Lookup - Dept">
     <Properties>
       <Property>
         <Name>OverwriteParamsSQLProp</Name>
         <Value
-          type="q2:boolean">false</Value>
+          type="q2:string">false</Value>
       </Property>
     </Properties>
   </PipelineComponentMetadata>

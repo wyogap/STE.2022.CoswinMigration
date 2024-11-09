@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0202_Inventory_InvVendor_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="101"
-  DTS:VersionGUID="{2DFC7BEC-02B7-44D5-B5DC-9DAEE7B38AC2}"
+  DTS:VersionBuild="102"
+  DTS:VersionGUID="{0836A3A4-ED48-48C5-B9A5-A31EBE590B5B}"
   DTS:VersionMinor="1">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -868,6 +868,16 @@
                       refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_PLANAHEAD]"
                       dataType="i4"
                       name="STE_PLANAHEAD" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_REMARKS]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="STE_REMARKS" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[HASLD]"
+                      dataType="i4"
+                      name="HASLD" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -933,29 +943,16 @@
 	, COALESCE (ii.MIN_LEAD_TIME,0) AS MIN_LEAD_TIME
 	, COALESCE (ii.MAX_LEAD_TIME,0) AS MAX_LEAD_TIME
 	, it.PLAN_DAYS
-	, x.SUPL_TXT
 FROM COSWIN.SUPL_ITEMS si
 LEFT JOIN COSWIN.ITEM_ it ON it.PK_ITEM_ = si.S_ITEM_SUPL  
 LEFT JOIN ITEM_INFO ii ON ii.S_ITEM_INFO = it.PK_ITEM_
 LEFT JOIN COSWIN.NSITEM ns ON ns.PK_NSITEM = si.S_NSITEM_SUPL  
 LEFT JOIN COSWIN.SUPPLIER_ s ON s.PK_SUPPLIER_ = si.S_SUPL_ITEM 
-LEFT JOIN (
-	SELECT 
-		si.PK_SUPL_ITEMS 
-		, rmk.PK_SUPL_RMK 
-		, rmk.S_SUPLITEM_RMK 
-		, rmk.SUPL_TXT 
-		--, NULL as DEV_TEXT 
-		, ROW_NUMBER() OVER (PARTITION BY si.PK_SUPL_ITEMS ORDER BY rmk.PK_SUPL_RMK) rn
-	FROM COSWIN.SUPL_RMK rmk  
-	JOIN COSWIN.SUPL_ITEMS si ON si.PK_SUPL_ITEMS = rmk.S_SUPLITEM_RMK 
-	WHERE rmk.S_SUPLITEM_RMK IS NOT NULL
-) x ON x.rn=1 AND x.PK_SUPL_ITEMS=si.PK_SUPL_ITEMS
 -- must be valid item
 WHERE (CASE WHEN ns.PK_NSITEM IS NOT NULL THEN ns.NSITEM_CD ELSE it.ITEM_CD END) IS NOT NULL
 --and si.PK_SUPL_ITEMS &gt; 197410
 --AND it.BUY_PRICE&gt;0
-order by si.PK_SUPL_ITEMS</property>
+order by si.PK_SUPL_ITEMS;</property>
                 <property
                   dataType="System.Int32"
                   description="Specify the number of rows fetched per batch."
@@ -1106,12 +1103,6 @@ order by si.PK_SUPL_ITEMS</property>
                       externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ITEM_UNIT_RATE]"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_UNIT_RATE]"
                       name="ITEM_UNIT_RATE" />
-                    <outputColumn
-                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[SUPL_TXT]"
-                      dataType="image"
-                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SUPL_TXT]"
-                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[SUPL_TXT]"
-                      name="SUPL_TXT" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1192,10 +1183,6 @@ order by si.PK_SUPL_ITEMS</property>
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ITEM_UNIT_RATE]"
                       dataType="r8"
                       name="ITEM_UNIT_RATE" />
-                    <externalMetadataColumn
-                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SUPL_TXT]"
-                      dataType="image"
-                      name="SUPL_TXT" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -1312,12 +1299,6 @@ order by si.PK_SUPL_ITEMS</property>
                       externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ITEM_UNIT_RATE]"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[ITEM_UNIT_RATE]"
                       name="ITEM_UNIT_RATE" />
-                    <outputColumn
-                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[SUPL_TXT]"
-                      dataType="image"
-                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SUPL_TXT]"
-                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[SUPL_TXT]"
-                      name="SUPL_TXT" />
                     <outputColumn
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -1561,10 +1542,6 @@ order by si.PK_SUPL_ITEMS</property>
       <GraphLayout
         Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
-          Size="148.8,41.6"
-          Id="Package\Data Flow Task\Oracle Source"
-          TopLeft="19.5,5.5" />
-        <NodeLayout
           Size="171.2,41.6"
           Id="Package\Data Flow Task\OLE DB Destination"
           TopLeft="362.16664717926,184.899998752475" />
@@ -1572,40 +1549,10 @@ order by si.PK_SUPL_ITEMS</property>
           Size="158.4,41.6"
           Id="Package\Data Flow Task\Derived Column"
           TopLeft="197.666666004393,111.933333595064" />
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Derived Column Output]"
-          TopLeft="276.866666004393,153.533333595064">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="170.899981174867,31.3666651574108"
-              Start="0,0"
-              End="170.899981174867,23.8666651574108">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,11.6833325787054" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,11.6833325787054"
-                    Point2="0,15.6833325787054"
-                    Point3="4,15.6833325787054" />
-                  <mssgle:LineSegment
-                    End="166.899981174867,15.6833325787054" />
-                  <mssgle:CubicBezierSegment
-                    Point1="166.899981174867,15.6833325787054"
-                    Point2="170.899981174867,15.6833325787054"
-                    Point3="170.899981174867,19.6833325787054" />
-                  <mssgle:LineSegment
-                    End="170.899981174867,23.8666651574108" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
+        <NodeLayout
+          Size="148.8,41.6"
+          Id="Package\Data Flow Task\Oracle Source"
+          TopLeft="19.5,5.5" />
         <EdgeLayout
           Id="Package\Data Flow Task.Paths[Oracle Source Output]"
           TopLeft="93.9,47.1">
@@ -1640,11 +1587,45 @@ order by si.PK_SUPL_ITEMS</property>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Derived Column Output]"
+          TopLeft="276.866666004393,153.533333595064">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="170.899981174867,31.3666651574108"
+              Start="0,0"
+              End="170.899981174867,23.8666651574108">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,11.6833325787054" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,11.6833325787054"
+                    Point2="0,15.6833325787054"
+                    Point3="4,15.6833325787054" />
+                  <mssgle:LineSegment
+                    End="166.899981174867,15.6833325787054" />
+                  <mssgle:CubicBezierSegment
+                    Point1="166.899981174867,15.6833325787054"
+                    Point2="170.899981174867,15.6833325787054"
+                    Point3="170.899981174867,19.6833325787054" />
+                  <mssgle:LineSegment
+                    End="170.899981174867,23.8666651574108" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\Data Flow Task\Oracle Source">
+    design-time-name="Package\Data Flow Task\OLE DB Destination">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -1657,7 +1638,7 @@ order by si.PK_SUPL_ITEMS</property>
     </Properties>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
-    design-time-name="Package\Data Flow Task\OLE DB Destination">
+    design-time-name="Package\Data Flow Task\Oracle Source">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
