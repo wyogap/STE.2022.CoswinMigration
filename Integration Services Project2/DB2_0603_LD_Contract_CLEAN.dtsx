@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0603_LD_Contract_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="164"
-  DTS:VersionGUID="{E64D5004-FD24-4BE0-A96B-C340C5D934D2}"
+  DTS:VersionBuild="171"
+  DTS:VersionGUID="{82589D30-A39D-418B-B644-112EF066890B}"
   DTS:VersionMinor="2">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -359,6 +359,8 @@
         DTS:LoggingMode="2" />
       <DTS:ObjectData>
         <pipeline
+          autoAdjustBufferSize="true"
+          defaultBufferMaxRows="1000"
           version="1">
           <components>
             <component
@@ -563,10 +565,9 @@
                     <outputColumn
                       refId="Package\DF - Contract BLANKET RMK (LD)\Derived Column.Outputs[Derived Column Output].Columns[v_ldtext]"
                       codePage="1252"
-                      dataType="str"
+                      dataType="text"
                       errorOrTruncationOperation="Computation"
                       errorRowDisposition="FailComponent"
-                      length="4"
                       lineageId="Package\DF - Contract BLANKET RMK (LD)\Derived Column.Outputs[Derived Column Output].Columns[v_ldtext]"
                       name="v_ldtext"
                       truncationRowDisposition="FailComponent">
@@ -575,13 +576,13 @@
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">(DT_STR,4,1252)"TODO"</property>
+                          name="Expression">NULL(DT_TEXT,1252)</property>
                         <property
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
-                          name="FriendlyExpression">(DT_STR,4,1252)"TODO"</property>
+                          name="FriendlyExpression">NULL(DT_TEXT,1252)</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
@@ -1047,7 +1048,7 @@ where STE_MIGRATIONID is not NULL and CONTRACTTYPE='BLANKET'</property>
                   UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (select *
 from MAXIMO.CONTRACT
 where STE_MIGRATIONID is not NULL and CONTRACTTYPE='BLANKET') "refTable"
-where "refTable"."CONTRACTNUM" = ?</property>
+where "refTable"."STE_MIGRATIONID" = ?</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the type of connection used to access the reference dataset."
@@ -1083,7 +1084,7 @@ where "refTable"."CONTRACTNUM" = ?</property>
                   containsID="true"
                   dataType="System.String"
                   description="Specifies the list of lineage identifiers that map to the parameters that the SQL statement in the SQLCommand property uses. Entries in the list are separated by semicolons."
-                  name="ParameterMap">#{Package\DF - Contract BLANKET RMK (LD)\LookupKey.Outputs[Derived Column Output].Columns[lk_contractnum]};</property>
+                  name="ParameterMap">#{Package\DF - Contract BLANKET RMK (LD)\LookupKey.Outputs[Derived Column Output].Columns[lk_migrationid]};</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -1107,17 +1108,15 @@ where "refTable"."CONTRACTNUM" = ?</property>
                   name="Lookup Input">
                   <inputColumns>
                     <inputColumn
-                      refId="Package\DF - Contract BLANKET RMK (LD)\Lookup - Contract.Inputs[Lookup Input].Columns[lk_contractnum]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="10"
-                      cachedName="lk_contractnum"
-                      lineageId="Package\DF - Contract BLANKET RMK (LD)\LookupKey.Outputs[Derived Column Output].Columns[lk_contractnum]">
+                      refId="Package\DF - Contract BLANKET RMK (LD)\Lookup - Contract.Inputs[Lookup Input].Columns[lk_migrationid]"
+                      cachedDataType="i8"
+                      cachedName="lk_migrationid"
+                      lineageId="Package\DF - Contract BLANKET RMK (LD)\LookupKey.Outputs[Derived Column Output].Columns[lk_migrationid]">
                       <properties>
                         <property
                           dataType="System.String"
                           description="Specifies the column in the reference table that a column joins."
-                          name="JoinToReferenceColumn">CONTRACTNUM</property>
+                          name="JoinToReferenceColumn">STE_MIGRATIONID</property>
                         <property
                           dataType="System.Null"
                           description="Specifies the column in the reference table from which a column is copied."
@@ -1205,6 +1204,11 @@ where "refTable"."CONTRACTNUM" = ?</property>
                       cachedLength="10"
                       cachedName="PO_REF"
                       lineageId="Package\DF - Contract BLANKET RMK (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[PO_REF]" />
+                    <inputColumn
+                      refId="Package\DF - Contract BLANKET RMK (LD)\LookupKey.Inputs[Derived Column Input].Columns[PK_PORDER_]"
+                      cachedDataType="i4"
+                      cachedName="PK_PORDER_"
+                      lineageId="Package\DF - Contract BLANKET RMK (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_PORDER_]" />
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -1239,6 +1243,28 @@ where "refTable"."CONTRACTNUM" = ?</property>
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
                           name="FriendlyExpression">(DT_STR,10,1252)PO_REF</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\DF - Contract BLANKET RMK (LD)\LookupKey.Outputs[Derived Column Output].Columns[lk_migrationid]"
+                      dataType="i8"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\DF - Contract BLANKET RMK (LD)\LookupKey.Outputs[Derived Column Output].Columns[lk_migrationid]"
+                      name="lk_migrationid"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_I8)#{Package\DF - Contract BLANKET RMK (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_PORDER_]}</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_I8)PK_PORDER_</property>
                       </properties>
                     </outputColumn>
                   </outputColumns>
@@ -1376,7 +1402,7 @@ where "refTable"."CONTRACTNUM" = ?</property>
                   dataType="System.Int32"
                   description="Specifies the mode used to access the database."
                   name="AccessMode"
-                  typeConverter="AccessMode">0</property>
+                  typeConverter="AccessMode">3</property>
                 <property
                   dataType="System.Boolean"
                   description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
@@ -1388,7 +1414,7 @@ where "refTable"."CONTRACTNUM" = ?</property>
                 <property
                   dataType="System.String"
                   description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
-                  name="FastLoadOptions"></property>
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS,ROWS_PER_BATCH = 1000</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
@@ -1478,6 +1504,13 @@ where "refTable"."CONTRACTNUM" = ?</property>
                       cachedName="PO_TXT"
                       externalMetadataColumnId="Package\DF - Contract BLANKET RMK (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONVALUE3]"
                       lineageId="Package\DF - Contract BLANKET RMK (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[PO_TXT]" />
+                    <inputColumn
+                      refId="Package\DF - Contract BLANKET RMK (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_ldtext]"
+                      cachedCodepage="1252"
+                      cachedDataType="text"
+                      cachedName="v_ldtext"
+                      externalMetadataColumnId="Package\DF - Contract BLANKET RMK (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LDTEXT]"
+                      lineageId="Package\DF - Contract BLANKET RMK (LD)\Derived Column.Outputs[Derived Column Output].Columns[v_ldtext]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -2761,6 +2794,7 @@ where contractid=?</property>
         DTS:LoggingMode="2" />
       <DTS:ObjectData>
         <pipeline
+          autoAdjustBufferSize="true"
           version="1">
           <components>
             <component
@@ -4737,6 +4771,8 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         DTS:LoggingMode="2" />
       <DTS:ObjectData>
         <pipeline
+          autoAdjustBufferSize="true"
+          defaultBufferMaxRows="1000"
           version="1">
           <components>
             <component
@@ -4941,10 +4977,9 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                     <outputColumn
                       refId="Package\DF - ContractTerm (LD)\Derived Column.Outputs[Derived Column Output].Columns[v_ldtext]"
                       codePage="1252"
-                      dataType="str"
+                      dataType="text"
                       errorOrTruncationOperation="Computation"
                       errorRowDisposition="FailComponent"
-                      length="4"
                       lineageId="Package\DF - ContractTerm (LD)\Derived Column.Outputs[Derived Column Output].Columns[v_ldtext]"
                       name="v_ldtext"
                       truncationRowDisposition="FailComponent">
@@ -4953,13 +4988,13 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">(DT_STR,4,1252)"TODO"</property>
+                          name="Expression">NULL(DT_TEXT,1252)</property>
                         <property
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
-                          name="FriendlyExpression">(DT_STR,4,1252)"TODO"</property>
+                          name="FriendlyExpression">NULL(DT_TEXT,1252)</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
@@ -5096,29 +5131,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
                           name="FriendlyExpression">LEN(SAGREE_TXT)</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\DF - ContractTerm (LD)\Derived Column.Outputs[Derived Column Output].Columns[v_ldtext2]"
-                      codePage="1252"
-                      dataType="text"
-                      errorOrTruncationOperation="Computation"
-                      errorRowDisposition="FailComponent"
-                      lineageId="Package\DF - ContractTerm (LD)\Derived Column.Outputs[Derived Column Output].Columns[v_ldtext2]"
-                      name="v_ldtext2"
-                      truncationRowDisposition="FailComponent">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.String"
-                          description="Derived Column Expression"
-                          name="Expression">(DT_TEXT,1252)#{Package\DF - ContractTerm (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[SAGREE_TXT]}</property>
-                        <property
-                          containsID="true"
-                          dataType="System.String"
-                          description="Derived Column Friendly Expression"
-                          expressionType="Notify"
-                          name="FriendlyExpression">(DT_TEXT,1252)SAGREE_TXT</property>
                       </properties>
                     </outputColumn>
                   </outputColumns>
@@ -5679,7 +5691,7 @@ where "refTable"."CONTRACTNUM" = ?</property>
                   dataType="System.Int32"
                   description="Specifies the mode used to access the database."
                   name="AccessMode"
-                  typeConverter="AccessMode">0</property>
+                  typeConverter="AccessMode">3</property>
                 <property
                   dataType="System.Boolean"
                   description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
@@ -5691,7 +5703,7 @@ where "refTable"."CONTRACTNUM" = ?</property>
                 <property
                   dataType="System.String"
                   description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
-                  name="FastLoadOptions"></property>
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS,ROWS_PER_BATCH = 1000</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
@@ -5781,6 +5793,13 @@ where "refTable"."CONTRACTNUM" = ?</property>
                       cachedName="SAGREE_TXT"
                       externalMetadataColumnId="Package\DF - ContractTerm (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONVALUE3]"
                       lineageId="Package\DF - ContractTerm (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[SAGREE_TXT]" />
+                    <inputColumn
+                      refId="Package\DF - ContractTerm (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_ldtext]"
+                      cachedCodepage="1252"
+                      cachedDataType="text"
+                      cachedName="v_ldtext"
+                      externalMetadataColumnId="Package\DF - ContractTerm (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LDTEXT]"
+                      lineageId="Package\DF - ContractTerm (LD)\Derived Column.Outputs[Derived Column Output].Columns[v_ldtext]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -7948,25 +7967,25 @@ where contracttermid=?</property>
       <GraphLayout
         Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
-          Size="148.8,41.6"
-          Id="Package\DF - Contract BLANKET RMK (LD)\Oracle Source"
-          TopLeft="65.4999993145466,25.5" />
-        <NodeLayout
           Size="171.2,41.6"
           Id="Package\DF - Contract BLANKET RMK (LD)\OLE DB Destination"
           TopLeft="243.999996364117,302.999996080995" />
-        <NodeLayout
-          Size="132,41.6"
-          Id="Package\DF - Contract BLANKET RMK (LD)\Multicast 1"
-          TopLeft="745.999998316169,134.000000029802" />
         <NodeLayout
           Size="161.6,41.6"
           Id="Package\DF - Contract BLANKET RMK (LD)\Running Number"
           TopLeft="268.999999314547,26" />
         <NodeLayout
+          Size="132,41.6"
+          Id="Package\DF - Contract BLANKET RMK (LD)\Multicast 1"
+          TopLeft="745.999998316169,134.000000029802" />
+        <NodeLayout
           Size="123.2,41.6"
           Id="Package\DF - Contract BLANKET RMK (LD)\Multicast"
           TopLeft="278.999999314547,212" />
+        <NodeLayout
+          Size="160.8,41.6"
+          Id="Package\DF - Contract BLANKET RMK (LD)\Lookup - Contract"
+          TopLeft="507.999999314547,130" />
         <NodeLayout
           Size="176,41.6"
           Id="Package\DF - Contract BLANKET RMK (LD)\Flat File Destination"
@@ -7984,61 +8003,17 @@ where contracttermid=?</property>
           Id="Package\DF - Contract BLANKET RMK (LD)\Update hasld column"
           TopLeft="444.999993637204,303.799999943773" />
         <NodeLayout
-          Size="160.8,41.6"
-          Id="Package\DF - Contract BLANKET RMK (LD)\Lookup - Contract"
-          TopLeft="507.999999314547,130" />
-        <NodeLayout
           Size="153.6,41.6"
           Id="Package\DF - Contract BLANKET RMK (LD)\Conditional Split"
           TopLeft="47.7333317057955,128.200000443458" />
         <NodeLayout
+          Size="148.8,41.6"
+          Id="Package\DF - Contract BLANKET RMK (LD)\Oracle Source"
+          TopLeft="65.4999993145466,25.5" />
+        <NodeLayout
           Size="179.2,41.6"
           Id="Package\DF - Contract BLANKET RMK (LD)\Flat File Destination 1"
           TopLeft="14.4999994734923,296.000002420943" />
-        <EdgeLayout
-          Id="Package\DF - Contract BLANKET RMK (LD).Paths[Output 0]"
-          TopLeft="430.999999314547,48.5">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="55,0"
-              Start="0,0"
-              End="47.5,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="47.5,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - Contract BLANKET RMK (LD).Paths[Oracle Source Output]"
-          TopLeft="214.499999314547,46.75">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="54.5,0"
-              Start="0,0"
-              End="47,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="47,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - Contract BLANKET RMK (LD).Paths[Multicast Output 3]"
           TopLeft="321.399999314547,253.6">
@@ -8293,9 +8268,61 @@ where contracttermid=?</property>
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - Contract BLANKET RMK (LD).Paths[Output 0]"
+          TopLeft="430.999999314547,48.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="55,0"
+              Start="0,0"
+              End="47.5,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="47.5,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - Contract BLANKET RMK (LD).Paths[Oracle Source Output]"
+          TopLeft="214.499999314547,46.75">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="54.5,0"
+              Start="0,0"
+              End="47,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="47,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - Contract BLANKET RMK (LD)\Oracle Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
   <PipelineComponentMetadata
     design-time-name="Package\DF - Contract BLANKET RMK (LD)\Lookup - Contract">
     <Properties>
@@ -8316,14 +8343,6 @@ where contracttermid=?</property>
         <Name>OverwriteParamsSQLProp</Name>
         <Value
           type="q4:string">false</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\DF - Contract BLANKET RMK (LD)\Oracle Source">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
@@ -8622,6 +8641,10 @@ where contracttermid=?</property>
           Id="Package\DF - ContractTerm (LD)\Oracle Source"
           TopLeft="65.4999993145466,25.5" />
         <NodeLayout
+          Size="171.2,41.6"
+          Id="Package\DF - ContractTerm (LD)\OLE DB Destination"
+          TopLeft="243.999996364117,302.999996080995" />
+        <NodeLayout
           Size="176,41.6"
           Id="Package\DF - ContractTerm (LD)\Flat File Destination"
           TopLeft="729.999998286366,298.000000074506" />
@@ -8705,6 +8728,40 @@ where contracttermid=?</property>
                   Capacity="5">
                   <mssgle:LineSegment
                     End="47,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - ContractTerm (LD).Paths[Multicast Output 3]"
+          TopLeft="321.399999314547,253.6">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="8.19999704957007,49.399996080995"
+              Start="0,0"
+              End="8.19999704957007,41.899996080995">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,16.1399984022518" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,16.1399984022518"
+                    Point2="0,20.1399984022518"
+                    Point3="4,20.1399984022518" />
+                  <mssgle:LineSegment
+                    End="4.19999704957007,20.1399984022518" />
+                  <mssgle:CubicBezierSegment
+                    Point1="4.19999704957007,20.1399984022518"
+                    Point2="8.19999704957007,20.1399984022518"
+                    Point3="8.19999704957007,24.1399984022518" />
+                  <mssgle:LineSegment
+                    End="8.19999704957007,41.899996080995" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -8901,44 +8958,6 @@ where contracttermid=?</property>
                     Point3="17.7333333333333,39.3340772532189" />
                   <mssgle:LineSegment
                     End="17.7333333333333,51.9" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="171.2,41.6"
-          Id="Package\DF - ContractTerm (LD)\OLE DB Destination"
-          TopLeft="243.999996364117,302.999996080995" />
-        <EdgeLayout
-          Id="Package\DF - ContractTerm (LD).Paths[Multicast Output 3]"
-          TopLeft="321.399999314547,253.6">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="8.19999704957002,49.3999960809946"
-              Start="0,0"
-              End="8.19999704957002,41.8999960809946">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,16.1399984022516" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,16.1399984022516"
-                    Point2="0,20.1399984022516"
-                    Point3="4,20.1399984022516" />
-                  <mssgle:LineSegment
-                    End="4.19999704957002,20.1399984022516" />
-                  <mssgle:CubicBezierSegment
-                    Point1="4.19999704957002,20.1399984022516"
-                    Point2="8.19999704957002,20.1399984022516"
-                    Point3="8.19999704957002,24.1399984022516" />
-                  <mssgle:LineSegment
-                    End="8.19999704957002,41.8999960809946" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
