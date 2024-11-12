@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0608_LD_RFQ_RFQLine_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="163"
-  DTS:VersionGUID="{4A88D3E5-8D66-4EDB-90CE-284F301A62D5}"
+  DTS:VersionBuild="166"
+  DTS:VersionGUID="{62B597F0-CA8E-4F29-ACF1-9C3BC47135A5}"
   DTS:VersionMinor="1">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -44,7 +44,7 @@
           <OraConnectionString>SERVER=172.17.123.201:1521/TRN1;USERNAME=coswin;WINAUTH=0;</OraConnectionString>
           <OraPassword
             Sensitive="1"
-            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAzJdgj0t4w0u+dO1tbY5XXQAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAABW9UovYxYjKHsWXlxfBfy37lRhk9FyWGnvjio/8pJASAAAAAAOgAAAAAIAACAAAACjoxJWBKPpJs57HUSUHIdC1lzzQz7Y3TOT8f24Fd2C1RAAAAAzggWjMz2N/rgauViXAYS1QAAAAIaTJbNlz2n2SCUmqUuGg8wNeBkfrEtlCr0HlkJon3I3YF7UZexxIcQoQnmFubs2x7sJ9ZJUq+uKDPsGM8pWfVs</OraPassword>
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAzJdgj0t4w0u+dO1tbY5XXQAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAADCVbu5BI4o6JX8ANkBcxrmf0VSSwRwZezNpN1z+J7j3gAAAAAOgAAAAAIAACAAAADBz04f4YBvlMRt2gmjC0ipR4r/BRn5PQutob2aCqXoJhAAAAAlCNXc2HkvkPS8lXZDa8UrQAAAAMEepDZ7gifPo13Qs2HJ9E2LQCk04nA9WLAL+zCBfsLVFCpBE5XcQlehuQDGfq2xp3yGZs8g2qlob8VyfB6W/NI</OraPassword>
           <OraRetain>False</OraRetain>
           <OraInitialCatalog></OraInitialCatalog>
           <OraServerName>172.17.123.201:1521/TRN1</OraServerName>
@@ -73,7 +73,7 @@
           <DTS:Password
             DTS:Name="Password"
             Sensitive="1"
-            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAzJdgj0t4w0u+dO1tbY5XXQAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAADTabvUf9n4gb3IqXBsskPcvYYB7iv4Rxweq4bZHUhcvQAAAAAOgAAAAAIAACAAAADzOtRJfd1SdBolny9HnBX8KEs8DIiitpSoivK10icckBAAAAA2UXh/00IWfCJdAN4CpBwtQAAAAAr4IQ0zFs7jBCswlHmAO14KC6TvYxAO0lCjlPknvk3uFyMdwB4JKfiSXAp3FPzAJS9dD+r8Nk05OpTu/k/Awaw</DTS:Password>
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAzJdgj0t4w0u+dO1tbY5XXQAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAADd+cW023kWOLLjmowvaeZnEpZ1j9cNCiES2LiWazfU8AAAAAAOgAAAAAIAACAAAABMHVsxjmj6fcoLcpFGiSR61N6881a6jLQonfC977gAaxAAAACXRZu94uJCyCJFsrE2TyjnQAAAAOOg5IFvWfA7VrNNwzK6IGxeQaI7SOo0IAHQHk/gz8l9BsK9fPWIX5xhQHdeI3KbQu2/u0hWfSuVtKf/bviqhL0</DTS:Password>
         </DTS:ConnectionManager>
       </DTS:ObjectData>
     </DTS:ConnectionManager>
@@ -1373,14 +1373,18 @@
                   description="Specifies the SQL statement that generates the lookup table."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from "MAXIMO"."RFQ"</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT RFQID, STE_MIGRATIONID
+FROM     MAXIMO.RFQ
+WHERE  (STE_MIGRATIONID IS NOT NULL)</property>
                 <property
                   dataType="System.String"
                   description="Specifies a SQL statement that uses parameters to generate the lookup table."
                   expressionType="Notify"
                   name="SqlCommandParam"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (select * from "MAXIMO"."RFQ") "refTable"
-where "refTable"."RFQNUM" = ?</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (SELECT RFQID, STE_MIGRATIONID
+FROM     MAXIMO.RFQ
+WHERE  (STE_MIGRATIONID IS NOT NULL)) "refTable"
+where "refTable"."STE_MIGRATIONID" = ?</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the type of connection used to access the reference dataset."
@@ -1411,12 +1415,12 @@ where "refTable"."RFQNUM" = ?</property>
                 <property
                   dataType="System.String"
                   description="Indicates whether to reference metadata in an XML format."
-                  name="ReferenceMetadataXml">&lt;referenceMetadata&gt;&lt;referenceColumns&gt;&lt;referenceColumn name="RFQNUM" dataType="DT_STR" length="15" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="DESCRIPTION" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STATUS" dataType="DT_STR" length="12" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STATUSDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="ENTERDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="ENTERBY" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="REPLYDATE" dataType="DT_DBDATE" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="CLOSEONDATE" dataType="DT_DBDATE" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="PURCHASEAGENT" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQTYPE" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="REQUIREDDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="REQUESTEDBY" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="SHIPTO" dataType="DT_STR" length="30" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="SHIPTOATTN" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="BILLTO" dataType="DT_STR" length="30" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="BILLTOATTN" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="REPLYTO" dataType="DT_STR" length="30" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="REPLYTOATTN" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="FOB" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="FREIGHTTERMS" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="SHIPVIA" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PAYMENTTERMS" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="CHANGEBY" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="CHANGEDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="PRIORITY" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="HISTORYFLAG" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="RFQ1" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQ2" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQ3" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQ4" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQ5" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQ6" dataType="DT_DECIMAL" length="0" precision="13" scale="5" codePage="0"/&gt;&lt;referenceColumn name="RFQ7" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="RFQ8" dataType="DT_DECIMAL" length="0" precision="15" scale="2" codePage="0"/&gt;&lt;referenceColumn name="RFQ9" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="RFQ10" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="PRINTDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="BUYERCOMPANY" dataType="DT_STR" length="30" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ORGID" dataType="DT_STR" length="8" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="SITEID" dataType="DT_STR" length="8" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="LANGCODE" dataType="DT_STR" length="4" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="HASLD" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_SUBMISSION" dataType="DT_STR" length="5" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_TOTALBASECOST" dataType="DT_DECIMAL" length="0" precision="16" scale="2" codePage="0"/&gt;&lt;referenceColumn name="STE_MIGRATIONID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_MIGRATIONDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="ROWSTAMP" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_CSWNSAPGL" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_PRNUM" dataType="DT_STR" length="12" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_REMARKS" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;/referenceColumns&gt;&lt;/referenceMetadata&gt;</property>
+                  name="ReferenceMetadataXml">&lt;referenceMetadata&gt;&lt;referenceColumns&gt;&lt;referenceColumn name="RFQID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_MIGRATIONID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;/referenceColumns&gt;&lt;/referenceMetadata&gt;</property>
                 <property
                   containsID="true"
                   dataType="System.String"
                   description="Specifies the list of lineage identifiers that map to the parameters that the SQL statement in the SQLCommand property uses. Entries in the list are separated by semicolons."
-                  name="ParameterMap">#{Package\DF - RFQ Remark (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[DEVIS_CD]};</property>
+                  name="ParameterMap">#{Package\DF - RFQ Remark (LD)\LookupKey.Outputs[Derived Column Output].Columns[lk_rfq_migrationid]};</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -1440,17 +1444,15 @@ where "refTable"."RFQNUM" = ?</property>
                   name="Lookup Input">
                   <inputColumns>
                     <inputColumn
-                      refId="Package\DF - RFQ Remark (LD)\Lookup.Inputs[Lookup Input].Columns[DEVIS_CD]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="13"
-                      cachedName="DEVIS_CD"
-                      lineageId="Package\DF - RFQ Remark (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[DEVIS_CD]">
+                      refId="Package\DF - RFQ Remark (LD)\Lookup.Inputs[Lookup Input].Columns[lk_rfq_migrationid]"
+                      cachedDataType="i8"
+                      cachedName="lk_rfq_migrationid"
+                      lineageId="Package\DF - RFQ Remark (LD)\LookupKey.Outputs[Derived Column Output].Columns[lk_rfq_migrationid]">
                       <properties>
                         <property
                           dataType="System.String"
                           description="Specifies the column in the reference table that a column joins."
-                          name="JoinToReferenceColumn">RFQNUM</property>
+                          name="JoinToReferenceColumn">STE_MIGRATIONID</property>
                         <property
                           dataType="System.Null"
                           description="Specifies the column in the reference table from which a column is copied."
@@ -1538,6 +1540,11 @@ where "refTable"."RFQNUM" = ?</property>
                       cachedLength="13"
                       cachedName="DEVIS_CD"
                       lineageId="Package\DF - RFQ Remark (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[DEVIS_CD]" />
+                    <inputColumn
+                      refId="Package\DF - RFQ Remark (LD)\LookupKey.Inputs[Derived Column Input].Columns[PK_DEVIS]"
+                      cachedDataType="i4"
+                      cachedName="PK_DEVIS"
+                      lineageId="Package\DF - RFQ Remark (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DEVIS]" />
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -1572,6 +1579,28 @@ where "refTable"."RFQNUM" = ?</property>
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
                           name="FriendlyExpression">(DT_STR,20,1252)DEVIS_CD</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\DF - RFQ Remark (LD)\LookupKey.Outputs[Derived Column Output].Columns[lk_rfq_migrationid]"
+                      dataType="i8"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\DF - RFQ Remark (LD)\LookupKey.Outputs[Derived Column Output].Columns[lk_rfq_migrationid]"
+                      name="lk_rfq_migrationid"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_I8)#{Package\DF - RFQ Remark (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DEVIS]}</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_I8)PK_DEVIS</property>
                       </properties>
                     </outputColumn>
                   </outputColumns>
@@ -3068,13 +3097,13 @@ where RFQID=?</property>
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
-      DTS:refId="Package\DF - RFQLine"
+      DTS:refId="Package\DF - RFQLine (LD)"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:Description="Data Flow Task"
       DTS:DTSID="{A2044E52-B24A-4477-8544-4CA177A34996}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="-1"
-      DTS:ObjectName="DF - RFQLine">
+      DTS:ObjectName="DF - RFQLine (LD)">
       <DTS:Variables />
       <DTS:LoggingOptions
         DTS:FilterKind="0"
@@ -3084,7 +3113,7 @@ where RFQID=?</property>
           version="1">
           <components>
             <component
-              refId="Package\DF - RFQLine\Conditional Split"
+              refId="Package\DF - RFQLine (LD)\Conditional Split"
               componentClassID="Microsoft.ConditionalSplit"
               contactInfo="Conditional Split;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
               description="Routes data rows to different outputs depending on the content of the data. Use conditions (SSIS expressions) to specify which rows are routed. For example, separate records that need to be cleaned from those that are ready to be loaded or route only a subset of records."
@@ -3092,35 +3121,35 @@ where RFQID=?</property>
               usesDispositions="true">
               <inputs>
                 <input
-                  refId="Package\DF - RFQLine\Conditional Split.Inputs[Conditional Split Input]"
+                  refId="Package\DF - RFQLine (LD)\Conditional Split.Inputs[Conditional Split Input]"
                   description="Input to the Conditional Split Transformation"
                   name="Conditional Split Input">
                   <inputColumns>
                     <inputColumn
-                      refId="Package\DF - RFQLine\Conditional Split.Inputs[Conditional Split Input].Columns[LDLENGTH]"
+                      refId="Package\DF - RFQLine (LD)\Conditional Split.Inputs[Conditional Split Input].Columns[LDLENGTH]"
                       cachedDataType="i4"
                       cachedName="LDLENGTH"
-                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[LDLENGTH]" />
+                      lineageId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output].Columns[LDLENGTH]" />
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
               </inputs>
               <outputs>
                 <output
-                  refId="Package\DF - RFQLine\Conditional Split.Outputs[LDLENGTH &lt; 32000]"
+                  refId="Package\DF - RFQLine (LD)\Conditional Split.Outputs[LDLENGTH &lt; 32000]"
                   description="Output 1 of the Conditional Split Transformation"
                   errorOrTruncationOperation="Computation"
                   errorRowDisposition="FailComponent"
                   exclusionGroup="1"
                   name="LDLENGTH &lt; 32000"
-                  synchronousInputId="Package\DF - RFQLine\Conditional Split.Inputs[Conditional Split Input]"
+                  synchronousInputId="Package\DF - RFQLine (LD)\Conditional Split.Inputs[Conditional Split Input]"
                   truncationRowDisposition="FailComponent">
                   <properties>
                     <property
                       containsID="true"
                       dataType="System.String"
                       description="Specifies the expression. This expression version uses lineage identifiers instead of column names."
-                      name="Expression">#{Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[LDLENGTH]} &lt; 32000</property>
+                      name="Expression">#{Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output].Columns[LDLENGTH]} &lt; 32000</property>
                     <property
                       containsID="true"
                       dataType="System.String"
@@ -3135,11 +3164,11 @@ where RFQID=?</property>
                   <externalMetadataColumns />
                 </output>
                 <output
-                  refId="Package\DF - RFQLine\Conditional Split.Outputs[Conditional Split Default Output]"
+                  refId="Package\DF - RFQLine (LD)\Conditional Split.Outputs[Conditional Split Default Output]"
                   description="Default Output of the Conditional Split Transformation"
                   exclusionGroup="1"
                   name="Conditional Split Default Output"
-                  synchronousInputId="Package\DF - RFQLine\Conditional Split.Inputs[Conditional Split Input]">
+                  synchronousInputId="Package\DF - RFQLine (LD)\Conditional Split.Inputs[Conditional Split Input]">
                   <properties>
                     <property
                       dataType="System.Boolean"
@@ -3148,23 +3177,23 @@ where RFQID=?</property>
                   <externalMetadataColumns />
                 </output>
                 <output
-                  refId="Package\DF - RFQLine\Conditional Split.Outputs[Conditional Split Error Output]"
+                  refId="Package\DF - RFQLine (LD)\Conditional Split.Outputs[Conditional Split Error Output]"
                   description="Error Output of the Conditional Split Transformation"
                   exclusionGroup="1"
                   isErrorOut="true"
                   name="Conditional Split Error Output"
-                  synchronousInputId="Package\DF - RFQLine\Conditional Split.Inputs[Conditional Split Input]">
+                  synchronousInputId="Package\DF - RFQLine (LD)\Conditional Split.Inputs[Conditional Split Input]">
                   <outputColumns>
                     <outputColumn
-                      refId="Package\DF - RFQLine\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorCode]"
+                      refId="Package\DF - RFQLine (LD)\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorCode]"
                       dataType="i4"
-                      lineageId="Package\DF - RFQLine\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorCode]"
+                      lineageId="Package\DF - RFQLine (LD)\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorCode]"
                       name="ErrorCode"
                       specialFlags="1" />
                     <outputColumn
-                      refId="Package\DF - RFQLine\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorColumn]"
+                      refId="Package\DF - RFQLine (LD)\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorColumn]"
                       dataType="i4"
-                      lineageId="Package\DF - RFQLine\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorColumn]"
+                      lineageId="Package\DF - RFQLine (LD)\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorColumn]"
                       name="ErrorColumn"
                       specialFlags="2" />
                   </outputColumns>
@@ -3173,7 +3202,7 @@ where RFQID=?</property>
               </outputs>
             </component>
             <component
-              refId="Package\DF - RFQLine\Derived Column"
+              refId="Package\DF - RFQLine (LD)\Derived Column"
               componentClassID="Microsoft.DerivedColumn"
               contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
               description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
@@ -3181,44 +3210,44 @@ where RFQID=?</property>
               usesDispositions="true">
               <inputs>
                 <input
-                  refId="Package\DF - RFQLine\Derived Column.Inputs[Derived Column Input]"
+                  refId="Package\DF - RFQLine (LD)\Derived Column.Inputs[Derived Column Input]"
                   description="Input to the Derived Column Transformation"
                   name="Derived Column Input">
                   <inputColumns>
                     <inputColumn
-                      refId="Package\DF - RFQLine\Derived Column.Inputs[Derived Column Input].Columns[RowNo]"
+                      refId="Package\DF - RFQLine (LD)\Derived Column.Inputs[Derived Column Input].Columns[RowNo]"
                       cachedDataType="i4"
                       cachedName="RowNo"
-                      lineageId="Package\DF - RFQLine\Running Number.Outputs[Output 0].Columns[RowNo]" />
+                      lineageId="Package\DF - RFQLine (LD)\Running Number.Outputs[Output 0].Columns[RowNo]" />
                     <inputColumn
-                      refId="Package\DF - RFQLine\Derived Column.Inputs[Derived Column Input].Columns[rfqlineid]"
+                      refId="Package\DF - RFQLine (LD)\Derived Column.Inputs[Derived Column Input].Columns[rfqlineid]"
                       cachedDataType="i8"
                       cachedName="rfqlineid"
-                      lineageId="Package\DF - RFQLine\Lookup RFQLINE.Outputs[Lookup Match Output].Columns[rfqlineid]" />
+                      lineageId="Package\DF - RFQLine (LD)\Lookup RFQLINE.Outputs[Lookup Match Output].Columns[rfqlineid]" />
                     <inputColumn
-                      refId="Package\DF - RFQLine\Derived Column.Inputs[Derived Column Input].Columns[DEV_TEXT]"
+                      refId="Package\DF - RFQLine (LD)\Derived Column.Inputs[Derived Column Input].Columns[DEV_TEXT]"
                       cachedCodepage="1252"
                       cachedDataType="text"
                       cachedName="DEV_TEXT"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[DEV_TEXT]" />
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[DEV_TEXT]" />
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
               </inputs>
               <outputs>
                 <output
-                  refId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output]"
+                  refId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output]"
                   description="Default Output of the Derived Column Transformation"
                   exclusionGroup="1"
                   name="Derived Column Output"
-                  synchronousInputId="Package\DF - RFQLine\Derived Column.Inputs[Derived Column Input]">
+                  synchronousInputId="Package\DF - RFQLine (LD)\Derived Column.Inputs[Derived Column Input]">
                   <outputColumns>
                     <outputColumn
-                      refId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_ldkey]"
+                      refId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output].Columns[v_ldkey]"
                       dataType="i8"
                       errorOrTruncationOperation="Computation"
                       errorRowDisposition="FailComponent"
-                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_ldkey]"
+                      lineageId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output].Columns[v_ldkey]"
                       name="v_ldkey"
                       truncationRowDisposition="FailComponent">
                       <properties>
@@ -3226,7 +3255,7 @@ where RFQID=?</property>
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">#{Package\DF - RFQLine\Lookup RFQLINE.Outputs[Lookup Match Output].Columns[rfqlineid]}</property>
+                          name="Expression">#{Package\DF - RFQLine (LD)\Lookup RFQLINE.Outputs[Lookup Match Output].Columns[rfqlineid]}</property>
                         <property
                           containsID="true"
                           dataType="System.String"
@@ -3236,13 +3265,13 @@ where RFQID=?</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
-                      refId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_ldownertable]"
+                      refId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output].Columns[v_ldownertable]"
                       codePage="1252"
                       dataType="str"
                       errorOrTruncationOperation="Computation"
                       errorRowDisposition="FailComponent"
                       length="20"
-                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_ldownertable]"
+                      lineageId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output].Columns[v_ldownertable]"
                       name="v_ldownertable"
                       truncationRowDisposition="FailComponent">
                       <properties>
@@ -3260,13 +3289,13 @@ where RFQID=?</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
-                      refId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_ldownercol]"
+                      refId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output].Columns[v_ldownercol]"
                       codePage="1252"
                       dataType="str"
                       errorOrTruncationOperation="Computation"
                       errorRowDisposition="FailComponent"
                       length="20"
-                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_ldownercol]"
+                      lineageId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output].Columns[v_ldownercol]"
                       name="v_ldownercol"
                       truncationRowDisposition="FailComponent">
                       <properties>
@@ -3284,12 +3313,12 @@ where RFQID=?</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
-                      refId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_ldtext]"
+                      refId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output].Columns[v_ldtext]"
                       codePage="1252"
                       dataType="text"
                       errorOrTruncationOperation="Computation"
                       errorRowDisposition="FailComponent"
-                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_ldtext]"
+                      lineageId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output].Columns[v_ldtext]"
                       name="v_ldtext"
                       truncationRowDisposition="FailComponent">
                       <properties>
@@ -3307,13 +3336,13 @@ where RFQID=?</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
-                      refId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_langcode]"
+                      refId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output].Columns[v_langcode]"
                       codePage="1252"
                       dataType="str"
                       errorOrTruncationOperation="Computation"
                       errorRowDisposition="FailComponent"
                       length="4"
-                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_langcode]"
+                      lineageId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output].Columns[v_langcode]"
                       name="v_langcode"
                       truncationRowDisposition="FailComponent">
                       <properties>
@@ -3331,11 +3360,11 @@ where RFQID=?</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
-                      refId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_longdescriptionid]"
+                      refId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output].Columns[v_longdescriptionid]"
                       dataType="i8"
                       errorOrTruncationOperation="Computation"
                       errorRowDisposition="FailComponent"
-                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_longdescriptionid]"
+                      lineageId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output].Columns[v_longdescriptionid]"
                       name="v_longdescriptionid"
                       truncationRowDisposition="FailComponent">
                       <properties>
@@ -3343,7 +3372,7 @@ where RFQID=?</property>
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">#{Package\DF - RFQLine\Running Number.Outputs[Output 0].Columns[RowNo]} + [REPLACENULL](@[User::max_id],0)</property>
+                          name="Expression">#{Package\DF - RFQLine (LD)\Running Number.Outputs[Output 0].Columns[RowNo]} + [REPLACENULL](@[User::max_id],0)</property>
                         <property
                           containsID="true"
                           dataType="System.String"
@@ -3353,11 +3382,11 @@ where RFQID=?</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
-                      refId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_contentuid]"
+                      refId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output].Columns[v_contentuid]"
                       dataType="i8"
                       errorOrTruncationOperation="Computation"
                       errorRowDisposition="FailComponent"
-                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_contentuid]"
+                      lineageId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output].Columns[v_contentuid]"
                       name="v_contentuid"
                       truncationRowDisposition="FailComponent">
                       <properties>
@@ -3365,7 +3394,7 @@ where RFQID=?</property>
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">#{Package\DF - RFQLine\Running Number.Outputs[Output 0].Columns[RowNo]} + [REPLACENULL](@[User::max_id],0)</property>
+                          name="Expression">#{Package\DF - RFQLine (LD)\Running Number.Outputs[Output 0].Columns[RowNo]} + [REPLACENULL](@[User::max_id],0)</property>
                         <property
                           containsID="true"
                           dataType="System.String"
@@ -3375,11 +3404,11 @@ where RFQID=?</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
-                      refId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[V_MIGRATIONDATE]"
+                      refId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output].Columns[V_MIGRATIONDATE]"
                       dataType="dbTimeStamp"
                       errorOrTruncationOperation="Computation"
                       errorRowDisposition="FailComponent"
-                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[V_MIGRATIONDATE]"
+                      lineageId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output].Columns[V_MIGRATIONDATE]"
                       name="V_MIGRATIONDATE"
                       truncationRowDisposition="FailComponent">
                       <properties>
@@ -3397,13 +3426,13 @@ where RFQID=?</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
-                      refId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[V_MIGRATIONSOURCE]"
+                      refId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output].Columns[V_MIGRATIONSOURCE]"
                       codePage="1252"
                       dataType="str"
                       errorOrTruncationOperation="Computation"
                       errorRowDisposition="FailComponent"
                       length="16"
-                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[V_MIGRATIONSOURCE]"
+                      lineageId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output].Columns[V_MIGRATIONSOURCE]"
                       name="V_MIGRATIONSOURCE"
                       truncationRowDisposition="FailComponent">
                       <properties>
@@ -3421,11 +3450,11 @@ where RFQID=?</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
-                      refId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[LDLENGTH]"
+                      refId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output].Columns[LDLENGTH]"
                       dataType="i4"
                       errorOrTruncationOperation="Computation"
                       errorRowDisposition="FailComponent"
-                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[LDLENGTH]"
+                      lineageId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output].Columns[LDLENGTH]"
                       name="LDLENGTH"
                       truncationRowDisposition="FailComponent">
                       <properties>
@@ -3433,7 +3462,7 @@ where RFQID=?</property>
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">[LEN](#{Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[DEV_TEXT]})</property>
+                          name="Expression">[LEN](#{Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[DEV_TEXT]})</property>
                         <property
                           containsID="true"
                           dataType="System.String"
@@ -3446,23 +3475,23 @@ where RFQID=?</property>
                   <externalMetadataColumns />
                 </output>
                 <output
-                  refId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Error Output]"
+                  refId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Error Output]"
                   description="Error Output of the Derived Column Transformation"
                   exclusionGroup="1"
                   isErrorOut="true"
                   name="Derived Column Error Output"
-                  synchronousInputId="Package\DF - RFQLine\Derived Column.Inputs[Derived Column Input]">
+                  synchronousInputId="Package\DF - RFQLine (LD)\Derived Column.Inputs[Derived Column Input]">
                   <outputColumns>
                     <outputColumn
-                      refId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      refId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
                       dataType="i4"
-                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      lineageId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
                       name="ErrorCode"
                       specialFlags="1" />
                     <outputColumn
-                      refId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      refId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
                       dataType="i4"
-                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      lineageId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
                       name="ErrorColumn"
                       specialFlags="2" />
                   </outputColumns>
@@ -3471,7 +3500,7 @@ where RFQID=?</property>
               </outputs>
             </component>
             <component
-              refId="Package\DF - RFQLine\Flat File Destination"
+              refId="Package\DF - RFQLine (LD)\Flat File Destination"
               componentClassID="Microsoft.FlatFileDestination"
               contactInfo="Flat File Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
               description="Flat File Destination"
@@ -3495,149 +3524,149 @@ where RFQID=?</property>
               </properties>
               <connections>
                 <connection
-                  refId="Package\DF - RFQLine\Flat File Destination.Connections[FlatFileConnection]"
+                  refId="Package\DF - RFQLine (LD)\Flat File Destination.Connections[FlatFileConnection]"
                   connectionManagerID="Package.ConnectionManagers[rfqline-nomatch]"
                   connectionManagerRefId="Package.ConnectionManagers[rfqline-nomatch]"
                   name="FlatFileConnection" />
               </connections>
               <inputs>
                 <input
-                  refId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input]"
+                  refId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input]"
                   hasSideEffects="true"
                   name="Flat File Destination Input">
                   <inputColumns>
                     <inputColumn
-                      refId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].Columns[RowNo]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].Columns[RowNo]"
                       cachedDataType="i4"
                       cachedName="RowNo"
-                      externalMetadataColumnId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[RowNo]"
-                      lineageId="Package\DF - RFQLine\Running Number.Outputs[Output 0].Columns[RowNo]" />
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[RowNo]"
+                      lineageId="Package\DF - RFQLine (LD)\Running Number.Outputs[Output 0].Columns[RowNo]" />
                     <inputColumn
-                      refId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].Columns[PK_DEVIS]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].Columns[PK_DEVIS]"
                       cachedDataType="i4"
                       cachedName="PK_DEVIS"
-                      externalMetadataColumnId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[PK_DEVIS]"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DEVIS]" />
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[PK_DEVIS]"
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DEVIS]" />
                     <inputColumn
-                      refId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].Columns[DEVIS_CD]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].Columns[DEVIS_CD]"
                       cachedCodepage="1252"
                       cachedDataType="str"
                       cachedLength="13"
                       cachedName="DEVIS_CD"
-                      externalMetadataColumnId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[DEVIS_CD]"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[DEVIS_CD]" />
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[DEVIS_CD]"
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[DEVIS_CD]" />
                     <inputColumn
-                      refId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].Columns[PK_DV_RMK]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].Columns[PK_DV_RMK]"
                       cachedDataType="i4"
                       cachedName="PK_DV_RMK"
-                      externalMetadataColumnId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[PK_DV_RMK]"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DV_RMK]" />
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[PK_DV_RMK]"
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DV_RMK]" />
                     <inputColumn
-                      refId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].Columns[lk_rfqnum]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].Columns[lk_rfqnum]"
                       cachedCodepage="1252"
                       cachedDataType="str"
                       cachedLength="20"
                       cachedName="lk_rfqnum"
-                      externalMetadataColumnId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[lk_rfqnum]"
-                      lineageId="Package\DF - RFQLine\LookupKey.Outputs[Derived Column Output].Columns[lk_rfqnum]" />
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[lk_rfqnum]"
+                      lineageId="Package\DF - RFQLine (LD)\LookupKey.Outputs[Derived Column Output].Columns[lk_rfqnum]" />
                     <inputColumn
-                      refId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].Columns[PK_DV_ITEMS]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].Columns[PK_DV_ITEMS]"
                       cachedDataType="i4"
                       cachedName="PK_DV_ITEMS"
-                      externalMetadataColumnId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[PK_DV_ITEMS]"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DV_ITEMS]" />
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[PK_DV_ITEMS]"
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DV_ITEMS]" />
                     <inputColumn
-                      refId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].Columns[ITEM_CD]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].Columns[ITEM_CD]"
                       cachedCodepage="1252"
                       cachedDataType="str"
                       cachedLength="20"
                       cachedName="ITEM_CD"
-                      externalMetadataColumnId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[ITEM_CD]"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_CD]" />
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[ITEM_CD]"
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_CD]" />
                     <inputColumn
-                      refId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].Columns[LINENUM]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].Columns[LINENUM]"
                       cachedDataType="r8"
                       cachedName="LINENUM"
-                      externalMetadataColumnId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[LINENUM]"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[LINENUM]" />
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[LINENUM]"
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[LINENUM]" />
                     <inputColumn
-                      refId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].Columns[S_DV_NS_DESC]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].Columns[S_DV_NS_DESC]"
                       cachedDataType="i4"
                       cachedName="S_DV_NS_DESC"
-                      externalMetadataColumnId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[S_DV_NS_DESC]"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[S_DV_NS_DESC]" />
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[S_DV_NS_DESC]"
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[S_DV_NS_DESC]" />
                     <inputColumn
-                      refId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].Columns[lk_itemnum]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].Columns[lk_itemnum]"
                       cachedCodepage="1252"
                       cachedDataType="str"
                       cachedLength="20"
                       cachedName="lk_itemnum"
-                      externalMetadataColumnId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[lk_itemnum]"
-                      lineageId="Package\DF - RFQLine\LookupKey.Outputs[Derived Column Output].Columns[lk_itemnum]" />
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[lk_itemnum]"
+                      lineageId="Package\DF - RFQLine (LD)\LookupKey.Outputs[Derived Column Output].Columns[lk_itemnum]" />
                     <inputColumn
-                      refId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].Columns[lk_migrationid]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].Columns[lk_migrationid]"
                       cachedDataType="i8"
                       cachedName="lk_migrationid"
-                      externalMetadataColumnId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[lk_migrationid]"
-                      lineageId="Package\DF - RFQLine\LookupKey.Outputs[Derived Column Output].Columns[lk_migrationid]" />
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[lk_migrationid]"
+                      lineageId="Package\DF - RFQLine (LD)\LookupKey.Outputs[Derived Column Output].Columns[lk_migrationid]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[RowNo]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[RowNo]"
                       dataType="i4"
                       name="RowNo" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[PK_DEVIS]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[PK_DEVIS]"
                       dataType="i4"
                       name="PK_DEVIS" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[DEVIS_CD]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[DEVIS_CD]"
                       codePage="1252"
                       dataType="str"
                       length="13"
                       name="DEVIS_CD" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[PK_DV_RMK]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[PK_DV_RMK]"
                       dataType="i4"
                       name="PK_DV_RMK" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[DEV_TEXT]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[DEV_TEXT]"
                       codePage="1252"
                       dataType="text"
                       name="DEV_TEXT" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[lk_rfqnum]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[lk_rfqnum]"
                       codePage="1252"
                       dataType="str"
                       length="20"
                       name="lk_rfqnum" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[PK_DV_ITEMS]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[PK_DV_ITEMS]"
                       dataType="i4"
                       name="PK_DV_ITEMS" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[ITEM_CD]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[ITEM_CD]"
                       codePage="1252"
                       dataType="str"
                       length="20"
                       name="ITEM_CD" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[LINENUM]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[LINENUM]"
                       dataType="r8"
                       name="LINENUM" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[S_DV_NS_DESC]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[S_DV_NS_DESC]"
                       dataType="i4"
                       name="S_DV_NS_DESC" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[lk_itemnum]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[lk_itemnum]"
                       codePage="1252"
                       dataType="str"
                       length="20"
                       name="lk_itemnum" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[lk_migrationid]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[lk_migrationid]"
                       dataType="i8"
                       name="lk_migrationid" />
                   </externalMetadataColumns>
@@ -3645,7 +3674,7 @@ where RFQID=?</property>
               </inputs>
             </component>
             <component
-              refId="Package\DF - RFQLine\Flat File Destination 1"
+              refId="Package\DF - RFQLine (LD)\Flat File Destination 1"
               componentClassID="Microsoft.FlatFileDestination"
               contactInfo="Flat File Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
               description="Flat File Destination"
@@ -3669,141 +3698,141 @@ where RFQID=?</property>
               </properties>
               <connections>
                 <connection
-                  refId="Package\DF - RFQLine\Flat File Destination 1.Connections[FlatFileConnection]"
+                  refId="Package\DF - RFQLine (LD)\Flat File Destination 1.Connections[FlatFileConnection]"
                   connectionManagerID="Package.ConnectionManagers[rfqline-remark-toobig]"
                   connectionManagerRefId="Package.ConnectionManagers[rfqline-remark-toobig]"
                   name="FlatFileConnection" />
               </connections>
               <inputs>
                 <input
-                  refId="Package\DF - RFQLine\Flat File Destination 1.Inputs[Flat File Destination Input]"
+                  refId="Package\DF - RFQLine (LD)\Flat File Destination 1.Inputs[Flat File Destination Input]"
                   hasSideEffects="true"
                   name="Flat File Destination Input">
                   <inputColumns>
                     <inputColumn
-                      refId="Package\DF - RFQLine\Flat File Destination 1.Inputs[Flat File Destination Input].Columns[PK_DEVIS]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination 1.Inputs[Flat File Destination Input].Columns[PK_DEVIS]"
                       cachedDataType="i4"
                       cachedName="PK_DEVIS"
-                      externalMetadataColumnId="Package\DF - RFQLine\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[PK_DEVIS]"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DEVIS]" />
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[PK_DEVIS]"
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DEVIS]" />
                     <inputColumn
-                      refId="Package\DF - RFQLine\Flat File Destination 1.Inputs[Flat File Destination Input].Columns[PK_DV_RMK]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination 1.Inputs[Flat File Destination Input].Columns[PK_DV_RMK]"
                       cachedDataType="i4"
                       cachedName="PK_DV_RMK"
-                      externalMetadataColumnId="Package\DF - RFQLine\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[PK_DV_RMK]"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DV_RMK]" />
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[PK_DV_RMK]"
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DV_RMK]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[PK_DEVIS]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[PK_DEVIS]"
                       dataType="i4"
                       name="PK_DEVIS" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[PK_DV_RMK]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[PK_DV_RMK]"
                       dataType="i4"
                       name="PK_DV_RMK" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[DEVIS_CD]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[DEVIS_CD]"
                       codePage="1252"
                       dataType="str"
                       length="13"
                       name="DEVIS_CD" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[PK_DV_ITEMS]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[PK_DV_ITEMS]"
                       dataType="i4"
                       name="PK_DV_ITEMS" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[ITEM_CD]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[ITEM_CD]"
                       codePage="1252"
                       dataType="str"
                       length="20"
                       name="ITEM_CD" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[LINENUM]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[LINENUM]"
                       dataType="r8"
                       name="LINENUM" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[S_DV_NS_DESC]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[S_DV_NS_DESC]"
                       dataType="i4"
                       name="S_DV_NS_DESC" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[DEV_TEXT]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[DEV_TEXT]"
                       codePage="1252"
                       dataType="text"
                       name="DEV_TEXT" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[RowNo]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[RowNo]"
                       dataType="i4"
                       name="RowNo" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[lk_rfqnum]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[lk_rfqnum]"
                       codePage="1252"
                       dataType="str"
                       length="20"
                       name="lk_rfqnum" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[lk_itemnum]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[lk_itemnum]"
                       codePage="1252"
                       dataType="str"
                       length="20"
                       name="lk_itemnum" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[lk_migrationid]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[lk_migrationid]"
                       dataType="i8"
                       name="lk_migrationid" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[rfqlineid]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[rfqlineid]"
                       dataType="i8"
                       name="rfqlineid" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[v_ldkey]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[v_ldkey]"
                       dataType="i8"
                       name="v_ldkey" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[v_ldownertable]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[v_ldownertable]"
                       codePage="1252"
                       dataType="str"
                       length="20"
                       name="v_ldownertable" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[v_ldownercol]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[v_ldownercol]"
                       codePage="1252"
                       dataType="str"
                       length="20"
                       name="v_ldownercol" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[v_ldtext]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[v_ldtext]"
                       codePage="1252"
                       dataType="str"
                       length="4"
                       name="v_ldtext" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[v_langcode]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[v_langcode]"
                       codePage="1252"
                       dataType="str"
                       length="4"
                       name="v_langcode" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[v_longdescriptionid]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[v_longdescriptionid]"
                       dataType="i8"
                       name="v_longdescriptionid" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[v_contentuid]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[v_contentuid]"
                       dataType="i8"
                       name="v_contentuid" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[V_MIGRATIONDATE]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[V_MIGRATIONDATE]"
                       dataType="dbTimeStamp"
                       name="V_MIGRATIONDATE" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[V_MIGRATIONSOURCE]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[V_MIGRATIONSOURCE]"
                       codePage="1252"
                       dataType="str"
                       length="16"
                       name="V_MIGRATIONSOURCE" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[LDLENGTH]"
+                      refId="Package\DF - RFQLine (LD)\Flat File Destination 1.Inputs[Flat File Destination Input].ExternalColumns[LDLENGTH]"
                       dataType="i4"
                       name="LDLENGTH" />
                   </externalMetadataColumns>
@@ -3811,7 +3840,7 @@ where RFQID=?</property>
               </inputs>
             </component>
             <component
-              refId="Package\DF - RFQLine\Lookup RFQLINE"
+              refId="Package\DF - RFQLine (LD)\Lookup RFQLINE"
               componentClassID="Microsoft.Lookup"
               contactInfo="Lookup;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;6"
               description="Joins additional columns to the data flow by looking up values in a table. For example, join to the 'employee id' column the employees table to get 'hire date' and 'employee name'. We recommend this transformation when the lookup table can fit into memory."
@@ -3824,13 +3853,17 @@ where RFQID=?</property>
                   description="Specifies the SQL statement that generates the lookup table."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from "MAXIMO"."RFQLINE"</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT RFQLINEID, STE_MIGRATIONID
+FROM     MAXIMO.RFQLINE
+WHERE  (STE_MIGRATIONID IS NOT NULL)</property>
                 <property
                   dataType="System.String"
                   description="Specifies a SQL statement that uses parameters to generate the lookup table."
                   expressionType="Notify"
                   name="SqlCommandParam"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (select * from "MAXIMO"."RFQLINE") "refTable"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (SELECT RFQLINEID, STE_MIGRATIONID
+FROM     MAXIMO.RFQLINE
+WHERE  (STE_MIGRATIONID IS NOT NULL)) "refTable"
 where "refTable"."STE_MIGRATIONID" = ?</property>
                 <property
                   dataType="System.Int32"
@@ -3862,12 +3895,12 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
                 <property
                   dataType="System.String"
                   description="Indicates whether to reference metadata in an XML format."
-                  name="ReferenceMetadataXml">&lt;referenceMetadata&gt;&lt;referenceColumns&gt;&lt;referenceColumn name="RFQNUM" dataType="DT_STR" length="15" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQLINENUM" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="ITEMNUM" dataType="DT_STR" length="30" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STORELOC" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="DESCRIPTION" dataType="DT_STR" length="104" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ORDERQTY" dataType="DT_DECIMAL" length="0" precision="15" scale="2" codePage="0"/&gt;&lt;referenceColumn name="ORDERUNIT" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="REQDELIVERYDATE" dataType="DT_DBDATE" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="ENTERDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="ENTERBY" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQL1" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQL2" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQL3" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQL4" dataType="DT_DECIMAL" length="0" precision="15" scale="2" codePage="0"/&gt;&lt;referenceColumn name="RFQL5" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PONUM" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="POLINENUM" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="ASSETNUM" dataType="DT_STR" length="13" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="REQUESTEDBY" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ISSUE" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="RFQLIN1" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQLIN2" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQLIN3" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQLIN4" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="RFQLIN5" dataType="DT_DECIMAL" length="0" precision="15" scale="2" codePage="0"/&gt;&lt;referenceColumn name="CHARGESTORE" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="GLDEBITACCT" dataType="DT_STR" length="110" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RECEIPTREQD" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="CATEGORY" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="REMARK" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="LOCATION" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="MANUFACTURER" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="MODELNUM" dataType="DT_STR" length="8" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="AWARDDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="VENDOR" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="SUPERVISOR" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PRORATESERVICE" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="UNITCOST" dataType="DT_DECIMAL" length="0" precision="10" scale="2" codePage="0"/&gt;&lt;referenceColumn name="LINECOST" dataType="DT_DECIMAL" length="0" precision="10" scale="2" codePage="0"/&gt;&lt;referenceColumn name="RFQLINEID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="INSPECTIONREQUIRED" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="POLINEID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="MRNUM" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="MRLINENUM" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="RFQL6" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQL7" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQL8" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQL9" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQL10" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQLIN6" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQLIN7" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQLIN8" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="RFQLIN9" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="FINCNTRLID" dataType="DT_STR" length="8" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="VENDORPACKCODE" dataType="DT_STR" length="12" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="VENDORPACKQUANTITY" dataType="DT_STR" length="12" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="VENDORWAREHOUSE" dataType="DT_STR" length="12" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ORGID" dataType="DT_STR" length="8" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="SITEID" dataType="DT_STR" length="8" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="REFWO" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ENTEREDASTASK" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="LINETYPE" dataType="DT_STR" length="15" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ITEMSETID" dataType="DT_STR" length="8" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="CONDITIONCODE" dataType="DT_STR" length="30" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="CONTRACTNUM" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="CONTRACTLINENUM" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="CONTRACTLINEID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="COMMODITYGROUP" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="COMMODITY" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="CONVERTTOCONTRACT" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="CONTRACTREV" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="LANGCODE" dataType="DT_STR" length="4" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="CONVERSION" dataType="DT_DECIMAL" length="0" precision="18" scale="5" codePage="0"/&gt;&lt;referenceColumn name="CONTRACTID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="HASLD" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="MKTPLCITEM" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="CLASSSTRUCTUREID" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="POREVISIONNUM" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="PLUSTCOMP" dataType="DT_STR" length="15" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PLUSTREASON" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PLUSTFAILURE" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PLUSTPOS" dataType="DT_STR" length="15" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PLUSTACCOMP" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PLUSTHASWARRANTY" dataType="DT_STR" length="2" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_ALITEMALLOWED" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_ALTITEMDESC" dataType="DT_STR" length="250" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_ALTITEMNUM" dataType="DT_STR" length="30" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_ALTITEMQUOTED" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_WBSNO" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ROWSTAMP" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_CSWNCC" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_MIGRATIONID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_MIGRATIONDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="STE_MIGRATIONITEMPK" dataType="DT_STR" length="200" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_MIGRATIONNSITEMPK" dataType="DT_STR" length="200" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_COSC" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_CSWNSAPGL" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;/referenceColumns&gt;&lt;/referenceMetadata&gt;</property>
+                  name="ReferenceMetadataXml">&lt;referenceMetadata&gt;&lt;referenceColumns&gt;&lt;referenceColumn name="RFQLINEID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_MIGRATIONID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;/referenceColumns&gt;&lt;/referenceMetadata&gt;</property>
                 <property
                   containsID="true"
                   dataType="System.String"
                   description="Specifies the list of lineage identifiers that map to the parameters that the SQL statement in the SQLCommand property uses. Entries in the list are separated by semicolons."
-                  name="ParameterMap">#{Package\DF - RFQLine\LookupKey.Outputs[Derived Column Output].Columns[lk_migrationid]};</property>
+                  name="ParameterMap">#{Package\DF - RFQLine (LD)\LookupKey.Outputs[Derived Column Output].Columns[lk_migrationid]};</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -3879,7 +3912,7 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
               </properties>
               <connections>
                 <connection
-                  refId="Package\DF - RFQLine\Lookup RFQLINE.Connections[OleDbConnection]"
+                  refId="Package\DF - RFQLine (LD)\Lookup RFQLINE.Connections[OleDbConnection]"
                   connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
                   connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
                   description="Connection manager used to access lookup data."
@@ -3887,14 +3920,14 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
               </connections>
               <inputs>
                 <input
-                  refId="Package\DF - RFQLine\Lookup RFQLINE.Inputs[Lookup Input]"
+                  refId="Package\DF - RFQLine (LD)\Lookup RFQLINE.Inputs[Lookup Input]"
                   name="Lookup Input">
                   <inputColumns>
                     <inputColumn
-                      refId="Package\DF - RFQLine\Lookup RFQLINE.Inputs[Lookup Input].Columns[lk_migrationid]"
+                      refId="Package\DF - RFQLine (LD)\Lookup RFQLINE.Inputs[Lookup Input].Columns[lk_migrationid]"
                       cachedDataType="i8"
                       cachedName="lk_migrationid"
-                      lineageId="Package\DF - RFQLine\LookupKey.Outputs[Derived Column Output].Columns[lk_migrationid]">
+                      lineageId="Package\DF - RFQLine (LD)\LookupKey.Outputs[Derived Column Output].Columns[lk_migrationid]">
                       <properties>
                         <property
                           dataType="System.String"
@@ -3912,17 +3945,17 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
               </inputs>
               <outputs>
                 <output
-                  refId="Package\DF - RFQLine\Lookup RFQLINE.Outputs[Lookup Match Output]"
+                  refId="Package\DF - RFQLine (LD)\Lookup RFQLINE.Outputs[Lookup Match Output]"
                   errorOrTruncationOperation="Lookup"
                   exclusionGroup="1"
                   name="Lookup Match Output"
-                  synchronousInputId="Package\DF - RFQLine\Lookup RFQLINE.Inputs[Lookup Input]">
+                  synchronousInputId="Package\DF - RFQLine (LD)\Lookup RFQLINE.Inputs[Lookup Input]">
                   <outputColumns>
                     <outputColumn
-                      refId="Package\DF - RFQLine\Lookup RFQLINE.Outputs[Lookup Match Output].Columns[rfqlineid]"
+                      refId="Package\DF - RFQLine (LD)\Lookup RFQLINE.Outputs[Lookup Match Output].Columns[rfqlineid]"
                       dataType="i8"
                       errorOrTruncationOperation="Copy Column"
-                      lineageId="Package\DF - RFQLine\Lookup RFQLINE.Outputs[Lookup Match Output].Columns[rfqlineid]"
+                      lineageId="Package\DF - RFQLine (LD)\Lookup RFQLINE.Outputs[Lookup Match Output].Columns[rfqlineid]"
                       name="rfqlineid"
                       truncationRowDisposition="FailComponent">
                       <properties>
@@ -3936,30 +3969,30 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
                   <externalMetadataColumns />
                 </output>
                 <output
-                  refId="Package\DF - RFQLine\Lookup RFQLINE.Outputs[Lookup No Match Output]"
+                  refId="Package\DF - RFQLine (LD)\Lookup RFQLINE.Outputs[Lookup No Match Output]"
                   description="The Lookup output that handles rows with no matching entries in the reference dataset. Use this output when the NoMatchBehavior property is set to &quot;Send rows with no matching entries to the no match output.&quot;"
                   exclusionGroup="1"
                   name="Lookup No Match Output"
-                  synchronousInputId="Package\DF - RFQLine\Lookup RFQLINE.Inputs[Lookup Input]">
+                  synchronousInputId="Package\DF - RFQLine (LD)\Lookup RFQLINE.Inputs[Lookup Input]">
                   <externalMetadataColumns />
                 </output>
                 <output
-                  refId="Package\DF - RFQLine\Lookup RFQLINE.Outputs[Lookup Error Output]"
+                  refId="Package\DF - RFQLine (LD)\Lookup RFQLINE.Outputs[Lookup Error Output]"
                   exclusionGroup="1"
                   isErrorOut="true"
                   name="Lookup Error Output"
-                  synchronousInputId="Package\DF - RFQLine\Lookup RFQLINE.Inputs[Lookup Input]">
+                  synchronousInputId="Package\DF - RFQLine (LD)\Lookup RFQLINE.Inputs[Lookup Input]">
                   <outputColumns>
                     <outputColumn
-                      refId="Package\DF - RFQLine\Lookup RFQLINE.Outputs[Lookup Error Output].Columns[ErrorCode]"
+                      refId="Package\DF - RFQLine (LD)\Lookup RFQLINE.Outputs[Lookup Error Output].Columns[ErrorCode]"
                       dataType="i4"
-                      lineageId="Package\DF - RFQLine\Lookup RFQLINE.Outputs[Lookup Error Output].Columns[ErrorCode]"
+                      lineageId="Package\DF - RFQLine (LD)\Lookup RFQLINE.Outputs[Lookup Error Output].Columns[ErrorCode]"
                       name="ErrorCode"
                       specialFlags="1" />
                     <outputColumn
-                      refId="Package\DF - RFQLine\Lookup RFQLINE.Outputs[Lookup Error Output].Columns[ErrorColumn]"
+                      refId="Package\DF - RFQLine (LD)\Lookup RFQLINE.Outputs[Lookup Error Output].Columns[ErrorColumn]"
                       dataType="i4"
-                      lineageId="Package\DF - RFQLine\Lookup RFQLINE.Outputs[Lookup Error Output].Columns[ErrorColumn]"
+                      lineageId="Package\DF - RFQLine (LD)\Lookup RFQLINE.Outputs[Lookup Error Output].Columns[ErrorColumn]"
                       name="ErrorColumn"
                       specialFlags="2" />
                   </outputColumns>
@@ -3968,7 +4001,7 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
               </outputs>
             </component>
             <component
-              refId="Package\DF - RFQLine\LookupKey"
+              refId="Package\DF - RFQLine (LD)\LookupKey"
               componentClassID="Microsoft.DerivedColumn"
               contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
               description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
@@ -3976,49 +4009,49 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
               usesDispositions="true">
               <inputs>
                 <input
-                  refId="Package\DF - RFQLine\LookupKey.Inputs[Derived Column Input]"
+                  refId="Package\DF - RFQLine (LD)\LookupKey.Inputs[Derived Column Input]"
                   description="Input to the Derived Column Transformation"
                   name="Derived Column Input">
                   <inputColumns>
                     <inputColumn
-                      refId="Package\DF - RFQLine\LookupKey.Inputs[Derived Column Input].Columns[DEVIS_CD]"
+                      refId="Package\DF - RFQLine (LD)\LookupKey.Inputs[Derived Column Input].Columns[DEVIS_CD]"
                       cachedCodepage="1252"
                       cachedDataType="str"
                       cachedLength="13"
                       cachedName="DEVIS_CD"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[DEVIS_CD]" />
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[DEVIS_CD]" />
                     <inputColumn
-                      refId="Package\DF - RFQLine\LookupKey.Inputs[Derived Column Input].Columns[ITEM_CD]"
+                      refId="Package\DF - RFQLine (LD)\LookupKey.Inputs[Derived Column Input].Columns[ITEM_CD]"
                       cachedCodepage="1252"
                       cachedDataType="str"
                       cachedLength="20"
                       cachedName="ITEM_CD"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_CD]" />
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_CD]" />
                     <inputColumn
-                      refId="Package\DF - RFQLine\LookupKey.Inputs[Derived Column Input].Columns[PK_DV_ITEMS]"
+                      refId="Package\DF - RFQLine (LD)\LookupKey.Inputs[Derived Column Input].Columns[PK_DV_ITEMS]"
                       cachedDataType="i4"
                       cachedName="PK_DV_ITEMS"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DV_ITEMS]" />
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DV_ITEMS]" />
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
               </inputs>
               <outputs>
                 <output
-                  refId="Package\DF - RFQLine\LookupKey.Outputs[Derived Column Output]"
+                  refId="Package\DF - RFQLine (LD)\LookupKey.Outputs[Derived Column Output]"
                   description="Default Output of the Derived Column Transformation"
                   exclusionGroup="1"
                   name="Derived Column Output"
-                  synchronousInputId="Package\DF - RFQLine\LookupKey.Inputs[Derived Column Input]">
+                  synchronousInputId="Package\DF - RFQLine (LD)\LookupKey.Inputs[Derived Column Input]">
                   <outputColumns>
                     <outputColumn
-                      refId="Package\DF - RFQLine\LookupKey.Outputs[Derived Column Output].Columns[lk_rfqnum]"
+                      refId="Package\DF - RFQLine (LD)\LookupKey.Outputs[Derived Column Output].Columns[lk_rfqnum]"
                       codePage="1252"
                       dataType="str"
                       errorOrTruncationOperation="Computation"
                       errorRowDisposition="FailComponent"
                       length="20"
-                      lineageId="Package\DF - RFQLine\LookupKey.Outputs[Derived Column Output].Columns[lk_rfqnum]"
+                      lineageId="Package\DF - RFQLine (LD)\LookupKey.Outputs[Derived Column Output].Columns[lk_rfqnum]"
                       name="lk_rfqnum"
                       truncationRowDisposition="FailComponent">
                       <properties>
@@ -4026,7 +4059,7 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">(DT_STR,20,1252)#{Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[DEVIS_CD]}</property>
+                          name="Expression">(DT_STR,20,1252)#{Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[DEVIS_CD]}</property>
                         <property
                           containsID="true"
                           dataType="System.String"
@@ -4036,13 +4069,13 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
-                      refId="Package\DF - RFQLine\LookupKey.Outputs[Derived Column Output].Columns[lk_itemnum]"
+                      refId="Package\DF - RFQLine (LD)\LookupKey.Outputs[Derived Column Output].Columns[lk_itemnum]"
                       codePage="1252"
                       dataType="str"
                       errorOrTruncationOperation="Computation"
                       errorRowDisposition="FailComponent"
                       length="20"
-                      lineageId="Package\DF - RFQLine\LookupKey.Outputs[Derived Column Output].Columns[lk_itemnum]"
+                      lineageId="Package\DF - RFQLine (LD)\LookupKey.Outputs[Derived Column Output].Columns[lk_itemnum]"
                       name="lk_itemnum"
                       truncationRowDisposition="FailComponent">
                       <properties>
@@ -4050,7 +4083,7 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">(DT_STR,20,1252)#{Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_CD]}</property>
+                          name="Expression">(DT_STR,20,1252)#{Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_CD]}</property>
                         <property
                           containsID="true"
                           dataType="System.String"
@@ -4060,11 +4093,11 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
-                      refId="Package\DF - RFQLine\LookupKey.Outputs[Derived Column Output].Columns[lk_migrationid]"
+                      refId="Package\DF - RFQLine (LD)\LookupKey.Outputs[Derived Column Output].Columns[lk_migrationid]"
                       dataType="i8"
                       errorOrTruncationOperation="Computation"
                       errorRowDisposition="FailComponent"
-                      lineageId="Package\DF - RFQLine\LookupKey.Outputs[Derived Column Output].Columns[lk_migrationid]"
+                      lineageId="Package\DF - RFQLine (LD)\LookupKey.Outputs[Derived Column Output].Columns[lk_migrationid]"
                       name="lk_migrationid"
                       truncationRowDisposition="FailComponent">
                       <properties>
@@ -4072,7 +4105,7 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">(DT_I8)#{Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DV_ITEMS]}</property>
+                          name="Expression">(DT_I8)#{Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DV_ITEMS]}</property>
                         <property
                           containsID="true"
                           dataType="System.String"
@@ -4085,23 +4118,23 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
                   <externalMetadataColumns />
                 </output>
                 <output
-                  refId="Package\DF - RFQLine\LookupKey.Outputs[Derived Column Error Output]"
+                  refId="Package\DF - RFQLine (LD)\LookupKey.Outputs[Derived Column Error Output]"
                   description="Error Output of the Derived Column Transformation"
                   exclusionGroup="1"
                   isErrorOut="true"
                   name="Derived Column Error Output"
-                  synchronousInputId="Package\DF - RFQLine\LookupKey.Inputs[Derived Column Input]">
+                  synchronousInputId="Package\DF - RFQLine (LD)\LookupKey.Inputs[Derived Column Input]">
                   <outputColumns>
                     <outputColumn
-                      refId="Package\DF - RFQLine\LookupKey.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      refId="Package\DF - RFQLine (LD)\LookupKey.Outputs[Derived Column Error Output].Columns[ErrorCode]"
                       dataType="i4"
-                      lineageId="Package\DF - RFQLine\LookupKey.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      lineageId="Package\DF - RFQLine (LD)\LookupKey.Outputs[Derived Column Error Output].Columns[ErrorCode]"
                       name="ErrorCode"
                       specialFlags="1" />
                     <outputColumn
-                      refId="Package\DF - RFQLine\LookupKey.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      refId="Package\DF - RFQLine (LD)\LookupKey.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
                       dataType="i4"
-                      lineageId="Package\DF - RFQLine\LookupKey.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      lineageId="Package\DF - RFQLine (LD)\LookupKey.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
                       name="ErrorColumn"
                       specialFlags="2" />
                   </outputColumns>
@@ -4110,76 +4143,76 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
               </outputs>
             </component>
             <component
-              refId="Package\DF - RFQLine\Multicast"
+              refId="Package\DF - RFQLine (LD)\Multicast"
               componentClassID="Microsoft.Multicast"
               contactInfo="Multicast;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
               description="Distributes every input row to every row in one or more outputs. For example, branch your data flow to make a copy of data so that some values can be masked before sharing with external partners."
               name="Multicast">
               <inputs>
                 <input
-                  refId="Package\DF - RFQLine\Multicast.Inputs[Multicast Input 1]"
+                  refId="Package\DF - RFQLine (LD)\Multicast.Inputs[Multicast Input 1]"
                   name="Multicast Input 1">
                   <externalMetadataColumns />
                 </input>
               </inputs>
               <outputs>
                 <output
-                  refId="Package\DF - RFQLine\Multicast.Outputs[Multicast Output 2]"
+                  refId="Package\DF - RFQLine (LD)\Multicast.Outputs[Multicast Output 2]"
                   deleteOutputOnPathDetached="true"
                   name="Multicast Output 2"
-                  synchronousInputId="Package\DF - RFQLine\Multicast.Inputs[Multicast Input 1]">
+                  synchronousInputId="Package\DF - RFQLine (LD)\Multicast.Inputs[Multicast Input 1]">
                   <externalMetadataColumns />
                 </output>
                 <output
-                  refId="Package\DF - RFQLine\Multicast.Outputs[Multicast Output 1]"
+                  refId="Package\DF - RFQLine (LD)\Multicast.Outputs[Multicast Output 1]"
                   deleteOutputOnPathDetached="true"
                   name="Multicast Output 1"
-                  synchronousInputId="Package\DF - RFQLine\Multicast.Inputs[Multicast Input 1]">
+                  synchronousInputId="Package\DF - RFQLine (LD)\Multicast.Inputs[Multicast Input 1]">
                   <externalMetadataColumns />
                 </output>
                 <output
-                  refId="Package\DF - RFQLine\Multicast.Outputs[Multicast Output 3]"
+                  refId="Package\DF - RFQLine (LD)\Multicast.Outputs[Multicast Output 3]"
                   dangling="true"
                   deleteOutputOnPathDetached="true"
                   name="Multicast Output 3"
-                  synchronousInputId="Package\DF - RFQLine\Multicast.Inputs[Multicast Input 1]">
+                  synchronousInputId="Package\DF - RFQLine (LD)\Multicast.Inputs[Multicast Input 1]">
                   <externalMetadataColumns />
                 </output>
               </outputs>
             </component>
             <component
-              refId="Package\DF - RFQLine\Multicast 1"
+              refId="Package\DF - RFQLine (LD)\Multicast 1"
               componentClassID="Microsoft.Multicast"
               contactInfo="Multicast;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
               description="Distributes every input row to every row in one or more outputs. For example, branch your data flow to make a copy of data so that some values can be masked before sharing with external partners."
               name="Multicast 1">
               <inputs>
                 <input
-                  refId="Package\DF - RFQLine\Multicast 1.Inputs[Multicast Input 1]"
+                  refId="Package\DF - RFQLine (LD)\Multicast 1.Inputs[Multicast Input 1]"
                   name="Multicast Input 1">
                   <externalMetadataColumns />
                 </input>
               </inputs>
               <outputs>
                 <output
-                  refId="Package\DF - RFQLine\Multicast 1.Outputs[Multicast Output 1]"
+                  refId="Package\DF - RFQLine (LD)\Multicast 1.Outputs[Multicast Output 1]"
                   deleteOutputOnPathDetached="true"
                   name="Multicast Output 1"
-                  synchronousInputId="Package\DF - RFQLine\Multicast 1.Inputs[Multicast Input 1]">
+                  synchronousInputId="Package\DF - RFQLine (LD)\Multicast 1.Inputs[Multicast Input 1]">
                   <externalMetadataColumns />
                 </output>
                 <output
-                  refId="Package\DF - RFQLine\Multicast 1.Outputs[Multicast Output 3]"
+                  refId="Package\DF - RFQLine (LD)\Multicast 1.Outputs[Multicast Output 3]"
                   dangling="true"
                   deleteOutputOnPathDetached="true"
                   name="Multicast Output 3"
-                  synchronousInputId="Package\DF - RFQLine\Multicast 1.Inputs[Multicast Input 1]">
+                  synchronousInputId="Package\DF - RFQLine (LD)\Multicast 1.Inputs[Multicast Input 1]">
                   <externalMetadataColumns />
                 </output>
               </outputs>
             </component>
             <component
-              refId="Package\DF - RFQLine\OLE DB Destination"
+              refId="Package\DF - RFQLine (LD)\OLE DB Destination"
               componentClassID="Microsoft.OLEDBDestination"
               contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
               description="OLE DB Destination"
@@ -4236,7 +4269,7 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
               </properties>
               <connections>
                 <connection
-                  refId="Package\DF - RFQLine\OLE DB Destination.Connections[OleDbConnection]"
+                  refId="Package\DF - RFQLine (LD)\OLE DB Destination.Connections[OleDbConnection]"
                   connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
                   connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
                   description="The OLE DB runtime connection used to access the database."
@@ -4244,148 +4277,148 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
               </connections>
               <inputs>
                 <input
-                  refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                  refId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input]"
                   errorOrTruncationOperation="Insert"
                   errorRowDisposition="FailComponent"
                   hasSideEffects="true"
                   name="OLE DB Destination Input">
                   <inputColumns>
                     <inputColumn
-                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_ldkey]"
+                      refId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_ldkey]"
                       cachedDataType="i8"
                       cachedName="v_ldkey"
-                      externalMetadataColumnId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LDKEY]"
-                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_ldkey]" />
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LDKEY]"
+                      lineageId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output].Columns[v_ldkey]" />
                     <inputColumn
-                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_ldownertable]"
+                      refId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_ldownertable]"
                       cachedCodepage="1252"
                       cachedDataType="str"
                       cachedLength="20"
                       cachedName="v_ldownertable"
-                      externalMetadataColumnId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LDOWNERTABLE]"
-                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_ldownertable]" />
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LDOWNERTABLE]"
+                      lineageId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output].Columns[v_ldownertable]" />
                     <inputColumn
-                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_ldownercol]"
+                      refId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_ldownercol]"
                       cachedCodepage="1252"
                       cachedDataType="str"
                       cachedLength="20"
                       cachedName="v_ldownercol"
-                      externalMetadataColumnId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LDOWNERCOL]"
-                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_ldownercol]" />
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LDOWNERCOL]"
+                      lineageId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output].Columns[v_ldownercol]" />
                     <inputColumn
-                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_langcode]"
+                      refId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_langcode]"
                       cachedCodepage="1252"
                       cachedDataType="str"
                       cachedLength="4"
                       cachedName="v_langcode"
-                      externalMetadataColumnId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LANGCODE]"
-                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_langcode]" />
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LANGCODE]"
+                      lineageId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output].Columns[v_langcode]" />
                     <inputColumn
-                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_longdescriptionid]"
+                      refId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_longdescriptionid]"
                       cachedDataType="i8"
                       cachedName="v_longdescriptionid"
-                      externalMetadataColumnId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LONGDESCRIPTIONID]"
-                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_longdescriptionid]" />
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LONGDESCRIPTIONID]"
+                      lineageId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output].Columns[v_longdescriptionid]" />
                     <inputColumn
-                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_contentuid]"
+                      refId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_contentuid]"
                       cachedDataType="i8"
                       cachedName="v_contentuid"
-                      externalMetadataColumnId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CONTENTUID]"
-                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_contentuid]" />
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CONTENTUID]"
+                      lineageId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output].Columns[v_contentuid]" />
                     <inputColumn
-                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PK_DV_RMK]"
+                      refId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PK_DV_RMK]"
                       cachedDataType="i4"
                       cachedName="PK_DV_RMK"
-                      externalMetadataColumnId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONID]"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DV_RMK]" />
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONID]"
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DV_RMK]" />
                     <inputColumn
-                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[V_MIGRATIONDATE]"
+                      refId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[V_MIGRATIONDATE]"
                       cachedDataType="dbTimeStamp"
                       cachedName="V_MIGRATIONDATE"
-                      externalMetadataColumnId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
-                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[V_MIGRATIONDATE]" />
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
+                      lineageId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output].Columns[V_MIGRATIONDATE]" />
                     <inputColumn
-                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[V_MIGRATIONSOURCE]"
+                      refId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[V_MIGRATIONSOURCE]"
                       cachedCodepage="1252"
                       cachedDataType="str"
                       cachedLength="16"
                       cachedName="V_MIGRATIONSOURCE"
-                      externalMetadataColumnId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONSOURCE]"
-                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[V_MIGRATIONSOURCE]" />
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONSOURCE]"
+                      lineageId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output].Columns[V_MIGRATIONSOURCE]" />
                     <inputColumn
-                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DEV_TEXT]"
+                      refId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DEV_TEXT]"
                       cachedCodepage="1252"
                       cachedDataType="text"
                       cachedName="DEV_TEXT"
-                      externalMetadataColumnId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONVALUE3]"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[DEV_TEXT]" />
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONVALUE3]"
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[DEV_TEXT]" />
                     <inputColumn
-                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_ldtext]"
+                      refId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_ldtext]"
                       cachedCodepage="1252"
                       cachedDataType="text"
                       cachedName="v_ldtext"
-                      externalMetadataColumnId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LDTEXT]"
-                      lineageId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output].Columns[v_ldtext]" />
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LDTEXT]"
+                      lineageId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output].Columns[v_ldtext]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LDKEY]"
+                      refId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LDKEY]"
                       dataType="i8"
                       name="LDKEY" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LDOWNERTABLE]"
+                      refId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LDOWNERTABLE]"
                       codePage="1252"
                       dataType="str"
                       length="30"
                       name="LDOWNERTABLE" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LDOWNERCOL]"
+                      refId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LDOWNERCOL]"
                       codePage="1252"
                       dataType="str"
                       length="30"
                       name="LDOWNERCOL" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LDTEXT]"
+                      refId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LDTEXT]"
                       codePage="1252"
                       dataType="text"
                       name="LDTEXT" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LANGCODE]"
+                      refId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LANGCODE]"
                       codePage="1252"
                       dataType="str"
                       length="4"
                       name="LANGCODE" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LONGDESCRIPTIONID]"
+                      refId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LONGDESCRIPTIONID]"
                       dataType="i8"
                       name="LONGDESCRIPTIONID" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CONTENTUID]"
+                      refId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CONTENTUID]"
                       codePage="1252"
                       dataType="str"
                       length="50"
                       name="CONTENTUID" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ROWSTAMP]"
+                      refId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ROWSTAMP]"
                       dataType="i8"
                       name="ROWSTAMP" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONID]"
+                      refId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONID]"
                       dataType="i8"
                       name="STE_MIGRATIONID" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
+                      refId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
                       dataType="dbTimeStamp2"
                       name="STE_MIGRATIONDATE"
                       scale="7" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONVALUE3]"
+                      refId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONVALUE3]"
                       codePage="1252"
                       dataType="text"
                       name="STE_MIGRATIONVALUE3" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONSOURCE]"
+                      refId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONSOURCE]"
                       codePage="1252"
                       dataType="str"
                       length="20"
@@ -4395,22 +4428,22 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
               </inputs>
               <outputs>
                 <output
-                  refId="Package\DF - RFQLine\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                  refId="Package\DF - RFQLine (LD)\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
                   exclusionGroup="1"
                   isErrorOut="true"
                   name="OLE DB Destination Error Output"
-                  synchronousInputId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input]">
+                  synchronousInputId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input]">
                   <outputColumns>
                     <outputColumn
-                      refId="Package\DF - RFQLine\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      refId="Package\DF - RFQLine (LD)\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
                       dataType="i4"
-                      lineageId="Package\DF - RFQLine\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      lineageId="Package\DF - RFQLine (LD)\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
                       name="ErrorCode"
                       specialFlags="1" />
                     <outputColumn
-                      refId="Package\DF - RFQLine\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      refId="Package\DF - RFQLine (LD)\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
                       dataType="i4"
-                      lineageId="Package\DF - RFQLine\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      lineageId="Package\DF - RFQLine (LD)\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
                       name="ErrorColumn"
                       specialFlags="2" />
                   </outputColumns>
@@ -4419,7 +4452,7 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
               </outputs>
             </component>
             <component
-              refId="Package\DF - RFQLine\Oracle Source"
+              refId="Package\DF - RFQLine (LD)\Oracle Source"
               componentClassID="Microsoft.SSISOracleSrc"
               description="Oracle Source"
               name="Oracle Source"
@@ -4481,7 +4514,7 @@ ORDER BY d.PK_DEVIS, COALESCE(n.NSITEM_CD, i.ITEM_CD);</property>
               </properties>
               <connections>
                 <connection
-                  refId="Package\DF - RFQLine\Oracle Source.Connections[ORACLEConnection]"
+                  refId="Package\DF - RFQLine (LD)\Oracle Source.Connections[ORACLEConnection]"
                   connectionManagerID="{1BBC9476-D9E4-4553-8563-89CF216CBE10}:external"
                   connectionManagerRefId="Project.ConnectionManagers[Oracle Connection Manager]"
                   description="The ORACLE runtime connection used to access the database."
@@ -4489,172 +4522,172 @@ ORDER BY d.PK_DEVIS, COALESCE(n.NSITEM_CD, i.ITEM_CD);</property>
               </connections>
               <outputs>
                 <output
-                  refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output]"
+                  refId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output]"
                   errorRowDisposition="FailComponent"
                   name="Oracle Source Output"
                   truncationRowDisposition="FailComponent">
                   <outputColumns>
                     <outputColumn
-                      refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DEVIS]"
+                      refId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DEVIS]"
                       dataType="i4"
-                      externalMetadataColumnId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DEVIS]"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DEVIS]"
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DEVIS]"
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DEVIS]"
                       name="PK_DEVIS" />
                     <outputColumn
-                      refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[DEVIS_CD]"
+                      refId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[DEVIS_CD]"
                       codePage="1252"
                       dataType="str"
-                      externalMetadataColumnId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DEVIS_CD]"
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DEVIS_CD]"
                       length="13"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[DEVIS_CD]"
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[DEVIS_CD]"
                       name="DEVIS_CD" />
                     <outputColumn
-                      refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DV_ITEMS]"
+                      refId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DV_ITEMS]"
                       dataType="i4"
-                      externalMetadataColumnId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DV_ITEMS]"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DV_ITEMS]"
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DV_ITEMS]"
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DV_ITEMS]"
                       name="PK_DV_ITEMS" />
                     <outputColumn
-                      refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_CD]"
+                      refId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_CD]"
                       codePage="1252"
                       dataType="str"
-                      externalMetadataColumnId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ITEM_CD]"
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ITEM_CD]"
                       length="20"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_CD]"
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_CD]"
                       name="ITEM_CD" />
                     <outputColumn
-                      refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[LINENUM]"
+                      refId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[LINENUM]"
                       dataType="r8"
-                      externalMetadataColumnId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[LINENUM]"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[LINENUM]"
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[LINENUM]"
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[LINENUM]"
                       name="LINENUM" />
                     <outputColumn
-                      refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DV_RMK]"
+                      refId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DV_RMK]"
                       dataType="i4"
-                      externalMetadataColumnId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DV_RMK]"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DV_RMK]"
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DV_RMK]"
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DV_RMK]"
                       name="PK_DV_RMK" />
                     <outputColumn
-                      refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[S_DV_NS_DESC]"
+                      refId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[S_DV_NS_DESC]"
                       dataType="i4"
-                      externalMetadataColumnId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_DV_NS_DESC]"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[S_DV_NS_DESC]"
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_DV_NS_DESC]"
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[S_DV_NS_DESC]"
                       name="S_DV_NS_DESC" />
                     <outputColumn
-                      refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[DEV_TEXT]"
+                      refId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[DEV_TEXT]"
                       codePage="1252"
                       dataType="text"
-                      externalMetadataColumnId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DEV_TEXT]"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[DEV_TEXT]"
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DEV_TEXT]"
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].Columns[DEV_TEXT]"
                       name="DEV_TEXT" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DEVIS]"
+                      refId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DEVIS]"
                       dataType="i4"
                       name="PK_DEVIS" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DEVIS_CD]"
+                      refId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DEVIS_CD]"
                       codePage="1252"
                       dataType="str"
                       length="13"
                       name="DEVIS_CD" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DV_ITEMS]"
+                      refId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DV_ITEMS]"
                       dataType="i4"
                       name="PK_DV_ITEMS" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ITEM_CD]"
+                      refId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ITEM_CD]"
                       codePage="1252"
                       dataType="str"
                       length="20"
                       name="ITEM_CD" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[LINENUM]"
+                      refId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[LINENUM]"
                       dataType="r8"
                       name="LINENUM" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DV_RMK]"
+                      refId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DV_RMK]"
                       dataType="i4"
                       name="PK_DV_RMK" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_DV_NS_DESC]"
+                      refId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_DV_NS_DESC]"
                       dataType="i4"
                       name="S_DV_NS_DESC" />
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DEV_TEXT]"
+                      refId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DEV_TEXT]"
                       dataType="image"
                       name="DEV_TEXT" />
                   </externalMetadataColumns>
                 </output>
                 <output
-                  refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Error Output]"
+                  refId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Error Output]"
                   isErrorOut="true"
                   name="Oracle Source Error Output">
                   <outputColumns>
                     <outputColumn
-                      refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_DEVIS]"
+                      refId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_DEVIS]"
                       dataType="i4"
-                      externalMetadataColumnId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DEVIS]"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_DEVIS]"
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DEVIS]"
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_DEVIS]"
                       name="PK_DEVIS" />
                     <outputColumn
-                      refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[DEVIS_CD]"
+                      refId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Error Output].Columns[DEVIS_CD]"
                       codePage="1252"
                       dataType="str"
-                      externalMetadataColumnId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DEVIS_CD]"
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DEVIS_CD]"
                       length="13"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[DEVIS_CD]"
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Error Output].Columns[DEVIS_CD]"
                       name="DEVIS_CD" />
                     <outputColumn
-                      refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_DV_ITEMS]"
+                      refId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_DV_ITEMS]"
                       dataType="i4"
-                      externalMetadataColumnId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DV_ITEMS]"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_DV_ITEMS]"
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DV_ITEMS]"
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_DV_ITEMS]"
                       name="PK_DV_ITEMS" />
                     <outputColumn
-                      refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[ITEM_CD]"
+                      refId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Error Output].Columns[ITEM_CD]"
                       codePage="1252"
                       dataType="str"
-                      externalMetadataColumnId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ITEM_CD]"
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ITEM_CD]"
                       length="20"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[ITEM_CD]"
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Error Output].Columns[ITEM_CD]"
                       name="ITEM_CD" />
                     <outputColumn
-                      refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[LINENUM]"
+                      refId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Error Output].Columns[LINENUM]"
                       dataType="r8"
-                      externalMetadataColumnId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[LINENUM]"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[LINENUM]"
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[LINENUM]"
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Error Output].Columns[LINENUM]"
                       name="LINENUM" />
                     <outputColumn
-                      refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_DV_RMK]"
+                      refId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_DV_RMK]"
                       dataType="i4"
-                      externalMetadataColumnId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DV_RMK]"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_DV_RMK]"
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DV_RMK]"
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_DV_RMK]"
                       name="PK_DV_RMK" />
                     <outputColumn
-                      refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[S_DV_NS_DESC]"
+                      refId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Error Output].Columns[S_DV_NS_DESC]"
                       dataType="i4"
-                      externalMetadataColumnId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_DV_NS_DESC]"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[S_DV_NS_DESC]"
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_DV_NS_DESC]"
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Error Output].Columns[S_DV_NS_DESC]"
                       name="S_DV_NS_DESC" />
                     <outputColumn
-                      refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[DEV_TEXT]"
+                      refId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Error Output].Columns[DEV_TEXT]"
                       dataType="image"
-                      externalMetadataColumnId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DEV_TEXT]"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[DEV_TEXT]"
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DEV_TEXT]"
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Error Output].Columns[DEV_TEXT]"
                       name="DEV_TEXT" />
                     <outputColumn
-                      refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
+                      refId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       name="ErrorCode"
                       specialFlags="1" />
                     <outputColumn
-                      refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorColumn]"
+                      refId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorColumn]"
                       dataType="i4"
-                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorColumn]"
+                      lineageId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorColumn]"
                       name="ErrorColumn"
                       specialFlags="2" />
                   </outputColumns>
@@ -4663,7 +4696,7 @@ ORDER BY d.PK_DEVIS, COALESCE(n.NSITEM_CD, i.ITEM_CD);</property>
               </outputs>
             </component>
             <component
-              refId="Package\DF - RFQLine\Running Number"
+              refId="Package\DF - RFQLine (LD)\Running Number"
               componentClassID="Microsoft.ManagedComponentHost"
               contactInfo="Includes and runs custom script code. For example, apply a business rule that limits the range of valid values in an &quot;income&quot; column or add values in two columns and calculate the average of the sum.;Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;13"
               description="Includes and runs custom script code. For example, apply a business rule that limits the range of valid values in an &quot;income&quot; column or add values in two columns and calculate the average of the sum."
@@ -5434,7 +5467,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               </properties>
               <inputs>
                 <input
-                  refId="Package\DF - RFQLine\Running Number.Inputs[Input 0]"
+                  refId="Package\DF - RFQLine (LD)\Running Number.Inputs[Input 0]"
                   hasSideEffects="true"
                   name="Input 0">
                   <externalMetadataColumns />
@@ -5442,14 +5475,14 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               </inputs>
               <outputs>
                 <output
-                  refId="Package\DF - RFQLine\Running Number.Outputs[Output 0]"
+                  refId="Package\DF - RFQLine (LD)\Running Number.Outputs[Output 0]"
                   name="Output 0"
-                  synchronousInputId="Package\DF - RFQLine\Running Number.Inputs[Input 0]">
+                  synchronousInputId="Package\DF - RFQLine (LD)\Running Number.Inputs[Input 0]">
                   <outputColumns>
                     <outputColumn
-                      refId="Package\DF - RFQLine\Running Number.Outputs[Output 0].Columns[RowNo]"
+                      refId="Package\DF - RFQLine (LD)\Running Number.Outputs[Output 0].Columns[RowNo]"
                       dataType="i4"
-                      lineageId="Package\DF - RFQLine\Running Number.Outputs[Output 0].Columns[RowNo]"
+                      lineageId="Package\DF - RFQLine (LD)\Running Number.Outputs[Output 0].Columns[RowNo]"
                       name="RowNo" />
                   </outputColumns>
                   <externalMetadataColumns />
@@ -5457,7 +5490,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               </outputs>
             </component>
             <component
-              refId="Package\DF - RFQLine\Update hasld column"
+              refId="Package\DF - RFQLine (LD)\Update hasld column"
               componentClassID="Microsoft.OLEDBCommand"
               contactInfo="OLE DB Command;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;2"
               description="Runs an SQL statement for each row in a data flow. For example, call a 'new employee setup' stored procedure for each row in the 'new employees' table. Note: running an SQL statement for each row of a large data flow may take a long time."
@@ -5485,7 +5518,7 @@ where rfqlineid=?</property>
               </properties>
               <connections>
                 <connection
-                  refId="Package\DF - RFQLine\Update hasld column.Connections[OleDbConnection]"
+                  refId="Package\DF - RFQLine (LD)\Update hasld column.Connections[OleDbConnection]"
                   connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
                   connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
                   description="The OLE DB runtime connection used to access the database."
@@ -5493,23 +5526,23 @@ where rfqlineid=?</property>
               </connections>
               <inputs>
                 <input
-                  refId="Package\DF - RFQLine\Update hasld column.Inputs[OLE DB Command Input]"
+                  refId="Package\DF - RFQLine (LD)\Update hasld column.Inputs[OLE DB Command Input]"
                   errorOrTruncationOperation="Command Execution"
                   errorRowDisposition="FailComponent"
                   hasSideEffects="true"
                   name="OLE DB Command Input">
                   <inputColumns>
                     <inputColumn
-                      refId="Package\DF - RFQLine\Update hasld column.Inputs[OLE DB Command Input].Columns[rfqlineid]"
+                      refId="Package\DF - RFQLine (LD)\Update hasld column.Inputs[OLE DB Command Input].Columns[rfqlineid]"
                       cachedDataType="i8"
                       cachedName="rfqlineid"
-                      externalMetadataColumnId="Package\DF - RFQLine\Update hasld column.Inputs[OLE DB Command Input].ExternalColumns[Param_0]"
-                      lineageId="Package\DF - RFQLine\Lookup RFQLINE.Outputs[Lookup Match Output].Columns[rfqlineid]" />
+                      externalMetadataColumnId="Package\DF - RFQLine (LD)\Update hasld column.Inputs[OLE DB Command Input].ExternalColumns[Param_0]"
+                      lineageId="Package\DF - RFQLine (LD)\Lookup RFQLINE.Outputs[Lookup Match Output].Columns[rfqlineid]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
                     <externalMetadataColumn
-                      refId="Package\DF - RFQLine\Update hasld column.Inputs[OLE DB Command Input].ExternalColumns[Param_0]"
+                      refId="Package\DF - RFQLine (LD)\Update hasld column.Inputs[OLE DB Command Input].ExternalColumns[Param_0]"
                       dataType="i8"
                       name="Param_0">
                       <properties>
@@ -5524,29 +5557,29 @@ where rfqlineid=?</property>
               </inputs>
               <outputs>
                 <output
-                  refId="Package\DF - RFQLine\Update hasld column.Outputs[OLE DB Command Output]"
+                  refId="Package\DF - RFQLine (LD)\Update hasld column.Outputs[OLE DB Command Output]"
                   exclusionGroup="1"
                   name="OLE DB Command Output"
-                  synchronousInputId="Package\DF - RFQLine\Update hasld column.Inputs[OLE DB Command Input]">
+                  synchronousInputId="Package\DF - RFQLine (LD)\Update hasld column.Inputs[OLE DB Command Input]">
                   <externalMetadataColumns />
                 </output>
                 <output
-                  refId="Package\DF - RFQLine\Update hasld column.Outputs[OLE DB Command Error Output]"
+                  refId="Package\DF - RFQLine (LD)\Update hasld column.Outputs[OLE DB Command Error Output]"
                   exclusionGroup="1"
                   isErrorOut="true"
                   name="OLE DB Command Error Output"
-                  synchronousInputId="Package\DF - RFQLine\Update hasld column.Inputs[OLE DB Command Input]">
+                  synchronousInputId="Package\DF - RFQLine (LD)\Update hasld column.Inputs[OLE DB Command Input]">
                   <outputColumns>
                     <outputColumn
-                      refId="Package\DF - RFQLine\Update hasld column.Outputs[OLE DB Command Error Output].Columns[ErrorCode]"
+                      refId="Package\DF - RFQLine (LD)\Update hasld column.Outputs[OLE DB Command Error Output].Columns[ErrorCode]"
                       dataType="i4"
-                      lineageId="Package\DF - RFQLine\Update hasld column.Outputs[OLE DB Command Error Output].Columns[ErrorCode]"
+                      lineageId="Package\DF - RFQLine (LD)\Update hasld column.Outputs[OLE DB Command Error Output].Columns[ErrorCode]"
                       name="ErrorCode"
                       specialFlags="1" />
                     <outputColumn
-                      refId="Package\DF - RFQLine\Update hasld column.Outputs[OLE DB Command Error Output].Columns[ErrorColumn]"
+                      refId="Package\DF - RFQLine (LD)\Update hasld column.Outputs[OLE DB Command Error Output].Columns[ErrorColumn]"
                       dataType="i4"
-                      lineageId="Package\DF - RFQLine\Update hasld column.Outputs[OLE DB Command Error Output].Columns[ErrorColumn]"
+                      lineageId="Package\DF - RFQLine (LD)\Update hasld column.Outputs[OLE DB Command Error Output].Columns[ErrorColumn]"
                       name="ErrorColumn"
                       specialFlags="2" />
                   </outputColumns>
@@ -5557,60 +5590,60 @@ where rfqlineid=?</property>
           </components>
           <paths>
             <path
-              refId="Package\DF - RFQLine.Paths[Conditional Split Default Output]"
-              endId="Package\DF - RFQLine\Flat File Destination 1.Inputs[Flat File Destination Input]"
+              refId="Package\DF - RFQLine (LD).Paths[Conditional Split Default Output]"
+              endId="Package\DF - RFQLine (LD)\Flat File Destination 1.Inputs[Flat File Destination Input]"
               name="Conditional Split Default Output"
-              startId="Package\DF - RFQLine\Conditional Split.Outputs[Conditional Split Default Output]" />
+              startId="Package\DF - RFQLine (LD)\Conditional Split.Outputs[Conditional Split Default Output]" />
             <path
-              refId="Package\DF - RFQLine.Paths[Derived Column Output]"
-              endId="Package\DF - RFQLine\Lookup RFQLINE.Inputs[Lookup Input]"
+              refId="Package\DF - RFQLine (LD).Paths[Derived Column Output]"
+              endId="Package\DF - RFQLine (LD)\Lookup RFQLINE.Inputs[Lookup Input]"
               name="Derived Column Output"
-              startId="Package\DF - RFQLine\LookupKey.Outputs[Derived Column Output]" />
+              startId="Package\DF - RFQLine (LD)\LookupKey.Outputs[Derived Column Output]" />
             <path
-              refId="Package\DF - RFQLine.Paths[Derived Column Output1]"
-              endId="Package\DF - RFQLine\Conditional Split.Inputs[Conditional Split Input]"
+              refId="Package\DF - RFQLine (LD).Paths[Derived Column Output1]"
+              endId="Package\DF - RFQLine (LD)\Conditional Split.Inputs[Conditional Split Input]"
               name="Derived Column Output"
-              startId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output]" />
+              startId="Package\DF - RFQLine (LD)\Derived Column.Outputs[Derived Column Output]" />
             <path
-              refId="Package\DF - RFQLine.Paths[LDLENGTH &lt; 32000]"
-              endId="Package\DF - RFQLine\Multicast.Inputs[Multicast Input 1]"
+              refId="Package\DF - RFQLine (LD).Paths[LDLENGTH &lt; 32000]"
+              endId="Package\DF - RFQLine (LD)\Multicast.Inputs[Multicast Input 1]"
               name="LDLENGTH &lt; 32000"
-              startId="Package\DF - RFQLine\Conditional Split.Outputs[LDLENGTH &lt; 32000]" />
+              startId="Package\DF - RFQLine (LD)\Conditional Split.Outputs[LDLENGTH &lt; 32000]" />
             <path
-              refId="Package\DF - RFQLine.Paths[Lookup Match Output]"
-              endId="Package\DF - RFQLine\Derived Column.Inputs[Derived Column Input]"
+              refId="Package\DF - RFQLine (LD).Paths[Lookup Match Output]"
+              endId="Package\DF - RFQLine (LD)\Derived Column.Inputs[Derived Column Input]"
               name="Lookup Match Output"
-              startId="Package\DF - RFQLine\Lookup RFQLINE.Outputs[Lookup Match Output]" />
+              startId="Package\DF - RFQLine (LD)\Lookup RFQLINE.Outputs[Lookup Match Output]" />
             <path
-              refId="Package\DF - RFQLine.Paths[Lookup No Match Output]"
-              endId="Package\DF - RFQLine\Multicast 1.Inputs[Multicast Input 1]"
+              refId="Package\DF - RFQLine (LD).Paths[Lookup No Match Output]"
+              endId="Package\DF - RFQLine (LD)\Multicast 1.Inputs[Multicast Input 1]"
               name="Lookup No Match Output"
-              startId="Package\DF - RFQLine\Lookup RFQLINE.Outputs[Lookup No Match Output]" />
+              startId="Package\DF - RFQLine (LD)\Lookup RFQLINE.Outputs[Lookup No Match Output]" />
             <path
-              refId="Package\DF - RFQLine.Paths[Multicast Output 1]"
-              endId="Package\DF - RFQLine\Flat File Destination.Inputs[Flat File Destination Input]"
+              refId="Package\DF - RFQLine (LD).Paths[Multicast Output 1]"
+              endId="Package\DF - RFQLine (LD)\Flat File Destination.Inputs[Flat File Destination Input]"
               name="Multicast Output 1"
-              startId="Package\DF - RFQLine\Multicast 1.Outputs[Multicast Output 1]" />
+              startId="Package\DF - RFQLine (LD)\Multicast 1.Outputs[Multicast Output 1]" />
             <path
-              refId="Package\DF - RFQLine.Paths[Multicast Output 11]"
-              endId="Package\DF - RFQLine\OLE DB Destination.Inputs[OLE DB Destination Input]"
+              refId="Package\DF - RFQLine (LD).Paths[Multicast Output 11]"
+              endId="Package\DF - RFQLine (LD)\OLE DB Destination.Inputs[OLE DB Destination Input]"
               name="Multicast Output 1"
-              startId="Package\DF - RFQLine\Multicast.Outputs[Multicast Output 1]" />
+              startId="Package\DF - RFQLine (LD)\Multicast.Outputs[Multicast Output 1]" />
             <path
-              refId="Package\DF - RFQLine.Paths[Multicast Output 2]"
-              endId="Package\DF - RFQLine\Update hasld column.Inputs[OLE DB Command Input]"
+              refId="Package\DF - RFQLine (LD).Paths[Multicast Output 2]"
+              endId="Package\DF - RFQLine (LD)\Update hasld column.Inputs[OLE DB Command Input]"
               name="Multicast Output 2"
-              startId="Package\DF - RFQLine\Multicast.Outputs[Multicast Output 2]" />
+              startId="Package\DF - RFQLine (LD)\Multicast.Outputs[Multicast Output 2]" />
             <path
-              refId="Package\DF - RFQLine.Paths[Oracle Source Output]"
-              endId="Package\DF - RFQLine\Running Number.Inputs[Input 0]"
+              refId="Package\DF - RFQLine (LD).Paths[Oracle Source Output]"
+              endId="Package\DF - RFQLine (LD)\Running Number.Inputs[Input 0]"
               name="Oracle Source Output"
-              startId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output]" />
+              startId="Package\DF - RFQLine (LD)\Oracle Source.Outputs[Oracle Source Output]" />
             <path
-              refId="Package\DF - RFQLine.Paths[Output 0]"
-              endId="Package\DF - RFQLine\LookupKey.Inputs[Derived Column Input]"
+              refId="Package\DF - RFQLine (LD).Paths[Output 0]"
+              endId="Package\DF - RFQLine (LD)\LookupKey.Inputs[Derived Column Input]"
               name="Output 0"
-              startId="Package\DF - RFQLine\Running Number.Outputs[Output 0]" />
+              startId="Package\DF - RFQLine (LD)\Running Number.Outputs[Output 0]" />
           </paths>
         </pipeline>
       </DTS:ObjectData>
@@ -5913,12 +5946,12 @@ where rfqlineid=?</property>
       DTS:From="Package\Get Max ID 1"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 8"
-      DTS:To="Package\DF - RFQLine" />
+      DTS:To="Package\DF - RFQLine (LD)" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 9]"
       DTS:CreationName=""
       DTS:DTSID="{C2314B86-9A30-4B26-9BC5-7982BB7BABAB}"
-      DTS:From="Package\DF - RFQLine"
+      DTS:From="Package\DF - RFQLine (LD)"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 9"
       DTS:To="Package\Convert IMAGE To TEXT 1" />
@@ -5948,8 +5981,8 @@ where rfqlineid=?</property>
           Id="Package\DF - RFQ Remark (LD)"
           TopLeft="29.5000000000001,515.9" />
         <NodeLayout
-          Size="155.2,41.6"
-          Id="Package\DF - RFQLine"
+          Size="165.6,41.6"
+          Id="Package\DF - RFQLine (LD)"
           TopLeft="550.333304876256,516.433339721626" />
         <NodeLayout
           Size="134.4,41.6"
@@ -6240,7 +6273,7 @@ where rfqlineid=?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 8]"
-          TopLeft="627.933304876256,456.433339721626">
+          TopLeft="630.533304876256,456.433339721626">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -6262,7 +6295,7 @@ where rfqlineid=?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 9]"
-          TopLeft="627.933304876256,558.033339721626">
+          TopLeft="630.533304876256,558.033339721626">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -6695,17 +6728,17 @@ where rfqlineid=?</property>
       <Property>
         <Name>OverwriteParamsSQLProp</Name>
         <Value
-          type="q2:string">false</Value>
+          type="q2:boolean">false</Value>
       </Property>
       <Property>
         <Name>UsedTableName</Name>
         <Value
-          type="q3:string">"MAXIMO"."RFQ"</Value>
+          type="q3:string"></Value>
       </Property>
       <Property>
         <Name>TableInfoObjectType</Name>
         <Value
-          type="q4:string">0</Value>
+          type="q4:int">0</Value>
       </Property>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -6713,60 +6746,60 @@ where rfqlineid=?</property>
     </Properties>
   </PipelineComponentMetadata>
   <TaskHost
-    design-time-name="Package\DF - RFQLine">
+    design-time-name="Package\DF - RFQLine (LD)">
     <LayoutInfo>
       <GraphLayout
         Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="172.8,41.6"
-          Id="Package\DF - RFQLine\Update hasld column"
+          Id="Package\DF - RFQLine (LD)\Update hasld column"
           TopLeft="492.83332495557,308.399999979337" />
         <NodeLayout
           Size="134.4,41.6"
-          Id="Package\DF - RFQLine\LookupKey"
+          Id="Package\DF - RFQLine (LD)\LookupKey"
           TopLeft="630.666660639975,32" />
         <NodeLayout
           Size="179.2,41.6"
-          Id="Package\DF - RFQLine\Flat File Destination 1"
+          Id="Package\DF - RFQLine (LD)\Flat File Destination 1"
           TopLeft="30.9999995380641,298.666668948862" />
         <NodeLayout
           Size="161.6,41.6"
-          Id="Package\DF - RFQLine\Running Number"
+          Id="Package\DF - RFQLine (LD)\Running Number"
           TopLeft="413.666660639975,29" />
         <NodeLayout
           Size="176,41.6"
-          Id="Package\DF - RFQLine\Flat File Destination"
+          Id="Package\DF - RFQLine (LD)\Flat File Destination"
           TopLeft="860.266660029028,308.999999955297" />
         <NodeLayout
           Size="171.2,41.6"
-          Id="Package\DF - RFQLine\OLE DB Destination"
+          Id="Package\DF - RFQLine (LD)\OLE DB Destination"
           TopLeft="295.833317169713,306.466664997273" />
         <NodeLayout
           Size="158.4,41.6"
-          Id="Package\DF - RFQLine\Derived Column"
+          Id="Package\DF - RFQLine (LD)\Derived Column"
           TopLeft="420.666660639975,130" />
         <NodeLayout
           Size="132,41.6"
-          Id="Package\DF - RFQLine\Multicast 1"
+          Id="Package\DF - RFQLine (LD)\Multicast 1"
           TopLeft="888.066659894917,136.000000044703" />
         <NodeLayout
           Size="148.8,41.6"
-          Id="Package\DF - RFQLine\Oracle Source"
+          Id="Package\DF - RFQLine (LD)\Oracle Source"
           TopLeft="171.166660639975,19.5" />
         <NodeLayout
           Size="123.2,41.6"
-          Id="Package\DF - RFQLine\Multicast"
+          Id="Package\DF - RFQLine (LD)\Multicast"
           TopLeft="423.666660639975,215" />
         <NodeLayout
           Size="153.6,41.6"
-          Id="Package\DF - RFQLine\Conditional Split"
+          Id="Package\DF - RFQLine (LD)\Conditional Split"
           TopLeft="196.666660610173,173" />
         <NodeLayout
           Size="160,41.6"
-          Id="Package\DF - RFQLine\Lookup RFQLINE"
+          Id="Package\DF - RFQLine (LD)\Lookup RFQLINE"
           TopLeft="653.499993927777,132.13333333936" />
         <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Multicast Output 1]"
+          Id="Package\DF - RFQLine (LD).Paths[Multicast Output 1]"
           TopLeft="951.166659961972,177.600000044703">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -6788,43 +6821,43 @@ where rfqlineid=?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Lookup No Match Output]"
+          Id="Package\DF - RFQLine (LD).Paths[Lookup No Match Output]"
           TopLeft="813.499993927777,154.866666692032">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="74.5666659671399,0"
+              EndConnector="74.5666659671401,0"
               Start="0,0"
-              End="67.0666659671399,0">
+              End="67.0666659671401,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="67.0666659671399,0" />
+                    End="67.0666659671401,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="-22.27305373518,5,111.6127734375,11.609375"
+              BoundingBox="-22.2730537351799,5,111.6127734375,11.609375"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Lookup Match Output]"
+          Id="Package\DF - RFQLine (LD).Paths[Lookup Match Output]"
           TopLeft="653.499993927777,151.86666666968">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-74.433333287802,0"
+              EndConnector="-74.4333332878019,0"
               Start="0,0"
-              End="-66.933333287802,0">
+              End="-66.9333332878019,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="-66.933333287802,0" />
+                    End="-66.9333332878019,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -6836,7 +6869,7 @@ where rfqlineid=?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[LDLENGTH &lt; 32000]"
+          Id="Package\DF - RFQLine (LD).Paths[LDLENGTH &lt; 32000]"
           TopLeft="350.266660610173,199.4">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -6872,7 +6905,7 @@ where rfqlineid=?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Derived Column Output1]"
+          Id="Package\DF - RFQLine (LD).Paths[Derived Column Output1]"
           TopLeft="420.666660639975,150.8">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -6906,31 +6939,31 @@ where rfqlineid=?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Derived Column Output]"
+          Id="Package\DF - RFQLine (LD).Paths[Derived Column Output]"
           TopLeft="697.866660639975,73.6">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="10.2999999544686,58.53333333936"
+              EndConnector="35.6333332878019,58.53333333936"
               Start="0,0"
-              End="10.2999999544686,51.03333333936">
+              End="35.6333332878019,51.03333333936">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,30.772277231303" />
+                    End="0,25.26666666968" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,30.772277231303"
-                    Point2="0,34.772277231303"
-                    Point3="4,34.772277231303" />
+                    Point1="0,25.26666666968"
+                    Point2="0,29.26666666968"
+                    Point3="4,29.26666666968" />
                   <mssgle:LineSegment
-                    End="6.2999999544686,34.772277231303" />
+                    End="31.6333332878019,29.26666666968" />
                   <mssgle:CubicBezierSegment
-                    Point1="6.2999999544686,34.772277231303"
-                    Point2="10.2999999544686,34.772277231303"
-                    Point3="10.2999999544686,38.772277231303" />
+                    Point1="31.6333332878019,29.26666666968"
+                    Point2="35.6333332878019,29.26666666968"
+                    Point3="35.6333332878019,33.26666666968" />
                   <mssgle:LineSegment
-                    End="10.2999999544686,51.03333333936" />
+                    End="35.6333332878019,51.03333333936" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -6940,7 +6973,7 @@ where rfqlineid=?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Conditional Split Default Output]"
+          Id="Package\DF - RFQLine (LD).Paths[Conditional Split Default Output]"
           TopLeft="273.466660610173,214.6">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -6976,7 +7009,7 @@ where rfqlineid=?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Output 0]"
+          Id="Package\DF - RFQLine (LD).Paths[Output 0]"
           TopLeft="575.666660639975,51.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -6998,7 +7031,7 @@ where rfqlineid=?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Oracle Source Output]"
+          Id="Package\DF - RFQLine (LD).Paths[Oracle Source Output]"
           TopLeft="320.166660639975,40.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -7032,7 +7065,7 @@ where rfqlineid=?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Multicast Output 2]"
+          Id="Package\DF - RFQLine (LD).Paths[Multicast Output 2]"
           TopLeft="504.466660639975,256.6">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -7066,31 +7099,31 @@ where rfqlineid=?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Multicast Output 11]"
+          Id="Package\DF - RFQLine (LD).Paths[Multicast Output 11]"
           TopLeft="466.066660639975,256.6">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-84.6333434702617,49.8666649972731"
+              EndConnector="-84.6333434702622,49.866664997273"
               Start="0,0"
-              End="-84.6333434702617,42.3666649972731">
+              End="-84.6333434702622,42.366664997273">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,16.3302557296575" />
+                    End="0,16.3302557296574" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,16.3302557296575"
-                    Point2="0,20.3302557296575"
-                    Point3="-4,20.3302557296575" />
+                    Point1="0,16.3302557296574"
+                    Point2="0,20.3302557296574"
+                    Point3="-4,20.3302557296574" />
                   <mssgle:LineSegment
-                    End="-80.6333434702617,20.3302557296575" />
+                    End="-80.6333434702622,20.3302557296574" />
                   <mssgle:CubicBezierSegment
-                    Point1="-80.6333434702617,20.3302557296575"
-                    Point2="-84.6333434702617,20.3302557296575"
-                    Point3="-84.6333434702617,24.3302557296575" />
+                    Point1="-80.6333434702622,20.3302557296574"
+                    Point2="-84.6333434702622,20.3302557296574"
+                    Point3="-84.6333434702622,24.3302557296574" />
                   <mssgle:LineSegment
-                    End="-84.6333434702617,42.3666649972731" />
+                    End="-84.6333434702622,42.366664997273" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -7103,7 +7136,7 @@ where rfqlineid=?</property>
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\DF - RFQLine\Oracle Source">
+    design-time-name="Package\DF - RFQLine (LD)\Oracle Source">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -7111,7 +7144,7 @@ where rfqlineid=?</property>
     </Properties>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
-    design-time-name="Package\DF - RFQLine\OLE DB Destination">
+    design-time-name="Package\DF - RFQLine (LD)\OLE DB Destination">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -7124,7 +7157,7 @@ where rfqlineid=?</property>
     </Properties>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
-    design-time-name="Package\DF - RFQLine\Lookup RFQLINE">
+    design-time-name="Package\DF - RFQLine (LD)\Lookup RFQLINE">
     <Properties>
       <Property>
         <Name>OverwriteParamsSQLProp</Name>
@@ -7134,12 +7167,12 @@ where rfqlineid=?</property>
       <Property>
         <Name>UsedTableName</Name>
         <Value
-          type="q3:string">"MAXIMO"."RFQLINE"</Value>
+          type="q3:string"></Value>
       </Property>
       <Property>
         <Name>TableInfoObjectType</Name>
         <Value
-          type="q4:string">0</Value>
+          type="q4:int">0</Value>
       </Property>
       <Property>
         <Name>DataSourceViewID</Name>

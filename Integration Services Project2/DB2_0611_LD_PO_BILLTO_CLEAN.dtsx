@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0611_LD_PO_BILLTO_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="184"
-  DTS:VersionGUID="{875C34A5-AF98-41B0-8E85-C4C435782D8B}"
+  DTS:VersionBuild="187"
+  DTS:VersionGUID="{B6FE5F16-9F28-45E5-A4D4-1A56705F821A}"
   DTS:VersionMinor="2">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -156,7 +156,7 @@
           <OraConnectionString>SERVER=172.17.123.201:1521/TRN1;USERNAME=coswin;WINAUTH=0;</OraConnectionString>
           <OraPassword
             Sensitive="1"
-            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAzJdgj0t4w0u+dO1tbY5XXQAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAAWtPPc5J2iUCVJ4KMPBCYUrscys2BG2eIJYACWTgjudgAAAAAOgAAAAAIAACAAAAAV8qmOj36QFS5CgauqIYBfN5X2bj9NDkdF9rrTd83rMxAAAACRYSAfx/qK5R65+1OMXu2PQAAAAEQelZ3gEKhj7XWvIp8ehPpYjtZTAgteVv94QD/kLuBUjhFSTfgFdAd2ZPVNtWJixp+NwCo6EqVxTl7KNe7c8xk</OraPassword>
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAzJdgj0t4w0u+dO1tbY5XXQAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAABKo3at8LMGf51+LfQz5yoLLY4FxfjqejY9NY2btntS4QAAAAAOgAAAAAIAACAAAAAy/m8YNpg4yUk5L4k/kaZ0CHOmTNiAsbwqLRR5EyyklhAAAADAfGDU3wRZ9bnJVhFBv4vtQAAAAPS1lkWIQMU1dnrpPKlpoPeln4DX6R08wjDuD9esYp1YSLKmAhW3/yHweoZaaev75LWZi3upxC+eM/UqP4LtP9c</OraPassword>
           <OraRetain>False</OraRetain>
           <OraInitialCatalog></OraInitialCatalog>
           <OraServerName>172.17.123.201:1521/TRN1</OraServerName>
@@ -386,7 +386,7 @@
           <DTS:Password
             DTS:Name="Password"
             Sensitive="1"
-            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAzJdgj0t4w0u+dO1tbY5XXQAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAC3ehtbBqAgnKUy7R/REJZK32VJqkqx3jo48L2cOgXgfwAAAAAOgAAAAAIAACAAAAAb567UKGvNzwY/lNWeFw4z3UR98Q6JMX3G9GufGLRrChAAAACK71LAiP2xKOz70iiY7gW4QAAAAG9UcKwhR0oa7ZEYVcdXnmQLHJ9TkGjbod38tcFIwvXNxZLIPHAEJd6gkFfmWAguXy+OpJy7KjXzZ0X0z9j9CJ0</DTS:Password>
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAzJdgj0t4w0u+dO1tbY5XXQAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAA5vlprxRt9U48/TODXj93mQcxbbGWdXmTxn9RJUc3OkQAAAAAOgAAAAAIAACAAAABTJFig1rGWIA+PRvNSxmV335ntt59sYoxWYMYA6I+GihAAAADiR8psL/BrYzMSLEAyoGm9QAAAAMReURokHhbbCXs8UL5KPcRkGT9KYKOvBECSxaFxqxkVp5yRnBrONDj/j6zvylH8i34jWSreOb5g2E5CCSJyUsk</DTS:Password>
         </DTS:ConnectionManager>
       </DTS:ObjectData>
     </DTS:ConnectionManager>
@@ -1347,14 +1347,18 @@
                   description="Specifies the SQL statement that generates the lookup table."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from "MAXIMO"."PO"</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT POID, STE_MIGRATIONID
+FROM     MAXIMO.PO
+WHERE  (STE_MIGRATIONID IS NOT NULL)</property>
                 <property
                   dataType="System.String"
                   description="Specifies a SQL statement that uses parameters to generate the lookup table."
                   expressionType="Notify"
                   name="SqlCommandParam"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (select * from "MAXIMO"."PO") "refTable"
-where "refTable"."PONUM" = ?</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (SELECT POID, STE_MIGRATIONID
+FROM     MAXIMO.PO
+WHERE  (STE_MIGRATIONID IS NOT NULL)) "refTable"
+where "refTable"."STE_MIGRATIONID" = ?</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the type of connection used to access the reference dataset."
@@ -1385,12 +1389,12 @@ where "refTable"."PONUM" = ?</property>
                 <property
                   dataType="System.String"
                   description="Indicates whether to reference metadata in an XML format."
-                  name="ReferenceMetadataXml">&lt;referenceMetadata&gt;&lt;referenceColumns&gt;&lt;referenceColumn name="PONUM" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="DESCRIPTION" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PURCHASEAGENT" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ORDERDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="REQUIREDDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="FOLLOWUPDATE" dataType="DT_DBDATE" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="POTYPE" dataType="DT_STR" length="12" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ORIGINALPONUM" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STATUS" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STATUSDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="VENDOR" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="CONTACT" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="FREIGHTTERMS" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PAYMENTTERMS" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="SHIPVIA" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="CUSTOMERNUM" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="FOB" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="SHIPTO" dataType="DT_STR" length="30" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="SHIPTOATTN" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="BILLTO" dataType="DT_STR" length="30" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="BILLTOATTN" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="TOTALCOST" dataType="DT_DECIMAL" length="0" precision="12" scale="2" codePage="0"/&gt;&lt;referenceColumn name="CHANGEBY" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="CHANGEDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="PRIORITY" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="HISTORYFLAG" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="PO1" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PO2" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PO3" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PO4" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PO5" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PO6" dataType="DT_DECIMAL" length="0" precision="13" scale="5" codePage="0"/&gt;&lt;referenceColumn name="PO7" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="PO8" dataType="DT_DECIMAL" length="0" precision="15" scale="2" codePage="0"/&gt;&lt;referenceColumn name="PO9" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="PO10" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="VENDELIVERYDATE" dataType="DT_DBDATE" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="RECEIPTS" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="CURRENCYCODE" dataType="DT_STR" length="8" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="EXCHANGERATE" dataType="DT_DECIMAL" length="0" precision="14" scale="7" codePage="0"/&gt;&lt;referenceColumn name="EXCHANGEDATE" dataType="DT_DBDATE" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="BUYAHEAD" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="TOTALTAX1" dataType="DT_DECIMAL" length="0" precision="10" scale="2" codePage="0"/&gt;&lt;referenceColumn name="TOTALTAX2" dataType="DT_DECIMAL" length="0" precision="10" scale="2" codePage="0"/&gt;&lt;referenceColumn name="TOTALTAX3" dataType="DT_DECIMAL" length="0" precision="10" scale="2" codePage="0"/&gt;&lt;referenceColumn name="INCLUSIVE1" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="INCLUSIVE2" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="INCLUSIVE3" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="INTERNAL" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="TOTALTAX4" dataType="DT_DECIMAL" length="0" precision="10" scale="2" codePage="0"/&gt;&lt;referenceColumn name="TOTALTAX5" dataType="DT_DECIMAL" length="0" precision="10" scale="2" codePage="0"/&gt;&lt;referenceColumn name="INCLUSIVE4" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="INCLUSIVE5" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STARTDATE" dataType="DT_DBDATE" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="ENDDATE" dataType="DT_DBDATE" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="PAYONRECEIPT" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="BUYERCOMPANY" dataType="DT_STR" length="30" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="EXCHANGERATE2" dataType="DT_DECIMAL" length="0" precision="14" scale="7" codePage="0"/&gt;&lt;referenceColumn name="MNETSENT" dataType="DT_STR" length="25" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ECOMSTATUSDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="SOURCESYSID" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="OWNERSYSID" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="EXTERNALREFID" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="SENDERSYSID" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="SITEID" dataType="DT_STR" length="8" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ORGID" dataType="DT_STR" length="8" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="CONTRACTREFNUM" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="POID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="CONTRACTREFID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="CONTRACTREFREV" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="CONTRELEASESEQ" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STORELOC" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STORELOCSITEID" dataType="DT_STR" length="8" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="INSPECTIONREQUIRED" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="LANGCODE" dataType="DT_STR" length="4" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="HASLD" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="REVISIONNUM" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="REVCOMMENTS" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="INTERNALCHANGE" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="IGNORECNTREV" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="PLUSTCLAIMID" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PLUSTCLAIMSTORE" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PLUSTSTORELOCSITE" dataType="DT_STR" length="8" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_COUPAPONO" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_POCREATEDDATEINCOUPA" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="STE_POREFTYPE" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_REVISIONDATEINCOUPA" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="STE_REVISIONNOINCOUPA" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_WARRANTYENDDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="STE_WARRANTYSTARTDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="STE_CSWNFWDR" dataType="DT_STR" length="15" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_CSWNPOTYPE" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_CSWNRECEIPTCHANGEDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="STE_CSWNRECEIPTFORWARDER" dataType="DT_STR" length="15" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_CSWNRECEIPTREMARK" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_CSWNRECWO" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_CSWNSAPGL" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_MIGRATIONREQBY" dataType="DT_STR" length="200" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_MIGRATIONID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_MIGRATIONDEMWOREF" dataType="DT_STR" length="200" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_MIGRATIONPRREF" dataType="DT_STR" length="200" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_MIGRATIONDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="ROWSTAMP" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_BILLTO" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_SHIPTO" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_PRNUM" dataType="DT_STR" length="12" precision="0" scale="0" codePage="1252"/&gt;&lt;/referenceColumns&gt;&lt;/referenceMetadata&gt;</property>
+                  name="ReferenceMetadataXml">&lt;referenceMetadata&gt;&lt;referenceColumns&gt;&lt;referenceColumn name="POID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_MIGRATIONID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;/referenceColumns&gt;&lt;/referenceMetadata&gt;</property>
                 <property
                   containsID="true"
                   dataType="System.String"
                   description="Specifies the list of lineage identifiers that map to the parameters that the SQL statement in the SQLCommand property uses. Entries in the list are separated by semicolons."
-                  name="ParameterMap">#{Package\DF - BILLTO\LookupKey.Outputs[Derived Column Output].Columns[v_lookupkey]};</property>
+                  name="ParameterMap">#{Package\DF - BILLTO\LookupKey.Outputs[Derived Column Output].Columns[lk_migrationid]};</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -1414,17 +1418,15 @@ where "refTable"."PONUM" = ?</property>
                   name="Lookup Input">
                   <inputColumns>
                     <inputColumn
-                      refId="Package\DF - BILLTO\Lookup.Inputs[Lookup Input].Columns[v_lookupkey]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="10"
-                      cachedName="v_lookupkey"
-                      lineageId="Package\DF - BILLTO\LookupKey.Outputs[Derived Column Output].Columns[v_lookupkey]">
+                      refId="Package\DF - BILLTO\Lookup.Inputs[Lookup Input].Columns[lk_migrationid]"
+                      cachedDataType="i8"
+                      cachedName="lk_migrationid"
+                      lineageId="Package\DF - BILLTO\LookupKey.Outputs[Derived Column Output].Columns[lk_migrationid]">
                       <properties>
                         <property
                           dataType="System.String"
                           description="Specifies the column in the reference table that a column joins."
-                          name="JoinToReferenceColumn">PONUM</property>
+                          name="JoinToReferenceColumn">STE_MIGRATIONID</property>
                         <property
                           dataType="System.Null"
                           description="Specifies the column in the reference table from which a column is copied."
@@ -1512,6 +1514,11 @@ where "refTable"."PONUM" = ?</property>
                       cachedLength="10"
                       cachedName="PO_REF"
                       lineageId="Package\DF - BILLTO\Oracle Source.Outputs[Oracle Source Output].Columns[PO_REF]" />
+                    <inputColumn
+                      refId="Package\DF - BILLTO\LookupKey.Inputs[Derived Column Input].Columns[PK_PORDER_]"
+                      cachedDataType="i4"
+                      cachedName="PK_PORDER_"
+                      lineageId="Package\DF - BILLTO\Oracle Source.Outputs[Oracle Source Output].Columns[PK_PORDER_]" />
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -1546,6 +1553,28 @@ where "refTable"."PONUM" = ?</property>
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
                           name="FriendlyExpression">(DT_STR,10,1252)PO_REF</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\DF - BILLTO\LookupKey.Outputs[Derived Column Output].Columns[lk_migrationid]"
+                      dataType="i8"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\DF - BILLTO\LookupKey.Outputs[Derived Column Output].Columns[lk_migrationid]"
+                      name="lk_migrationid"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_I8)#{Package\DF - BILLTO\Oracle Source.Outputs[Oracle Source Output].Columns[PK_PORDER_]}</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_I8)PK_PORDER_</property>
                       </properties>
                     </outputColumn>
                   </outputColumns>
@@ -1599,9 +1628,16 @@ where "refTable"."PONUM" = ?</property>
                 </output>
                 <output
                   refId="Package\DF - BILLTO\Multicast.Outputs[Multicast Output 1]"
-                  dangling="true"
                   deleteOutputOnPathDetached="true"
                   name="Multicast Output 1"
+                  synchronousInputId="Package\DF - BILLTO\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - BILLTO\Multicast.Outputs[Multicast Output 2]"
+                  dangling="true"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 2"
                   synchronousInputId="Package\DF - BILLTO\Multicast.Inputs[Multicast Input 1]">
                   <externalMetadataColumns />
                 </output>
@@ -2971,6 +3007,104 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                 </output>
               </outputs>
             </component>
+            <component
+              refId="Package\DF - BILLTO\Update hasld column"
+              componentClassID="Microsoft.OLEDBCommand"
+              contactInfo="OLE DB Command;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;2"
+              description="Runs an SQL statement for each row in a data flow. For example, call a 'new employee setup' stored procedure for each row in the 'new employees' table. Note: running an SQL statement for each row of a large data flow may take a long time."
+              name="Update hasld column"
+              usesDispositions="true"
+              version="2">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">update MAXIMO.PO
+set
+	hasld=1
+where poid=?</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\DF - BILLTO\Update hasld column.Connections[OleDbConnection]"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\DF - BILLTO\Update hasld column.Inputs[OLE DB Command Input]"
+                  errorOrTruncationOperation="Command Execution"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Command Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DF - BILLTO\Update hasld column.Inputs[OLE DB Command Input].Columns[POID]"
+                      cachedDataType="i8"
+                      cachedName="POID"
+                      externalMetadataColumnId="Package\DF - BILLTO\Update hasld column.Inputs[OLE DB Command Input].ExternalColumns[Param_0]"
+                      lineageId="Package\DF - BILLTO\Lookup.Outputs[Lookup Match Output].Columns[POID]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\DF - BILLTO\Update hasld column.Inputs[OLE DB Command Input].ExternalColumns[Param_0]"
+                      dataType="i8"
+                      name="Param_0">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Parameter information.  Matches OLE DB's DBPARAMFLAGSENUM values."
+                          name="DBParamInfoFlags">81</property>
+                      </properties>
+                    </externalMetadataColumn>
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - BILLTO\Update hasld column.Outputs[OLE DB Command Output]"
+                  exclusionGroup="1"
+                  name="OLE DB Command Output"
+                  synchronousInputId="Package\DF - BILLTO\Update hasld column.Inputs[OLE DB Command Input]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - BILLTO\Update hasld column.Outputs[OLE DB Command Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Command Error Output"
+                  synchronousInputId="Package\DF - BILLTO\Update hasld column.Inputs[OLE DB Command Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - BILLTO\Update hasld column.Outputs[OLE DB Command Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF - BILLTO\Update hasld column.Outputs[OLE DB Command Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF - BILLTO\Update hasld column.Outputs[OLE DB Command Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF - BILLTO\Update hasld column.Outputs[OLE DB Command Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
           </components>
           <paths>
             <path
@@ -3008,6 +3142,11 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               endId="Package\DF - BILLTO\Flat File Destination.Inputs[Flat File Destination Input]"
               name="Multicast Output 1"
               startId="Package\DF - BILLTO\Multicast 1.Outputs[Multicast Output 1]" />
+            <path
+              refId="Package\DF - BILLTO.Paths[Multicast Output 11]"
+              endId="Package\DF - BILLTO\Update hasld column.Inputs[OLE DB Command Input]"
+              name="Multicast Output 1"
+              startId="Package\DF - BILLTO\Multicast.Outputs[Multicast Output 1]" />
             <path
               refId="Package\DF - BILLTO.Paths[Multicast Output 3]"
               endId="Package\DF - BILLTO\OLE DB Destination.Inputs[OLE DB Destination Input]"
@@ -3631,14 +3770,18 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                   description="Specifies the SQL statement that generates the lookup table."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from "MAXIMO"."PO"</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT POID, STE_MIGRATIONID
+FROM     MAXIMO.PO
+WHERE  (STE_MIGRATIONID IS NOT NULL)</property>
                 <property
                   dataType="System.String"
                   description="Specifies a SQL statement that uses parameters to generate the lookup table."
                   expressionType="Notify"
                   name="SqlCommandParam"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (select * from "MAXIMO"."PO") "refTable"
-where "refTable"."PONUM" = ?</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (SELECT POID, STE_MIGRATIONID
+FROM     MAXIMO.PO
+WHERE  (STE_MIGRATIONID IS NOT NULL)) "refTable"
+where "refTable"."STE_MIGRATIONID" = ?</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the type of connection used to access the reference dataset."
@@ -3669,12 +3812,12 @@ where "refTable"."PONUM" = ?</property>
                 <property
                   dataType="System.String"
                   description="Indicates whether to reference metadata in an XML format."
-                  name="ReferenceMetadataXml">&lt;referenceMetadata&gt;&lt;referenceColumns&gt;&lt;referenceColumn name="PONUM" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="DESCRIPTION" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PURCHASEAGENT" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ORDERDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="REQUIREDDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="FOLLOWUPDATE" dataType="DT_DBDATE" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="POTYPE" dataType="DT_STR" length="12" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ORIGINALPONUM" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STATUS" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STATUSDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="VENDOR" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="CONTACT" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="FREIGHTTERMS" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PAYMENTTERMS" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="SHIPVIA" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="CUSTOMERNUM" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="FOB" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="SHIPTO" dataType="DT_STR" length="30" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="SHIPTOATTN" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="BILLTO" dataType="DT_STR" length="30" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="BILLTOATTN" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="TOTALCOST" dataType="DT_DECIMAL" length="0" precision="12" scale="2" codePage="0"/&gt;&lt;referenceColumn name="CHANGEBY" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="CHANGEDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="PRIORITY" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="HISTORYFLAG" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="PO1" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PO2" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PO3" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PO4" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PO5" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PO6" dataType="DT_DECIMAL" length="0" precision="13" scale="5" codePage="0"/&gt;&lt;referenceColumn name="PO7" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="PO8" dataType="DT_DECIMAL" length="0" precision="15" scale="2" codePage="0"/&gt;&lt;referenceColumn name="PO9" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="PO10" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="VENDELIVERYDATE" dataType="DT_DBDATE" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="RECEIPTS" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="CURRENCYCODE" dataType="DT_STR" length="8" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="EXCHANGERATE" dataType="DT_DECIMAL" length="0" precision="14" scale="7" codePage="0"/&gt;&lt;referenceColumn name="EXCHANGEDATE" dataType="DT_DBDATE" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="BUYAHEAD" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="TOTALTAX1" dataType="DT_DECIMAL" length="0" precision="10" scale="2" codePage="0"/&gt;&lt;referenceColumn name="TOTALTAX2" dataType="DT_DECIMAL" length="0" precision="10" scale="2" codePage="0"/&gt;&lt;referenceColumn name="TOTALTAX3" dataType="DT_DECIMAL" length="0" precision="10" scale="2" codePage="0"/&gt;&lt;referenceColumn name="INCLUSIVE1" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="INCLUSIVE2" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="INCLUSIVE3" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="INTERNAL" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="TOTALTAX4" dataType="DT_DECIMAL" length="0" precision="10" scale="2" codePage="0"/&gt;&lt;referenceColumn name="TOTALTAX5" dataType="DT_DECIMAL" length="0" precision="10" scale="2" codePage="0"/&gt;&lt;referenceColumn name="INCLUSIVE4" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="INCLUSIVE5" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STARTDATE" dataType="DT_DBDATE" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="ENDDATE" dataType="DT_DBDATE" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="PAYONRECEIPT" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="BUYERCOMPANY" dataType="DT_STR" length="30" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="EXCHANGERATE2" dataType="DT_DECIMAL" length="0" precision="14" scale="7" codePage="0"/&gt;&lt;referenceColumn name="MNETSENT" dataType="DT_STR" length="25" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ECOMSTATUSDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="SOURCESYSID" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="OWNERSYSID" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="EXTERNALREFID" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="SENDERSYSID" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="SITEID" dataType="DT_STR" length="8" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ORGID" dataType="DT_STR" length="8" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="CONTRACTREFNUM" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="POID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="CONTRACTREFID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="CONTRACTREFREV" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="CONTRELEASESEQ" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STORELOC" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STORELOCSITEID" dataType="DT_STR" length="8" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="INSPECTIONREQUIRED" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="LANGCODE" dataType="DT_STR" length="4" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="HASLD" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="REVISIONNUM" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="REVCOMMENTS" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="INTERNALCHANGE" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="IGNORECNTREV" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="PLUSTCLAIMID" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PLUSTCLAIMSTORE" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PLUSTSTORELOCSITE" dataType="DT_STR" length="8" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_COUPAPONO" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_POCREATEDDATEINCOUPA" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="STE_POREFTYPE" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_REVISIONDATEINCOUPA" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="STE_REVISIONNOINCOUPA" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_WARRANTYENDDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="STE_WARRANTYSTARTDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="STE_CSWNFWDR" dataType="DT_STR" length="15" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_CSWNPOTYPE" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_CSWNRECEIPTCHANGEDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="STE_CSWNRECEIPTFORWARDER" dataType="DT_STR" length="15" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_CSWNRECEIPTREMARK" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_CSWNRECWO" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_CSWNSAPGL" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_MIGRATIONREQBY" dataType="DT_STR" length="200" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_MIGRATIONID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_MIGRATIONDEMWOREF" dataType="DT_STR" length="200" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_MIGRATIONPRREF" dataType="DT_STR" length="200" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_MIGRATIONDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="ROWSTAMP" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_BILLTO" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_SHIPTO" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_PRNUM" dataType="DT_STR" length="12" precision="0" scale="0" codePage="1252"/&gt;&lt;/referenceColumns&gt;&lt;/referenceMetadata&gt;</property>
+                  name="ReferenceMetadataXml">&lt;referenceMetadata&gt;&lt;referenceColumns&gt;&lt;referenceColumn name="POID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_MIGRATIONID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;/referenceColumns&gt;&lt;/referenceMetadata&gt;</property>
                 <property
                   containsID="true"
                   dataType="System.String"
                   description="Specifies the list of lineage identifiers that map to the parameters that the SQL statement in the SQLCommand property uses. Entries in the list are separated by semicolons."
-                  name="ParameterMap">#{Package\DF - SHIPTO\LookupKey.Outputs[Derived Column Output].Columns[lk_ponum]};</property>
+                  name="ParameterMap">#{Package\DF - SHIPTO\LookupKey.Outputs[Derived Column Output].Columns[lk_migrationid]};</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -3698,17 +3841,15 @@ where "refTable"."PONUM" = ?</property>
                   name="Lookup Input">
                   <inputColumns>
                     <inputColumn
-                      refId="Package\DF - SHIPTO\Lookup.Inputs[Lookup Input].Columns[lk_ponum]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="10"
-                      cachedName="lk_ponum"
-                      lineageId="Package\DF - SHIPTO\LookupKey.Outputs[Derived Column Output].Columns[lk_ponum]">
+                      refId="Package\DF - SHIPTO\Lookup.Inputs[Lookup Input].Columns[lk_migrationid]"
+                      cachedDataType="i8"
+                      cachedName="lk_migrationid"
+                      lineageId="Package\DF - SHIPTO\LookupKey.Outputs[Derived Column Output].Columns[lk_migrationid]">
                       <properties>
                         <property
                           dataType="System.String"
                           description="Specifies the column in the reference table that a column joins."
-                          name="JoinToReferenceColumn">PONUM</property>
+                          name="JoinToReferenceColumn">STE_MIGRATIONID</property>
                         <property
                           dataType="System.Null"
                           description="Specifies the column in the reference table from which a column is copied."
@@ -3796,6 +3937,11 @@ where "refTable"."PONUM" = ?</property>
                       cachedLength="10"
                       cachedName="PO_REF"
                       lineageId="Package\DF - SHIPTO\Oracle Source.Outputs[Oracle Source Output].Columns[PO_REF]" />
+                    <inputColumn
+                      refId="Package\DF - SHIPTO\LookupKey.Inputs[Derived Column Input].Columns[PK_PORDER_]"
+                      cachedDataType="i4"
+                      cachedName="PK_PORDER_"
+                      lineageId="Package\DF - SHIPTO\Oracle Source.Outputs[Oracle Source Output].Columns[PK_PORDER_]" />
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -3830,6 +3976,28 @@ where "refTable"."PONUM" = ?</property>
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
                           name="FriendlyExpression">(DT_STR,10,1252)PO_REF</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\DF - SHIPTO\LookupKey.Outputs[Derived Column Output].Columns[lk_migrationid]"
+                      dataType="i8"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\DF - SHIPTO\LookupKey.Outputs[Derived Column Output].Columns[lk_migrationid]"
+                      name="lk_migrationid"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_I8)#{Package\DF - SHIPTO\Oracle Source.Outputs[Oracle Source Output].Columns[PK_PORDER_]}</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_I8)PK_PORDER_</property>
                       </properties>
                     </outputColumn>
                   </outputColumns>
@@ -3883,9 +4051,16 @@ where "refTable"."PONUM" = ?</property>
                 </output>
                 <output
                   refId="Package\DF - SHIPTO\Multicast.Outputs[Multicast Output 1]"
-                  dangling="true"
                   deleteOutputOnPathDetached="true"
                   name="Multicast Output 1"
+                  synchronousInputId="Package\DF - SHIPTO\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - SHIPTO\Multicast.Outputs[Multicast Output 2]"
+                  dangling="true"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 2"
                   synchronousInputId="Package\DF - SHIPTO\Multicast.Inputs[Multicast Input 1]">
                   <externalMetadataColumns />
                 </output>
@@ -5255,6 +5430,104 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                 </output>
               </outputs>
             </component>
+            <component
+              refId="Package\DF - SHIPTO\Update hasld column"
+              componentClassID="Microsoft.OLEDBCommand"
+              contactInfo="OLE DB Command;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;2"
+              description="Runs an SQL statement for each row in a data flow. For example, call a 'new employee setup' stored procedure for each row in the 'new employees' table. Note: running an SQL statement for each row of a large data flow may take a long time."
+              name="Update hasld column"
+              usesDispositions="true"
+              version="2">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">update MAXIMO.PO
+set
+	hasld=1
+where poid=?</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\DF - SHIPTO\Update hasld column.Connections[OleDbConnection]"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\DF - SHIPTO\Update hasld column.Inputs[OLE DB Command Input]"
+                  errorOrTruncationOperation="Command Execution"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Command Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DF - SHIPTO\Update hasld column.Inputs[OLE DB Command Input].Columns[POID]"
+                      cachedDataType="i8"
+                      cachedName="POID"
+                      externalMetadataColumnId="Package\DF - SHIPTO\Update hasld column.Inputs[OLE DB Command Input].ExternalColumns[Param_0]"
+                      lineageId="Package\DF - SHIPTO\Lookup.Outputs[Lookup Match Output].Columns[POID]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\DF - SHIPTO\Update hasld column.Inputs[OLE DB Command Input].ExternalColumns[Param_0]"
+                      dataType="i8"
+                      name="Param_0">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Parameter information.  Matches OLE DB's DBPARAMFLAGSENUM values."
+                          name="DBParamInfoFlags">81</property>
+                      </properties>
+                    </externalMetadataColumn>
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - SHIPTO\Update hasld column.Outputs[OLE DB Command Output]"
+                  exclusionGroup="1"
+                  name="OLE DB Command Output"
+                  synchronousInputId="Package\DF - SHIPTO\Update hasld column.Inputs[OLE DB Command Input]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - SHIPTO\Update hasld column.Outputs[OLE DB Command Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Command Error Output"
+                  synchronousInputId="Package\DF - SHIPTO\Update hasld column.Inputs[OLE DB Command Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - SHIPTO\Update hasld column.Outputs[OLE DB Command Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF - SHIPTO\Update hasld column.Outputs[OLE DB Command Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF - SHIPTO\Update hasld column.Outputs[OLE DB Command Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF - SHIPTO\Update hasld column.Outputs[OLE DB Command Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
           </components>
           <paths>
             <path
@@ -5292,6 +5565,11 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               endId="Package\DF - SHIPTO\Flat File Destination.Inputs[Flat File Destination Input]"
               name="Multicast Output 1"
               startId="Package\DF - SHIPTO\Multicast 1.Outputs[Multicast Output 1]" />
+            <path
+              refId="Package\DF - SHIPTO.Paths[Multicast Output 11]"
+              endId="Package\DF - SHIPTO\Update hasld column.Inputs[OLE DB Command Input]"
+              name="Multicast Output 1"
+              startId="Package\DF - SHIPTO\Multicast.Outputs[Multicast Output 1]" />
             <path
               refId="Package\DF - SHIPTO.Paths[Multicast Output 3]"
               endId="Package\DF - SHIPTO\OLE DB Destination.Inputs[OLE DB Destination Input]"
@@ -6127,6 +6405,44 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <NodeLayout
+          Size="176,41.6"
+          Id="Package\DF - BILLTO\Update hasld column"
+          TopLeft="574.166635295584,307.866669868562" />
+        <EdgeLayout
+          Id="Package\DF - BILLTO.Paths[Multicast Output 11]"
+          TopLeft="462.966660739316,253.6">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="199.199974556268,54.2666698685621"
+              Start="0,0"
+              End="199.199974556268,46.7666698685621">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,18.1241038694907" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,18.1241038694907"
+                    Point2="0,22.1241038694907"
+                    Point3="4,22.1241038694907" />
+                  <mssgle:LineSegment
+                    End="195.199974556268,22.1241038694907" />
+                  <mssgle:CubicBezierSegment
+                    Point1="195.199974556268,22.1241038694907"
+                    Point2="199.199974556268,22.1241038694907"
+                    Point3="199.199974556268,26.1241038694907" />
+                  <mssgle:LineSegment
+                    End="199.199974556268,46.7666698685621" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
@@ -6162,17 +6478,17 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
       <Property>
         <Name>OverwriteParamsSQLProp</Name>
         <Value
-          type="q2:string">false</Value>
+          type="q2:boolean">false</Value>
       </Property>
       <Property>
         <Name>UsedTableName</Name>
         <Value
-          type="q3:string">"MAXIMO"."PO"</Value>
+          type="q3:string"></Value>
       </Property>
       <Property>
         <Name>TableInfoObjectType</Name>
         <Value
-          type="q4:string">0</Value>
+          type="q4:int">0</Value>
       </Property>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -6542,6 +6858,44 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <NodeLayout
+          Size="172.8,41.6"
+          Id="Package\DF - SHIPTO\Update hasld column"
+          TopLeft="442.999993413687,312.799997437001" />
+        <EdgeLayout
+          Id="Package\DF - SHIPTO.Paths[Multicast Output 11]"
+          TopLeft="335.8,253.6">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="193.599993413687,59.1999974370005"
+              Start="0,0"
+              End="193.599993413687,51.6999974370005">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,20.1353835704694" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,20.1353835704694"
+                    Point2="0,24.1353835704694"
+                    Point3="4,24.1353835704694" />
+                  <mssgle:LineSegment
+                    End="189.599993413687,24.1353835704694" />
+                  <mssgle:CubicBezierSegment
+                    Point1="189.599993413687,24.1353835704694"
+                    Point2="193.599993413687,24.1353835704694"
+                    Point3="193.599993413687,28.1353835704694" />
+                  <mssgle:LineSegment
+                    End="193.599993413687,51.6999974370005" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
@@ -6551,17 +6905,17 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
       <Property>
         <Name>OverwriteParamsSQLProp</Name>
         <Value
-          type="q2:string">false</Value>
+          type="q2:boolean">false</Value>
       </Property>
       <Property>
         <Name>UsedTableName</Name>
         <Value
-          type="q3:string">"MAXIMO"."PO"</Value>
+          type="q3:string"></Value>
       </Property>
       <Property>
         <Name>TableInfoObjectType</Name>
         <Value
-          type="q4:string">0</Value>
+          type="q4:int">0</Value>
       </Property>
       <Property>
         <Name>DataSourceViewID</Name>
