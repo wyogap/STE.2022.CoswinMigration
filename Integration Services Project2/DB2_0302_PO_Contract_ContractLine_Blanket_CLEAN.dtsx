@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0302_PO_Contract_ContractLine_Blanket_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="146"
-  DTS:VersionGUID="{1FC015EC-3078-409D-843C-F927AF4E7D83}"
+  DTS:VersionBuild="148"
+  DTS:VersionGUID="{9B6C566A-8F9C-4639-B616-DFCBD86F2982}"
   DTS:VersionMajor="2"
   DTS:VersionMinor="3">
   <DTS:Property
@@ -555,28 +555,6 @@ where "refTable"."DISPLAY_NAME" = ?</property>
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
                           name="FriendlyExpression">(DT_STR,8,1252)STATUS_TEXT</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\DF - Contract\Derived Column.Outputs[Derived Column Output].Columns[v_revisionnum]"
-                      dataType="i4"
-                      errorOrTruncationOperation="Computation"
-                      errorRowDisposition="FailComponent"
-                      lineageId="Package\DF - Contract\Derived Column.Outputs[Derived Column Output].Columns[v_revisionnum]"
-                      name="v_revisionnum"
-                      truncationRowDisposition="FailComponent">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.String"
-                          description="Derived Column Expression"
-                          name="Expression">0</property>
-                        <property
-                          containsID="true"
-                          dataType="System.String"
-                          description="Derived Column Friendly Expression"
-                          expressionType="Notify"
-                          name="FriendlyExpression">0</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
@@ -1461,12 +1439,6 @@ where "refTable"."DISPLAY_NAME" = ?</property>
                       externalMetadataColumnId="Package\DF - Contract\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PROCESSCLAIM]"
                       lineageId="Package\DF - Contract\Derived Column.Outputs[Derived Column Output].Columns[v_processclaim]" />
                     <inputColumn
-                      refId="Package\DF - Contract\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_revisionnum]"
-                      cachedDataType="i4"
-                      cachedName="v_revisionnum"
-                      externalMetadataColumnId="Package\DF - Contract\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[REVISIONNUM]"
-                      lineageId="Package\DF - Contract\Derived Column.Outputs[Derived Column Output].Columns[v_revisionnum]" />
-                    <inputColumn
                       refId="Package\DF - Contract\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_startdate]"
                       cachedDataType="dbTimeStamp"
                       cachedName="v_startdate"
@@ -1598,6 +1570,12 @@ where "refTable"."DISPLAY_NAME" = ?</property>
                       cachedName="PO_STRING1"
                       externalMetadataColumnId="Package\DF - Contract\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_CSWNSAPGL]"
                       lineageId="Package\DF - Contract\Union All 1.Outputs[Union All Output 1].Columns[PO_STRING1]" />
+                    <inputColumn
+                      refId="Package\DF - Contract\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PO_AMD_NO]"
+                      cachedDataType="i4"
+                      cachedName="PO_AMD_NO"
+                      externalMetadataColumnId="Package\DF - Contract\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[REVISIONNUM]"
+                      lineageId="Package\DF - Contract\Union All 1.Outputs[Union All Output 1].Columns[PO_AMD_NO]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1998,7 +1976,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
 	  END AS STATUS_TEXT	
 	, po.PO_DT 
 	, po.PO_AMD_WHO
-	, po.PO_AMD_NO
+	, coalesce(po.PO_AMD_NO, 1) as PO_AMD_NO
 	, po.PO_REQ_BY
 	, po.PO_PAY_DET
 	, po.PO_DELVD_VALUE 
@@ -2300,7 +2278,7 @@ ORDER BY po.PK_PORDER_
                       name="PO_STRING1" />
                     <externalMetadataColumn
                       refId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PO_AMD_NO]"
-                      dataType="i4"
+                      dataType="r8"
                       name="PO_AMD_NO" />
                   </externalMetadataColumns>
                 </output>
@@ -2446,7 +2424,7 @@ ORDER BY po.PK_PORDER_
                       name="PO_STRING1" />
                     <outputColumn
                       refId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Error Output].Columns[PO_AMD_NO]"
-                      dataType="i4"
+                      dataType="r8"
                       externalMetadataColumnId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PO_AMD_NO]"
                       lineageId="Package\DF - Contract\Oracle Source.Outputs[Oracle Source Error Output].Columns[PO_AMD_NO]"
                       name="PO_AMD_NO" />
@@ -8779,13 +8757,21 @@ LEFT JOIN COSWIN.SUPL_ITEMS si ON si.S_SUPL_ITEM = s.PK_SUPPLIER_
           Id="Package\DF - Contract\ChangeBy - PersonID"
           TopLeft="297.5,252.73333324896" />
         <NodeLayout
+          Size="171.2,41.6"
+          Id="Package\DF - Contract\OLE DB Destination"
+          TopLeft="414.166651550267,628.73333324896" />
+        <NodeLayout
           Size="167.2,41.6"
           Id="Package\DF - Contract\ReqBy - PersonID"
           TopLeft="284,93.2833332549871" />
         <NodeLayout
-          Size="171.2,41.6"
-          Id="Package\DF - Contract\OLE DB Destination"
-          TopLeft="414.166651550267,628.73333324896" />
+          Size="128.8,41.6"
+          Id="Package\DF - Contract\Union All 1"
+          TopLeft="451.666641988689,349.599998264313" />
+        <NodeLayout
+          Size="156,41.6"
+          Id="Package\DF - Contract\ReqBy - Default"
+          TopLeft="563.333333333333,96.23333324896" />
         <NodeLayout
           Size="167.2,41.6"
           Id="Package\DF - Contract\Running Number"
@@ -8795,9 +8781,77 @@ LEFT JOIN COSWIN.SUPL_ITEMS si ON si.S_SUPL_ITEM = s.PK_SUPPLIER_
           Id="Package\DF - Contract\Derived Column"
           TopLeft="422,544" />
         <NodeLayout
-          Size="156,41.6"
-          Id="Package\DF - Contract\ReqBy - Default"
-          TopLeft="563.333333333333,96.23333324896" />
+          Size="120,41.6"
+          Id="Package\DF - Contract\Union All"
+          TopLeft="462.499974730115,179.399998752475" />
+        <EdgeLayout
+          Id="Package\DF - Contract.Paths[Union All Output 11]"
+          TopLeft="516.066641988689,391.199998264313">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-15.966642535065,52.1666684867271"
+              Start="0,0"
+              End="-15.966642535065,44.6666684867271">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,22.0833342433636" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,22.0833342433636"
+                    Point2="0,26.0833342433636"
+                    Point3="-4,26.0833342433636" />
+                  <mssgle:LineSegment
+                    End="-11.966642535065,26.0833342433636" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-11.966642535065,26.0833342433636"
+                    Point2="-15.966642535065,26.0833342433636"
+                    Point3="-15.966642535065,30.0833342433636" />
+                  <mssgle:LineSegment
+                    End="-15.966642535065,44.6666684867271" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - Contract.Paths[Union All Output 1]"
+          TopLeft="522.499974730115,220.999998752475">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-132.199974730115,31.7333344964852"
+              Start="0,0"
+              End="-132.199974730115,24.2333344964852">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,11.8666672482426" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,11.8666672482426"
+                    Point2="0,15.8666672482426"
+                    Point3="-4,15.8666672482426" />
+                  <mssgle:LineSegment
+                    End="-128.199974730115,15.8666672482426" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-128.199974730115,15.8666672482426"
+                    Point2="-132.199974730115,15.8666672482426"
+                    Point3="-132.199974730115,19.8666672482426" />
+                  <mssgle:LineSegment
+                    End="-132.199974730115,24.2333344964852" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - Contract.Paths[Output 0]"
           TopLeft="500.649999726812,484.96666675104">
@@ -8891,53 +8945,41 @@ LEFT JOIN COSWIN.SUPL_ITEMS si ON si.S_SUPL_ITEM = s.PK_SUPPLIER_
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - Contract.Paths[Derived Column Output1]"
-          TopLeft="366.85,52.33333324896">
+          Id="Package\DF - Contract.Paths[Lookup Match Output1]"
+          TopLeft="390.3,294.33333324896">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,40.9500000060271"
+              EndConnector="125.766641988689,55.2666650153528"
               Start="0,0"
-              End="0,33.4500000060271">
+              End="125.766641988689,47.7666650153528">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,33.4500000060271" />
+                    End="0,23.6333325076764" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,23.6333325076764"
+                    Point2="0,27.6333325076764"
+                    Point3="4,27.6333325076764" />
+                  <mssgle:LineSegment
+                    End="121.766641988689,27.6333325076764" />
+                  <mssgle:CubicBezierSegment
+                    Point1="121.766641988689,27.6333325076764"
+                    Point2="125.766641988689,27.6333325076764"
+                    Point3="125.766641988689,31.6333325076764" />
+                  <mssgle:LineSegment
+                    End="125.766641988689,47.7666650153528" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="14.6919342755945,32.6333325076764,96.3827734375,11.609375"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - Contract.Paths[Derived Column Output]"
-          TopLeft="500.333325775134,586">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,42.73333324896"
-              Start="0,0"
-              End="0,35.23333324896">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,35.23333324896" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="120,41.6"
-          Id="Package\DF - Contract\Union All"
-          TopLeft="462.499974730115,179.399998752475" />
         <EdgeLayout
           Id="Package\DF - Contract.Paths[Lookup Match Output]"
           TopLeft="367.6,134.883333254987">
@@ -8971,114 +9013,6 @@ LEFT JOIN COSWIN.SUPL_ITEMS si ON si.S_SUPL_ITEM = s.PK_SUPPLIER_
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
               BoundingBox="29.2586006463077,27.2583327487439,96.3827734375,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - Contract.Paths[Derived Column Output2]"
-          TopLeft="641.333333333333,137.83333324896">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-100.166691936551,41.5666655035148"
-              Start="0,0"
-              End="-100.166691936551,34.0666655035148">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,20.6118414165548" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,20.6118414165548"
-                    Point2="0,24.6118414165548"
-                    Point3="-4,24.6118414165548" />
-                  <mssgle:LineSegment
-                    End="-96.166691936551,24.6118414165548" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-96.166691936551,24.6118414165548"
-                    Point2="-100.166691936551,24.6118414165548"
-                    Point3="-100.166691936551,28.6118414165548" />
-                  <mssgle:LineSegment
-                    End="-100.166691936551,34.0666655035148" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - Contract.Paths[Union All Output 1]"
-          TopLeft="522.499974730115,220.999998752475">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-132.199974730115,31.7333344964852"
-              Start="0,0"
-              End="-132.199974730115,24.2333344964852">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,11.8666672482426" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,11.8666672482426"
-                    Point2="0,15.8666672482426"
-                    Point3="-4,15.8666672482426" />
-                  <mssgle:LineSegment
-                    End="-128.199974730115,15.8666672482426" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-128.199974730115,15.8666672482426"
-                    Point2="-132.199974730115,15.8666672482426"
-                    Point3="-132.199974730115,19.8666672482426" />
-                  <mssgle:LineSegment
-                    End="-132.199974730115,24.2333344964852" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="128.8,41.6"
-          Id="Package\DF - Contract\Union All 1"
-          TopLeft="451.666641988689,349.599998264313" />
-        <EdgeLayout
-          Id="Package\DF - Contract.Paths[Lookup Match Output1]"
-          TopLeft="390.3,294.33333324896">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="125.766641988689,55.2666650153528"
-              Start="0,0"
-              End="125.766641988689,47.7666650153528">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,23.6333325076764" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,23.6333325076764"
-                    Point2="0,27.6333325076764"
-                    Point3="4,27.6333325076764" />
-                  <mssgle:LineSegment
-                    End="121.766641988689,27.6333325076764" />
-                  <mssgle:CubicBezierSegment
-                    Point1="121.766641988689,27.6333325076764"
-                    Point2="125.766641988689,27.6333325076764"
-                    Point3="125.766641988689,31.6333325076764" />
-                  <mssgle:LineSegment
-                    End="125.766641988689,47.7666650153528" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="14.6919342755945,32.6333325076764,96.3827734375,11.609375"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
@@ -9117,31 +9051,75 @@ LEFT JOIN COSWIN.SUPL_ITEMS si ON si.S_SUPL_ITEM = s.PK_SUPPLIER_
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - Contract.Paths[Union All Output 11]"
-          TopLeft="516.066641988689,391.199998264313">
+          Id="Package\DF - Contract.Paths[Derived Column Output2]"
+          TopLeft="641.333333333333,137.83333324896">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-15.966642535065,52.1666684867271"
+              EndConnector="-100.166691936551,41.5666655035148"
               Start="0,0"
-              End="-15.966642535065,44.6666684867271">
+              End="-100.166691936551,34.0666655035148">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,22.0833342433636" />
+                    End="0,20.6118414165548" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,22.0833342433636"
-                    Point2="0,26.0833342433636"
-                    Point3="-4,26.0833342433636" />
+                    Point1="0,20.6118414165548"
+                    Point2="0,24.6118414165548"
+                    Point3="-4,24.6118414165548" />
                   <mssgle:LineSegment
-                    End="-11.966642535065,26.0833342433636" />
+                    End="-96.166691936551,24.6118414165548" />
                   <mssgle:CubicBezierSegment
-                    Point1="-11.966642535065,26.0833342433636"
-                    Point2="-15.966642535065,26.0833342433636"
-                    Point3="-15.966642535065,30.0833342433636" />
+                    Point1="-96.166691936551,24.6118414165548"
+                    Point2="-100.166691936551,24.6118414165548"
+                    Point3="-100.166691936551,28.6118414165548" />
                   <mssgle:LineSegment
-                    End="-15.966642535065,44.6666684867271" />
+                    End="-100.166691936551,34.0666655035148" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - Contract.Paths[Derived Column Output1]"
+          TopLeft="366.85,52.33333324896">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,40.9500000060271"
+              Start="0,0"
+              End="0,33.4500000060271">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,33.4500000060271" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - Contract.Paths[Derived Column Output]"
+          TopLeft="500.333325775134,586">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,42.73333324896"
+              Start="0,0"
+              End="0,35.23333324896">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,35.23333324896" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
