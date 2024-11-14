@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0201_Inventory_Inventory_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="108"
-  DTS:VersionGUID="{812E2C95-225A-4346-B9DD-E84C045CE017}"
+  DTS:VersionBuild="109"
+  DTS:VersionGUID="{95BB35CC-C6E2-4A50-913D-21E648DA50FB}"
   DTS:VersionMajor="2"
   DTS:VersionMinor="2">
   <DTS:Property
@@ -132,6 +132,11 @@
                       cachedName="DT_FIRST_PROC"
                       cachedPrecision="10"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[DT_FIRST_PROC]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\Derived Column.Inputs[Derived Column Input].Columns[MAX_QTY]"
+                      cachedDataType="r8"
+                      cachedName="MAX_QTY"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[MAX_QTY]" />
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -622,6 +627,28 @@
                           name="FriendlyExpression">ISNULL(DT_FIRST_PROC) ? NULL(DT_DBTIMESTAMP) : DATEADD("dd",(DT_I8)DT_FIRST_PROC,(DT_DBTIMESTAMP)"1899-12-31")</property>
                       </properties>
                     </outputColumn>
+                    <outputColumn
+                      refId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[v_maxlevel]"
+                      dataType="r8"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[v_maxlevel]"
+                      name="v_maxlevel"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[MAX_QTY]}</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">MAX_QTY</property>
+                      </properties>
+                    </outputColumn>
                   </outputColumns>
                   <externalMetadataColumns />
                 </output>
@@ -988,6 +1015,12 @@
                       cachedName="REORD_LEVEL"
                       externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[MINLEVEL]"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[REORD_LEVEL]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_maxlevel]"
+                      cachedDataType="r8"
+                      cachedName="v_maxlevel"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[MAXLEVEL]"
+                      lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[v_maxlevel]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -2295,13 +2328,13 @@ order by si.PK_STORES_ITEMS</property>
       <GraphLayout
         Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
-          Size="144.8,41.6"
-          Id="Package\Data Flow Task\Oracle Source"
-          TopLeft="19.5000000000001,5.5" />
-        <NodeLayout
           Size="171.2,41.6"
           Id="Package\Data Flow Task\OLE DB Destination"
           TopLeft="317.999982925754,154.566665630076" />
+        <NodeLayout
+          Size="144.8,41.6"
+          Id="Package\Data Flow Task\Oracle Source"
+          TopLeft="19.5000000000001,5.5" />
         <NodeLayout
           Size="158.4,41.6"
           Id="Package\Data Flow Task\Derived Column"
@@ -2378,7 +2411,7 @@ order by si.PK_STORES_ITEMS</property>
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\Data Flow Task\Oracle Source">
+    design-time-name="Package\Data Flow Task\OLE DB Destination">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -2391,7 +2424,7 @@ order by si.PK_STORES_ITEMS</property>
     </Properties>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
-    design-time-name="Package\Data Flow Task\OLE DB Destination">
+    design-time-name="Package\Data Flow Task\Oracle Source">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
