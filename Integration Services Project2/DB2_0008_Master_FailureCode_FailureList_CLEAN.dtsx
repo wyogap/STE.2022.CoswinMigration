@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0008_Master_FailureCode_FailureList_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="123"
-  DTS:VersionGUID="{C4C4C21C-832D-48C4-9239-DF4757BFCBFF}"
+  DTS:VersionBuild="129"
+  DTS:VersionGUID="{9F3FCCF9-FF33-49AD-ACE3-106159BD1A1C}"
   DTS:VersionMajor="5">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -59,6 +59,23 @@
     DTS:FilterKind="0"
     DTS:LoggingMode="2" />
   <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\CSWNFL_CLS FAILURECLASS"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{EF435AB4-5B8F-4897-9A0B-A62A76848342}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="CSWNFL_CLS FAILURECLASS"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="INSERT INTO maximo.failurelist (FAILURELIST, FAILURECODE, ORGID, STE_MIGRATIONID, STE_MIGRATIONDATE)&#xA;SELECT MAX(FAILURELIST)+1 AS FAILURELIST&#xA;&#x9;, 'CSWNFL_CLS' AS FAILURECODE&#xA;&#x9;, 'SBST' AS ORGID&#xA;&#x9;, 1 AS STE_MIGRATIONID&#xA;&#x9;, CURRENT DATE AS STE_MIGRATIONDATE&#xA;FROM MAXIMO.FAILURELIST " xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
     <DTS:Executable
       DTS:refId="Package\DF - FailureCode"
       DTS:CreationName="Microsoft.Pipeline"
@@ -136,8 +153,9 @@
                       lineageId="Package\DF - FailureCode\Merge Join.Outputs[Merge Join Output].Columns[FAILURECODE]" />
                     <inputColumn
                       refId="Package\DF - FailureCode\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[V_DESCRIPTION]"
-                      cachedDataType="wstr"
-                      cachedLength="100"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="150"
                       cachedName="V_DESCRIPTION"
                       externalMetadataColumnId="Package\DF - FailureCode\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[DESCRIPTION]"
                       lineageId="Package\DF - FailureCode\Derived Column 1.Outputs[Derived Column Output].Columns[V_DESCRIPTION]" />
@@ -458,10 +476,11 @@
                   <outputColumns>
                     <outputColumn
                       refId="Package\DF - FailureCode\Derived Column 1.Outputs[Derived Column Output].Columns[V_DESCRIPTION]"
-                      dataType="wstr"
+                      codePage="1252"
+                      dataType="str"
                       errorOrTruncationOperation="Computation"
                       errorRowDisposition="FailComponent"
-                      length="100"
+                      length="150"
                       lineageId="Package\DF - FailureCode\Derived Column 1.Outputs[Derived Column Output].Columns[V_DESCRIPTION]"
                       name="V_DESCRIPTION"
                       truncationRowDisposition="FailComponent">
@@ -470,13 +489,13 @@
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">[ISNULL](#{Package\DF - FailureCode\Merge Join.Outputs[Merge Join Output].Columns[DD_TEXT]}) ? NULL(DT_WSTR,10) : #{Package\DF - FailureCode\Merge Join.Outputs[Merge Join Output].Columns[DD_TEXT]}</property>
+                          name="Expression">(DT_STR,150,1252)#{Package\DF - FailureCode\Merge Join.Outputs[Merge Join Output].Columns[DD_TEXT]}</property>
                         <property
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
-                          name="FriendlyExpression">ISNULL(DD_TEXT) ? NULL(DT_WSTR,10) : DD_TEXT</property>
+                          name="FriendlyExpression">(DT_STR,150,1252)DD_TEXT</property>
                       </properties>
                     </outputColumn>
                   </outputColumns>
@@ -749,6 +768,248 @@
                           name="InputColumnID">#{Package\DF - FailureCode\Merge Join.Inputs[Merge Join Right Input].Columns[DD_TEXT]}</property>
                       </properties>
                     </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DF - FailureCode\Multicast"
+              componentClassID="Microsoft.Multicast"
+              contactInfo="Multicast;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Distributes every input row to every row in one or more outputs. For example, branch your data flow to make a copy of data so that some values can be masked before sharing with external partners."
+              name="Multicast">
+              <inputs>
+                <input
+                  refId="Package\DF - FailureCode\Multicast.Inputs[Multicast Input 1]"
+                  name="Multicast Input 1">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - FailureCode\Multicast.Outputs[Multicast Output 1]"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 1"
+                  synchronousInputId="Package\DF - FailureCode\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - FailureCode\Multicast.Outputs[Multicast Output 2]"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 2"
+                  synchronousInputId="Package\DF - FailureCode\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - FailureCode\Multicast.Outputs[Multicast Output 3]"
+                  dangling="true"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 3"
+                  synchronousInputId="Package\DF - FailureCode\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DF - FailureCode\OLE DB Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="OLE DB Destination"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">"MAXIMO"."FAILURECODE"</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">0</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\DF - FailureCode\OLE DB Destination.Connections[OleDbConnection]"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\DF - FailureCode\OLE DB Destination.Inputs[ADO NET Destination Input]"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="ADO NET Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DF - FailureCode\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[FAILURECODE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="21"
+                      cachedName="FAILURECODE"
+                      cachedSortKeyPosition="1"
+                      externalMetadataColumnId="Package\DF - FailureCode\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[FAILURECODE]"
+                      lineageId="Package\DF - FailureCode\Merge Join.Outputs[Merge Join Output].Columns[FAILURECODE]" />
+                    <inputColumn
+                      refId="Package\DF - FailureCode\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[V_DESCRIPTION]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="150"
+                      cachedName="V_DESCRIPTION"
+                      externalMetadataColumnId="Package\DF - FailureCode\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[DESCRIPTION]"
+                      lineageId="Package\DF - FailureCode\Derived Column 1.Outputs[Derived Column Output].Columns[V_DESCRIPTION]" />
+                    <inputColumn
+                      refId="Package\DF - FailureCode\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_failurecodeid]"
+                      cachedDataType="i8"
+                      cachedName="v_failurecodeid"
+                      externalMetadataColumnId="Package\DF - FailureCode\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[FAILURECODEID]"
+                      lineageId="Package\DF - FailureCode\Merge Join.Outputs[Merge Join Output].Columns[v_failurecodeid]" />
+                    <inputColumn
+                      refId="Package\DF - FailureCode\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_hasld]"
+                      cachedDataType="i4"
+                      cachedName="v_hasld"
+                      externalMetadataColumnId="Package\DF - FailureCode\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[HASLD]"
+                      lineageId="Package\DF - FailureCode\Merge Join.Outputs[Merge Join Output].Columns[v_hasld]" />
+                    <inputColumn
+                      refId="Package\DF - FailureCode\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_langcode]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="4"
+                      cachedName="v_langcode"
+                      externalMetadataColumnId="Package\DF - FailureCode\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[LANGCODE]"
+                      lineageId="Package\DF - FailureCode\Merge Join.Outputs[Merge Join Output].Columns[v_langcode]" />
+                    <inputColumn
+                      refId="Package\DF - FailureCode\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_orgid]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8"
+                      cachedName="v_orgid"
+                      externalMetadataColumnId="Package\DF - FailureCode\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ORGID]"
+                      lineageId="Package\DF - FailureCode\Merge Join.Outputs[Merge Join Output].Columns[v_orgid]" />
+                    <inputColumn
+                      refId="Package\DF - FailureCode\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[RowNo]"
+                      cachedDataType="i4"
+                      cachedName="RowNo"
+                      externalMetadataColumnId="Package\DF - FailureCode\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONID]"
+                      lineageId="Package\DF - FailureCode\Merge Join.Outputs[Merge Join Output].Columns[RowNo]" />
+                    <inputColumn
+                      refId="Package\DF - FailureCode\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[V_MIGRATIONDATE]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="V_MIGRATIONDATE"
+                      externalMetadataColumnId="Package\DF - FailureCode\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
+                      lineageId="Package\DF - FailureCode\Merge Join.Outputs[Merge Join Output].Columns[V_MIGRATIONDATE]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureCode\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[FAILURECODE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="30"
+                      name="FAILURECODE" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureCode\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[DESCRIPTION]"
+                      codePage="1252"
+                      dataType="str"
+                      length="150"
+                      name="DESCRIPTION" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureCode\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ORGID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="8"
+                      name="ORGID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureCode\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[FAILURECODEID]"
+                      dataType="i8"
+                      name="FAILURECODEID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureCode\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[LANGCODE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="4"
+                      name="LANGCODE" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureCode\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[HASLD]"
+                      dataType="i4"
+                      name="HASLD" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureCode\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ROWSTAMP]"
+                      dataType="i8"
+                      name="ROWSTAMP" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureCode\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
+                      dataType="dbTimeStamp2"
+                      name="STE_MIGRATIONDATE"
+                      scale="7" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureCode\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONID]"
+                      dataType="i8"
+                      name="STE_MIGRATIONID" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - FailureCode\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\DF - FailureCode\OLE DB Destination.Inputs[ADO NET Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - FailureCode\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF - FailureCode\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF - FailureCode\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF - FailureCode\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
                   </outputColumns>
                   <externalMetadataColumns />
                 </output>
@@ -2344,7 +2605,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               startId="Package\DF - FailureCode\Derived Column.Outputs[Derived Column Output]" />
             <path
               refId="Package\DF - FailureCode.Paths[Derived Column Output1]"
-              endId="Package\DF - FailureCode\ADO NET Destination.Inputs[ADO NET Destination Input]"
+              endId="Package\DF - FailureCode\Multicast.Inputs[Multicast Input 1]"
               name="Derived Column Output"
               startId="Package\DF - FailureCode\Derived Column 1.Outputs[Derived Column Output]" />
             <path
@@ -2352,6 +2613,16 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               endId="Package\DF - FailureCode\Derived Column 1.Inputs[Derived Column Input]"
               name="Merge Join Output"
               startId="Package\DF - FailureCode\Merge Join.Outputs[Merge Join Output]" />
+            <path
+              refId="Package\DF - FailureCode.Paths[Multicast Output 1]"
+              endId="Package\DF - FailureCode\ADO NET Destination.Inputs[ADO NET Destination Input]"
+              name="Multicast Output 1"
+              startId="Package\DF - FailureCode\Multicast.Outputs[Multicast Output 1]" />
+            <path
+              refId="Package\DF - FailureCode.Paths[Multicast Output 2]"
+              endId="Package\DF - FailureCode\OLE DB Destination.Inputs[ADO NET Destination Input]"
+              name="Multicast Output 2"
+              startId="Package\DF - FailureCode\Multicast.Outputs[Multicast Output 2]" />
             <path
               refId="Package\DF - FailureCode.Paths[Oracle Source Output]"
               endId="Package\DF - FailureCode\Sort.Inputs[Sort Input]"
@@ -2626,8 +2897,8 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               <connections>
                 <connection
                   refId="Package\DF - FailureList (CAUSE)\ADO NET Source.Connections[IDbConnection]"
-                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  connectionManagerID="{0E3D1156-3C3E-48A5-B0D5-1AE6E73D62FE}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[ADO_Cert_db2inst1 1]"
                   description="Managed connection manager"
                   name="IDbConnection" />
               </connections>
@@ -3157,6 +3428,254 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="InputColumnID">#{Package\DF - FailureList (CAUSE)\Merge Join.Inputs[Merge Join Right Input].Columns[FAILURELIST]}</property>
                       </properties>
                     </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DF - FailureList (CAUSE)\Multicast"
+              componentClassID="Microsoft.Multicast"
+              contactInfo="Multicast;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Distributes every input row to every row in one or more outputs. For example, branch your data flow to make a copy of data so that some values can be masked before sharing with external partners."
+              name="Multicast">
+              <inputs>
+                <input
+                  refId="Package\DF - FailureList (CAUSE)\Multicast.Inputs[Multicast Input 1]"
+                  name="Multicast Input 1">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - FailureList (CAUSE)\Multicast.Outputs[Multicast Output 1]"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 1"
+                  synchronousInputId="Package\DF - FailureList (CAUSE)\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - FailureList (CAUSE)\Multicast.Outputs[Multicast Output 2]"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 2"
+                  synchronousInputId="Package\DF - FailureList (CAUSE)\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - FailureList (CAUSE)\Multicast.Outputs[Multicast Output 3]"
+                  dangling="true"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 3"
+                  synchronousInputId="Package\DF - FailureList (CAUSE)\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DF - FailureList (CAUSE)\OLE DB Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="OLE DB Destination"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">"MAXIMO"."FAILURELIST"</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">0</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Connections[OleDbConnection]"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Inputs[ADO NET Destination Input]"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="ADO NET Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_failurelist]"
+                      cachedDataType="i8"
+                      cachedName="v_failurelist"
+                      externalMetadataColumnId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[FAILURELIST]"
+                      lineageId="Package\DF - FailureList (CAUSE)\Sort 3.Outputs[Sort Output].Columns[v_failurelist]" />
+                    <inputColumn
+                      refId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_orgid]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8"
+                      cachedName="v_orgid"
+                      externalMetadataColumnId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ORGID]"
+                      lineageId="Package\DF - FailureList (CAUSE)\Sort 3.Outputs[Sort Output].Columns[v_orgid]" />
+                    <inputColumn
+                      refId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[V_MIGRATIONDATE]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="V_MIGRATIONDATE"
+                      externalMetadataColumnId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
+                      lineageId="Package\DF - FailureList (CAUSE)\Sort 3.Outputs[Sort Output].Columns[V_MIGRATIONDATE]" />
+                    <inputColumn
+                      refId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[V_MIGRATIONTYPE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="16"
+                      cachedName="V_MIGRATIONTYPE"
+                      externalMetadataColumnId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONTYPE]"
+                      lineageId="Package\DF - FailureList (CAUSE)\Sort 3.Outputs[Sort Output].Columns[V_MIGRATIONTYPE]" />
+                    <inputColumn
+                      refId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_type]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="7"
+                      cachedName="v_type"
+                      externalMetadataColumnId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[TYPE]"
+                      lineageId="Package\DF - FailureList (CAUSE)\Sort 3.Outputs[Sort Output].Columns[v_type]" />
+                    <inputColumn
+                      refId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[RowNo]"
+                      cachedDataType="i4"
+                      cachedName="RowNo"
+                      cachedSortKeyPosition="1"
+                      externalMetadataColumnId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONID]"
+                      lineageId="Package\DF - FailureList (CAUSE)\Sort 3.Outputs[Sort Output].Columns[RowNo]" />
+                    <inputColumn
+                      refId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[MAXCAUSE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="MAXCAUSE"
+                      externalMetadataColumnId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[FAILURECODE]"
+                      lineageId="Package\DF - FailureList (CAUSE)\Sort 3.Outputs[Sort Output].Columns[MAXCAUSE]" />
+                    <inputColumn
+                      refId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[CAUSE_FAILURELIST]"
+                      cachedDataType="i8"
+                      cachedName="CAUSE_FAILURELIST"
+                      externalMetadataColumnId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[PARENT]"
+                      lineageId="Package\DF - FailureList (CAUSE)\Sort 3.Outputs[Sort Output].Columns[CAUSE_FAILURELIST]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[FAILURELIST]"
+                      dataType="i8"
+                      name="FAILURELIST" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[FAILURECODE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="30"
+                      name="FAILURECODE" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[PARENT]"
+                      dataType="i8"
+                      name="PARENT" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[TYPE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="12"
+                      name="TYPE" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ORGID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="8"
+                      name="ORGID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ROWSTAMP]"
+                      dataType="i8"
+                      name="ROWSTAMP" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_SEVERITYIND]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="STE_SEVERITYIND" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONTYPE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      name="STE_MIGRATIONTYPE" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONID]"
+                      dataType="i8"
+                      name="STE_MIGRATIONID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
+                      dataType="dbTimeStamp2"
+                      name="STE_MIGRATIONDATE"
+                      scale="7" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Inputs[ADO NET Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
                   </outputColumns>
                   <externalMetadataColumns />
                 </output>
@@ -4988,6 +5507,16 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               name="Merge Join Output"
               startId="Package\DF - FailureList (CAUSE)\Merge Join.Outputs[Merge Join Output]" />
             <path
+              refId="Package\DF - FailureList (CAUSE).Paths[Multicast Output 1]"
+              endId="Package\DF - FailureList (CAUSE)\ADO NET Destination.Inputs[ADO NET Destination Input]"
+              name="Multicast Output 1"
+              startId="Package\DF - FailureList (CAUSE)\Multicast.Outputs[Multicast Output 1]" />
+            <path
+              refId="Package\DF - FailureList (CAUSE).Paths[Multicast Output 2]"
+              endId="Package\DF - FailureList (CAUSE)\OLE DB Destination.Inputs[ADO NET Destination Input]"
+              name="Multicast Output 2"
+              startId="Package\DF - FailureList (CAUSE)\Multicast.Outputs[Multicast Output 2]" />
+            <path
               refId="Package\DF - FailureList (CAUSE).Paths[Oracle Source Output]"
               endId="Package\DF - FailureList (CAUSE)\Sort.Inputs[Sort Input]"
               name="Oracle Source Output"
@@ -5014,7 +5543,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               startId="Package\DF - FailureList (CAUSE)\Sort 1.Outputs[Sort Output]" />
             <path
               refId="Package\DF - FailureList (CAUSE).Paths[Sort Output3]"
-              endId="Package\DF - FailureList (CAUSE)\ADO NET Destination.Inputs[ADO NET Destination Input]"
+              endId="Package\DF - FailureList (CAUSE)\Multicast.Inputs[Multicast Input 1]"
               name="Sort Output"
               startId="Package\DF - FailureList (CAUSE)\Sort 3.Outputs[Sort Output]" />
           </paths>
@@ -5261,8 +5790,8 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               <connections>
                 <connection
                   refId="Package\DF - FailureList (PROBLEM)\ADO NET Source.Connections[IDbConnection]"
-                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  connectionManagerID="{0E3D1156-3C3E-48A5-B0D5-1AE6E73D62FE}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[ADO_Cert_db2inst1 1]"
                   description="Managed connection manager"
                   name="IDbConnection" />
               </connections>
@@ -5792,6 +6321,254 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="InputColumnID">#{Package\DF - FailureList (PROBLEM)\Merge Join.Inputs[Merge Join Left Input].Columns[V_MIGRATIONTYPE]}</property>
                       </properties>
                     </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DF - FailureList (PROBLEM)\Multicast"
+              componentClassID="Microsoft.Multicast"
+              contactInfo="Multicast;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Distributes every input row to every row in one or more outputs. For example, branch your data flow to make a copy of data so that some values can be masked before sharing with external partners."
+              name="Multicast">
+              <inputs>
+                <input
+                  refId="Package\DF - FailureList (PROBLEM)\Multicast.Inputs[Multicast Input 1]"
+                  name="Multicast Input 1">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - FailureList (PROBLEM)\Multicast.Outputs[Multicast Output 1]"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 1"
+                  synchronousInputId="Package\DF - FailureList (PROBLEM)\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - FailureList (PROBLEM)\Multicast.Outputs[Multicast Output 2]"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 2"
+                  synchronousInputId="Package\DF - FailureList (PROBLEM)\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - FailureList (PROBLEM)\Multicast.Outputs[Multicast Output 3]"
+                  dangling="true"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 3"
+                  synchronousInputId="Package\DF - FailureList (PROBLEM)\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DF - FailureList (PROBLEM)\OLE DB Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="OLE DB Destination"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">"MAXIMO"."FAILURELIST"</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">0</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Connections[OleDbConnection]"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Inputs[ADO NET Destination Input]"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="ADO NET Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_failurelist]"
+                      cachedDataType="i8"
+                      cachedName="v_failurelist"
+                      externalMetadataColumnId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[FAILURELIST]"
+                      lineageId="Package\DF - FailureList (PROBLEM)\Sort 3.Outputs[Sort Output].Columns[v_failurelist]" />
+                    <inputColumn
+                      refId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_orgid]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8"
+                      cachedName="v_orgid"
+                      externalMetadataColumnId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ORGID]"
+                      lineageId="Package\DF - FailureList (PROBLEM)\Sort 3.Outputs[Sort Output].Columns[v_orgid]" />
+                    <inputColumn
+                      refId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[V_MIGRATIONDATE]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="V_MIGRATIONDATE"
+                      externalMetadataColumnId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
+                      lineageId="Package\DF - FailureList (PROBLEM)\Sort 3.Outputs[Sort Output].Columns[V_MIGRATIONDATE]" />
+                    <inputColumn
+                      refId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[V_MIGRATIONTYPE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="16"
+                      cachedName="V_MIGRATIONTYPE"
+                      externalMetadataColumnId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONTYPE]"
+                      lineageId="Package\DF - FailureList (PROBLEM)\Sort 3.Outputs[Sort Output].Columns[V_MIGRATIONTYPE]" />
+                    <inputColumn
+                      refId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_type]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="7"
+                      cachedName="v_type"
+                      externalMetadataColumnId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[TYPE]"
+                      lineageId="Package\DF - FailureList (PROBLEM)\Sort 3.Outputs[Sort Output].Columns[v_type]" />
+                    <inputColumn
+                      refId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[MAXPROB]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="21"
+                      cachedName="MAXPROB"
+                      externalMetadataColumnId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[FAILURECODE]"
+                      lineageId="Package\DF - FailureList (PROBLEM)\Sort 3.Outputs[Sort Output].Columns[MAXPROB]" />
+                    <inputColumn
+                      refId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[PAARENT_FAILURELIST]"
+                      cachedDataType="i8"
+                      cachedName="PAARENT_FAILURELIST"
+                      externalMetadataColumnId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[PARENT]"
+                      lineageId="Package\DF - FailureList (PROBLEM)\Sort 3.Outputs[Sort Output].Columns[PAARENT_FAILURELIST]" />
+                    <inputColumn
+                      refId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[RowNo]"
+                      cachedDataType="i4"
+                      cachedName="RowNo"
+                      cachedSortKeyPosition="1"
+                      externalMetadataColumnId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONID]"
+                      lineageId="Package\DF - FailureList (PROBLEM)\Sort 3.Outputs[Sort Output].Columns[RowNo]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[FAILURELIST]"
+                      dataType="i8"
+                      name="FAILURELIST" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[FAILURECODE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="30"
+                      name="FAILURECODE" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[PARENT]"
+                      dataType="i8"
+                      name="PARENT" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[TYPE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="12"
+                      name="TYPE" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ORGID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="8"
+                      name="ORGID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ROWSTAMP]"
+                      dataType="i8"
+                      name="ROWSTAMP" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_SEVERITYIND]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="STE_SEVERITYIND" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONTYPE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      name="STE_MIGRATIONTYPE" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONID]"
+                      dataType="i8"
+                      name="STE_MIGRATIONID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
+                      dataType="dbTimeStamp2"
+                      name="STE_MIGRATIONDATE"
+                      scale="7" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Inputs[ADO NET Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
                   </outputColumns>
                   <externalMetadataColumns />
                 </output>
@@ -7622,6 +8399,16 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               name="Merge Join Output"
               startId="Package\DF - FailureList (PROBLEM)\Merge Join.Outputs[Merge Join Output]" />
             <path
+              refId="Package\DF - FailureList (PROBLEM).Paths[Multicast Output 1]"
+              endId="Package\DF - FailureList (PROBLEM)\ADO NET Destination.Inputs[ADO NET Destination Input]"
+              name="Multicast Output 1"
+              startId="Package\DF - FailureList (PROBLEM)\Multicast.Outputs[Multicast Output 1]" />
+            <path
+              refId="Package\DF - FailureList (PROBLEM).Paths[Multicast Output 2]"
+              endId="Package\DF - FailureList (PROBLEM)\OLE DB Destination.Inputs[ADO NET Destination Input]"
+              name="Multicast Output 2"
+              startId="Package\DF - FailureList (PROBLEM)\Multicast.Outputs[Multicast Output 2]" />
+            <path
               refId="Package\DF - FailureList (PROBLEM).Paths[Oracle Source Output]"
               endId="Package\DF - FailureList (PROBLEM)\Sort.Inputs[Sort Input]"
               name="Oracle Source Output"
@@ -7648,7 +8435,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               startId="Package\DF - FailureList (PROBLEM)\Sort 1.Outputs[Sort Output]" />
             <path
               refId="Package\DF - FailureList (PROBLEM).Paths[Sort Output3]"
-              endId="Package\DF - FailureList (PROBLEM)\ADO NET Destination.Inputs[ADO NET Destination Input]"
+              endId="Package\DF - FailureList (PROBLEM)\Multicast.Inputs[Multicast Input 1]"
               name="Sort Output"
               startId="Package\DF - FailureList (PROBLEM)\Sort 3.Outputs[Sort Output]" />
           </paths>
@@ -7894,8 +8681,8 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               <connections>
                 <connection
                   refId="Package\DF - FailureList (REMEDY)\ADO NET Source.Connections[IDbConnection]"
-                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  connectionManagerID="{0E3D1156-3C3E-48A5-B0D5-1AE6E73D62FE}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[ADO_Cert_db2inst1 1]"
                   description="Managed connection manager"
                   name="IDbConnection" />
               </connections>
@@ -8011,8 +8798,8 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               <connections>
                 <connection
                   refId="Package\DF - FailureList (REMEDY)\ADO NET Source 1.Connections[IDbConnection]"
-                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  connectionManagerID="{0E3D1156-3C3E-48A5-B0D5-1AE6E73D62FE}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[ADO_Cert_db2inst1 1]"
                   description="Managed connection manager"
                   name="IDbConnection" />
               </connections>
@@ -8655,6 +9442,254 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="InputColumnID">#{Package\DF - FailureList (REMEDY)\Merge Join 1.Inputs[Merge Join Right Input].Columns[FAILURELIST]}</property>
                       </properties>
                     </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DF - FailureList (REMEDY)\Multicast"
+              componentClassID="Microsoft.Multicast"
+              contactInfo="Multicast;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Distributes every input row to every row in one or more outputs. For example, branch your data flow to make a copy of data so that some values can be masked before sharing with external partners."
+              name="Multicast">
+              <inputs>
+                <input
+                  refId="Package\DF - FailureList (REMEDY)\Multicast.Inputs[Multicast Input 1]"
+                  name="Multicast Input 1">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - FailureList (REMEDY)\Multicast.Outputs[Multicast Output 1]"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 1"
+                  synchronousInputId="Package\DF - FailureList (REMEDY)\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - FailureList (REMEDY)\Multicast.Outputs[Multicast Output 2]"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 2"
+                  synchronousInputId="Package\DF - FailureList (REMEDY)\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - FailureList (REMEDY)\Multicast.Outputs[Multicast Output 3]"
+                  dangling="true"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 3"
+                  synchronousInputId="Package\DF - FailureList (REMEDY)\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DF - FailureList (REMEDY)\OLE DB Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="OLE DB Destination"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">"MAXIMO"."FAILURELIST"</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">0</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Connections[OleDbConnection]"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Inputs[ADO NET Destination Input]"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="ADO NET Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[MAXREMEDY]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="MAXREMEDY"
+                      externalMetadataColumnId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[FAILURECODE]"
+                      lineageId="Package\DF - FailureList (REMEDY)\Sort 5.Outputs[Sort Output].Columns[MAXREMEDY]" />
+                    <inputColumn
+                      refId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_failurelist]"
+                      cachedDataType="i8"
+                      cachedName="v_failurelist"
+                      externalMetadataColumnId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[FAILURELIST]"
+                      lineageId="Package\DF - FailureList (REMEDY)\Derived Column.Outputs[Derived Column Output].Columns[v_failurelist]" />
+                    <inputColumn
+                      refId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_orgid]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8"
+                      cachedName="v_orgid"
+                      externalMetadataColumnId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ORGID]"
+                      lineageId="Package\DF - FailureList (REMEDY)\Derived Column.Outputs[Derived Column Output].Columns[v_orgid]" />
+                    <inputColumn
+                      refId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[CAUSE_FAILURELIST]"
+                      cachedDataType="i8"
+                      cachedName="CAUSE_FAILURELIST"
+                      externalMetadataColumnId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[PARENT]"
+                      lineageId="Package\DF - FailureList (REMEDY)\Sort 5.Outputs[Sort Output].Columns[CAUSE_FAILURELIST]" />
+                    <inputColumn
+                      refId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[V_MIGRATIONDATE]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="V_MIGRATIONDATE"
+                      externalMetadataColumnId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
+                      lineageId="Package\DF - FailureList (REMEDY)\Derived Column.Outputs[Derived Column Output].Columns[V_MIGRATIONDATE]" />
+                    <inputColumn
+                      refId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[RowNo]"
+                      cachedDataType="i4"
+                      cachedName="RowNo"
+                      cachedSortKeyPosition="1"
+                      externalMetadataColumnId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONID]"
+                      lineageId="Package\DF - FailureList (REMEDY)\Sort 5.Outputs[Sort Output].Columns[RowNo]" />
+                    <inputColumn
+                      refId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[V_MIGRATIONTYPE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="16"
+                      cachedName="V_MIGRATIONTYPE"
+                      externalMetadataColumnId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONTYPE]"
+                      lineageId="Package\DF - FailureList (REMEDY)\Derived Column.Outputs[Derived Column Output].Columns[V_MIGRATIONTYPE]" />
+                    <inputColumn
+                      refId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_type]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="7"
+                      cachedName="v_type"
+                      externalMetadataColumnId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[TYPE]"
+                      lineageId="Package\DF - FailureList (REMEDY)\Derived Column.Outputs[Derived Column Output].Columns[v_type]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[FAILURELIST]"
+                      dataType="i8"
+                      name="FAILURELIST" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[FAILURECODE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="30"
+                      name="FAILURECODE" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[PARENT]"
+                      dataType="i8"
+                      name="PARENT" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[TYPE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="12"
+                      name="TYPE" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ORGID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="8"
+                      name="ORGID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ROWSTAMP]"
+                      dataType="i8"
+                      name="ROWSTAMP" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_SEVERITYIND]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="STE_SEVERITYIND" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONTYPE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      name="STE_MIGRATIONTYPE" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONID]"
+                      dataType="i8"
+                      name="STE_MIGRATIONID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
+                      dataType="dbTimeStamp2"
+                      name="STE_MIGRATIONDATE"
+                      scale="7" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Inputs[ADO NET Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
                   </outputColumns>
                   <externalMetadataColumns />
                 </output>
@@ -10588,7 +11623,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               startId="Package\DF - FailureList (REMEDY)\ADO NET Source 1.Outputs[ADO NET Source Output]" />
             <path
               refId="Package\DF - FailureList (REMEDY).Paths[Derived Column Output]"
-              endId="Package\DF - FailureList (REMEDY)\ADO NET Destination.Inputs[ADO NET Destination Input]"
+              endId="Package\DF - FailureList (REMEDY)\Multicast.Inputs[Multicast Input 1]"
               name="Derived Column Output"
               startId="Package\DF - FailureList (REMEDY)\Derived Column.Outputs[Derived Column Output]" />
             <path
@@ -10601,6 +11636,16 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               endId="Package\DF - FailureList (REMEDY)\Sort 5.Inputs[Sort Input]"
               name="Merge Join Output"
               startId="Package\DF - FailureList (REMEDY)\Merge Join 1.Outputs[Merge Join Output]" />
+            <path
+              refId="Package\DF - FailureList (REMEDY).Paths[Multicast Output 1]"
+              endId="Package\DF - FailureList (REMEDY)\ADO NET Destination.Inputs[ADO NET Destination Input]"
+              name="Multicast Output 1"
+              startId="Package\DF - FailureList (REMEDY)\Multicast.Outputs[Multicast Output 1]" />
+            <path
+              refId="Package\DF - FailureList (REMEDY).Paths[Multicast Output 2]"
+              endId="Package\DF - FailureList (REMEDY)\OLE DB Destination.Inputs[ADO NET Destination Input]"
+              name="Multicast Output 2"
+              startId="Package\DF - FailureList (REMEDY)\Multicast.Outputs[Multicast Output 2]" />
             <path
               refId="Package\DF - FailureList (REMEDY).Paths[Oracle Source Output]"
               endId="Package\DF - FailureList (REMEDY)\Sort.Inputs[Sort Input]"
@@ -10920,10 +11965,18 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 6]"
       DTS:CreationName=""
-      DTS:DTSID="{27523C5A-5A25-4470-B23B-EF57062EE387}"
+      DTS:DTSID="{811FD8E1-5575-4181-AF2F-750E13D66CF0}"
       DTS:From="Package\Execute SQL Task 1"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 6"
+      DTS:To="Package\CSWNFL_CLS FAILURECLASS" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 7]"
+      DTS:CreationName=""
+      DTS:DTSID="{02A9E2B4-5FAE-4F1F-8169-97E63FB1EEF3}"
+      DTS:From="Package\CSWNFL_CLS FAILURECLASS"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 7"
       DTS:To="Package\Pre-Task 1" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
@@ -10943,9 +11996,33 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           Id="Package\DF - FailureCode"
           TopLeft="66.4,367.2" />
         <NodeLayout
+          Size="195.2,41.6"
+          Id="Package\DF - FailureList (CAUSE)"
+          TopLeft="626.999994809429,510.600000415842" />
+        <NodeLayout
+          Size="209.6,41.6"
+          Id="Package\DF - FailureList (PROBLEM)"
+          TopLeft="621.166661794815,358.066668143206" />
+        <NodeLayout
+          Size="203.2,41.6"
+          Id="Package\DF - FailureList (REMEDY)"
+          TopLeft="619.499995219211,663.999999349118" />
+        <NodeLayout
           Size="164.8,41.6"
           Id="Package\Execute SQL Task 1"
           TopLeft="60,468.8" />
+        <NodeLayout
+          Size="134.4,41.6"
+          Id="Package\Get Max ID"
+          TopLeft="652.333326458103,433.366664816472" />
+        <NodeLayout
+          Size="134.4,41.6"
+          Id="Package\Get Max ID 1"
+          TopLeft="653.166659745905,588.899997902711" />
+        <NodeLayout
+          Size="198.4,41.6"
+          Id="Package\MAXSEQ (FAILURELIST)"
+          TopLeft="622.833328370422,748.799998698235" />
         <NodeLayout
           Size="164.8,41.6"
           Id="Package\Pre-Task\Execute SQL Task"
@@ -10983,6 +12060,43 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           Size="176,247.2"
           Id="Package\Pre-Task"
           TopLeft="60,60" />
+        <NodeLayout
+          Size="164.8,41.6"
+          Id="Package\Pre-Task 1\Execute SQL Task"
+          TopLeft="5.50000000000001,5.49999999999995" />
+        <NodeLayout
+          Size="134.4,41.6"
+          Id="Package\Pre-Task 1\Get Max ID"
+          TopLeft="20.7,107.1" />
+        <EdgeLayout
+          Id="Package\Pre-Task 1.PrecedenceConstraints[Constraint]"
+          TopLeft="87.9,47.1">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,59.9999999999999"
+              Start="0,0"
+              End="0,52.4999999999999">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.4999999999999" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="176,204"
+          Size="176,247.2"
+          Id="Package\Pre-Task 1"
+          TopLeft="631.166661248439,60.86666666064" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
           TopLeft="145.2,408.8">
@@ -11027,89 +12141,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="195.2,41.6"
-          Id="Package\DF - FailureList (CAUSE)"
-          TopLeft="626.999994809429,510.600000415842" />
-        <NodeLayout
-          Size="209.6,41.6"
-          Id="Package\DF - FailureList (PROBLEM)"
-          TopLeft="621.166661794815,358.066668143206" />
-        <NodeLayout
-          Size="203.2,41.6"
-          Id="Package\DF - FailureList (REMEDY)"
-          TopLeft="619.499995219211,663.999999349118" />
-        <NodeLayout
-          Size="198.4,41.6"
-          Id="Package\MAXSEQ (FAILURELIST)"
-          TopLeft="622.833328370422,748.799998698235" />
-        <NodeLayout
-          Size="134.4,41.6"
-          Id="Package\Get Max ID"
-          TopLeft="652.333326458103,433.366664816472" />
-        <NodeLayout
-          Size="134.4,41.6"
-          Id="Package\Get Max ID 1"
-          TopLeft="653.166659745905,588.899997902711" />
-        <NodeLayout
-          Size="164.8,41.6"
-          Id="Package\Pre-Task 1\Execute SQL Task"
-          TopLeft="5.50000000000001,5.49999999999995" />
-        <NodeLayout
-          Size="134.4,41.6"
-          Id="Package\Pre-Task 1\Get Max ID"
-          TopLeft="20.7,107.1" />
-        <EdgeLayout
-          Id="Package\Pre-Task 1.PrecedenceConstraints[Constraint]"
-          TopLeft="87.9,47.1">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,59.9999999999999"
-              Start="0,0"
-              End="0,52.4999999999999">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,52.4999999999999" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <ContainerLayout
-          HeaderHeight="43"
-          IsExpanded="True"
-          PanelSize="176,204"
-          Size="176,247.2"
-          Id="Package\Pre-Task 1"
-          TopLeft="631.166661248439,60.86666666064" />
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 2]"
-          TopLeft="722.566661521627,308.06666666064">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,50.0000014825661"
-              Start="0,0"
-              End="0,42.5000014825661">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,42.5000014825661" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 1 1]"
           TopLeft="722.749994126459,399.666668143206">
@@ -11124,6 +12155,28 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                   Capacity="5">
                   <mssgle:LineSegment
                     End="0,26.1999966732661" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="722.566661521627,308.06666666064">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,50.0000014825661"
+              Start="0,0"
+              End="0,42.5000014825661">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,42.5000014825661" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -11220,32 +12273,70 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <NodeLayout
+          Size="228.8,41.6"
+          Id="Package\CSWNFL_CLS FAILURECLASS"
+          TopLeft="327.46664991114,358.599998607834" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 6]"
           TopLeft="168.533333333333,468.8">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="522.633327915106,-160.73333333936"
+              EndConnector="273.333316577806,-68.6000013921657"
               Start="0,0"
-              End="522.633327915106,-153.23333333936">
+              End="273.333316577806,-61.1000013921657">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,-76.4273076815036" />
+                    End="0,-23.8357697956672" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,-76.4273076815036"
-                    Point2="0,-80.4273076815036"
-                    Point3="4,-80.4273076815036" />
+                    Point1="0,-23.8357697956672"
+                    Point2="0,-27.8357697956672"
+                    Point3="4,-27.8357697956672" />
                   <mssgle:LineSegment
-                    End="518.633327915106,-80.4273076815036" />
+                    End="269.333316577806,-27.8357697956672" />
                   <mssgle:CubicBezierSegment
-                    Point1="518.633327915106,-80.4273076815036"
-                    Point2="522.633327915106,-80.4273076815036"
-                    Point3="522.633327915106,-84.4273076815036" />
+                    Point1="269.333316577806,-27.8357697956672"
+                    Point2="273.333316577806,-27.8357697956672"
+                    Point3="273.333316577806,-31.8357697956672" />
                   <mssgle:LineSegment
-                    End="522.633327915106,-153.23333333936" />
+                    End="273.333316577806,-61.1000013921657" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 7]"
+          TopLeft="441.86664991114,358.599998607834">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="249.300011337299,-50.5333319471944"
+              Start="0,0"
+              End="249.300011337299,-43.0333319471944">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,-26.0468460226561" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,-26.0468460226561"
+                    Point2="0,-30.0468460226561"
+                    Point3="4,-30.0468460226561" />
+                  <mssgle:LineSegment
+                    End="245.300011337299,-30.0468460226561" />
+                  <mssgle:CubicBezierSegment
+                    Point1="245.300011337299,-30.0468460226561"
+                    Point2="249.300011337299,-30.0468460226561"
+                    Point3="249.300011337299,-34.0468460226561" />
+                  <mssgle:LineSegment
+                    End="249.300011337299,-43.0333319471944" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -11261,107 +12352,55 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
     design-time-name="Package\DF - FailureCode">
     <LayoutInfo>
       <GraphLayout
-        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="158.4,41.6"
+          Id="Package\DF - FailureCode\Derived Column"
+          TopLeft="251.999997268121,143.733333050079" />
+        <NodeLayout
+          Size="171.2,41.6"
+          Id="Package\DF - FailureCode\OLE DB Destination"
+          TopLeft="260.833319082029,545.066664762232" />
+        <NodeLayout
+          Size="161.6,41.6"
+          Id="Package\DF - FailureCode\Running Number"
+          TopLeft="174.999990438422,66.9333375649317" />
+        <NodeLayout
+          Size="106.4,41.6"
+          Id="Package\DF - FailureCode\Sort 2"
+          TopLeft="489.999973227582,214.066665178074" />
+        <NodeLayout
+          Size="129.6,41.6"
+          Id="Package\DF - FailureCode\Merge Join"
+          TopLeft="389.166645403538,270.466664852633" />
+        <NodeLayout
+          Size="119.2,41.6"
+          Id="Package\DF - FailureCode\Multicast"
+          TopLeft="419.999977052213,440.999998752475" />
         <NodeLayout
           Size="106.4,41.6"
           Id="Package\DF - FailureCode\Sort 1"
           TopLeft="314.166649501358,215.133332037595" />
         <NodeLayout
           Size="144.8,41.6"
-          Id="Package\DF - FailureCode\Oracle Source 1"
-          TopLeft="572.499968719981,92.9333372162456" />
-        <NodeLayout
-          Size="158.4,41.6"
-          Id="Package\DF - FailureCode\Derived Column"
-          TopLeft="251.999997268121,143.733333050079" />
-        <NodeLayout
-          Size="129.6,41.6"
-          Id="Package\DF - FailureCode\Merge Join"
-          TopLeft="389.166645403538,270.466664852633" />
-        <NodeLayout
-          Size="144.8,41.6"
           Id="Package\DF - FailureCode\Oracle Source"
           TopLeft="3.33333315120801,0.800000000000001" />
+        <NodeLayout
+          Size="161.6,41.6"
+          Id="Package\DF - FailureCode\Derived Column 1"
+          TopLeft="393.333311842549,347.399998390874" />
+        <NodeLayout
+          Size="144.8,41.6"
+          Id="Package\DF - FailureCode\Oracle Source 1"
+          TopLeft="572.499968719981,92.9333372162456" />
         <NodeLayout
           Size="97.6,41.6"
           Id="Package\DF - FailureCode\Sort"
           TopLeft="179.999990165234,7.79999994575974" />
         <NodeLayout
-          Size="106.4,41.6"
-          Id="Package\DF - FailureCode\Sort 2"
-          TopLeft="489.999973227582,214.066665178074" />
-        <NodeLayout
           Size="179.2,41.6"
           Id="Package\DF - FailureCode\ADO NET Destination"
-          TopLeft="616.666640324725,392.200001851917" />
-        <NodeLayout
-          Size="161.6,41.6"
-          Id="Package\DF - FailureCode\Derived Column 1"
-          TopLeft="409.999977598589,333.533331820634" />
-        <NodeLayout
-          Size="161.6,41.6"
-          Id="Package\DF - FailureCode\Running Number"
-          TopLeft="174.999990438422,66.9333375649317" />
-        <EdgeLayout
-          Id="Package\DF - FailureCode.Paths[Sort Output2]"
-          TopLeft="489.999973227582,234.866665178074">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-15.7666611573765,35.5999996745588"
-              Start="0,0"
-              End="-15.7666611573765,28.0999996745588">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="-11.7666611573765,0" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-11.7666611573765,0"
-                    Point2="-15.7666611573765,0"
-                    Point3="-15.7666611573765,4" />
-                  <mssgle:LineSegment
-                    End="-15.7666611573765,28.0999996745588" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - FailureCode.Paths[Sort Output1]"
-          TopLeft="420.566649501358,235.933332037595">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="33.3999959021808,34.5333328150379"
-              Start="0,0"
-              End="33.3999959021808,27.0333328150379">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="29.3999959021808,0" />
-                  <mssgle:CubicBezierSegment
-                    Point1="29.3999959021808,0"
-                    Point2="33.3999959021808,0"
-                    Point3="33.3999959021808,4" />
-                  <mssgle:LineSegment
-                    End="33.3999959021808,27.0333328150379" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
+          TopLeft="579.166642373635,531.200001580715" />
         <EdgeLayout
           Id="Package\DF - FailureCode.Paths[Sort Output]"
           TopLeft="277.599990165234,28.5999999457597">
@@ -11387,9 +12426,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -11423,9 +12460,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -11459,9 +12494,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -11483,75 +12516,131 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - FailureCode.Paths[Multicast Output 2]"
+          TopLeft="461.066643718879,482.599998752475">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-114.633324636851,62.4666660097573"
+              Start="0,0"
+              End="-114.633324636851,54.9666660097573">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,21.483090239742" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,21.483090239742"
+                    Point2="0,25.483090239742"
+                    Point3="-4,25.483090239742" />
+                  <mssgle:LineSegment
+                    End="-110.633324636851,25.483090239742" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-110.633324636851,25.483090239742"
+                    Point2="-114.633324636851,25.483090239742"
+                    Point3="-114.633324636851,29.483090239742" />
+                  <mssgle:LineSegment
+                    End="-114.633324636851,54.9666660097573" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - FailureCode.Paths[Multicast Output 1]"
+          TopLeft="479.599977052213,482.599998752475">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="189.166665321422,48.6000028282407"
+              Start="0,0"
+              End="189.166665321422,41.1000028282407">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,20.3000014141203" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,20.3000014141203"
+                    Point2="0,24.3000014141203"
+                    Point3="4,24.3000014141203" />
+                  <mssgle:LineSegment
+                    End="185.166665321422,24.3000014141203" />
+                  <mssgle:CubicBezierSegment
+                    Point1="185.166665321422,24.3000014141203"
+                    Point2="189.166665321422,24.3000014141203"
+                    Point3="189.166665321422,28.3000014141203" />
+                  <mssgle:LineSegment
+                    End="189.166665321422,41.1000028282407" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - FailureCode.Paths[Merge Join Output]"
-          TopLeft="518.766645403538,291.266664852633">
+          TopLeft="453.966645403538,312.066664852633">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-27.9666678049496,42.2666669680012"
+              EndConnector="20.1666664390108,35.3333335382405"
               Start="0,0"
-              End="-27.9666678049496,34.7666669680012">
+              End="20.1666664390108,27.8333335382405">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="-23.9666678049496,0" />
+                    End="0,13.6666667691202" />
                   <mssgle:CubicBezierSegment
-                    Point1="-23.9666678049496,0"
-                    Point2="-27.9666678049496,0"
-                    Point3="-27.9666678049496,4" />
+                    Point1="0,13.6666667691202"
+                    Point2="0,17.6666667691202"
+                    Point3="4,17.6666667691202" />
                   <mssgle:LineSegment
-                    End="-27.9666678049496,34.7666669680012" />
+                    End="16.1666664390108,17.6666667691202" />
+                  <mssgle:CubicBezierSegment
+                    Point1="16.1666664390108,17.6666667691202"
+                    Point2="20.1666664390108,17.6666667691202"
+                    Point3="20.1666664390108,21.6666667691202" />
+                  <mssgle:LineSegment
+                    End="20.1666664390108,27.8333335382405" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - FailureCode.Paths[Derived Column Output1]"
-          TopLeft="571.599977598589,354.333331820634">
+          TopLeft="476.866644447381,388.999998390874">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="45.0666627261364,58.6666700312833"
+              EndConnector="0,52.0000003616012"
               Start="0,0"
-              End="37.5666627261364,58.6666700312833">
+              End="0,44.5000003616012">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="18.5333313630682,0" />
-                  <mssgle:CubicBezierSegment
-                    Point1="18.5333313630682,0"
-                    Point2="22.5333313630682,0"
-                    Point3="22.5333313630682,4" />
-                  <mssgle:LineSegment
-                    End="22.5333313630682,54.6666700312833" />
-                  <mssgle:CubicBezierSegment
-                    Point1="22.5333313630682,54.6666700312833"
-                    Point2="22.5333313630682,58.6666700312833"
-                    Point3="26.5333313630682,58.6666700312833" />
-                  <mssgle:LineSegment
-                    End="37.5666627261364,58.6666700312833" />
+                    End="0,44.5000003616012" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -11585,275 +12674,134 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - FailureCode.Paths[Sort Output2]"
+          TopLeft="489.999973227582,234.866665178074">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-15.7666611573765,35.5999996745588"
+              Start="0,0"
+              End="-15.7666611573765,28.0999996745588">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="-11.7666611573765,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-11.7666611573765,0"
+                    Point2="-15.7666611573765,0"
+                    Point3="-15.7666611573765,4" />
+                  <mssgle:LineSegment
+                    End="-15.7666611573765,28.0999996745588" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - FailureCode.Paths[Sort Output1]"
+          TopLeft="420.566649501358,235.933332037595">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="33.3999959021808,34.5333328150379"
+              Start="0,0"
+              End="33.3999959021808,27.0333328150379">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="29.3999959021808,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="29.3999959021808,0"
+                    Point2="33.3999959021808,0"
+                    Point3="33.3999959021808,4" />
+                  <mssgle:LineSegment
+                    End="33.3999959021808,27.0333328150379" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - FailureCode\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
   <TaskHost
     design-time-name="Package\DF - FailureList (CAUSE)">
     <LayoutInfo>
       <GraphLayout
-        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
-        <NodeLayout
-          Size="158.4,41.6"
-          Id="Package\DF - FailureList (CAUSE)\Derived Column"
-          TopLeft="69.9999989569187,180.300003010034" />
+        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
           Size="160,41.6"
           Id="Package\DF - FailureList (CAUSE)\ADO NET Source"
           TopLeft="463.999993085862,111.999998748302" />
         <NodeLayout
+          Size="106.4,41.6"
+          Id="Package\DF - FailureList (CAUSE)\Sort 2"
+          TopLeft="291.999995648861,224.999996647239" />
+        <NodeLayout
           Size="161.6,41.6"
           Id="Package\DF - FailureList (CAUSE)\Running Number"
           TopLeft="40.5000026971101,110.49999897182" />
-        <NodeLayout
-          Size="144.8,41.6"
-          Id="Package\DF - FailureList (CAUSE)\Oracle Source"
-          TopLeft="28.9999995678663,17.9999997317791" />
-        <NodeLayout
-          Size="97.6,41.6"
-          Id="Package\DF - FailureList (CAUSE)\Sort"
-          TopLeft="289.999995678664,35.9999998807907" />
         <NodeLayout
           Size="106.4,41.6"
           Id="Package\DF - FailureList (CAUSE)\Sort 1"
           TopLeft="525.99999216199,213.999997228384" />
         <NodeLayout
-          Size="129.6,41.6"
-          Id="Package\DF - FailureList (CAUSE)\Merge Join"
-          TopLeft="434.999993517995,279.999995827675" />
+          Size="158.4,41.6"
+          Id="Package\DF - FailureList (CAUSE)\Derived Column"
+          TopLeft="69.9999989569187,180.300003010034" />
         <NodeLayout
-          Size="106.4,41.6"
-          Id="Package\DF - FailureList (CAUSE)\Sort 2"
-          TopLeft="291.999995648861,224.999996647239" />
+          Size="97.6,41.6"
+          Id="Package\DF - FailureList (CAUSE)\Sort"
+          TopLeft="289.999995678664,35.9999998807907" />
+        <NodeLayout
+          Size="171.2,41.6"
+          Id="Package\DF - FailureList (CAUSE)\OLE DB Destination"
+          TopLeft="350.999994769692,516.599994531274" />
         <NodeLayout
           Size="106.4,41.6"
           Id="Package\DF - FailureList (CAUSE)\Sort 3"
           TopLeft="490.99999268353,354.999994710088" />
         <NodeLayout
+          Size="144.8,41.6"
+          Id="Package\DF - FailureList (CAUSE)\Oracle Source"
+          TopLeft="28.9999995678663,17.9999997317791" />
+        <NodeLayout
+          Size="119.2,41.6"
+          Id="Package\DF - FailureList (CAUSE)\Multicast"
+          TopLeft="503.999992489815,439.599995917082" />
+        <NodeLayout
           Size="179.2,41.6"
           Id="Package\DF - FailureList (CAUSE)\ADO NET Destination"
-          TopLeft="677.499990284444,374.69999859929" />
-        <EdgeLayout
-          Id="Package\DF - FailureList (CAUSE).Paths[Sort Output3]"
-          TopLeft="597.39999268353,375.799994710088">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="80.0999976009136,19.7000038892022"
-              Start="0,0"
-              End="72.5999976009136,19.7000038892022">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="36.0499988004568,0" />
-                  <mssgle:CubicBezierSegment
-                    Point1="36.0499988004568,0"
-                    Point2="40.0499988004568,0"
-                    Point3="40.0499988004568,4" />
-                  <mssgle:LineSegment
-                    End="40.0499988004568,15.7000038892022" />
-                  <mssgle:CubicBezierSegment
-                    Point1="40.0499988004568,15.7000038892022"
-                    Point2="40.0499988004568,19.7000038892022"
-                    Point3="44.0499988004568,19.7000038892022" />
-                  <mssgle:LineSegment
-                    End="72.5999976009136,19.7000038892022" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - FailureList (CAUSE).Paths[Sort Output2]"
-          TopLeft="579.19999216199,255.599997228384">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-79.3999986439947,24.3999985992909"
-              Start="0,0"
-              End="-79.3999986439947,16.8999985992909">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,8.19999929964547" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,8.19999929964547"
-                    Point2="0,12.1999992996455"
-                    Point3="-4,12.1999992996455" />
-                  <mssgle:LineSegment
-                    End="-75.3999986439947,12.1999992996455" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-75.3999986439947,12.1999992996455"
-                    Point2="-79.3999986439947,12.1999992996455"
-                    Point3="-79.3999986439947,16.1999992996455" />
-                  <mssgle:LineSegment
-                    End="-79.3999986439947,16.8999985992909" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - FailureList (CAUSE).Paths[Sort Output1]"
-          TopLeft="398.399995648861,245.799996647239">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="36.599997869134,54.9999991804362"
-              Start="0,0"
-              End="29.099997869134,54.9999991804362">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="14.299998934567,0" />
-                  <mssgle:CubicBezierSegment
-                    Point1="14.299998934567,0"
-                    Point2="18.299998934567,0"
-                    Point3="18.299998934567,4" />
-                  <mssgle:LineSegment
-                    End="18.299998934567,50.9999991804362" />
-                  <mssgle:CubicBezierSegment
-                    Point1="18.299998934567,50.9999991804362"
-                    Point2="18.299998934567,54.9999991804362"
-                    Point3="22.299998934567,54.9999991804362" />
-                  <mssgle:LineSegment
-                    End="29.099997869134,54.9999991804362" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - FailureList (CAUSE).Paths[Sort Output]"
-          TopLeft="338.799995678664,77.5999998807906">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-217.499992981553,32.8999990910294"
-              Start="0,0"
-              End="-217.499992981553,25.3999990910294">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,12.4499995455147" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,12.4499995455147"
-                    Point2="0,16.4499995455147"
-                    Point3="-4,16.4499995455147" />
-                  <mssgle:LineSegment
-                    End="-213.499992981553,16.4499995455147" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-213.499992981553,16.4499995455147"
-                    Point2="-217.499992981553,16.4499995455147"
-                    Point3="-217.499992981553,20.4499995455147" />
-                  <mssgle:LineSegment
-                    End="-217.499992981553,25.3999990910294" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - FailureList (CAUSE).Paths[Output 0]"
-          TopLeft="121.30000269711,152.09999897182">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="27.8999962598086,28.2000040382142"
-              Start="0,0"
-              End="27.8999962598086,20.7000040382142">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,10.1000020191071" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,10.1000020191071"
-                    Point2="0,14.1000020191071"
-                    Point3="4,14.1000020191071" />
-                  <mssgle:LineSegment
-                    End="23.8999962598086,14.1000020191071" />
-                  <mssgle:CubicBezierSegment
-                    Point1="23.8999962598086,14.1000020191071"
-                    Point2="27.8999962598086,14.1000020191071"
-                    Point3="27.8999962598086,18.1000020191071" />
-                  <mssgle:LineSegment
-                    End="27.8999962598086,20.7000040382142" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - FailureList (CAUSE).Paths[Oracle Source Output]"
-          TopLeft="173.799999567866,38.7999997317791">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="116.199996110797,18.0000001490115"
-              Start="0,0"
-              End="108.699996110797,18.0000001490115">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="54.0999980553986,0" />
-                  <mssgle:CubicBezierSegment
-                    Point1="54.0999980553986,0"
-                    Point2="58.0999980553986,0"
-                    Point3="58.0999980553986,4" />
-                  <mssgle:LineSegment
-                    End="58.0999980553986,14.0000001490115" />
-                  <mssgle:CubicBezierSegment
-                    Point1="58.0999980553986,14.0000001490115"
-                    Point2="58.0999980553986,18.0000001490115"
-                    Point3="62.0999980553986,18.0000001490115" />
-                  <mssgle:LineSegment
-                    End="108.699996110797,18.0000001490115" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
+          TopLeft="679.499990254642,502.699996870755" />
+        <NodeLayout
+          Size="129.6,41.6"
+          Id="Package\DF - FailureList (CAUSE)\Merge Join"
+          TopLeft="434.999993517995,279.999995827675" />
         <EdgeLayout
           Id="Package\DF - FailureList (CAUSE).Paths[Merge Join Output]"
           TopLeft="499.799993517995,321.599995827675">
@@ -11885,9 +12833,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -11921,9 +12867,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -11957,206 +12901,148 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-      </GraphLayout>
-    </LayoutInfo>
-  </TaskHost>
-  <TaskHost
-    design-time-name="Package\DF - FailureList (PROBLEM)">
-    <LayoutInfo>
-      <GraphLayout
-        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
-        <NodeLayout
-          Size="158.4,41.6"
-          Id="Package\DF - FailureList (PROBLEM)\Derived Column"
-          TopLeft="67.9999989867211,180.300003010034" />
-        <NodeLayout
-          Size="160,41.6"
-          Id="Package\DF - FailureList (PROBLEM)\ADO NET Source"
-          TopLeft="461.999993115664,111.999998748302" />
-        <NodeLayout
-          Size="161.6,41.6"
-          Id="Package\DF - FailureList (PROBLEM)\Running Number"
-          TopLeft="38.5000027269125,110.49999897182" />
-        <NodeLayout
-          Size="144.8,41.6"
-          Id="Package\DF - FailureList (PROBLEM)\Oracle Source"
-          TopLeft="1.99999997019766,6.00000032782553" />
-        <NodeLayout
-          Size="97.6,41.6"
-          Id="Package\DF - FailureList (PROBLEM)\Sort"
-          TopLeft="175.999997377396,31.9999999403953" />
-        <NodeLayout
-          Size="106.4,41.6"
-          Id="Package\DF - FailureList (PROBLEM)\Sort 1"
-          TopLeft="523.999992191792,213.999997228384" />
-        <NodeLayout
-          Size="129.6,41.6"
-          Id="Package\DF - FailureList (PROBLEM)\Merge Join"
-          TopLeft="410.999993875623,295.999996006489" />
-        <NodeLayout
-          Size="106.4,41.6"
-          Id="Package\DF - FailureList (PROBLEM)\Sort 2"
-          TopLeft="321.999995201826,219.999997138977" />
-        <NodeLayout
-          Size="106.4,41.6"
-          Id="Package\DF - FailureList (PROBLEM)\Sort 3"
-          TopLeft="471.999992966652,363.99999499321" />
-        <NodeLayout
-          Size="179.2,41.6"
-          Id="Package\DF - FailureList (PROBLEM)\ADO NET Destination"
-          TopLeft="675.499990314246,374.69999859929" />
         <EdgeLayout
-          Id="Package\DF - FailureList (PROBLEM).Paths[Sort Output3]"
-          TopLeft="578.399992966652,384.79999499321">
+          Id="Package\DF - FailureList (CAUSE).Paths[Sort Output3]"
+          TopLeft="544.19999268353,396.599994710088">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="97.0999973475939,10.7000036060805"
+              EndConnector="19.3999998062849,43.0000012069938"
               Start="0,0"
-              End="89.5999973475939,10.7000036060805">
+              End="19.3999998062849,35.5000012069938">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="44.5499986737969,0" />
+                    End="0,17.5000006034969" />
                   <mssgle:CubicBezierSegment
-                    Point1="44.5499986737969,0"
-                    Point2="48.5499986737969,0"
-                    Point3="48.5499986737969,4" />
+                    Point1="0,17.5000006034969"
+                    Point2="0,21.5000006034969"
+                    Point3="4,21.5000006034969" />
                   <mssgle:LineSegment
-                    End="48.5499986737969,6.70000360608054" />
+                    End="15.3999998062849,21.5000006034969" />
                   <mssgle:CubicBezierSegment
-                    Point1="48.5499986737969,6.70000360608054"
-                    Point2="48.5499986737969,10.7000036060805"
-                    Point3="52.5499986737969,10.7000036060805" />
+                    Point1="15.3999998062849,21.5000006034969"
+                    Point2="19.3999998062849,21.5000006034969"
+                    Point3="19.3999998062849,25.5000006034969" />
                   <mssgle:LineSegment
-                    End="89.5999973475939,10.7000036060805" />
+                    End="19.3999998062849,35.5000012069938" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - FailureList (PROBLEM).Paths[Sort Output2]"
-          TopLeft="577.199992191792,255.599997228384">
+          Id="Package\DF - FailureList (CAUSE).Paths[Sort Output2]"
+          TopLeft="579.19999216199,255.599997228384">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-81.1333316495023,40.3999987781048"
+              EndConnector="-79.3999986439947,24.3999985992909"
               Start="0,0"
-              End="-81.1333316495023,32.8999987781048">
+              End="-79.3999986439947,16.8999985992909">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,19.944389519706" />
+                    End="0,8.19999929964547" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,19.944389519706"
-                    Point2="0,23.944389519706"
-                    Point3="-4,23.944389519706" />
+                    Point1="0,8.19999929964547"
+                    Point2="0,12.1999992996455"
+                    Point3="-4,12.1999992996455" />
                   <mssgle:LineSegment
-                    End="-77.1333316495023,23.944389519706" />
+                    End="-75.3999986439947,12.1999992996455" />
                   <mssgle:CubicBezierSegment
-                    Point1="-77.1333316495023,23.944389519706"
-                    Point2="-81.1333316495023,23.944389519706"
-                    Point3="-81.1333316495023,27.944389519706" />
+                    Point1="-75.3999986439947,12.1999992996455"
+                    Point2="-79.3999986439947,12.1999992996455"
+                    Point3="-79.3999986439947,16.1999992996455" />
                   <mssgle:LineSegment
-                    End="-81.1333316495023,32.8999987781048" />
+                    End="-79.3999986439947,16.8999985992909" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - FailureList (PROBLEM).Paths[Sort Output1]"
-          TopLeft="375.199995201826,261.599997138977">
+          Id="Package\DF - FailureList (CAUSE).Paths[Sort Output1]"
+          TopLeft="398.399995648861,245.799996647239">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="100.599998673797,34.3999988675118"
+              EndConnector="36.599997869134,54.9999991804362"
               Start="0,0"
-              End="100.599998673797,26.8999988675118">
+              End="29.099997869134,54.9999991804362">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,13.1999994337559" />
+                    End="14.299998934567,0" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,13.1999994337559"
-                    Point2="0,17.1999994337559"
-                    Point3="4,17.1999994337559" />
+                    Point1="14.299998934567,0"
+                    Point2="18.299998934567,0"
+                    Point3="18.299998934567,4" />
                   <mssgle:LineSegment
-                    End="96.5999986737966,17.1999994337559" />
+                    End="18.299998934567,50.9999991804362" />
                   <mssgle:CubicBezierSegment
-                    Point1="96.5999986737966,17.1999994337559"
-                    Point2="100.599998673797,17.1999994337559"
-                    Point3="100.599998673797,21.1999994337559" />
+                    Point1="18.299998934567,50.9999991804362"
+                    Point2="18.299998934567,54.9999991804362"
+                    Point3="22.299998934567,54.9999991804362" />
                   <mssgle:LineSegment
-                    End="100.599998673797,26.8999988675118" />
+                    End="29.099997869134,54.9999991804362" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - FailureList (PROBLEM).Paths[Sort Output]"
-          TopLeft="224.799997377396,73.5999999403953">
+          Id="Package\DF - FailureList (CAUSE).Paths[Sort Output]"
+          TopLeft="338.799995678664,77.5999998807906">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-105.499994650483,36.8999990314246"
+              EndConnector="-217.499992981553,32.8999990910294"
               Start="0,0"
-              End="-105.499994650483,29.3999990314246">
+              End="-217.499992981553,25.3999990910294">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,14.4499995157123" />
+                    End="0,12.4499995455147" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,14.4499995157123"
-                    Point2="0,18.4499995157123"
-                    Point3="-4,18.4499995157123" />
+                    Point1="0,12.4499995455147"
+                    Point2="0,16.4499995455147"
+                    Point3="-4,16.4499995455147" />
                   <mssgle:LineSegment
-                    End="-101.499994650483,18.4499995157123" />
+                    End="-213.499992981553,16.4499995455147" />
                   <mssgle:CubicBezierSegment
-                    Point1="-101.499994650483,18.4499995157123"
-                    Point2="-105.499994650483,18.4499995157123"
-                    Point3="-105.499994650483,22.4499995157123" />
+                    Point1="-213.499992981553,16.4499995455147"
+                    Point2="-217.499992981553,16.4499995455147"
+                    Point3="-217.499992981553,20.4499995455147" />
                   <mssgle:LineSegment
-                    End="-105.499994650483,29.3999990314246" />
+                    End="-217.499992981553,25.3999990910294" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - FailureList (PROBLEM).Paths[Output 0]"
-          TopLeft="119.300002726912,152.09999897182">
+          Id="Package\DF - FailureList (CAUSE).Paths[Output 0]"
+          TopLeft="121.30000269711,152.09999897182">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -12185,47 +13071,188 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - FailureList (PROBLEM).Paths[Oracle Source Output]"
-          TopLeft="146.799999970198,26.8000003278255">
+          Id="Package\DF - FailureList (CAUSE).Paths[Oracle Source Output]"
+          TopLeft="173.799999567866,38.7999997317791">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="29.1999974071979,25.9999996125698"
+              EndConnector="116.199996110797,18.0000001490115"
               Start="0,0"
-              End="21.6999974071979,25.9999996125698">
+              End="108.699996110797,18.0000001490115">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="10.599998703599,0" />
+                    End="54.0999980553986,0" />
                   <mssgle:CubicBezierSegment
-                    Point1="10.599998703599,0"
-                    Point2="14.599998703599,0"
-                    Point3="14.599998703599,4" />
+                    Point1="54.0999980553986,0"
+                    Point2="58.0999980553986,0"
+                    Point3="58.0999980553986,4" />
                   <mssgle:LineSegment
-                    End="14.599998703599,21.9999996125698" />
+                    End="58.0999980553986,14.0000001490115" />
                   <mssgle:CubicBezierSegment
-                    Point1="14.599998703599,21.9999996125698"
-                    Point2="14.599998703599,25.9999996125698"
-                    Point3="18.599998703599,25.9999996125698" />
+                    Point1="58.0999980553986,14.0000001490115"
+                    Point2="58.0999980553986,18.0000001490115"
+                    Point3="62.0999980553986,18.0000001490115" />
                   <mssgle:LineSegment
-                    End="21.6999974071979,25.9999996125698" />
+                    End="108.699996110797,18.0000001490115" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - FailureList (CAUSE).Paths[Multicast Output 2]"
+          TopLeft="563.599992489815,481.199995917082">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-126.999997720122,35.3999986141922"
+              Start="0,0"
+              End="-126.999997720122,27.8999986141922">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,13.6999993070961" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,13.6999993070961"
+                    Point2="0,17.6999993070961"
+                    Point3="-4,17.6999993070961" />
+                  <mssgle:LineSegment
+                    End="-122.999997720122,17.6999993070961" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-122.999997720122,17.6999993070961"
+                    Point2="-126.999997720122,17.6999993070961"
+                    Point3="-126.999997720122,21.6999993070961" />
+                  <mssgle:LineSegment
+                    End="-126.999997720122,27.8999986141922" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - FailureList (CAUSE).Paths[Multicast Output 1]"
+          TopLeft="623.199992489815,460.399995917082">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="56.2999977648267,63.1000009536733"
+              Start="0,0"
+              End="48.7999977648267,63.1000009536733">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="24.1499988824133,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="24.1499988824133,0"
+                    Point2="28.1499988824133,0"
+                    Point3="28.1499988824133,4" />
+                  <mssgle:LineSegment
+                    End="28.1499988824133,59.1000009536733" />
+                  <mssgle:CubicBezierSegment
+                    Point1="28.1499988824133,59.1000009536733"
+                    Point2="28.1499988824133,63.1000009536733"
+                    Point3="32.1499988824133,63.1000009536733" />
+                  <mssgle:LineSegment
+                    End="48.7999977648267,63.1000009536733" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - FailureList (CAUSE)\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - FailureList (CAUSE)\ADO NET Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\DF - FailureList (PROBLEM)">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="160,41.6"
+          Id="Package\DF - FailureList (PROBLEM)\ADO NET Source"
+          TopLeft="461.999993115664,111.999998748302" />
+        <NodeLayout
+          Size="106.4,41.6"
+          Id="Package\DF - FailureList (PROBLEM)\Sort 2"
+          TopLeft="321.999995201826,219.999997138977" />
+        <NodeLayout
+          Size="161.6,41.6"
+          Id="Package\DF - FailureList (PROBLEM)\Running Number"
+          TopLeft="38.5000027269125,110.49999897182" />
+        <NodeLayout
+          Size="106.4,41.6"
+          Id="Package\DF - FailureList (PROBLEM)\Sort 1"
+          TopLeft="523.999992191792,213.999997228384" />
+        <NodeLayout
+          Size="158.4,41.6"
+          Id="Package\DF - FailureList (PROBLEM)\Derived Column"
+          TopLeft="67.9999989867211,180.300003010034" />
+        <NodeLayout
+          Size="97.6,41.6"
+          Id="Package\DF - FailureList (PROBLEM)\Sort"
+          TopLeft="175.999997377396,31.9999999403953" />
+        <NodeLayout
+          Size="171.2,41.6"
+          Id="Package\DF - FailureList (PROBLEM)\OLE DB Destination"
+          TopLeft="342.999994888902,547.399994620681" />
+        <NodeLayout
+          Size="106.4,41.6"
+          Id="Package\DF - FailureList (PROBLEM)\Sort 3"
+          TopLeft="471.999992966652,363.99999499321" />
+        <NodeLayout
+          Size="144.8,41.6"
+          Id="Package\DF - FailureList (PROBLEM)\Oracle Source"
+          TopLeft="1.99999997019766,6.00000032782553" />
+        <NodeLayout
+          Size="119.2,41.6"
+          Id="Package\DF - FailureList (PROBLEM)\Multicast"
+          TopLeft="470.999992981553,443.59999627471" />
+        <NodeLayout
+          Size="179.2,41.6"
+          Id="Package\DF - FailureList (PROBLEM)\ADO NET Destination"
+          TopLeft="666.499990448356,509.499998033046" />
+        <NodeLayout
+          Size="129.6,41.6"
+          Id="Package\DF - FailureList (PROBLEM)\Merge Join"
+          TopLeft="410.999993875623,295.999996006489" />
         <EdgeLayout
           Id="Package\DF - FailureList (PROBLEM).Paths[Merge Join Output]"
           TopLeft="475.799993875623,337.599996006489">
@@ -12257,9 +13284,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -12293,9 +13318,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -12329,61 +13352,344 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - FailureList (PROBLEM).Paths[Sort Output3]"
+          TopLeft="527.899992974103,405.59999499321">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,38.0000012814996"
+              Start="0,0"
+              End="0,30.5000012814996">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,30.5000012814996" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - FailureList (PROBLEM).Paths[Sort Output2]"
+          TopLeft="577.199992191792,255.599997228384">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-81.1333316495023,40.3999987781048"
+              Start="0,0"
+              End="-81.1333316495023,32.8999987781048">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,19.944389519706" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,19.944389519706"
+                    Point2="0,23.944389519706"
+                    Point3="-4,23.944389519706" />
+                  <mssgle:LineSegment
+                    End="-77.1333316495023,23.944389519706" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-77.1333316495023,23.944389519706"
+                    Point2="-81.1333316495023,23.944389519706"
+                    Point3="-81.1333316495023,27.944389519706" />
+                  <mssgle:LineSegment
+                    End="-81.1333316495023,32.8999987781048" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - FailureList (PROBLEM).Paths[Sort Output1]"
+          TopLeft="375.199995201826,261.599997138977">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="100.599998673797,34.3999988675118"
+              Start="0,0"
+              End="100.599998673797,26.8999988675118">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,13.1999994337559" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,13.1999994337559"
+                    Point2="0,17.1999994337559"
+                    Point3="4,17.1999994337559" />
+                  <mssgle:LineSegment
+                    End="96.5999986737966,17.1999994337559" />
+                  <mssgle:CubicBezierSegment
+                    Point1="96.5999986737966,17.1999994337559"
+                    Point2="100.599998673797,17.1999994337559"
+                    Point3="100.599998673797,21.1999994337559" />
+                  <mssgle:LineSegment
+                    End="100.599998673797,26.8999988675118" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - FailureList (PROBLEM).Paths[Sort Output]"
+          TopLeft="224.799997377396,73.5999999403953">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-105.499994650483,36.8999990314246"
+              Start="0,0"
+              End="-105.499994650483,29.3999990314246">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,14.4499995157123" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,14.4499995157123"
+                    Point2="0,18.4499995157123"
+                    Point3="-4,18.4499995157123" />
+                  <mssgle:LineSegment
+                    End="-101.499994650483,18.4499995157123" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-101.499994650483,18.4499995157123"
+                    Point2="-105.499994650483,18.4499995157123"
+                    Point3="-105.499994650483,22.4499995157123" />
+                  <mssgle:LineSegment
+                    End="-105.499994650483,29.3999990314246" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - FailureList (PROBLEM).Paths[Output 0]"
+          TopLeft="119.300002726912,152.09999897182">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="27.8999962598086,28.2000040382142"
+              Start="0,0"
+              End="27.8999962598086,20.7000040382142">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,10.1000020191071" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,10.1000020191071"
+                    Point2="0,14.1000020191071"
+                    Point3="4,14.1000020191071" />
+                  <mssgle:LineSegment
+                    End="23.8999962598086,14.1000020191071" />
+                  <mssgle:CubicBezierSegment
+                    Point1="23.8999962598086,14.1000020191071"
+                    Point2="27.8999962598086,14.1000020191071"
+                    Point3="27.8999962598086,18.1000020191071" />
+                  <mssgle:LineSegment
+                    End="27.8999962598086,20.7000040382142" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - FailureList (PROBLEM).Paths[Oracle Source Output]"
+          TopLeft="146.799999970198,26.8000003278255">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="29.1999974071979,25.9999996125698"
+              Start="0,0"
+              End="21.6999974071979,25.9999996125698">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="10.599998703599,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="10.599998703599,0"
+                    Point2="14.599998703599,0"
+                    Point3="14.599998703599,4" />
+                  <mssgle:LineSegment
+                    End="14.599998703599,21.9999996125698" />
+                  <mssgle:CubicBezierSegment
+                    Point1="14.599998703599,21.9999996125698"
+                    Point2="14.599998703599,25.9999996125698"
+                    Point3="18.599998703599,25.9999996125698" />
+                  <mssgle:LineSegment
+                    End="21.6999974071979,25.9999996125698" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - FailureList (PROBLEM).Paths[Multicast Output 2]"
+          TopLeft="512.06665964822,485.19999627471">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-83.4666647593182,62.1999983459712"
+              Start="0,0"
+              End="-83.4666647593182,54.6999983459712">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,21.3743039610055" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,21.3743039610055"
+                    Point2="0,25.3743039610055"
+                    Point3="-4,25.3743039610055" />
+                  <mssgle:LineSegment
+                    End="-79.4666647593182,25.3743039610055" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-79.4666647593182,25.3743039610055"
+                    Point2="-83.4666647593182,25.3743039610055"
+                    Point3="-83.4666647593182,29.3743039610055" />
+                  <mssgle:LineSegment
+                    End="-83.4666647593182,54.6999983459712" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - FailureList (PROBLEM).Paths[Multicast Output 1]"
+          TopLeft="530.599992981553,485.19999627471">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="225.499997466803,24.3000017583363"
+              Start="0,0"
+              End="225.499997466803,16.8000017583363">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,8.15000087916815" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,8.15000087916815"
+                    Point2="0,12.1500008791681"
+                    Point3="4,12.1500008791681" />
+                  <mssgle:LineSegment
+                    End="221.499997466803,12.1500008791681" />
+                  <mssgle:CubicBezierSegment
+                    Point1="221.499997466803,12.1500008791681"
+                    Point2="225.499997466803,12.1500008791681"
+                    Point3="225.499997466803,16.1500008791681" />
+                  <mssgle:LineSegment
+                    End="225.499997466803,16.8000017583363" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - FailureList (PROBLEM)\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - FailureList (PROBLEM)\ADO NET Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
   <TaskHost
     design-time-name="Package\DF - FailureList (REMEDY)">
     <LayoutInfo>
       <GraphLayout
         Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
-          Size="144.8,41.6"
-          Id="Package\DF - FailureList (REMEDY)\Oracle Source"
-          TopLeft="25.9999996125698,6.99999989569188" />
-        <NodeLayout
-          Size="97.6,41.6"
-          Id="Package\DF - FailureList (REMEDY)\Sort"
-          TopLeft="152.999997720122,92.9999986141921" />
+          Size="119.2,41.6"
+          Id="Package\DF - FailureList (REMEDY)\Multicast"
+          TopLeft="723.999989211559,700.39999627471" />
         <NodeLayout
           Size="158.4,41.6"
           Id="Package\DF - FailureList (REMEDY)\Derived Column"
-          TopLeft="703.999989509583,622.399994397164" />
+          TopLeft="703.999989509583,621.399994412065" />
         <NodeLayout
           Size="160,41.6"
           Id="Package\DF - FailureList (REMEDY)\ADO NET Source"
           TopLeft="517.999992281199,102.99999846518" />
         <NodeLayout
+          Size="106.4,41.6"
+          Id="Package\DF - FailureList (REMEDY)\Sort 4"
+          TopLeft="765.999988585711,404.19999473989" />
+        <NodeLayout
+          Size="144.8,41.6"
+          Id="Package\DF - FailureList (REMEDY)\Oracle Source"
+          TopLeft="25.9999996125698,6.99999989569188" />
+        <NodeLayout
           Size="161.6,41.6"
           Id="Package\DF - FailureList (REMEDY)\Running Number"
           TopLeft="197.99999704957,171.599998956919" />
+        <NodeLayout
+          Size="106.4,41.6"
+          Id="Package\DF - FailureList (REMEDY)\Sort 3"
+          TopLeft="521.999992221594,397.999994069338" />
         <NodeLayout
           Size="129.6,41.6"
           Id="Package\DF - FailureList (REMEDY)\Merge Join"
           TopLeft="430.9999935776,320.999995216727" />
         <NodeLayout
           Size="106.4,41.6"
-          Id="Package\DF - FailureList (REMEDY)\Sort 3"
-          TopLeft="521.999992221594,397.999994069338" />
-        <NodeLayout
-          Size="106.4,41.6"
           Id="Package\DF - FailureList (REMEDY)\Sort 1"
           TopLeft="333.999995023012,245.999996334314" />
+        <NodeLayout
+          Size="106.4,41.6"
+          Id="Package\DF - FailureList (REMEDY)\Sort 2"
+          TopLeft="530.999992087484,244.999996349216" />
         <NodeLayout
           Size="106.4,41.6"
           Id="Package\DF - FailureList (REMEDY)\Sort 5"
           TopLeft="681.999989837408,540.79999409914" />
         <NodeLayout
-          Size="106.4,41.6"
-          Id="Package\DF - FailureList (REMEDY)\Sort 4"
-          TopLeft="765.999988585711,404.19999473989" />
-        <NodeLayout
-          Size="160,41.6"
+          Size="168.8,41.6"
           Id="Package\DF - FailureList (REMEDY)\ADO NET Source 1"
           TopLeft="720.999989256263,320.59999679625" />
         <NodeLayout
@@ -12391,141 +13697,31 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           Id="Package\DF - FailureList (REMEDY)\Merge Join 1"
           TopLeft="634.999990537763,468.399993830919" />
         <NodeLayout
-          Size="106.4,41.6"
-          Id="Package\DF - FailureList (REMEDY)\Sort 2"
-          TopLeft="530.999992087484,244.999996349216" />
+          Size="171.2,41.6"
+          Id="Package\DF - FailureList (REMEDY)\OLE DB Destination"
+          TopLeft="546.999991849065,794.399994874001" />
         <NodeLayout
           Size="179.2,41.6"
           Id="Package\DF - FailureList (REMEDY)\ADO NET Destination"
-          TopLeft="757.99998870492,703.999994695187" />
-        <EdgeLayout
-          Id="Package\DF - FailureList (REMEDY).Paths[Oracle Source Output]"
-          TopLeft="98.3999996125698,48.5999998956919">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="103.399998107553,44.3999987185002"
-              Start="0,0"
-              End="103.399998107553,36.8999987185002">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,18.1999993592501" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,18.1999993592501"
-                    Point2="0,22.1999993592501"
-                    Point3="4,22.1999993592501" />
-                  <mssgle:LineSegment
-                    End="99.3999981075525,22.1999993592501" />
-                  <mssgle:CubicBezierSegment
-                    Point1="99.3999981075525,22.1999993592501"
-                    Point2="103.399998107553,22.1999993592501"
-                    Point3="103.399998107553,26.1999993592501" />
-                  <mssgle:LineSegment
-                    End="103.399998107553,36.8999987185002" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - FailureList (REMEDY).Paths[Merge Join Output1]"
-          TopLeft="704.199990537763,509.999993830919">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="30.9999992996457,30.8000002682211"
-              Start="0,0"
-              End="30.9999992996457,23.3000002682211">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,11.4000001341105" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,11.4000001341105"
-                    Point2="0,15.4000001341105"
-                    Point3="4,15.4000001341105" />
-                  <mssgle:LineSegment
-                    End="26.9999992996457,15.4000001341105" />
-                  <mssgle:CubicBezierSegment
-                    Point1="26.9999992996457,15.4000001341105"
-                    Point2="30.9999992996457,15.4000001341105"
-                    Point3="30.9999992996457,19.4000001341105" />
-                  <mssgle:LineSegment
-                    End="30.9999992996457,23.3000002682211" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - FailureList (REMEDY).Paths[Merge Join Output]"
-          TopLeft="495.7999935776,362.599995216727">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="79.3999986439944,35.3999988526106"
-              Start="0,0"
-              End="79.3999986439944,27.8999988526106">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,13.6999994263053" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,13.6999994263053"
-                    Point2="0,17.6999994263053"
-                    Point3="4,17.6999994263053" />
-                  <mssgle:LineSegment
-                    End="75.3999986439944,17.6999994263053" />
-                  <mssgle:CubicBezierSegment
-                    Point1="75.3999986439944,17.6999994263053"
-                    Point2="79.3999986439944,17.6999994263053"
-                    Point3="79.3999986439944,21.6999994263053" />
-                  <mssgle:LineSegment
-                    End="79.3999986439944,27.8999988526106" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
+          TopLeft="783.99998831749,786.999993458391" />
+        <NodeLayout
+          Size="97.6,41.6"
+          Id="Package\DF - FailureList (REMEDY)\Sort"
+          TopLeft="152.999997720122,92.9999986141921" />
         <EdgeLayout
           Id="Package\DF - FailureList (REMEDY).Paths[Derived Column Output]"
-          TopLeft="783.199989509583,663.999994397164">
+          TopLeft="783.399989360571,662.999994412065">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="64.3999991953375,40.0000002980232"
+              EndConnector="0,37.4000018626446"
               Start="0,0"
-              End="64.3999991953375,32.5000002980232">
+              End="0,29.9000018626446">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,16.0000001490116" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,16.0000001490116"
-                    Point2="0,20.0000001490116"
-                    Point3="4,20.0000001490116" />
-                  <mssgle:LineSegment
-                    End="60.3999991953375,20.0000001490116" />
-                  <mssgle:CubicBezierSegment
-                    Point1="60.3999991953375,20.0000001490116"
-                    Point2="64.3999991953375,20.0000001490116"
-                    Point3="64.3999991953375,24.0000001490116" />
-                  <mssgle:LineSegment
-                    End="64.3999991953375,32.5000002980232" />
+                    End="0,29.9000018626446" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -12536,30 +13732,30 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - FailureList (REMEDY).Paths[ADO NET Source Output1]"
-          TopLeft="800.999989256263,362.19999679625">
+          TopLeft="805.399989256263,362.19999679625">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="18.1999993294478,41.9999979436398"
+              EndConnector="13.799999329448,41.9999979436399"
               Start="0,0"
-              End="18.1999993294478,34.4999979436398">
+              End="13.799999329448,34.4999979436399">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,16.9999989718199" />
+                    End="0,16.99999897182" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,16.9999989718199"
-                    Point2="0,20.9999989718199"
-                    Point3="4,20.9999989718199" />
+                    Point1="0,16.99999897182"
+                    Point2="0,20.99999897182"
+                    Point3="4,20.99999897182" />
                   <mssgle:LineSegment
-                    End="14.1999993294478,20.9999989718199" />
+                    End="9.79999932944804,20.99999897182" />
                   <mssgle:CubicBezierSegment
-                    Point1="14.1999993294478,20.9999989718199"
-                    Point2="18.1999993294478,20.9999989718199"
-                    Point3="18.1999993294478,24.9999989718199" />
+                    Point1="9.79999932944804,20.99999897182"
+                    Point2="13.799999329448,20.99999897182"
+                    Point3="13.799999329448,24.99999897182" />
                   <mssgle:LineSegment
-                    End="18.1999993294478,34.4999979436398" />
+                    End="13.799999329448,34.4999979436399" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -12608,26 +13804,26 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="47.9999996721742,40.0000002980232"
+              EndConnector="47.999999672175,39.0000003129252"
               Start="0,0"
-              End="47.9999996721742,32.5000002980232">
+              End="47.999999672175,31.5000003129252">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,16.0000001490116" />
+                    End="0,15.5000001564626" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,16.0000001490116"
-                    Point2="0,20.0000001490116"
-                    Point3="4,20.0000001490116" />
+                    Point1="0,15.5000001564626"
+                    Point2="0,19.5000001564626"
+                    Point3="4,19.5000001564626" />
                   <mssgle:LineSegment
-                    End="43.9999996721742,20.0000001490116" />
+                    End="43.999999672175,19.5000001564626" />
                   <mssgle:CubicBezierSegment
-                    Point1="43.9999996721742,20.0000001490116"
-                    Point2="47.9999996721742,20.0000001490116"
-                    Point3="47.9999996721742,24.0000001490116" />
+                    Point1="43.999999672175,19.5000001564626"
+                    Point2="47.999999672175,19.5000001564626"
+                    Point3="47.999999672175,23.5000001564626" />
                   <mssgle:LineSegment
-                    End="47.9999996721742,32.5000002980232" />
+                    End="47.999999672175,31.5000003129252" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -12840,8 +14036,207 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - FailureList (REMEDY).Paths[Oracle Source Output]"
+          TopLeft="98.3999996125698,48.5999998956919">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="103.399998107553,44.3999987185002"
+              Start="0,0"
+              End="103.399998107553,36.8999987185002">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,18.1999993592501" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,18.1999993592501"
+                    Point2="0,22.1999993592501"
+                    Point3="4,22.1999993592501" />
+                  <mssgle:LineSegment
+                    End="99.3999981075525,22.1999993592501" />
+                  <mssgle:CubicBezierSegment
+                    Point1="99.3999981075525,22.1999993592501"
+                    Point2="103.399998107553,22.1999993592501"
+                    Point3="103.399998107553,26.1999993592501" />
+                  <mssgle:LineSegment
+                    End="103.399998107553,36.8999987185002" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - FailureList (REMEDY).Paths[Multicast Output 2]"
+          TopLeft="765.066655878226,741.99999627471">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-132.466664029161,52.3999985992908"
+              Start="0,0"
+              End="-132.466664029161,44.8999985992908">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,17.3764232696445" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,17.3764232696445"
+                    Point2="0,21.3764232696445"
+                    Point3="-4,21.3764232696445" />
+                  <mssgle:LineSegment
+                    End="-128.466664029161,21.3764232696445" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-128.466664029161,21.3764232696445"
+                    Point2="-132.466664029161,21.3764232696445"
+                    Point3="-132.466664029161,25.3764232696445" />
+                  <mssgle:LineSegment
+                    End="-132.466664029161,44.8999985992908" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - FailureList (REMEDY).Paths[Multicast Output 1]"
+          TopLeft="783.599989211559,741.99999627471">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="89.9999991059308,44.9999971836809"
+              Start="0,0"
+              End="89.9999991059308,37.4999971836809">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,18.4999985918404" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,18.4999985918404"
+                    Point2="0,22.4999985918404"
+                    Point3="4,22.4999985918404" />
+                  <mssgle:LineSegment
+                    End="85.9999991059308,22.4999985918404" />
+                  <mssgle:CubicBezierSegment
+                    Point1="85.9999991059308,22.4999985918404"
+                    Point2="89.9999991059308,22.4999985918404"
+                    Point3="89.9999991059308,26.4999985918404" />
+                  <mssgle:LineSegment
+                    End="89.9999991059308,37.4999971836809" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - FailureList (REMEDY).Paths[Merge Join Output1]"
+          TopLeft="704.199990537763,509.999993830919">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="30.9999992996457,30.8000002682211"
+              Start="0,0"
+              End="30.9999992996457,23.3000002682211">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,11.4000001341105" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,11.4000001341105"
+                    Point2="0,15.4000001341105"
+                    Point3="4,15.4000001341105" />
+                  <mssgle:LineSegment
+                    End="26.9999992996457,15.4000001341105" />
+                  <mssgle:CubicBezierSegment
+                    Point1="26.9999992996457,15.4000001341105"
+                    Point2="30.9999992996457,15.4000001341105"
+                    Point3="30.9999992996457,19.4000001341105" />
+                  <mssgle:LineSegment
+                    End="30.9999992996457,23.3000002682211" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - FailureList (REMEDY).Paths[Merge Join Output]"
+          TopLeft="495.7999935776,362.599995216727">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="79.3999986439944,35.3999988526106"
+              Start="0,0"
+              End="79.3999986439944,27.8999988526106">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,13.6999994263053" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,13.6999994263053"
+                    Point2="0,17.6999994263053"
+                    Point3="4,17.6999994263053" />
+                  <mssgle:LineSegment
+                    End="75.3999986439944,17.6999994263053" />
+                  <mssgle:CubicBezierSegment
+                    Point1="75.3999986439944,17.6999994263053"
+                    Point2="79.3999986439944,17.6999994263053"
+                    Point3="79.3999986439944,21.6999994263053" />
+                  <mssgle:LineSegment
+                    End="79.3999986439944,27.8999988526106" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - FailureList (REMEDY)\ADO NET Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - FailureList (REMEDY)\ADO NET Source 1">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - FailureList (REMEDY)\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
 </Objects>]]></DTS:DesignTimeProperties>
 </DTS:Executable>

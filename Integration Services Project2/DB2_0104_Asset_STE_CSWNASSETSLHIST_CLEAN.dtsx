@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
   DTS:refId="Package"
   DTS:CreationDate="1/17/2023 4:41:00 PM"
@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0104_Asset_STE_CSWNASSETSLHIST_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="101"
-  DTS:VersionGUID="{D512CAAD-BE57-463B-A4E4-2D7FEE195114}">
+  DTS:VersionBuild="103"
+  DTS:VersionGUID="{6C4F362A-13DE-4695-81D3-B6384C9858E8}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables>
@@ -112,8 +112,8 @@
               <connections>
                 <connection
                   refId="Package\Data Flow Task\ADO NET Destination.Connections[IDbConnection]"
-                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:invalid"
-                  connectionManagerRefId="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:invalid"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
                   description="Managed connection manager"
                   name="IDbConnection" />
               </connections>
@@ -160,7 +160,8 @@
                       lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[V_SITEID]" />
                     <inputColumn
                       refId="Package\Data Flow Task\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[v_ES_SRL_NO]"
-                      cachedDataType="wstr"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
                       cachedLength="24"
                       cachedName="v_ES_SRL_NO"
                       externalMetadataColumnId="Package\Data Flow Task\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_CSWNSNO]"
@@ -480,7 +481,8 @@
                     </outputColumn>
                     <outputColumn
                       refId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[v_ES_SRL_NO]"
-                      dataType="wstr"
+                      codePage="1252"
+                      dataType="str"
                       errorOrTruncationOperation="Computation"
                       errorRowDisposition="FailComponent"
                       length="24"
@@ -492,13 +494,13 @@
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">(DT_WSTR,24)[REPLACE](#{Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[ES_SRL_NO]},"¿","")</property>
+                          name="Expression">(DT_STR,24,1252)[REPLACE](#{Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[ES_SRL_NO]},"¿","")</property>
                         <property
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
-                          name="FriendlyExpression">(DT_WSTR,24)REPLACE(ES_SRL_NO,"¿","")</property>
+                          name="FriendlyExpression">(DT_STR,24,1252)REPLACE(ES_SRL_NO,"¿","")</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
@@ -577,8 +579,8 @@
               <connections>
                 <connection
                   refId="Package\Data Flow Task\Flat File Destination.Connections[FlatFileConnection]"
-                  connectionManagerID="{4316BD30-2818-4FBF-981F-F67F87A18602}:invalid"
-                  connectionManagerRefId="{4316BD30-2818-4FBF-981F-F67F87A18602}:invalid"
+                  connectionManagerID="{4316BD30-2818-4FBF-981F-F67F87A18602}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[STE_CSWNASSETLIST - Error]"
                   name="FlatFileConnection" />
               </connections>
               <inputs>
@@ -824,6 +826,239 @@
               </inputs>
             </component>
             <component
+              refId="Package\Data Flow Task\Multicast"
+              componentClassID="Microsoft.Multicast"
+              contactInfo="Multicast;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Distributes every input row to every row in one or more outputs. For example, branch your data flow to make a copy of data so that some values can be masked before sharing with external partners."
+              name="Multicast">
+              <inputs>
+                <input
+                  refId="Package\Data Flow Task\Multicast.Inputs[Multicast Input 1]"
+                  name="Multicast Input 1">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Data Flow Task\Multicast.Outputs[Multicast Output 1]"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 1"
+                  synchronousInputId="Package\Data Flow Task\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\Data Flow Task\Multicast.Outputs[Multicast Output 2]"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 2"
+                  synchronousInputId="Package\Data Flow Task\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\Data Flow Task\Multicast.Outputs[Multicast Output 3]"
+                  dangling="true"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 3"
+                  synchronousInputId="Package\Data Flow Task\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Data Flow Task\OLE DB Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="OLE DB Destination"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">"MAXIMO"."STE_CSWNASSETSLHIST"</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">0</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Data Flow Task\OLE DB Destination.Connections[OleDbConnection]"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_ste_cswnassetslhistid]"
+                      cachedDataType="i4"
+                      cachedName="v_ste_cswnassetslhistid"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_CSWNASSETSLHISTID]"
+                      lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[v_ste_cswnassetslhistid]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[V_CSWNSNODATE]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="V_CSWNSNODATE"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_CSWNSNODATE]"
+                      lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[V_CSWNSNODATE]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[EQ_EQCD]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="EQ_EQCD"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_CWEQCODE]"
+                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[EQ_EQCD]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[V_MIGRATIONDATE]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="V_MIGRATIONDATE"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
+                      lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[V_MIGRATIONDATE]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[V_SITEID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8"
+                      cachedName="V_SITEID"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_SITEID]"
+                      lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[V_SITEID]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_ES_SRL_NO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="24"
+                      cachedName="v_ES_SRL_NO"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_CSWNSNO]"
+                      lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[v_ES_SRL_NO]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PK_EQP_SRL]"
+                      cachedDataType="i4"
+                      cachedName="PK_EQP_SRL"
+                      cachedSortKeyPosition="1"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONID]"
+                      lineageId="Package\Data Flow Task\Sort.Outputs[Sort Output].Columns[PK_EQP_SRL]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_CSWNASSETSLHISTID]"
+                      dataType="i8"
+                      name="STE_CSWNASSETSLHISTID" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_CSWNSNO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="24"
+                      name="STE_CSWNSNO" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_CSWNSNODATE]"
+                      dataType="dbTimeStamp2"
+                      name="STE_CSWNSNODATE"
+                      scale="7" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_CWEQCODE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="25"
+                      name="STE_CWEQCODE" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_SITEID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="8"
+                      name="STE_SITEID" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ROWSTAMP]"
+                      dataType="i8"
+                      name="ROWSTAMP" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONID]"
+                      dataType="i8"
+                      name="STE_MIGRATIONID" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
+                      dataType="dbTimeStamp2"
+                      name="STE_MIGRATIONDATE"
+                      scale="7" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONTS]"
+                      dataType="i4"
+                      name="STE_MIGRATIONTS" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Data Flow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
               refId="Package\Data Flow Task\Oracle Source"
               componentClassID="Microsoft.SSISOracleSrc"
               description="Oracle Source"
@@ -884,8 +1119,8 @@ JOIN COSWIN.EQP_TOPO et ON et.PK_EQP_TOPO  = es.EQ_ES_30
               <connections>
                 <connection
                   refId="Package\Data Flow Task\Oracle Source.Connections[ORACLEConnection]"
-                  connectionManagerID="{1BBC9476-D9E4-4553-8563-89CF216CBE10}:invalid"
-                  connectionManagerRefId="{1BBC9476-D9E4-4553-8563-89CF216CBE10}:invalid"
+                  connectionManagerID="{1BBC9476-D9E4-4553-8563-89CF216CBE10}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[Oracle Connection Manager]"
                   description="The ORACLE runtime connection used to access the database."
                   name="ORACLEConnection" />
               </connections>
@@ -1431,9 +1666,19 @@ JOIN COSWIN.EQP_TOPO et ON et.PK_EQP_TOPO  = es.EQ_ES_30
               startId="Package\Data Flow Task\ADO NET Destination.Outputs[ADO NET Destination Error Output]" />
             <path
               refId="Package\Data Flow Task.Paths[Derived Column Output]"
-              endId="Package\Data Flow Task\ADO NET Destination.Inputs[ADO NET Destination Input]"
+              endId="Package\Data Flow Task\Multicast.Inputs[Multicast Input 1]"
               name="Derived Column Output"
               startId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\Data Flow Task.Paths[Multicast Output 1]"
+              endId="Package\Data Flow Task\ADO NET Destination.Inputs[ADO NET Destination Input]"
+              name="Multicast Output 1"
+              startId="Package\Data Flow Task\Multicast.Outputs[Multicast Output 1]" />
+            <path
+              refId="Package\Data Flow Task.Paths[Multicast Output 2]"
+              endId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input]"
+              name="Multicast Output 2"
+              startId="Package\Data Flow Task\Multicast.Outputs[Multicast Output 2]" />
             <path
               refId="Package\Data Flow Task.Paths[Oracle Source Output]"
               endId="Package\Data Flow Task\Sort.Inputs[Sort Input]"
@@ -1549,21 +1794,33 @@ JOIN COSWIN.EQP_TOPO et ON et.PK_EQP_TOPO  = es.EQ_ES_30
       <GraphLayout
         Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
-          Size="97.6,41.6"
-          Id="Package\Data Flow Task\Sort"
-          TopLeft="199.166658752495,65.0000005165736" />
+          Size="171.2,41.6"
+          Id="Package\Data Flow Task\OLE DB Destination"
+          TopLeft="274.166651686861,278.999998427034" />
+        <NodeLayout
+          Size="144.8,41.6"
+          Id="Package\Data Flow Task\Oracle Source"
+          TopLeft="32.4999982242784,35.7333332851198" />
         <NodeLayout
           Size="158.4,41.6"
           Id="Package\Data Flow Task\Derived Column"
           TopLeft="394.333324856228,83.666666425599" />
         <NodeLayout
+          Size="97.6,41.6"
+          Id="Package\Data Flow Task\Sort"
+          TopLeft="199.166658752495,65.0000005165736" />
+        <NodeLayout
           Size="179.2,41.6"
           Id="Package\Data Flow Task\ADO NET Destination"
-          TopLeft="85.8333299226231,226.200001797676" />
+          TopLeft="588.333302467234,266.933334847755" />
         <NodeLayout
           Size="170.4,41.6"
           Id="Package\Data Flow Task\Flat File Destination"
-          TopLeft="299.166654778852,312.866669153108" />
+          TopLeft="598.333305099773,342.333335614867" />
+        <NodeLayout
+          Size="119.2,41.6"
+          Id="Package\Data Flow Task\Multicast"
+          TopLeft="419.166643764411,175.866665810876" />
         <EdgeLayout
           Id="Package\Data Flow Task.Paths[Sort Output]"
           TopLeft="296.766658752495,85.8000005165736">
@@ -1599,80 +1856,6 @@ JOIN COSWIN.EQP_TOPO et ON et.PK_EQP_TOPO  = es.EQ_ES_30
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Derived Column Output]"
-          TopLeft="473.533324856228,125.266666425599">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-298.099994933605,100.933335372077"
-              Start="0,0"
-              End="-298.099994933605,93.433335372077">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,46.4666676860385" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,46.4666676860385"
-                    Point2="0,50.4666676860385"
-                    Point3="-4,50.4666676860385" />
-                  <mssgle:LineSegment
-                    End="-294.099994933605,50.4666676860385" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-294.099994933605,50.4666676860385"
-                    Point2="-298.099994933605,50.4666676860385"
-                    Point3="-298.099994933605,54.4666676860385" />
-                  <mssgle:LineSegment
-                    End="-298.099994933605,93.433335372077" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[ADO NET Destination Error Output]"
-          TopLeft="175.433329922623,267.800001797676">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="208.933324856229,45.0666673554315"
-              Start="0,0"
-              End="208.933324856229,37.5666673554315">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,18.5333336777158" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,18.5333336777158"
-                    Point2="0,22.5333336777158"
-                    Point3="4,22.5333336777158" />
-                  <mssgle:LineSegment
-                    End="204.933324856229,22.5333336777158" />
-                  <mssgle:CubicBezierSegment
-                    Point1="204.933324856229,22.5333336777158"
-                    Point2="208.933324856229,22.5333336777158"
-                    Point3="208.933324856229,26.5333336777158" />
-                  <mssgle:LineSegment
-                    End="208.933324856229,37.5666673554315" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="27.2522093031145,27.5333336777158,154.42890625,11.43359375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="144.8,41.6"
-          Id="Package\Data Flow Task\Oracle Source"
-          TopLeft="32.4999982242784,35.7333332851198" />
-        <EdgeLayout
           Id="Package\Data Flow Task.Paths[Oracle Source Output]"
           TopLeft="177.299998224278,42.5000005165736">
           <EdgeLayout.Curve>
@@ -1700,11 +1883,138 @@ JOIN COSWIN.EQP_TOPO et ON et.PK_EQP_TOPO  = es.EQ_ES_30
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Multicast Output 2]"
+          TopLeft="460.233310431077,217.466665810876">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-100.466658744216,61.5333326161571"
+              Start="0,0"
+              End="-100.466658744216,54.0333326161571">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,21.10233966328" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,21.10233966328"
+                    Point2="0,25.10233966328"
+                    Point3="-4,25.10233966328" />
+                  <mssgle:LineSegment
+                    End="-96.4666587442161,25.10233966328" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-96.4666587442161,25.10233966328"
+                    Point2="-100.466658744216,25.10233966328"
+                    Point3="-100.466658744216,29.10233966328" />
+                  <mssgle:LineSegment
+                    End="-100.466658744216,54.0333326161571" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Multicast Output 1]"
+          TopLeft="478.766643764411,217.466665810876">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="199.166658702824,49.4666690368784"
+              Start="0,0"
+              End="199.166658702824,41.9666690368784">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,20.7333345184392" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,20.7333345184392"
+                    Point2="0,24.7333345184392"
+                    Point3="4,24.7333345184392" />
+                  <mssgle:LineSegment
+                    End="195.166658702824,24.7333345184392" />
+                  <mssgle:CubicBezierSegment
+                    Point1="195.166658702824,24.7333345184392"
+                    Point2="199.166658702824,24.7333345184392"
+                    Point3="199.166658702824,28.7333345184392" />
+                  <mssgle:LineSegment
+                    End="199.166658702824,41.9666690368784" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Derived Column Output]"
+          TopLeft="476.149984310319,125.266666425599">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,50.5999993852774"
+              Start="0,0"
+              End="0,43.0999993852774">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,43.0999993852774" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[ADO NET Destination Error Output]"
+          TopLeft="680.733303783504,308.533334847755">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,33.8000007671123"
+              Start="0,0"
+              End="0,26.3000007671123">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,26.3000007671123" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-77.214453125,7.43320350855615,154.42890625,11.43359375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\Data Flow Task\ADO NET Destination">
+    design-time-name="Package\Data Flow Task\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Data Flow Task\Oracle Source">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -1712,7 +2022,7 @@ JOIN COSWIN.EQP_TOPO et ON et.PK_EQP_TOPO  = es.EQ_ES_30
     </Properties>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
-    design-time-name="Package\Data Flow Task\Oracle Source">
+    design-time-name="Package\Data Flow Task\ADO NET Destination">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>

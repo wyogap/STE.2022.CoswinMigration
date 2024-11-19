@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
   DTS:refId="Package"
   DTS:CreationDate="1/17/2023 4:41:00 PM"
@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0023_Master_AltItem_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="101"
-  DTS:VersionGUID="{1A123029-D1A5-460B-93B3-62DFFC39024C}"
+  DTS:VersionBuild="106"
+  DTS:VersionGUID="{EC90B3AD-30F7-4A40-A321-85F8B6F8AC9D}"
   DTS:VersionMajor="3"
   DTS:VersionMinor="1">
   <DTS:Property
@@ -114,8 +114,8 @@
               <connections>
                 <connection
                   refId="Package\DF - ALTITEM\ADO NET Destination.Connections[IDbConnection]"
-                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:invalid"
-                  connectionManagerRefId="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:invalid"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
                   description="Managed connection manager"
                   name="IDbConnection" />
               </connections>
@@ -144,7 +144,8 @@
                       lineageId="Package\DF - ALTITEM\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM2_CD]" />
                     <inputColumn
                       refId="Package\DF - ALTITEM\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[V_ITEMSETID]"
-                      cachedDataType="wstr"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
                       cachedLength="8"
                       cachedName="V_ITEMSETID"
                       externalMetadataColumnId="Package\DF - ALTITEM\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[ITEMSETID]"
@@ -305,7 +306,8 @@
                     </outputColumn>
                     <outputColumn
                       refId="Package\DF - ALTITEM\Derived Column.Outputs[Derived Column Output].Columns[V_ITEMSETID]"
-                      dataType="wstr"
+                      codePage="1252"
+                      dataType="str"
                       errorOrTruncationOperation="Computation"
                       errorRowDisposition="FailComponent"
                       length="8"
@@ -317,13 +319,13 @@
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">"NEL_ITEM"</property>
+                          name="Expression">(DT_STR,8,1252)"NEL_ITEM"</property>
                         <property
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
-                          name="FriendlyExpression">"NEL_ITEM"</property>
+                          name="FriendlyExpression">(DT_STR,8,1252)"NEL_ITEM"</property>
                       </properties>
                     </outputColumn>
                   </outputColumns>
@@ -347,6 +349,223 @@
                       refId="Package\DF - ALTITEM\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
                       dataType="i4"
                       lineageId="Package\DF - ALTITEM\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DF - ALTITEM\Multicast"
+              componentClassID="Microsoft.Multicast"
+              contactInfo="Multicast;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Distributes every input row to every row in one or more outputs. For example, branch your data flow to make a copy of data so that some values can be masked before sharing with external partners."
+              name="Multicast">
+              <inputs>
+                <input
+                  refId="Package\DF - ALTITEM\Multicast.Inputs[Multicast Input 1]"
+                  name="Multicast Input 1">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - ALTITEM\Multicast.Outputs[Multicast Output 1]"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 1"
+                  synchronousInputId="Package\DF - ALTITEM\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - ALTITEM\Multicast.Outputs[Multicast Output 2]"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 2"
+                  synchronousInputId="Package\DF - ALTITEM\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - ALTITEM\Multicast.Outputs[Multicast Output 3]"
+                  dangling="true"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 3"
+                  synchronousInputId="Package\DF - ALTITEM\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DF - ALTITEM\OLE DB Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="OLE DB Destination"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">"MAXIMO"."ALTITEM"</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">0</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\DF - ALTITEM\OLE DB Destination.Connections[OleDbConnection]"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\DF - ALTITEM\OLE DB Destination.Inputs[ADO NET Destination Input]"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="ADO NET Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DF - ALTITEM\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[ITEM1_CD]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="ITEM1_CD"
+                      externalMetadataColumnId="Package\DF - ALTITEM\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ITEMNUM]"
+                      lineageId="Package\DF - ALTITEM\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM1_CD]" />
+                    <inputColumn
+                      refId="Package\DF - ALTITEM\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[ITEM2_CD]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="ITEM2_CD"
+                      externalMetadataColumnId="Package\DF - ALTITEM\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ALTITEMNUM]"
+                      lineageId="Package\DF - ALTITEM\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM2_CD]" />
+                    <inputColumn
+                      refId="Package\DF - ALTITEM\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[V_ITEMSETID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8"
+                      cachedName="V_ITEMSETID"
+                      externalMetadataColumnId="Package\DF - ALTITEM\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ITEMSETID]"
+                      lineageId="Package\DF - ALTITEM\Derived Column.Outputs[Derived Column Output].Columns[V_ITEMSETID]" />
+                    <inputColumn
+                      refId="Package\DF - ALTITEM\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_altitemid]"
+                      cachedDataType="i8"
+                      cachedName="v_altitemid"
+                      externalMetadataColumnId="Package\DF - ALTITEM\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ALTITEMID]"
+                      lineageId="Package\DF - ALTITEM\Derived Column.Outputs[Derived Column Output].Columns[v_altitemid]" />
+                    <inputColumn
+                      refId="Package\DF - ALTITEM\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[PK_ALT_ITEMS]"
+                      cachedDataType="i4"
+                      cachedName="PK_ALT_ITEMS"
+                      externalMetadataColumnId="Package\DF - ALTITEM\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONID]"
+                      lineageId="Package\DF - ALTITEM\Oracle Source.Outputs[Oracle Source Output].Columns[PK_ALT_ITEMS]" />
+                    <inputColumn
+                      refId="Package\DF - ALTITEM\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[V_MIGRATIONDATE]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="V_MIGRATIONDATE"
+                      externalMetadataColumnId="Package\DF - ALTITEM\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
+                      lineageId="Package\DF - ALTITEM\Derived Column.Outputs[Derived Column Output].Columns[V_MIGRATIONDATE]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\DF - ALTITEM\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ITEMNUM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="30"
+                      name="ITEMNUM" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ALTITEM\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ALTITEMNUM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="30"
+                      name="ALTITEMNUM" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ALTITEM\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ITEMSETID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="8"
+                      name="ITEMSETID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ALTITEM\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ALTITEMID]"
+                      dataType="i8"
+                      name="ALTITEMID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ALTITEM\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ROWSTAMP]"
+                      dataType="i8"
+                      name="ROWSTAMP" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ALTITEM\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONID]"
+                      dataType="i8"
+                      name="STE_MIGRATIONID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ALTITEM\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
+                      dataType="dbTimeStamp2"
+                      name="STE_MIGRATIONDATE"
+                      scale="7" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - ALTITEM\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\DF - ALTITEM\OLE DB Destination.Inputs[ADO NET Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - ALTITEM\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF - ALTITEM\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF - ALTITEM\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF - ALTITEM\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
                       name="ErrorColumn"
                       specialFlags="2" />
                   </outputColumns>
@@ -405,8 +624,8 @@ ORDER BY pk_alt_items</property>
               <connections>
                 <connection
                   refId="Package\DF - ALTITEM\Oracle Source.Connections[ORACLEConnection]"
-                  connectionManagerID="{1BBC9476-D9E4-4553-8563-89CF216CBE10}:invalid"
-                  connectionManagerRefId="{1BBC9476-D9E4-4553-8563-89CF216CBE10}:invalid"
+                  connectionManagerID="{1BBC9476-D9E4-4553-8563-89CF216CBE10}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[Oracle Connection Manager]"
                   description="The ORACLE runtime connection used to access the database."
                   name="ORACLEConnection" />
               </connections>
@@ -540,9 +759,19 @@ ORDER BY pk_alt_items</property>
           <paths>
             <path
               refId="Package\DF - ALTITEM.Paths[Derived Column Output]"
-              endId="Package\DF - ALTITEM\ADO NET Destination.Inputs[ADO NET Destination Input]"
+              endId="Package\DF - ALTITEM\Multicast.Inputs[Multicast Input 1]"
               name="Derived Column Output"
               startId="Package\DF - ALTITEM\Derived Column.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - ALTITEM.Paths[Multicast Output 1]"
+              endId="Package\DF - ALTITEM\ADO NET Destination.Inputs[ADO NET Destination Input]"
+              name="Multicast Output 1"
+              startId="Package\DF - ALTITEM\Multicast.Outputs[Multicast Output 1]" />
+            <path
+              refId="Package\DF - ALTITEM.Paths[Multicast Output 2]"
+              endId="Package\DF - ALTITEM\OLE DB Destination.Inputs[ADO NET Destination Input]"
+              name="Multicast Output 2"
+              startId="Package\DF - ALTITEM\Multicast.Outputs[Multicast Output 2]" />
             <path
               refId="Package\DF - ALTITEM.Paths[Oracle Source Output]"
               endId="Package\DF - ALTITEM\Derived Column.Inputs[Derived Column Input]"
@@ -760,53 +989,27 @@ ORDER BY pk_alt_items</property>
     design-time-name="Package\DF - ALTITEM">
     <LayoutInfo>
       <GraphLayout
-        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="171.2,41.6"
+          Id="Package\DF - ALTITEM\OLE DB Destination"
+          TopLeft="106.666660838657,278.199998065432" />
+        <NodeLayout
+          Size="144.8,41.6"
+          Id="Package\DF - ALTITEM\Oracle Source"
+          TopLeft="5.5,5.5" />
         <NodeLayout
           Size="158.4,41.6"
           Id="Package\DF - ALTITEM\Derived Column"
           TopLeft="216,74" />
         <NodeLayout
+          Size="119.2,41.6"
+          Id="Package\DF - ALTITEM\Multicast"
+          TopLeft="244.999986613791,156.866665575835" />
+        <NodeLayout
           Size="179.2,41.6"
           Id="Package\DF - ALTITEM\ADO NET Destination"
           TopLeft="506.666646533542,229.666668491893" />
-        <EdgeLayout
-          Id="Package\DF - ALTITEM.Paths[Derived Column Output]"
-          TopLeft="295.2,115.6">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="301.066646533542,114.066668491893"
-              Start="0,0"
-              End="301.066646533542,106.566668491893">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,53.0333342459465" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,53.0333342459465"
-                    Point2="0,57.0333342459465"
-                    Point3="4,57.0333342459465" />
-                  <mssgle:LineSegment
-                    End="297.066646533542,57.0333342459465" />
-                  <mssgle:CubicBezierSegment
-                    Point1="297.066646533542,57.0333342459465"
-                    Point2="301.066646533542,57.0333342459465"
-                    Point3="301.066646533542,61.0333342459465" />
-                  <mssgle:LineSegment
-                    End="301.066646533542,106.566668491893" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="144.8,41.6"
-          Id="Package\DF - ALTITEM\Oracle Source"
-          TopLeft="5.5,5.5" />
         <EdgeLayout
           Id="Package\DF - ALTITEM.Paths[Oracle Source Output]"
           TopLeft="77.9,47.1">
@@ -841,11 +1044,113 @@ ORDER BY pk_alt_items</property>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - ALTITEM.Paths[Multicast Output 2]"
+          TopLeft="286.066653280458,198.466665575835">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-93.7999924418007,79.733332489597"
+              Start="0,0"
+              End="-93.7999924418007,72.233332489597">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,28.5269753732396" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,28.5269753732396"
+                    Point2="0,32.5269753732396"
+                    Point3="-4,32.5269753732396" />
+                  <mssgle:LineSegment
+                    End="-89.7999924418007,32.5269753732396" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-89.7999924418007,32.5269753732396"
+                    Point2="-93.7999924418007,32.5269753732396"
+                    Point3="-93.7999924418007,36.5269753732396" />
+                  <mssgle:LineSegment
+                    End="-93.7999924418007,72.233332489597" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - ALTITEM.Paths[Multicast Output 1]"
+          TopLeft="304.599986613791,198.466665575835">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="291.666659919751,31.2000029160575"
+              Start="0,0"
+              End="291.666659919751,23.7000029160575">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,11.6000014580288" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,11.6000014580288"
+                    Point2="0,15.6000014580288"
+                    Point3="4,15.6000014580288" />
+                  <mssgle:LineSegment
+                    End="287.666659919751,15.6000014580288" />
+                  <mssgle:CubicBezierSegment
+                    Point1="287.666659919751,15.6000014580288"
+                    Point2="291.666659919751,15.6000014580288"
+                    Point3="291.666659919751,19.6000014580288" />
+                  <mssgle:LineSegment
+                    End="291.666659919751,23.7000029160575" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - ALTITEM.Paths[Derived Column Output]"
+          TopLeft="295.2,115.6">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="9.39998661379082,41.2666655758355"
+              Start="0,0"
+              End="9.39998661379082,33.7666655758355">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,16.6333327879178" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,16.6333327879178"
+                    Point2="0,20.6333327879178"
+                    Point3="4,20.6333327879178" />
+                  <mssgle:LineSegment
+                    End="5.39998661379082,20.6333327879178" />
+                  <mssgle:CubicBezierSegment
+                    Point1="5.39998661379082,20.6333327879178"
+                    Point2="9.39998661379082,20.6333327879178"
+                    Point3="9.39998661379082,24.6333327879178" />
+                  <mssgle:LineSegment
+                    End="9.39998661379082,33.7666655758355" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\DF - ALTITEM\ADO NET Destination">
+    design-time-name="Package\DF - ALTITEM\Oracle Source">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -853,7 +1158,20 @@ ORDER BY pk_alt_items</property>
     </Properties>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
-    design-time-name="Package\DF - ALTITEM\Oracle Source">
+    design-time-name="Package\DF - ALTITEM\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - ALTITEM\ADO NET Destination">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>

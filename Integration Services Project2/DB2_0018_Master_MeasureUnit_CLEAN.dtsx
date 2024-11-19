@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
   DTS:refId="Package"
   DTS:CreationDate="1/17/2023 4:41:00 PM"
@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0018_Master_MeasureUnit_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="92"
-  DTS:VersionGUID="{4D3D3694-59B9-44D1-9964-D1ADC87BA7B3}">
+  DTS:VersionBuild="97"
+  DTS:VersionGUID="{95D14A30-F628-482D-9DD7-EB400705F2CD}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables>
@@ -111,8 +111,8 @@
               <connections>
                 <connection
                   refId="Package\DF - CONVERSION\ADO NET Destination.Connections[IDbConnection]"
-                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:invalid"
-                  connectionManagerRefId="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:invalid"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
                   description="Managed connection manager"
                   name="IDbConnection" />
               </connections>
@@ -125,8 +125,9 @@
                   <inputColumns>
                     <inputColumn
                       refId="Package\DF - CONVERSION\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[V_CHANGEBY]"
-                      cachedDataType="wstr"
-                      cachedLength="8"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="16"
                       cachedName="V_CHANGEBY"
                       externalMetadataColumnId="Package\DF - CONVERSION\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[CHANGEBY]"
                       lineageId="Package\DF - CONVERSION\Derived Column.Outputs[Derived Column Output].Columns[V_CHANGEBY]" />
@@ -138,8 +139,9 @@
                       lineageId="Package\DF - CONVERSION\Derived Column.Outputs[Derived Column Output].Columns[V_CHANGEDATE]" />
                     <inputColumn
                       refId="Package\DF - CONVERSION\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[v_contentuid]"
-                      cachedDataType="wstr"
-                      cachedLength="13"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="50"
                       cachedName="v_contentuid"
                       externalMetadataColumnId="Package\DF - CONVERSION\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[CONTENTUID]"
                       lineageId="Package\DF - CONVERSION\Derived Column.Outputs[Derived Column Output].Columns[v_contentuid]" />
@@ -447,10 +449,11 @@
                     </outputColumn>
                     <outputColumn
                       refId="Package\DF - CONVERSION\Derived Column.Outputs[Derived Column Output].Columns[v_contentuid]"
-                      dataType="wstr"
+                      codePage="1252"
+                      dataType="str"
                       errorOrTruncationOperation="Computation"
                       errorRowDisposition="FailComponent"
-                      length="13"
+                      length="50"
                       lineageId="Package\DF - CONVERSION\Derived Column.Outputs[Derived Column Output].Columns[v_contentuid]"
                       name="v_contentuid"
                       truncationRowDisposition="FailComponent">
@@ -459,21 +462,22 @@
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">#{Package\DF - CONVERSION\Sort.Outputs[Sort Output].Columns[U1UNIT]} + "-" + #{Package\DF - CONVERSION\Sort.Outputs[Sort Output].Columns[U2UNIT]}</property>
+                          name="Expression">(DT_STR,50,1252)(#{Package\DF - CONVERSION\Sort.Outputs[Sort Output].Columns[U1UNIT]} + "-" + #{Package\DF - CONVERSION\Sort.Outputs[Sort Output].Columns[U2UNIT]})</property>
                         <property
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
-                          name="FriendlyExpression">U1UNIT + "-" + U2UNIT</property>
+                          name="FriendlyExpression">(DT_STR,50,1252)(U1UNIT + "-" + U2UNIT)</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
                       refId="Package\DF - CONVERSION\Derived Column.Outputs[Derived Column Output].Columns[V_CHANGEBY]"
-                      dataType="wstr"
+                      codePage="1252"
+                      dataType="str"
                       errorOrTruncationOperation="Computation"
                       errorRowDisposition="FailComponent"
-                      length="8"
+                      length="16"
                       lineageId="Package\DF - CONVERSION\Derived Column.Outputs[Derived Column Output].Columns[V_CHANGEBY]"
                       name="V_CHANGEBY"
                       truncationRowDisposition="FailComponent">
@@ -482,13 +486,13 @@
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">"MAXADMIN"</property>
+                          name="Expression">(DT_STR,16,1252)"MAXADMIN"</property>
                         <property
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
-                          name="FriendlyExpression">"MAXADMIN"</property>
+                          name="FriendlyExpression">(DT_STR,16,1252)"MAXADMIN"</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
@@ -589,6 +593,280 @@
               </outputs>
             </component>
             <component
+              refId="Package\DF - CONVERSION\Multicast"
+              componentClassID="Microsoft.Multicast"
+              contactInfo="Multicast;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Distributes every input row to every row in one or more outputs. For example, branch your data flow to make a copy of data so that some values can be masked before sharing with external partners."
+              name="Multicast">
+              <inputs>
+                <input
+                  refId="Package\DF - CONVERSION\Multicast.Inputs[Multicast Input 1]"
+                  name="Multicast Input 1">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - CONVERSION\Multicast.Outputs[Multicast Output 1]"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 1"
+                  synchronousInputId="Package\DF - CONVERSION\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - CONVERSION\Multicast.Outputs[Multicast Output 2]"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 2"
+                  synchronousInputId="Package\DF - CONVERSION\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - CONVERSION\Multicast.Outputs[Multicast Output 3]"
+                  dangling="true"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 3"
+                  synchronousInputId="Package\DF - CONVERSION\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DF - CONVERSION\OLE DB Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="OLE DB Destination"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">"MAXIMO"."CONVERSION"</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">0</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\DF - CONVERSION\OLE DB Destination.Connections[OleDbConnection]"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input]"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="ADO NET Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[V_CHANGEBY]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="16"
+                      cachedName="V_CHANGEBY"
+                      externalMetadataColumnId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[CHANGEBY]"
+                      lineageId="Package\DF - CONVERSION\Derived Column.Outputs[Derived Column Output].Columns[V_CHANGEBY]" />
+                    <inputColumn
+                      refId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[V_CHANGEDATE]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="V_CHANGEDATE"
+                      externalMetadataColumnId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[CHANGEDATE]"
+                      lineageId="Package\DF - CONVERSION\Derived Column.Outputs[Derived Column Output].Columns[V_CHANGEDATE]" />
+                    <inputColumn
+                      refId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_contentuid]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="v_contentuid"
+                      externalMetadataColumnId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[CONTENTUID]"
+                      lineageId="Package\DF - CONVERSION\Derived Column.Outputs[Derived Column Output].Columns[v_contentuid]" />
+                    <inputColumn
+                      refId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_conversionid]"
+                      cachedDataType="i8"
+                      cachedName="v_conversionid"
+                      externalMetadataColumnId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[CONVERSIONID]"
+                      lineageId="Package\DF - CONVERSION\Derived Column.Outputs[Derived Column Output].Columns[v_conversionid]" />
+                    <inputColumn
+                      refId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[U1UNIT]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="6"
+                      cachedName="U1UNIT"
+                      externalMetadataColumnId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[FROMMEASUREUNIT]"
+                      lineageId="Package\DF - CONVERSION\Sort.Outputs[Sort Output].Columns[U1UNIT]" />
+                    <inputColumn
+                      refId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[V_MIGRATIONDATE]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="V_MIGRATIONDATE"
+                      externalMetadataColumnId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
+                      lineageId="Package\DF - CONVERSION\Derived Column.Outputs[Derived Column Output].Columns[V_MIGRATIONDATE]" />
+                    <inputColumn
+                      refId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[ROWNO]"
+                      cachedDataType="r8"
+                      cachedName="ROWNO"
+                      externalMetadataColumnId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONID]"
+                      lineageId="Package\DF - CONVERSION\Sort.Outputs[Sort Output].Columns[ROWNO]" />
+                    <inputColumn
+                      refId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[U2UNIT]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="6"
+                      cachedName="U2UNIT"
+                      externalMetadataColumnId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[TOMEASUREUNIT]"
+                      lineageId="Package\DF - CONVERSION\Sort.Outputs[Sort Output].Columns[U2UNIT]" />
+                    <inputColumn
+                      refId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[V_ITEMSETID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8"
+                      cachedName="V_ITEMSETID"
+                      externalMetadataColumnId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ITEMSETID]"
+                      lineageId="Package\DF - CONVERSION\Derived Column.Outputs[Derived Column Output].Columns[V_ITEMSETID]" />
+                    <inputColumn
+                      refId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[NEW_CONV_FACT]"
+                      cachedDataType="decimal"
+                      cachedName="NEW_CONV_FACT"
+                      cachedScale="5"
+                      externalMetadataColumnId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[CONVERSION]"
+                      lineageId="Package\DF - CONVERSION\Derived Column.Outputs[Derived Column Output].Columns[NEW_CONV_FACT]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[CONVERSIONID]"
+                      dataType="i8"
+                      name="CONVERSIONID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[FROMMEASUREUNIT]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="FROMMEASUREUNIT" />
+                    <externalMetadataColumn
+                      refId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[TOMEASUREUNIT]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="TOMEASUREUNIT" />
+                    <externalMetadataColumn
+                      refId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[CONVERSION]"
+                      dataType="decimal"
+                      name="CONVERSION"
+                      scale="5" />
+                    <externalMetadataColumn
+                      refId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[CHANGEBY]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="CHANGEBY" />
+                    <externalMetadataColumn
+                      refId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[CHANGEDATE]"
+                      dataType="dbTimeStamp2"
+                      name="CHANGEDATE"
+                      scale="7" />
+                    <externalMetadataColumn
+                      refId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ITEMSETID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="8"
+                      name="ITEMSETID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ITEMNUM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="30"
+                      name="ITEMNUM" />
+                    <externalMetadataColumn
+                      refId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[CONTENTUID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="CONTENTUID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ROWSTAMP]"
+                      dataType="i8"
+                      name="ROWSTAMP" />
+                    <externalMetadataColumn
+                      refId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONID]"
+                      dataType="i8"
+                      name="STE_MIGRATIONID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
+                      dataType="dbTimeStamp2"
+                      name="STE_MIGRATIONDATE"
+                      scale="7" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - CONVERSION\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - CONVERSION\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF - CONVERSION\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF - CONVERSION\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF - CONVERSION\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
               refId="Package\DF - CONVERSION\Oracle Source"
               componentClassID="Microsoft.SSISOracleSrc"
               description="Oracle Source"
@@ -644,8 +922,8 @@ order by PK_UNITS_CONV</property>
               <connections>
                 <connection
                   refId="Package\DF - CONVERSION\Oracle Source.Connections[ORACLEConnection]"
-                  connectionManagerID="{1BBC9476-D9E4-4553-8563-89CF216CBE10}:invalid"
-                  connectionManagerRefId="{1BBC9476-D9E4-4553-8563-89CF216CBE10}:invalid"
+                  connectionManagerID="{1BBC9476-D9E4-4553-8563-89CF216CBE10}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[Oracle Connection Manager]"
                   description="The ORACLE runtime connection used to access the database."
                   name="ORACLEConnection" />
               </connections>
@@ -1111,9 +1389,19 @@ order by PK_UNITS_CONV</property>
           <paths>
             <path
               refId="Package\DF - CONVERSION.Paths[Derived Column Output]"
-              endId="Package\DF - CONVERSION\ADO NET Destination.Inputs[ADO NET Destination Input]"
+              endId="Package\DF - CONVERSION\Multicast.Inputs[Multicast Input 1]"
               name="Derived Column Output"
               startId="Package\DF - CONVERSION\Derived Column.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - CONVERSION.Paths[Multicast Output 1]"
+              endId="Package\DF - CONVERSION\ADO NET Destination.Inputs[ADO NET Destination Input]"
+              name="Multicast Output 1"
+              startId="Package\DF - CONVERSION\Multicast.Outputs[Multicast Output 1]" />
+            <path
+              refId="Package\DF - CONVERSION.Paths[Multicast Output 2]"
+              endId="Package\DF - CONVERSION\OLE DB Destination.Inputs[ADO NET Destination Input]"
+              name="Multicast Output 2"
+              startId="Package\DF - CONVERSION\Multicast.Outputs[Multicast Output 2]" />
             <path
               refId="Package\DF - CONVERSION.Paths[Oracle Source Output]"
               endId="Package\DF - CONVERSION\Sort.Inputs[Sort Input]"
@@ -1182,8 +1470,8 @@ order by PK_UNITS_CONV</property>
               <connections>
                 <connection
                   refId="Package\DF - DIR_METER\ADO NET Destination.Connections[IDbConnection]"
-                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:invalid"
-                  connectionManagerRefId="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:invalid"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
                   description="Managed connection manager"
                   name="IDbConnection" />
               </connections>
@@ -1604,6 +1892,287 @@ order by PK_UNITS_CONV</property>
               </outputs>
             </component>
             <component
+              refId="Package\DF - DIR_METER\Multicast"
+              componentClassID="Microsoft.Multicast"
+              contactInfo="Multicast;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Distributes every input row to every row in one or more outputs. For example, branch your data flow to make a copy of data so that some values can be masked before sharing with external partners."
+              name="Multicast">
+              <inputs>
+                <input
+                  refId="Package\DF - DIR_METER\Multicast.Inputs[Multicast Input 1]"
+                  name="Multicast Input 1">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - DIR_METER\Multicast.Outputs[Multicast Output 1]"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 1"
+                  synchronousInputId="Package\DF - DIR_METER\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - DIR_METER\Multicast.Outputs[Multicast Output 4]"
+                  dangling="true"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 4"
+                  synchronousInputId="Package\DF - DIR_METER\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - DIR_METER\Multicast.Outputs[Multicast Output 2]"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 2"
+                  synchronousInputId="Package\DF - DIR_METER\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - DIR_METER\Multicast.Outputs[Multicast Output 5]"
+                  dangling="true"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 5"
+                  synchronousInputId="Package\DF - DIR_METER\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - DIR_METER\Multicast.Outputs[Multicast Output 3]"
+                  dangling="true"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 3"
+                  synchronousInputId="Package\DF - DIR_METER\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DF - DIR_METER\OLE DB Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="OLE DB Destination"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">"MAXIMO"."MEASUREUNIT"</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">0</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\DF - DIR_METER\OLE DB Destination.Connections[OleDbConnection]"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input]"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="ADO NET Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_abbreviation]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8"
+                      cachedName="v_abbreviation"
+                      externalMetadataColumnId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ABBREVIATION]"
+                      lineageId="Package\DF - DIR_METER\Derived Column.Outputs[Derived Column Output].Columns[v_abbreviation]" />
+                    <inputColumn
+                      refId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_contentuid]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8"
+                      cachedName="v_contentuid"
+                      externalMetadataColumnId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[CONTENTUID]"
+                      lineageId="Package\DF - DIR_METER\Derived Column.Outputs[Derived Column Output].Columns[v_contentuid]" />
+                    <inputColumn
+                      refId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_measureunituid]"
+                      cachedDataType="i8"
+                      cachedName="v_measureunituid"
+                      externalMetadataColumnId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[MEASUREUNITUID]"
+                      lineageId="Package\DF - DIR_METER\Derived Column.Outputs[Derived Column Output].Columns[v_measureunituid]" />
+                    <inputColumn
+                      refId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_orgid]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8"
+                      cachedName="v_orgid"
+                      externalMetadataColumnId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ORGID]"
+                      lineageId="Package\DF - DIR_METER\Derived Column.Outputs[Derived Column Output].Columns[v_orgid]" />
+                    <inputColumn
+                      refId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_siteid]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8"
+                      cachedName="v_siteid"
+                      externalMetadataColumnId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[SITEID]"
+                      lineageId="Package\DF - DIR_METER\Derived Column.Outputs[Derived Column Output].Columns[v_siteid]" />
+                    <inputColumn
+                      refId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[V_MIGRATIONDATE]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="V_MIGRATIONDATE"
+                      externalMetadataColumnId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
+                      lineageId="Package\DF - DIR_METER\Derived Column.Outputs[Derived Column Output].Columns[V_MIGRATIONDATE]" />
+                    <inputColumn
+                      refId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[V_MIGRATIONSOURCE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="16"
+                      cachedName="V_MIGRATIONSOURCE"
+                      externalMetadataColumnId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONSOURCE]"
+                      lineageId="Package\DF - DIR_METER\Derived Column.Outputs[Derived Column Output].Columns[V_MIGRATIONSOURCE]" />
+                    <inputColumn
+                      refId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_description]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8"
+                      cachedName="v_description"
+                      externalMetadataColumnId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[DESCRIPTION]"
+                      lineageId="Package\DF - DIR_METER\Derived Column.Outputs[Derived Column Output].Columns[v_description]" />
+                    <inputColumn
+                      refId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[MT_MS_UNIT]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="5"
+                      cachedName="MT_MS_UNIT"
+                      externalMetadataColumnId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[MEASUREUNITID]"
+                      lineageId="Package\DF - DIR_METER\Oracle Source.Outputs[Oracle Source Output].Columns[MT_MS_UNIT]" />
+                    <inputColumn
+                      refId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[RowNo]"
+                      cachedDataType="i4"
+                      cachedName="RowNo"
+                      externalMetadataColumnId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONID]"
+                      lineageId="Package\DF - DIR_METER\Running Number.Outputs[Output 0].Columns[RowNo]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[MEASUREUNITID]"
+                      dataType="wstr"
+                      length="16"
+                      name="MEASUREUNITID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ABBREVIATION]"
+                      dataType="wstr"
+                      length="8"
+                      name="ABBREVIATION" />
+                    <externalMetadataColumn
+                      refId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[DESCRIPTION]"
+                      dataType="wstr"
+                      length="100"
+                      name="DESCRIPTION" />
+                    <externalMetadataColumn
+                      refId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ORGID]"
+                      dataType="wstr"
+                      length="8"
+                      name="ORGID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[SITEID]"
+                      dataType="wstr"
+                      length="8"
+                      name="SITEID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[MEASUREUNITUID]"
+                      dataType="i8"
+                      name="MEASUREUNITUID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[CONTENTUID]"
+                      dataType="wstr"
+                      length="50"
+                      name="CONTENTUID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ROWSTAMP]"
+                      dataType="i8"
+                      name="ROWSTAMP" />
+                    <externalMetadataColumn
+                      refId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONID]"
+                      dataType="i8"
+                      name="STE_MIGRATIONID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
+                      dataType="dbTimeStamp"
+                      name="STE_MIGRATIONDATE" />
+                    <externalMetadataColumn
+                      refId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONSOURCE]"
+                      dataType="wstr"
+                      length="200"
+                      name="STE_MIGRATIONSOURCE" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - DIR_METER\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - DIR_METER\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF - DIR_METER\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF - DIR_METER\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF - DIR_METER\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
               refId="Package\DF - DIR_METER\Oracle Source"
               componentClassID="Microsoft.SSISOracleSrc"
               description="Oracle Source"
@@ -1654,8 +2223,8 @@ WHERE u.PK_UNITS IS NULL AND dm.MT_MS_UNIT IS NOT NULL</property>
               <connections>
                 <connection
                   refId="Package\DF - DIR_METER\Oracle Source.Connections[ORACLEConnection]"
-                  connectionManagerID="{1BBC9476-D9E4-4553-8563-89CF216CBE10}:invalid"
-                  connectionManagerRefId="{1BBC9476-D9E4-4553-8563-89CF216CBE10}:invalid"
+                  connectionManagerID="{1BBC9476-D9E4-4553-8563-89CF216CBE10}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[Oracle Connection Manager]"
                   description="The ORACLE runtime connection used to access the database."
                   name="ORACLEConnection" />
               </connections>
@@ -1721,7 +2290,7 @@ WHERE u.PK_UNITS IS NULL AND dm.MT_MS_UNIT IS NOT NULL</property>
               contactInfo="Includes and runs custom script code. For example, apply a business rule that limits the range of valid values in an &quot;income&quot; column or add values in two columns and calculate the average of the sum.;Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;13"
               description="Includes and runs custom script code. For example, apply a business rule that limits the range of valid values in an &quot;income&quot; column or add values in two columns and calculate the average of the sum."
               name="Running Number"
-              version="12">
+              version="13">
               <properties>
                 <property
                   dataType="System.String"
@@ -2085,10 +2654,10 @@ public class Input0Buffer: ScriptBuffer
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.SqlServer.TxScript, Version=15.0.0.0, Culture=Neutral, PublicKeyToken=89845dcd8080cc91" />
-    <Reference Include="Microsoft.SqlServer.DTSRuntimeWrap, Version=15.0.0.0, Culture=Neutral, PublicKeyToken=89845dcd8080cc91" />
-    <Reference Include="Microsoft.SqlServer.DTSPipelineWrap, Version=15.0.0.0, Culture=Neutral, PublicKeyToken=89845dcd8080cc91" />
-    <Reference Include="Microsoft.SqlServer.PipelineHost, Version=15.0.0.0, Culture=Neutral, PublicKeyToken=89845dcd8080cc91" />
+    <Reference Include="Microsoft.SqlServer.TxScript, Version=16.0.0.0, Culture=Neutral, PublicKeyToken=89845dcd8080cc91" />
+    <Reference Include="Microsoft.SqlServer.DTSRuntimeWrap, Version=16.0.0.0, Culture=Neutral, PublicKeyToken=89845dcd8080cc91" />
+    <Reference Include="Microsoft.SqlServer.DTSPipelineWrap, Version=16.0.0.0, Culture=Neutral, PublicKeyToken=89845dcd8080cc91" />
+    <Reference Include="Microsoft.SqlServer.PipelineHost, Version=16.0.0.0, Culture=Neutral, PublicKeyToken=89845dcd8080cc91" />
     <Compile Include="main.cs" />
     <Compile Include="BufferWrapper.cs" />
     <Compile Include="ComponentWrapper.cs" />
@@ -2124,7 +2693,7 @@ public class Input0Buffer: ScriptBuffer
         <ProjectProperties HostName="ScriptComponent" HostPackage="{B3A685AA-7EAF-4BC6-9940-57959FA5AC07}" ApplicationType="usd" Language="cs" TemplatesPath="" DebugInfoExeName="" DebugInfoCommandLine="" DebugInfoWorkingDir="" IconImageList="" />
         <Host Name="ScriptComponent" GeneratedNamespace="SC_59225e3dad994011b7bc959556647f15" IconIndex="0"></Host>
         <ProjectClient>
-          <HostIdentifier>SSIS_SC150</HostIdentifier>
+          <HostIdentifier>SSIS_SC160</HostIdentifier>
         </ProjectClient>
       </FlavorProperties>
     </VisualStudio>
@@ -2174,7 +2743,7 @@ namespace SC_59225e3dad994011b7bc959556647f15.Properties {
     <msb:CodeName>SC_59225e3dad994011b7bc959556647f15</msb:CodeName>
     <msb:Language>msBuild</msb:Language>
     <msb:DisplayName>SC_59225e3dad994011b7bc959556647f15</msb:DisplayName>
-    <msb:ProjectId>{D35B8B73-BC15-4E6C-8DF4-61398E20B1B8}</msb:ProjectId>
+    <msb:ProjectId>{6DD5C779-33B6-439B-B566-FA5DE4707AAF}</msb:ProjectId>
   </msb:PropertyGroup>
   <msb:ItemGroup>
     <msb:Project Include="SC_59225e3dad994011b7bc959556647f15.csproj" />
@@ -2321,7 +2890,7 @@ namespace SC_59225e3dad994011b7bc959556647f15.Properties {
                     <arrayElement
                       dataType="System.String"><![CDATA[TVqQAAMAAAAEAAAA//8AALgAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAgAAAAA4fug4AtAnNIbgBTM0hVGhpcyBwcm9ncmFtIGNhbm5vdCBiZSBydW4gaW4gRE9TIG1v
-ZGUuDQ0KJAAAAAAAAABQRQAATAEDALNFJGcAAAAAAAAAAOAAIiALATAAABIAAAAIAAAAAAAAGjEA
+ZGUuDQ0KJAAAAAAAAABQRQAATAEDABcVPGcAAAAAAAAAAOAAIiALATAAABIAAAAIAAAAAAAAGjEA
 AAAgAAAAQAAAAAAAEAAgAAAAAgAABAAAAAAAAAAGAAAAAAAAAACAAAAAAgAAAAAAAAMAYIUAABAA
 ABAAAAAAEAAAEAAAAAAAABAAAAAAAAAAAAAAAMgwAABPAAAAAEAAAEgEAAAAAAAAAAAAAAAAAAAA
 AAAAAGAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
@@ -2359,7 +2928,7 @@ QwChACoESQDBACoEBgAuAAsAyQAuABMA0gAuABsA8QAuACMA+gAuACsAIwEuADMAIwEuADsAIwEu
 AEMA+gAuAEsAKQEuAFMAIwEuAFsAQAFDAGMAigFpAHMA8QCJAHMA8QDjAGsAigEBAXsAigEDAAEA
 BwADAAgABQAAAMMDsgAAABwDtgAAABoEugAAAMkAvwAAAF4FxAABAAYAAwABAAcABQACABEABwAC
 ABIACQABABMACQACABQACwAEgAAAAQAAAAAAAAAAAAAAAAAQAAAABAAAAAAAAAAAAAAAUQA8AAAA
-AAAPAAAAAAAAAAAAAABaAJ0FAAAAAA8AAAAAAAAAAAAAAFoAugUAAAAABAAAAAAAAAAAAAAAUQA6
+AAAQAAAAAAAAAAAAAABaAJ0FAAAAABAAAAAAAAAAAAAAAFoAugUAAAAABAAAAAAAAAAAAAAAUQA6
 AwAAAAAAAAAAAQAAAHsEAAAAAABJbnQzMgA8TW9kdWxlPgBTQ180NENFQ0U5RTY1QzQ0RjdDQjM5
 MUQ0QzM1QzVBOTdCRABJbnB1dElEAG1zY29ybGliAGRlZmF1bHRJbnN0YW5jZQBSdW50aW1lVHlw
 ZUhhbmRsZQBHZXRUeXBlRnJvbUhhbmRsZQBJbnB1dE5hbWUATWljcm9zb2Z0LlNxbFNlcnZlci5E
@@ -2392,8 +2961,8 @@ bAAgAHAAcgBvAHAAZQByAHQAeQAgAGMAYQBuAG4AbwB0ACAAYgBlACAAcwBlAHQAIAB0AG8AIABG
 AGEAbABzAGUALgAgAEEAcwBzAGkAZwBuACAAYQAgAHYAYQBsAHUAZQAgAHQAbwAgAHQAaABlACAA
 YwBvAGwAdQBtAG4AIABpAG4AcwB0AGUAYQBkAC4AAA9JAG4AcAB1AHQAIAAwAABxUwBDAF8ANQA5
 ADIAMgA1AGUAMwBkAGEAZAA5ADkANAAwADEAMQBiADcAYgBjADkANQA5ADUANQA2ADYANAA3AGYA
-MQA1AC4AUAByAG8AcABlAHIAdABpAGUAcwAuAFIAZQBzAG8AdQByAGMAZQBzAAA6ZTubw+dQQJMi
-UA42ka2aAAQgAQEIAyAAAQUgAQEREQQgAQEOBSABARFZCSADARI9HQgSQQUgAgEIHAMgAAIGIAIC
+MQA1AC4AUAByAG8AcABlAHIAdABpAGUAcwAuAFIAZQBzAG8AdQByAGMAZQBzAABhiEC14kj+QZqU
+G6LgYxVqAAQgAQEIAyAAAQUgAQEREQQgAQEOBSABARFZCSADARI9HQgSQQUgAgEIHAMgAAIGIAIC
 DhF1BSABHQgIBgABEnkRfQUgABKAgQcgAgEOEoCBCLd6XFYZNOCJCImEXc2AgMyRAgYIAwYSFAMG
 EhgDBhJFAwYSUQMGElUDBhIgBSABARIMBCABAQIJIAQBCA4SPRJBBSABARJFBAAAElEEAAASVQUA
 AQESVQQAABIgAwAAAQMoAAgDKAACBAgAElEECAASVQQIABIgCAEACAAAAAAAHgEAAQBUAhZXcmFw
@@ -2513,9 +3082,19 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           <paths>
             <path
               refId="Package\DF - DIR_METER.Paths[Derived Column Output]"
-              endId="Package\DF - DIR_METER\ADO NET Destination.Inputs[ADO NET Destination Input]"
+              endId="Package\DF - DIR_METER\Multicast.Inputs[Multicast Input 1]"
               name="Derived Column Output"
               startId="Package\DF - DIR_METER\Derived Column.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - DIR_METER.Paths[Multicast Output 1]"
+              endId="Package\DF - DIR_METER\ADO NET Destination.Inputs[ADO NET Destination Input]"
+              name="Multicast Output 1"
+              startId="Package\DF - DIR_METER\Multicast.Outputs[Multicast Output 1]" />
+            <path
+              refId="Package\DF - DIR_METER.Paths[Multicast Output 2]"
+              endId="Package\DF - DIR_METER\OLE DB Destination.Inputs[ADO NET Destination Input]"
+              name="Multicast Output 2"
+              startId="Package\DF - DIR_METER\Multicast.Outputs[Multicast Output 2]" />
             <path
               refId="Package\DF - DIR_METER.Paths[Oracle Source Output]"
               endId="Package\DF - DIR_METER\Running Number.Inputs[Input 0]"
@@ -2584,8 +3163,8 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               <connections>
                 <connection
                   refId="Package\DF - UNITS\ADO NET Destination.Connections[IDbConnection]"
-                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:invalid"
-                  connectionManagerRefId="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:invalid"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
                   description="Managed connection manager"
                   name="IDbConnection" />
               </connections>
@@ -2982,6 +3561,279 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               </outputs>
             </component>
             <component
+              refId="Package\DF - UNITS\Multicast"
+              componentClassID="Microsoft.Multicast"
+              contactInfo="Multicast;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Distributes every input row to every row in one or more outputs. For example, branch your data flow to make a copy of data so that some values can be masked before sharing with external partners."
+              name="Multicast">
+              <inputs>
+                <input
+                  refId="Package\DF - UNITS\Multicast.Inputs[Multicast Input 1]"
+                  name="Multicast Input 1">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - UNITS\Multicast.Outputs[Multicast Output 1]"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 1"
+                  synchronousInputId="Package\DF - UNITS\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - UNITS\Multicast.Outputs[Multicast Output 2]"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 2"
+                  synchronousInputId="Package\DF - UNITS\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - UNITS\Multicast.Outputs[Multicast Output 3]"
+                  dangling="true"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 3"
+                  synchronousInputId="Package\DF - UNITS\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DF - UNITS\OLE DB Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="OLE DB Destination"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">"MAXIMO"."MEASUREUNIT"</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">0</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\DF - UNITS\OLE DB Destination.Connections[OleDbConnection]"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input]"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="ADO NET Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_abbreviation]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8"
+                      cachedName="v_abbreviation"
+                      externalMetadataColumnId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ABBREVIATION]"
+                      lineageId="Package\DF - UNITS\Derived Column.Outputs[Derived Column Output].Columns[v_abbreviation]" />
+                    <inputColumn
+                      refId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_contentuid]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8"
+                      cachedName="v_contentuid"
+                      externalMetadataColumnId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[CONTENTUID]"
+                      lineageId="Package\DF - UNITS\Derived Column.Outputs[Derived Column Output].Columns[v_contentuid]" />
+                    <inputColumn
+                      refId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[UNITS_DESC]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="UNITS_DESC"
+                      externalMetadataColumnId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[DESCRIPTION]"
+                      lineageId="Package\DF - UNITS\Oracle Source.Outputs[Oracle Source Output].Columns[UNITS_DESC]" />
+                    <inputColumn
+                      refId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[UNITS_CD]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="6"
+                      cachedName="UNITS_CD"
+                      externalMetadataColumnId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[MEASUREUNITID]"
+                      lineageId="Package\DF - UNITS\Oracle Source.Outputs[Oracle Source Output].Columns[UNITS_CD]" />
+                    <inputColumn
+                      refId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_measureunituid]"
+                      cachedDataType="i8"
+                      cachedName="v_measureunituid"
+                      externalMetadataColumnId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[MEASUREUNITUID]"
+                      lineageId="Package\DF - UNITS\Derived Column.Outputs[Derived Column Output].Columns[v_measureunituid]" />
+                    <inputColumn
+                      refId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_orgid]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8"
+                      cachedName="v_orgid"
+                      externalMetadataColumnId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ORGID]"
+                      lineageId="Package\DF - UNITS\Derived Column.Outputs[Derived Column Output].Columns[v_orgid]" />
+                    <inputColumn
+                      refId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_siteid]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8"
+                      cachedName="v_siteid"
+                      externalMetadataColumnId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[SITEID]"
+                      lineageId="Package\DF - UNITS\Derived Column.Outputs[Derived Column Output].Columns[v_siteid]" />
+                    <inputColumn
+                      refId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[V_MIGRATIONDATE]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="V_MIGRATIONDATE"
+                      externalMetadataColumnId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
+                      lineageId="Package\DF - UNITS\Derived Column.Outputs[Derived Column Output].Columns[V_MIGRATIONDATE]" />
+                    <inputColumn
+                      refId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[PK_UNITS]"
+                      cachedDataType="i4"
+                      cachedName="PK_UNITS"
+                      externalMetadataColumnId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONID]"
+                      lineageId="Package\DF - UNITS\Oracle Source.Outputs[Oracle Source Output].Columns[PK_UNITS]" />
+                    <inputColumn
+                      refId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[V_MIGRATIONSOURCE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8"
+                      cachedName="V_MIGRATIONSOURCE"
+                      externalMetadataColumnId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONSOURCE]"
+                      lineageId="Package\DF - UNITS\Derived Column.Outputs[Derived Column Output].Columns[V_MIGRATIONSOURCE]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[MEASUREUNITID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="MEASUREUNITID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ABBREVIATION]"
+                      codePage="1252"
+                      dataType="str"
+                      length="8"
+                      name="ABBREVIATION" />
+                    <externalMetadataColumn
+                      refId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[DESCRIPTION]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="DESCRIPTION" />
+                    <externalMetadataColumn
+                      refId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ORGID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="8"
+                      name="ORGID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[SITEID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="8"
+                      name="SITEID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[MEASUREUNITUID]"
+                      dataType="i8"
+                      name="MEASUREUNITUID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[CONTENTUID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="CONTENTUID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ROWSTAMP]"
+                      dataType="i8"
+                      name="ROWSTAMP" />
+                    <externalMetadataColumn
+                      refId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONID]"
+                      dataType="i8"
+                      name="STE_MIGRATIONID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
+                      dataType="dbTimeStamp2"
+                      name="STE_MIGRATIONDATE"
+                      scale="7" />
+                    <externalMetadataColumn
+                      refId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONSOURCE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      name="STE_MIGRATIONSOURCE" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - UNITS\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - UNITS\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF - UNITS\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF - UNITS\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF - UNITS\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
               refId="Package\DF - UNITS\Oracle Source"
               componentClassID="Microsoft.SSISOracleSrc"
               description="Oracle Source"
@@ -3029,8 +3881,8 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               <connections>
                 <connection
                   refId="Package\DF - UNITS\Oracle Source.Connections[ORACLEConnection]"
-                  connectionManagerID="{1BBC9476-D9E4-4553-8563-89CF216CBE10}:invalid"
-                  connectionManagerRefId="{1BBC9476-D9E4-4553-8563-89CF216CBE10}:invalid"
+                  connectionManagerID="{1BBC9476-D9E4-4553-8563-89CF216CBE10}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[Oracle Connection Manager]"
                   description="The ORACLE runtime connection used to access the database."
                   name="ORACLEConnection" />
               </connections>
@@ -3151,9 +4003,19 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           <paths>
             <path
               refId="Package\DF - UNITS.Paths[Derived Column Output]"
-              endId="Package\DF - UNITS\ADO NET Destination.Inputs[ADO NET Destination Input]"
+              endId="Package\DF - UNITS\Multicast.Inputs[Multicast Input 1]"
               name="Derived Column Output"
               startId="Package\DF - UNITS\Derived Column.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - UNITS.Paths[Multicast Output 1]"
+              endId="Package\DF - UNITS\ADO NET Destination.Inputs[ADO NET Destination Input]"
+              name="Multicast Output 1"
+              startId="Package\DF - UNITS\Multicast.Outputs[Multicast Output 1]" />
+            <path
+              refId="Package\DF - UNITS.Paths[Multicast Output 2]"
+              endId="Package\DF - UNITS\OLE DB Destination.Inputs[ADO NET Destination Input]"
+              name="Multicast Output 2"
+              startId="Package\DF - UNITS\Multicast.Outputs[Multicast Output 2]" />
             <path
               refId="Package\DF - UNITS.Paths[Oracle Source Output]"
               endId="Package\DF - UNITS\Derived Column.Inputs[Derived Column Input]"
@@ -3689,7 +4551,15 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
     design-time-name="Package\DF - CONVERSION">
     <LayoutInfo>
       <GraphLayout
-        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="171.2,41.6"
+          Id="Package\DF - CONVERSION\OLE DB Destination"
+          TopLeft="74.9999988824129,335.599995142222" />
+        <NodeLayout
+          Size="119.2,41.6"
+          Id="Package\DF - CONVERSION\Multicast"
+          TopLeft="217.999996751547,257.9999961555" />
         <NodeLayout
           Size="97.6,41.6"
           Id="Package\DF - CONVERSION\Sort"
@@ -3699,13 +4569,115 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           Id="Package\DF - CONVERSION\ADO NET Destination"
           TopLeft="590.166652938558,325.26666201267" />
         <NodeLayout
-          Size="144.8,41.6"
-          Id="Package\DF - CONVERSION\Oracle Source"
-          TopLeft="5.5,5.5" />
-        <NodeLayout
           Size="158.4,41.6"
           Id="Package\DF - CONVERSION\Derived Column"
           TopLeft="166.499997600913,175.599998897314" />
+        <NodeLayout
+          Size="144.8,41.6"
+          Id="Package\DF - CONVERSION\Oracle Source"
+          TopLeft="5.5,5.5" />
+        <EdgeLayout
+          Id="Package\DF - CONVERSION.Paths[Multicast Output 2]"
+          TopLeft="259.066663418213,299.5999961555">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-98.4666645358005,35.999998986721"
+              Start="0,0"
+              End="-98.4666645358005,28.499998986721">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,10.6860923018676" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,10.6860923018676"
+                    Point2="0,14.6860923018676"
+                    Point3="-4,14.6860923018676" />
+                  <mssgle:LineSegment
+                    End="-94.4666645358005,14.6860923018676" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-94.4666645358005,14.6860923018676"
+                    Point2="-98.4666645358005,14.6860923018676"
+                    Point3="-98.4666645358005,18.6860923018676" />
+                  <mssgle:LineSegment
+                    End="-98.4666645358005,28.499998986721" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - CONVERSION.Paths[Multicast Output 1]"
+          TopLeft="277.599996751547,299.5999961555">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="402.166656187011,25.6666658571695"
+              Start="0,0"
+              End="402.166656187011,18.1666658571695">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,8.83333292858475" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,8.83333292858475"
+                    Point2="0,12.8333329285848"
+                    Point3="4,12.8333329285848" />
+                  <mssgle:LineSegment
+                    End="398.166656187011,12.8333329285848" />
+                  <mssgle:CubicBezierSegment
+                    Point1="398.166656187011,12.8333329285848"
+                    Point2="402.166656187011,12.8333329285848"
+                    Point3="402.166656187011,16.8333329285848" />
+                  <mssgle:LineSegment
+                    End="402.166656187011,18.1666658571695" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - CONVERSION.Paths[Derived Column Output]"
+          TopLeft="245.699997600913,217.199998897314">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="31.8999991506338,40.7999972581865"
+              Start="0,0"
+              End="31.8999991506338,33.2999972581865">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,16.3999986290932" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,16.3999986290932"
+                    Point2="0,20.3999986290932"
+                    Point3="4,20.3999986290932" />
+                  <mssgle:LineSegment
+                    End="27.8999991506338,20.3999986290932" />
+                  <mssgle:CubicBezierSegment
+                    Point1="27.8999991506338,20.3999986290932"
+                    Point2="31.8999991506338,20.3999986290932"
+                    Point3="31.8999991506338,24.3999986290932" />
+                  <mssgle:LineSegment
+                    End="31.8999991506338,33.2999972581865" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - CONVERSION.Paths[Sort Output]"
           TopLeft="155.799998405576,130.599998673797">
@@ -3774,43 +4746,22 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - CONVERSION.Paths[Derived Column Output]"
-          TopLeft="245.699997600913,217.199998897314">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="434.066655337645,108.066663115356"
-              Start="0,0"
-              End="434.066655337645,100.566663115356">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,50.0333315576782" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,50.0333315576782"
-                    Point2="0,54.0333315576782"
-                    Point3="4,54.0333315576782" />
-                  <mssgle:LineSegment
-                    End="430.066655337645,54.0333315576782" />
-                  <mssgle:CubicBezierSegment
-                    Point1="430.066655337645,54.0333315576782"
-                    Point2="434.066655337645,54.0333315576782"
-                    Point3="434.066655337645,58.0333315576782" />
-                  <mssgle:LineSegment
-                    End="434.066655337645,100.566663115356" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - CONVERSION\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
   <PipelineComponentMetadata
     design-time-name="Package\DF - CONVERSION\ADO NET Destination">
     <Properties>
@@ -3831,7 +4782,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
     design-time-name="Package\DF - DIR_METER">
     <LayoutInfo>
       <GraphLayout
-        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
           Size="158.4,41.6"
           Id="Package\DF - DIR_METER\Derived Column"
@@ -3847,7 +4798,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         <NodeLayout
           Size="179.2,41.6"
           Id="Package\DF - DIR_METER\ADO NET Destination"
-          TopLeft="19.5,202.6" />
+          TopLeft="486.499993041158,239.599999448657" />
         <EdgeLayout
           Id="Package\DF - DIR_METER.Paths[Output 0]"
           TopLeft="320.5,50.5">
@@ -3867,9 +4818,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -3891,45 +4840,105 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <NodeLayout
+          Size="171.2,41.6"
+          Id="Package\DF - DIR_METER\OLE DB Destination"
+          TopLeft="102.99999846518,254.800000879169" />
+        <NodeLayout
+          Size="119.2,41.6"
+          Id="Package\DF - DIR_METER\Multicast"
+          TopLeft="255.999996185303,177.200001892447" />
         <EdgeLayout
           Id="Package\DF - DIR_METER.Paths[Derived Column Output]"
-          TopLeft="318.2,142.6">
+          TopLeft="316.899998092651,142.6">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-209.1,60"
+              EndConnector="0,34.6000018924475"
               Start="0,0"
-              End="-209.1,52.5">
+              End="0,27.1000018924475">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,26" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,26"
-                    Point2="0,30"
-                    Point3="-4,30" />
-                  <mssgle:LineSegment
-                    End="-205.1,30" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-205.1,30"
-                    Point2="-209.1,30"
-                    Point3="-209.1,34" />
-                  <mssgle:LineSegment
-                    End="-209.1,52.5" />
+                    End="0,27.1000018924475" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - DIR_METER.Paths[Multicast Output 1]"
+          TopLeft="375.199996185303,198.000001892447">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="111.299996855855,62.3999975562096"
+              Start="0,0"
+              End="103.799996855855,62.3999975562096">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="51.6499984279275,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="51.6499984279275,0"
+                    Point2="55.6499984279275,0"
+                    Point3="55.6499984279275,4" />
+                  <mssgle:LineSegment
+                    End="55.6499984279275,58.3999975562096" />
+                  <mssgle:CubicBezierSegment
+                    Point1="55.6499984279275,58.3999975562096"
+                    Point2="55.6499984279275,62.3999975562096"
+                    Point3="59.6499984279275,62.3999975562096" />
+                  <mssgle:LineSegment
+                    End="103.799996855855,62.3999975562096" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - DIR_METER.Paths[Multicast Output 2]"
+          TopLeft="315.599996185303,218.800001892447">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-126.999997720122,35.9999989867211"
+              Start="0,0"
+              End="-126.999997720122,28.4999989867211">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,13.9999994933605" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,13.9999994933605"
+                    Point2="0,17.9999994933605"
+                    Point3="-4,17.9999994933605" />
+                  <mssgle:LineSegment
+                    End="-122.999997720122,17.9999994933605" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-122.999997720122,17.9999994933605"
+                    Point2="-126.999997720122,17.9999994933605"
+                    Point3="-126.999997720122,21.9999994933605" />
+                  <mssgle:LineSegment
+                    End="-126.999997720122,28.4999989867211" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
@@ -3955,19 +4964,83 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
     design-time-name="Package\DF - UNITS">
     <LayoutInfo>
       <GraphLayout
-        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="119.2,41.6"
+          Id="Package\DF - UNITS\Multicast"
+          TopLeft="239.999986886979,159.466665557755" />
         <NodeLayout
           Size="158.4,41.6"
           Id="Package\DF - UNITS\Derived Column"
           TopLeft="216,74" />
         <NodeLayout
-          Size="179.2,41.6"
-          Id="Package\DF - UNITS\ADO NET Destination"
-          TopLeft="434.166649414434,178.533334752189" />
-        <NodeLayout
           Size="144.8,41.6"
           Id="Package\DF - UNITS\Oracle Source"
           TopLeft="27.4999984974663,10.3999999276797" />
+        <NodeLayout
+          Size="179.2,41.6"
+          Id="Package\DF - UNITS\ADO NET Destination"
+          TopLeft="434.166649414434,234.866667693787" />
+        <NodeLayout
+          Size="171.2,41.6"
+          Id="Package\DF - UNITS\OLE DB Destination"
+          TopLeft="88.333328507013,245.266664961113" />
+        <EdgeLayout
+          Id="Package\DF - UNITS.Paths[Multicast Output 1]"
+          TopLeft="299.599986886979,201.066665557755">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="224.166662527455,33.800002136032"
+              Start="0,0"
+              End="224.166662527455,26.300002136032">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,12.900001068016" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,12.900001068016"
+                    Point2="0,16.900001068016"
+                    Point3="4,16.900001068016" />
+                  <mssgle:LineSegment
+                    End="220.166662527455,16.900001068016" />
+                  <mssgle:CubicBezierSegment
+                    Point1="220.166662527455,16.900001068016"
+                    Point2="224.166662527455,16.900001068016"
+                    Point3="224.166662527455,20.900001068016" />
+                  <mssgle:LineSegment
+                    End="224.166662527455,26.300002136032" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - UNITS.Paths[Derived Column Output]"
+          TopLeft="297.399993443489,115.6">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,43.8666655577554"
+              Start="0,0"
+              End="0,36.3666655577554">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,36.3666655577554" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - UNITS.Paths[Oracle Source Output]"
           TopLeft="172.299998497466,31.1999999276797">
@@ -3999,50 +5072,59 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - UNITS.Paths[Derived Column Output]"
-          TopLeft="295.2,115.6">
+          Id="Package\DF - UNITS.Paths[Multicast Output 2]"
+          TopLeft="281.066653553645,201.066665557755">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="228.566649414434,62.9333347521888"
+              EndConnector="-107.133325046632,44.1999994033576"
               Start="0,0"
-              End="228.566649414434,55.4333347521888">
+              End="-107.133325046632,36.6999994033576">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,27.4666673760944" />
+                    End="0,14.0312580347472" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,27.4666673760944"
-                    Point2="0,31.4666673760944"
-                    Point3="4,31.4666673760944" />
+                    Point1="0,14.0312580347472"
+                    Point2="0,18.0312580347472"
+                    Point3="-4,18.0312580347472" />
                   <mssgle:LineSegment
-                    End="224.566649414434,31.4666673760944" />
+                    End="-103.133325046632,18.0312580347472" />
                   <mssgle:CubicBezierSegment
-                    Point1="224.566649414434,31.4666673760944"
-                    Point2="228.566649414434,31.4666673760944"
-                    Point3="228.566649414434,35.4666673760944" />
+                    Point1="-103.133325046632,18.0312580347472"
+                    Point2="-107.133325046632,18.0312580347472"
+                    Point3="-107.133325046632,22.0312580347472" />
                   <mssgle:LineSegment
-                    End="228.566649414434,55.4333347521888" />
+                    End="-107.133325046632,36.6999994033576" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - UNITS\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
   <PipelineComponentMetadata
     design-time-name="Package\DF - UNITS\ADO NET Destination">
     <Properties>
