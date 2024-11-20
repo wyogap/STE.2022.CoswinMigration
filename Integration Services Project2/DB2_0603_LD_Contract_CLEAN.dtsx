@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0603_LD_Contract_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="177"
-  DTS:VersionGUID="{A853DE0A-F5E4-4C1C-83E6-C01FF5172793}"
+  DTS:VersionBuild="178"
+  DTS:VersionGUID="{EB6C6E3E-B15A-4625-97C5-2CC802AE0A64}"
   DTS:VersionMinor="2">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -7286,6 +7286,122 @@ where contracttermid=?</property>
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
+      DTS:refId="Package\POST-PKG"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{a6fab12d-7ac7-458d-81fe-fd922c78f6b1}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="POST-PKG">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\POST-PKG\FINISH LOG"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{948dfec4-cf56-4859-8d8b-261be09f1e14}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="FINISH LOG"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="UPDATE MIGRATION.ste_migration_logs &#xA;SET&#xA; end_date = CURRENT_TIMESTAMP&#xA; , success = 1&#xA;WHERE id = ?" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="LogId"
+                SQLTask:DtsVariableName="User::log_id"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\PRE-PKG"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{251d4563-9e03-4408-99f5-817dab6a2492}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="PRE-PKG">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\PRE-PKG\GET LOGID"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{45a0f9b9-aad7-461a-a362-e0d86de5134f}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="GET LOGID"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="SELECT IDENTITY_VAL_LOCAL() AS PackageLogID FROM SYSIBM.DUAL;"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="PackageLogId"
+                SQLTask:DtsVariableName="User::log_id" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\PRE-PKG\START LOG"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{60949198-7ded-4c41-a617-cd08b5ae94fb}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="START LOG"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="INSERT INTO MIGRATION.ste_migration_logs (&#xA; package_name&#xA; ,version&#xA; ,start_date &#xA;)&#xA;VALUES (&#xA; ?&#xA; , CONCAT(?, '.', ?) &#xA; ,CURRENT_TIMESTAMP&#xA;);&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="PkgName"
+                SQLTask:DtsVariableName="System::PackageName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="PkgVersionMajor"
+                SQLTask:DtsVariableName="System::VersionMajor"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="PkgVersionMinor"
+                SQLTask:DtsVariableName="System::VersionMinor"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\PRE-PKG.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{afe48452-7895-4942-a53a-00624770f836}"
+          DTS:From="Package\PRE-PKG\START LOG"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\PRE-PKG\GET LOGID" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+    <DTS:Executable
       DTS:refId="Package\Pre-Task"
       DTS:CreationName="STOCK:SEQUENCE"
       DTS:Description="Sequence Container"
@@ -7563,6 +7679,22 @@ where contracttermid=?</property>
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 7"
       DTS:To="Package\Pre-Task 2" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 8]"
+      DTS:CreationName=""
+      DTS:DTSID="{E9E92CE7-988C-41FC-BE56-B0D9E9F83DBB}"
+      DTS:From="Package\PRE-PKG"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 8"
+      DTS:To="Package\Pre-Task 1" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 9]"
+      DTS:CreationName=""
+      DTS:DTSID="{1785EE2B-EAA5-43B9-A509-DD654FCC40A1}"
+      DTS:From="Package\Convert IMAGE To TEXT 1"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 9"
+      DTS:To="Package\POST-PKG" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
 <!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
@@ -7575,54 +7707,54 @@ where contracttermid=?</property>
     design-time-name="Package">
     <LayoutInfo>
       <GraphLayout
-        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        Capacity="64" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="195.2,41.6"
           Id="Package\Convert IMAGE To TEXT"
-          TopLeft="379.791645915766,613.79999837021" />
+          TopLeft="379.791645915766,598.19999847869" />
         <NodeLayout
           Size="204,41.6"
           Id="Package\Convert IMAGE To TEXT 1"
-          TopLeft="715.924959683047,612.68333351286" />
+          TopLeft="715.924959683047,597.08333362134" />
         <NodeLayout
           Size="239.2,41.6"
           Id="Package\DF - Contract BLANKET RMK (LD)"
-          TopLeft="690.816629204735,527.800001491408" />
+          TopLeft="690.816629204735,512.200001599888" />
         <NodeLayout
           Size="164.8,41.6"
           Id="Package\DF - ContractTerm"
-          TopLeft="69.9999961753689,534.733331495193" />
+          TopLeft="69.9999961753689,519.133331603673" />
         <NodeLayout
           Size="188,41.6"
           Id="Package\DF - ContractTerm (LD)"
-          TopLeft="391.141646778791,528.916666348759" />
+          TopLeft="391.141646778791,513.316666457239" />
         <NodeLayout
           Size="173.6,41.6"
           Id="Package\Execute SQL Task 1"
-          TopLeft="51.6666638437246,619.066665015353" />
+          TopLeft="51.6666638437246,603.466665123833" />
         <NodeLayout
           Size="122.4,41.6"
           Id="Package\Get Max ID"
-          TopLeft="403.816647021556,452.099999602039" />
+          TopLeft="403.816647021556,436.499999710519" />
         <NodeLayout
           Size="122.4,41.6"
           Id="Package\Get Max ID 1"
-          TopLeft="92.499994946023,439.866666968001" />
+          TopLeft="92.499994946023,424.266667076481" />
         <NodeLayout
           Size="122.4,41.6"
           Id="Package\Get Max ID 2"
-          TopLeft="739.949960788838,450.983334744687" />
+          TopLeft="739.949960788838,435.383334853167" />
         <NodeLayout
           Size="164.8,41.6"
           Id="Package\Pre-Task\Execute SQL Task"
-          TopLeft="9.90000000000002,107.1" />
+          TopLeft="13.2333331512081,16.9666672934426" />
         <NodeLayout
           Size="174.4,41.6"
           Id="Package\Pre-Task\Execute SQL Task 1"
-          TopLeft="5.50000000000003,208.7" />
+          TopLeft="8.83333315120814,118.566667293442" />
         <EdgeLayout
           Id="Package\Pre-Task.PrecedenceConstraints[Constraint 1]"
-          TopLeft="92.3,148.7">
+          TopLeft="95.6333331512081,58.5666672934426">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -7645,10 +7777,10 @@ where contracttermid=?</property>
         <ContainerLayout
           HeaderHeight="43"
           IsExpanded="True"
-          PanelSize="184.8,305.6"
-          Size="184.8,348.8"
+          PanelSize="184.8,210.4"
+          Size="184.8,253.6"
           Id="Package\Pre-Task"
-          TopLeft="365.949981205911,71.6999989515542" />
+          TopLeft="365.949981205911,97.6999987707533" />
         <NodeLayout
           Size="164.8,41.6"
           Id="Package\Pre-Task 1\Execute SQL Task"
@@ -7682,21 +7814,21 @@ where contracttermid=?</property>
         <ContainerLayout
           HeaderHeight="43"
           IsExpanded="True"
-          PanelSize="184.8,305.6"
-          Size="184.8,348.8"
+          PanelSize="184.8,219.2"
+          Size="184.8,262.4"
           Id="Package\Pre-Task 1"
-          TopLeft="60.333344612684,58.6999990419546" />
+          TopLeft="60.333344612684,114.166665322913" />
         <NodeLayout
           Size="164.8,41.6"
           Id="Package\Pre-Task 2\Execute SQL Task"
-          TopLeft="9.90000000000002,107.1" />
+          TopLeft="14.8999997268122,18.7000006147225" />
         <NodeLayout
           Size="174.4,41.6"
           Id="Package\Pre-Task 2\Execute SQL Task 1"
-          TopLeft="5.50000000000003,208.7" />
+          TopLeft="10.4999997268122,120.300000614723" />
         <EdgeLayout
           Id="Package\Pre-Task 2.PrecedenceConstraints[Constraint 1]"
-          TopLeft="92.3,148.7">
+          TopLeft="97.2999997268122,60.3000006147225">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -7719,24 +7851,24 @@ where contracttermid=?</property>
         <ContainerLayout
           HeaderHeight="43"
           IsExpanded="True"
-          PanelSize="184.8,305.6"
-          Size="184.8,348.8"
+          PanelSize="189.6,210.4"
+          Size="189.6,253.6"
           Id="Package\Pre-Task 2"
-          TopLeft="702.083294973193,70.5833340942031" />
+          TopLeft="702.083294973193,96.5833339134022" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="153.216669779354,407.499999041955">
+          TopLeft="153.216669779353,376.566665322913">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,32.3666679260466"
+              EndConnector="0,47.7000017535685"
               Start="0,0"
-              End="0,24.8666679260466">
+              End="0,40.2000017535685">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,24.8666679260466" />
+                    End="0,40.2000017535685" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -7747,30 +7879,30 @@ where contracttermid=?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 1]"
-          TopLeft="487.816647872578,420.499998951554">
+          TopLeft="487.816647872578,351.299998770753">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-22.8000008510219,31.6000006504852"
+              EndConnector="-22.8000008510218,85.200000939766"
               Start="0,0"
-              End="-22.8000008510219,24.1000006504852">
+              End="-22.8000008510218,77.700000939766">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,8.80274704466007" />
+                    End="0,30.5187986640082" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,8.80274704466007"
-                    Point2="0,12.8027470446601"
-                    Point3="-4,12.8027470446601" />
+                    Point1="0,30.5187986640082"
+                    Point2="0,34.5187986640082"
+                    Point3="-4,34.5187986640082" />
                   <mssgle:LineSegment
-                    End="-18.8000008510219,12.8027470446601" />
+                    End="-18.8000008510218,34.5187986640082" />
                   <mssgle:CubicBezierSegment
-                    Point1="-18.8000008510219,12.8027470446601"
-                    Point2="-22.8000008510219,12.8027470446601"
-                    Point3="-22.8000008510219,16.8027470446601" />
+                    Point1="-18.8000008510218,34.5187986640082"
+                    Point2="-22.8000008510218,34.5187986640082"
+                    Point3="-22.8000008510218,38.5187986640082" />
                   <mssgle:LineSegment
-                    End="-22.8000008510219,24.1000006504852" />
+                    End="-22.8000008510218,77.700000939766" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -7781,30 +7913,30 @@ where contracttermid=?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 1 1]"
-          TopLeft="823.94996163986,419.383334094202">
+          TopLeft="827.14996163986,350.183333913402">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-22.8000008510219,31.6000006504852"
+              EndConnector="-26.0000008510216,85.2000009397651"
               Start="0,0"
-              End="-22.8000008510219,24.1000006504852">
+              End="-26.0000008510216,77.7000009397651">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,8.80274704466012" />
+                    End="0,30.5077828074027" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,8.80274704466012"
-                    Point2="0,12.8027470446601"
-                    Point3="-4,12.8027470446601" />
+                    Point1="0,30.5077828074027"
+                    Point2="0,34.5077828074027"
+                    Point3="-4,34.5077828074027" />
                   <mssgle:LineSegment
-                    End="-18.8000008510219,12.8027470446601" />
+                    End="-22.0000008510216,34.5077828074027" />
                   <mssgle:CubicBezierSegment
-                    Point1="-18.8000008510219,12.8027470446601"
-                    Point2="-22.8000008510219,12.8027470446601"
-                    Point3="-22.8000008510219,16.8027470446601" />
+                    Point1="-22.0000008510216,34.5077828074027"
+                    Point2="-26.0000008510216,34.5077828074027"
+                    Point3="-26.0000008510216,38.5077828074027" />
                   <mssgle:LineSegment
-                    End="-22.8000008510219,24.1000006504852" />
+                    End="-26.0000008510216,77.7000009397651" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -7815,7 +7947,7 @@ where contracttermid=?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 2]"
-          TopLeft="152.399996175369,576.333331495193">
+          TopLeft="152.399996175369,560.733331603673">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -7849,7 +7981,7 @@ where contracttermid=?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 3]"
-          TopLeft="153.049995560696,481.466666968001">
+          TopLeft="153.049995560696,465.866667076481">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -7871,30 +8003,30 @@ where contracttermid=?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 4]"
-          TopLeft="166.066663843725,619.066665015353">
+          TopLeft="166.066663843725,603.466665123833">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="262.81665069552,-198.566666063799"
+              EndConnector="262.81665069552,-252.16666635308"
               Start="0,0"
-              End="262.81665069552,-191.066666063799">
+              End="262.81665069552,-244.66666635308">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,-95.3511402529292" />
+                    End="0,-122.169443908118" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,-95.3511402529292"
-                    Point2="0,-99.3511402529292"
-                    Point3="4,-99.3511402529292" />
+                    Point1="0,-122.169443908118"
+                    Point2="0,-126.169443908118"
+                    Point3="4,-126.169443908118" />
                   <mssgle:LineSegment
-                    End="258.81665069552,-99.3511402529292" />
+                    End="258.81665069552,-126.169443908118" />
                   <mssgle:CubicBezierSegment
-                    Point1="258.81665069552,-99.3511402529292"
-                    Point2="262.81665069552,-99.3511402529292"
-                    Point3="262.81665069552,-103.351140252929" />
+                    Point1="258.81665069552,-126.169443908118"
+                    Point2="262.81665069552,-126.169443908118"
+                    Point3="262.81665069552,-130.169443908118" />
                   <mssgle:LineSegment
-                    End="262.81665069552,-191.066666063799" />
+                    End="262.81665069552,-244.66666635308" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -7905,7 +8037,7 @@ where contracttermid=?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 5]"
-          TopLeft="465.016647021556,493.699999602039">
+          TopLeft="465.016647021556,478.099999710519">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -7939,7 +8071,7 @@ where contracttermid=?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 5 1]"
-          TopLeft="801.149960788838,492.583334744687">
+          TopLeft="801.149960788838,476.983334853167">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -7973,7 +8105,7 @@ where contracttermid=?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 6]"
-          TopLeft="481.266646347278,570.516666348759">
+          TopLeft="481.266646347278,554.916666457239">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -7995,7 +8127,7 @@ where contracttermid=?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 6 1]"
-          TopLeft="814.170794443891,569.400001491408">
+          TopLeft="814.170794443891,553.800001599888">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -8017,30 +8149,148 @@ where contracttermid=?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 7]"
-          TopLeft="508.591645915766,613.79999837021">
+          TopLeft="508.591645915766,598.19999847869">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="256.424982390761,-194.416664276007"
+              EndConnector="258.02498239076,-248.016664565288"
               Start="0,0"
-              End="256.424982390761,-186.916664276007">
+              End="258.02498239076,-240.516664565288">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,-93.1534374646331" />
+                    End="0,-119.971569154855" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,-93.1534374646331"
-                    Point2="0,-97.1534374646331"
-                    Point3="4,-97.1534374646331" />
+                    Point1="0,-119.971569154855"
+                    Point2="0,-123.971569154855"
+                    Point3="4,-123.971569154855" />
                   <mssgle:LineSegment
-                    End="252.424982390761,-97.1534374646331" />
+                    End="254.02498239076,-123.971569154855" />
                   <mssgle:CubicBezierSegment
-                    Point1="252.424982390761,-97.1534374646331"
-                    Point2="256.424982390761,-97.1534374646331"
-                    Point3="256.424982390761,-101.153437464633" />
+                    Point1="254.02498239076,-123.971569154855"
+                    Point2="258.02498239076,-123.971569154855"
+                    Point3="258.02498239076,-127.971569154855" />
                   <mssgle:LineSegment
-                    End="256.424982390761,-186.916664276007" />
+                    End="258.02498239076,-240.516664565288" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="137.6,41.6"
+          Id="Package\POST-PKG\FINISH LOG"
+          TopLeft="51.9333115693606,32.199997812311" />
+        <ContainerLayout
+          HeaderHeight="43.2"
+          IsExpanded="False"
+          PanelSize="270.4,130.4"
+          Size="156,43.2"
+          Id="Package\POST-PKG"
+          TopLeft="67.7250129298612,705.289150280859" />
+        <NodeLayout
+          Size="135.2,41.6"
+          Id="Package\PRE-PKG\GET LOGID"
+          TopLeft="47.4999810134378,99.1999989151955" />
+        <NodeLayout
+          Size="137.6,41.6"
+          Id="Package\PRE-PKG\START LOG"
+          TopLeft="45.833314437834,26.3999994214376" />
+        <EdgeLayout
+          Id="Package\PRE-PKG.PrecedenceConstraints[Constraint]"
+          TopLeft="114.866647725636,67.9999994214376">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,31.1999994937579"
+              Start="0,0"
+              End="0,23.6999994937579">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,23.6999994937579" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43.2"
+          IsExpanded="False"
+          PanelSize="268,196.8"
+          Size="268,43.2"
+          Id="Package\PRE-PKG"
+          TopLeft="28.3500150812159,11.6500011706847" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 8]"
+          TopLeft="162.350015081216,54.8500011706847">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-9.61667046853191,59.3166641522282"
+              Start="0,0"
+              End="-9.61667046853191,51.8166641522282">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,25.6583320761141" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,25.6583320761141"
+                    Point2="0,29.6583320761141"
+                    Point3="-4,29.6583320761141" />
+                  <mssgle:LineSegment
+                    End="-5.61667046853191,29.6583320761141" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-5.61667046853191,29.6583320761141"
+                    Point2="-9.61667046853191,29.6583320761141"
+                    Point3="-9.61667046853191,33.6583320761141" />
+                  <mssgle:LineSegment
+                    End="-9.61667046853191,51.8166641522282" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 9]"
+          TopLeft="817.924959683047,638.68333362134">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-672.199946753186,66.6058166595182"
+              Start="0,0"
+              End="-672.199946753186,59.1058166595182">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,29.3029083297591" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,29.3029083297591"
+                    Point2="0,33.3029083297591"
+                    Point3="-4,33.3029083297591" />
+                  <mssgle:LineSegment
+                    End="-668.199946753186,33.3029083297591" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-668.199946753186,33.3029083297591"
+                    Point2="-672.199946753186,33.3029083297591"
+                    Point3="-672.199946753186,37.3029083297591" />
+                  <mssgle:LineSegment
+                    End="-672.199946753186,59.1058166595182" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -8407,14 +8657,6 @@ where contracttermid=?</property>
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\DF - Contract BLANKET RMK (LD)\Oracle Source">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
     design-time-name="Package\DF - Contract BLANKET RMK (LD)\Lookup - Contract">
     <Properties>
       <Property>
@@ -8425,7 +8667,7 @@ where contracttermid=?</property>
       <Property>
         <Name>TableInfoObjectType</Name>
         <Value
-          type="q3:int">0</Value>
+          type="q3:string">0</Value>
       </Property>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -8433,7 +8675,7 @@ where contracttermid=?</property>
       <Property>
         <Name>OverwriteParamsSQLProp</Name>
         <Value
-          type="q4:boolean">false</Value>
+          type="q4:string">false</Value>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
@@ -8447,6 +8689,14 @@ where contracttermid=?</property>
         <Name>TableInfoObjectType</Name>
         <Value
           type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - Contract BLANKET RMK (LD)\Oracle Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
@@ -8679,7 +8929,7 @@ where contracttermid=?</property>
       <Property>
         <Name>OverwriteParamsSQLProp</Name>
         <Value
-          type="q2:boolean">false</Value>
+          type="q2:string">false</Value>
       </Property>
       <Property>
         <Name>UsedTableName</Name>
@@ -8689,7 +8939,7 @@ where contracttermid=?</property>
       <Property>
         <Name>TableInfoObjectType</Name>
         <Value
-          type="q4:int">0</Value>
+          type="q4:string">0</Value>
       </Property>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -9064,6 +9314,14 @@ where contracttermid=?</property>
     </Properties>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
+    design-time-name="Package\DF - ContractTerm (LD)\Oracle Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
     design-time-name="Package\DF - ContractTerm (LD)\Lookup - ContractTerm">
     <Properties>
       <Property>
@@ -9074,7 +9332,7 @@ where contracttermid=?</property>
       <Property>
         <Name>TableInfoObjectType</Name>
         <Value
-          type="q3:int">0</Value>
+          type="q3:string">0</Value>
       </Property>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -9082,15 +9340,7 @@ where contracttermid=?</property>
       <Property>
         <Name>OverwriteParamsSQLProp</Name>
         <Value
-          type="q4:boolean">false</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\DF - ContractTerm (LD)\Oracle Source">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
+          type="q4:string">false</Value>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
