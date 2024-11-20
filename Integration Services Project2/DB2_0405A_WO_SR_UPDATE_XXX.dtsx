@@ -1,0 +1,3108 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="11/1/2024 11:20:07 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="SMRPF1K53H6L-P"
+  DTS:CreatorName="SMRPF1K53H6L-P\16808189_admin"
+  DTS:DTSID="{697F1109-92BD-4622-A586-3BCB5221AED5}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="16.0.5685.0"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="DB2_0405A_WO_SR_UPDATE"
+  DTS:PackageType="5"
+  DTS:VersionBuild="13"
+  DTS:VersionGUID="{A3EC41FD-21CE-4660-97C9-7E4C72B07ADD}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Update FollowUp Ticket"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:Disabled="True"
+      DTS:DTSID="{e3d87c04-af98-4ab6-87af-994939e99abe}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Update FollowUp Ticket"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="MERGE INTO ticket A&#xA;USING (SELECT wonum, ste_cswnwoid from WORKORDER) B&#xA;ON (b.ste_cswnwoid = A.STE_MIGRATIONSRCWO)&#xA;WHEN MATCHED &#xA;AND a.origrecordid is null&#xA;and a.STE_MIGRATIONID is not null&#xA;AND coalesce(a.STE_MIGRATIONSRCWO,'0') != '0'&#xA;THEN&#xA; UPDATE SET A.ORIGRECORDID = b.WONUM, A.ORIGRECORDCLASS = 'WORKORDER'&#xA;; " xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Update FollowUp WO"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:Disabled="True"
+      DTS:DTSID="{31d4e2ab-33f6-4fdb-9271-0c527a445c90}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Update FollowUp WO"
+      DTS:ThreadHint="1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="MERGE INTO WORKORDER A&#xA;USING (SELECT ticketid from TICKET) B&#xA;ON (b.ticketid = A.STE_MIGRATIONREQNO)&#xA;WHEN MATCHED &#xA;AND a.origrecordid is null&#xA;and a.STE_MIGRATIONID is not null&#xA;AND coalesce(a.STE_MIGRATIONREQNO,'0') != '0'&#xA;THEN&#xA; UPDATE SET A.ORIGRECORDID = b.ticketid, A.ORIGRECORDCLASS = 'SR'&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Update FollowUp WO 1"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:Disabled="True"
+      DTS:DTSID="{28b3f177-854c-4fcf-87c1-8f2032d76cff}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Update FollowUp WO 1"
+      DTS:ThreadHint="2">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="MERGE INTO WORKORDER A&#xA;USING (SELECT ticketid, ste_migrationworef&#xA;FROM &#xA;(&#xA;SELECT&#xA;  ticketid, STE_MIGRATIONWOREF,&#xA;  ROW_NUMBER() OVER(PARTITION BY STE_MIGRATIONWOREF ORDER BY ticketid asc) AS row_number&#xA;FROM ticket&#xA;WHERE coalesce(STE_MIGRATIONWOREF,'0') != '0'&#xA;) C&#xA;WHERE ROW_NUMBER = 1) B&#xA;ON (a.ste_cswnwoid=b.STE_MIGRATIONWOREF)&#xA;WHEN MATCHED &#xA;AND a.origrecordid is null&#xA;and a.STE_MIGRATIONID is not null&#xA;AND  coalesce(b.STE_MIGRATIONWOREF,'0') != '0'&#xA;THEN&#xA; UPDATE SET A.ORIGRECORDID = b.ticketid, A.ORIGRECORDCLASS = 'SR'&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Update Ticket with ORIGRECORD as WO"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{238558D5-104B-4F47-BB57-A1A78904BAA6}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Update Ticket with ORIGRECORD as WO"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\Update Ticket with ORIGRECORD as WO\Merge Join"
+              componentClassID="Microsoft.MergeJoin"
+              contactInfo="Merge Join;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
+              description="Combine two sorted data flows into one using the FULL, LEFT, or INNER join. We recommend this transformation when data flows can be sorted at their sources."
+              name="Merge Join"
+              version="1">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the type of join to perform."
+                  name="JoinType"
+                  typeConverter="JoinType">2</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the number of columns in the ordering key."
+                  name="NumKeyColumns">1</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the null values are treated as equal values."
+                  name="TreatNullsAsEqual">true</property>
+                <property
+                  dataType="System.Int32"
+                  description="Indicates the requested maximum buffers per input before blocking."
+                  name="MaxBuffersPerInput">5</property>
+              </properties>
+              <inputs>
+                <input
+                  refId="Package\Update Ticket with ORIGRECORD as WO\Merge Join.Inputs[Merge Join Left Input]"
+                  hasSideEffects="true"
+                  name="Merge Join Left Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\Merge Join.Inputs[Merge Join Left Input].Columns[STE_MIGRATIONSRCWO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="200"
+                      cachedName="STE_MIGRATIONSRCWO"
+                      cachedSortKeyPosition="1"
+                      lineageId="Package\Update Ticket with ORIGRECORD as WO\Sort.Outputs[Sort Output].Columns[STE_MIGRATIONSRCWO]" />
+                    <inputColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\Merge Join.Inputs[Merge Join Left Input].Columns[TICKETID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="TICKETID"
+                      lineageId="Package\Update Ticket with ORIGRECORD as WO\Sort.Outputs[Sort Output].Columns[TICKETID]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+                <input
+                  refId="Package\Update Ticket with ORIGRECORD as WO\Merge Join.Inputs[Merge Join Right Input]"
+                  hasSideEffects="true"
+                  name="Merge Join Right Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\Merge Join.Inputs[Merge Join Right Input].Columns[STE_CSWNWOID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="STE_CSWNWOID"
+                      cachedSortKeyPosition="1"
+                      lineageId="Package\Update Ticket with ORIGRECORD as WO\Sort 1.Outputs[Sort Output].Columns[STE_CSWNWOID]" />
+                    <inputColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\Merge Join.Inputs[Merge Join Right Input].Columns[WONUM]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="WONUM"
+                      lineageId="Package\Update Ticket with ORIGRECORD as WO\Sort 1.Outputs[Sort Output].Columns[WONUM]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Update Ticket with ORIGRECORD as WO\Merge Join.Outputs[Merge Join Output]"
+                  isSorted="true"
+                  name="Merge Join Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\Merge Join.Outputs[Merge Join Output].Columns[TICKETID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      lineageId="Package\Update Ticket with ORIGRECORD as WO\Merge Join.Outputs[Merge Join Output].Columns[TICKETID]"
+                      name="TICKETID">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Update Ticket with ORIGRECORD as WO\Merge Join.Inputs[Merge Join Left Input].Columns[TICKETID]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\Merge Join.Outputs[Merge Join Output].Columns[STE_MIGRATIONSRCWO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      lineageId="Package\Update Ticket with ORIGRECORD as WO\Merge Join.Outputs[Merge Join Output].Columns[STE_MIGRATIONSRCWO]"
+                      name="STE_MIGRATIONSRCWO"
+                      sortKeyPosition="1">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Update Ticket with ORIGRECORD as WO\Merge Join.Inputs[Merge Join Left Input].Columns[STE_MIGRATIONSRCWO]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\Merge Join.Outputs[Merge Join Output].Columns[WONUM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      lineageId="Package\Update Ticket with ORIGRECORD as WO\Merge Join.Outputs[Merge Join Output].Columns[WONUM]"
+                      name="WONUM">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Update Ticket with ORIGRECORD as WO\Merge Join.Inputs[Merge Join Right Input].Columns[WONUM]}</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Update Ticket with ORIGRECORD as WO\OLE DB Command"
+              componentClassID="Microsoft.OLEDBCommand"
+              contactInfo="OLE DB Command;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;2"
+              description="Runs an SQL statement for each row in a data flow. For example, call a 'new employee setup' stored procedure for each row in the 'new employees' table. Note: running an SQL statement for each row of a large data flow may take a long time."
+              name="OLE DB Command"
+              usesDispositions="true"
+              version="2">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">UPDATE MAXIMO.TICKET SET ORIGRECORDID = ?, ORIGRECORDCLASS = 'WORKORDER' where ticketid = ?</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Update Ticket with ORIGRECORD as WO\OLE DB Command.Connections[OleDbConnection]"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Update Ticket with ORIGRECORD as WO\OLE DB Command.Inputs[OLE DB Command Input]"
+                  errorOrTruncationOperation="Command Execution"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Command Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\OLE DB Command.Inputs[OLE DB Command Input].Columns[WONUM]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="WONUM"
+                      externalMetadataColumnId="Package\Update Ticket with ORIGRECORD as WO\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_0]"
+                      lineageId="Package\Update Ticket with ORIGRECORD as WO\Merge Join.Outputs[Merge Join Output].Columns[WONUM]" />
+                    <inputColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\OLE DB Command.Inputs[OLE DB Command Input].Columns[TICKETID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="TICKETID"
+                      externalMetadataColumnId="Package\Update Ticket with ORIGRECORD as WO\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_1]"
+                      lineageId="Package\Update Ticket with ORIGRECORD as WO\Merge Join.Outputs[Merge Join Output].Columns[TICKETID]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_0]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="Param_0">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Parameter information.  Matches OLE DB's DBPARAMFLAGSENUM values."
+                          name="DBParamInfoFlags">64</property>
+                      </properties>
+                    </externalMetadataColumn>
+                    <externalMetadataColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_1]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="Param_1">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Parameter information.  Matches OLE DB's DBPARAMFLAGSENUM values."
+                          name="DBParamInfoFlags">64</property>
+                      </properties>
+                    </externalMetadataColumn>
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Update Ticket with ORIGRECORD as WO\OLE DB Command.Outputs[OLE DB Command Output]"
+                  exclusionGroup="1"
+                  name="OLE DB Command Output"
+                  synchronousInputId="Package\Update Ticket with ORIGRECORD as WO\OLE DB Command.Inputs[OLE DB Command Input]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\Update Ticket with ORIGRECORD as WO\OLE DB Command.Outputs[OLE DB Command Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Command Error Output"
+                  synchronousInputId="Package\Update Ticket with ORIGRECORD as WO\OLE DB Command.Inputs[OLE DB Command Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\OLE DB Command.Outputs[OLE DB Command Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Update Ticket with ORIGRECORD as WO\OLE DB Command.Outputs[OLE DB Command Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\OLE DB Command.Outputs[OLE DB Command Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Update Ticket with ORIGRECORD as WO\OLE DB Command.Outputs[OLE DB Command Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Update Ticket with ORIGRECORD as WO\Sort"
+              componentClassID="Microsoft.Sort"
+              contactInfo="Sort;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
+              description="Sorts input data in ascending or descending order when it cannot be sorted at its source. For example, sort sales data by 'customer id' before it is written to a flat file and delivered to another department. Note: We do not recommend this transformation for large data flows."
+              name="Sort"
+              version="1">
+              <properties>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the Sort transformation removes rows with duplicate sort values."
+                  name="EliminateDuplicates">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the maximum number of threads to use for sorting."
+                  expressionType="Notify"
+                  name="MaximumThreads">-1</property>
+              </properties>
+              <inputs>
+                <input
+                  refId="Package\Update Ticket with ORIGRECORD as WO\Sort.Inputs[Sort Input]"
+                  name="Sort Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\Sort.Inputs[Sort Input].Columns[TICKETID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="TICKETID"
+                      lineageId="Package\Update Ticket with ORIGRECORD as WO\TICKET.Outputs[OLE DB Source Output].Columns[TICKETID]">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the comparison options for character data."
+                          name="NewComparisonFlags">0</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the sort order of the column."
+                          name="NewSortKeyPosition">0</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\Sort.Inputs[Sort Input].Columns[STE_MIGRATIONSRCWO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="200"
+                      cachedName="STE_MIGRATIONSRCWO"
+                      lineageId="Package\Update Ticket with ORIGRECORD as WO\TICKET.Outputs[OLE DB Source Output].Columns[STE_MIGRATIONSRCWO]">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the comparison options for character data."
+                          name="NewComparisonFlags">0</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the sort order of the column."
+                          name="NewSortKeyPosition">1</property>
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Update Ticket with ORIGRECORD as WO\Sort.Outputs[Sort Output]"
+                  isSorted="true"
+                  name="Sort Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\Sort.Outputs[Sort Output].Columns[TICKETID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      lineageId="Package\Update Ticket with ORIGRECORD as WO\Sort.Outputs[Sort Output].Columns[TICKETID]"
+                      name="TICKETID">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the lineage identifier of the input column that is associated with this output column."
+                          name="SortColumnId">#{Package\Update Ticket with ORIGRECORD as WO\TICKET.Outputs[OLE DB Source Output].Columns[TICKETID]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\Sort.Outputs[Sort Output].Columns[STE_MIGRATIONSRCWO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      lineageId="Package\Update Ticket with ORIGRECORD as WO\Sort.Outputs[Sort Output].Columns[STE_MIGRATIONSRCWO]"
+                      name="STE_MIGRATIONSRCWO"
+                      sortKeyPosition="1">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the lineage identifier of the input column that is associated with this output column."
+                          name="SortColumnId">#{Package\Update Ticket with ORIGRECORD as WO\TICKET.Outputs[OLE DB Source Output].Columns[STE_MIGRATIONSRCWO]}</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Update Ticket with ORIGRECORD as WO\Sort 1"
+              componentClassID="Microsoft.Sort"
+              contactInfo="Sort;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
+              description="Sorts input data in ascending or descending order when it cannot be sorted at its source. For example, sort sales data by 'customer id' before it is written to a flat file and delivered to another department. Note: We do not recommend this transformation for large data flows."
+              name="Sort 1"
+              version="1">
+              <properties>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the Sort transformation removes rows with duplicate sort values."
+                  name="EliminateDuplicates">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the maximum number of threads to use for sorting."
+                  expressionType="Notify"
+                  name="MaximumThreads">-1</property>
+              </properties>
+              <inputs>
+                <input
+                  refId="Package\Update Ticket with ORIGRECORD as WO\Sort 1.Inputs[Sort Input]"
+                  name="Sort Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\Sort 1.Inputs[Sort Input].Columns[WONUM]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="WONUM"
+                      lineageId="Package\Update Ticket with ORIGRECORD as WO\WORKORDER.Outputs[OLE DB Source Output].Columns[WONUM]">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the comparison options for character data."
+                          name="NewComparisonFlags">0</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the sort order of the column."
+                          name="NewSortKeyPosition">0</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\Sort 1.Inputs[Sort Input].Columns[STE_CSWNWOID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="STE_CSWNWOID"
+                      lineageId="Package\Update Ticket with ORIGRECORD as WO\WORKORDER.Outputs[OLE DB Source Output].Columns[STE_CSWNWOID]">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the comparison options for character data."
+                          name="NewComparisonFlags">0</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the sort order of the column."
+                          name="NewSortKeyPosition">1</property>
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Update Ticket with ORIGRECORD as WO\Sort 1.Outputs[Sort Output]"
+                  isSorted="true"
+                  name="Sort Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\Sort 1.Outputs[Sort Output].Columns[WONUM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      lineageId="Package\Update Ticket with ORIGRECORD as WO\Sort 1.Outputs[Sort Output].Columns[WONUM]"
+                      name="WONUM">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the lineage identifier of the input column that is associated with this output column."
+                          name="SortColumnId">#{Package\Update Ticket with ORIGRECORD as WO\WORKORDER.Outputs[OLE DB Source Output].Columns[WONUM]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\Sort 1.Outputs[Sort Output].Columns[STE_CSWNWOID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      lineageId="Package\Update Ticket with ORIGRECORD as WO\Sort 1.Outputs[Sort Output].Columns[STE_CSWNWOID]"
+                      name="STE_CSWNWOID"
+                      sortKeyPosition="1">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the lineage identifier of the input column that is associated with this output column."
+                          name="SortColumnId">#{Package\Update Ticket with ORIGRECORD as WO\WORKORDER.Outputs[OLE DB Source Output].Columns[STE_CSWNWOID]}</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Update Ticket with ORIGRECORD as WO\TICKET"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="TICKET"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">Select ticketid, ste_migrationsrcwo from maximo.ticket where ste_migrationid is not null and ste_migrationsrcwo is not null and ste_migrationsrcwo &lt;&gt; 0 and origrecordid is null</property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">2</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Update Ticket with ORIGRECORD as WO\TICKET.Connections[OleDbConnection]"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Update Ticket with ORIGRECORD as WO\TICKET.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\TICKET.Outputs[OLE DB Source Output].Columns[TICKETID]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Update Ticket with ORIGRECORD as WO\TICKET.Outputs[OLE DB Source Output].ExternalColumns[TICKETID]"
+                      length="10"
+                      lineageId="Package\Update Ticket with ORIGRECORD as WO\TICKET.Outputs[OLE DB Source Output].Columns[TICKETID]"
+                      name="TICKETID"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\TICKET.Outputs[OLE DB Source Output].Columns[STE_MIGRATIONSRCWO]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Update Ticket with ORIGRECORD as WO\TICKET.Outputs[OLE DB Source Output].ExternalColumns[STE_MIGRATIONSRCWO]"
+                      length="200"
+                      lineageId="Package\Update Ticket with ORIGRECORD as WO\TICKET.Outputs[OLE DB Source Output].Columns[STE_MIGRATIONSRCWO]"
+                      name="STE_MIGRATIONSRCWO"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\TICKET.Outputs[OLE DB Source Output].ExternalColumns[TICKETID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="TICKETID" />
+                    <externalMetadataColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\TICKET.Outputs[OLE DB Source Output].ExternalColumns[STE_MIGRATIONSRCWO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      name="STE_MIGRATIONSRCWO" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Update Ticket with ORIGRECORD as WO\TICKET.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\TICKET.Outputs[OLE DB Source Error Output].Columns[TICKETID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      lineageId="Package\Update Ticket with ORIGRECORD as WO\TICKET.Outputs[OLE DB Source Error Output].Columns[TICKETID]"
+                      name="TICKETID" />
+                    <outputColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\TICKET.Outputs[OLE DB Source Error Output].Columns[STE_MIGRATIONSRCWO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      lineageId="Package\Update Ticket with ORIGRECORD as WO\TICKET.Outputs[OLE DB Source Error Output].Columns[STE_MIGRATIONSRCWO]"
+                      name="STE_MIGRATIONSRCWO" />
+                    <outputColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\TICKET.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Update Ticket with ORIGRECORD as WO\TICKET.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\TICKET.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Update Ticket with ORIGRECORD as WO\TICKET.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Update Ticket with ORIGRECORD as WO\WORKORDER"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="WORKORDER"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select wonum, ste_cswnwoid from maximo.workorder where ste_migrationid is not null</property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">2</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Update Ticket with ORIGRECORD as WO\WORKORDER.Connections[OleDbConnection]"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Update Ticket with ORIGRECORD as WO\WORKORDER.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\WORKORDER.Outputs[OLE DB Source Output].Columns[WONUM]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Update Ticket with ORIGRECORD as WO\WORKORDER.Outputs[OLE DB Source Output].ExternalColumns[WONUM]"
+                      length="10"
+                      lineageId="Package\Update Ticket with ORIGRECORD as WO\WORKORDER.Outputs[OLE DB Source Output].Columns[WONUM]"
+                      name="WONUM"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\WORKORDER.Outputs[OLE DB Source Output].Columns[STE_CSWNWOID]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Update Ticket with ORIGRECORD as WO\WORKORDER.Outputs[OLE DB Source Output].ExternalColumns[STE_CSWNWOID]"
+                      length="10"
+                      lineageId="Package\Update Ticket with ORIGRECORD as WO\WORKORDER.Outputs[OLE DB Source Output].Columns[STE_CSWNWOID]"
+                      name="STE_CSWNWOID"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\WORKORDER.Outputs[OLE DB Source Output].ExternalColumns[WONUM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="WONUM" />
+                    <externalMetadataColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\WORKORDER.Outputs[OLE DB Source Output].ExternalColumns[STE_CSWNWOID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="STE_CSWNWOID" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Update Ticket with ORIGRECORD as WO\WORKORDER.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\WORKORDER.Outputs[OLE DB Source Error Output].Columns[WONUM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      lineageId="Package\Update Ticket with ORIGRECORD as WO\WORKORDER.Outputs[OLE DB Source Error Output].Columns[WONUM]"
+                      name="WONUM" />
+                    <outputColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\WORKORDER.Outputs[OLE DB Source Error Output].Columns[STE_CSWNWOID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      lineageId="Package\Update Ticket with ORIGRECORD as WO\WORKORDER.Outputs[OLE DB Source Error Output].Columns[STE_CSWNWOID]"
+                      name="STE_CSWNWOID" />
+                    <outputColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\WORKORDER.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Update Ticket with ORIGRECORD as WO\WORKORDER.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Update Ticket with ORIGRECORD as WO\WORKORDER.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Update Ticket with ORIGRECORD as WO\WORKORDER.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\Update Ticket with ORIGRECORD as WO.Paths[Merge Join Output]"
+              endId="Package\Update Ticket with ORIGRECORD as WO\OLE DB Command.Inputs[OLE DB Command Input]"
+              name="Merge Join Output"
+              startId="Package\Update Ticket with ORIGRECORD as WO\Merge Join.Outputs[Merge Join Output]" />
+            <path
+              refId="Package\Update Ticket with ORIGRECORD as WO.Paths[OLE DB Source Output]"
+              endId="Package\Update Ticket with ORIGRECORD as WO\Sort.Inputs[Sort Input]"
+              name="OLE DB Source Output"
+              startId="Package\Update Ticket with ORIGRECORD as WO\TICKET.Outputs[OLE DB Source Output]" />
+            <path
+              refId="Package\Update Ticket with ORIGRECORD as WO.Paths[OLE DB Source Output1]"
+              endId="Package\Update Ticket with ORIGRECORD as WO\Sort 1.Inputs[Sort Input]"
+              name="OLE DB Source Output"
+              startId="Package\Update Ticket with ORIGRECORD as WO\WORKORDER.Outputs[OLE DB Source Output]" />
+            <path
+              refId="Package\Update Ticket with ORIGRECORD as WO.Paths[Sort Output]"
+              endId="Package\Update Ticket with ORIGRECORD as WO\Merge Join.Inputs[Merge Join Left Input]"
+              name="Sort Output"
+              startId="Package\Update Ticket with ORIGRECORD as WO\Sort.Outputs[Sort Output]" />
+            <path
+              refId="Package\Update Ticket with ORIGRECORD as WO.Paths[Sort Output1]"
+              endId="Package\Update Ticket with ORIGRECORD as WO\Merge Join.Inputs[Merge Join Right Input]"
+              name="Sort Output"
+              startId="Package\Update Ticket with ORIGRECORD as WO\Sort 1.Outputs[Sort Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{2291f37f-ae5f-46d3-94f3-ce6f20985a14}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Merge Join"
+              componentClassID="Microsoft.MergeJoin"
+              contactInfo="Merge Join;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
+              description="Combine two sorted data flows into one using the FULL, LEFT, or INNER join. We recommend this transformation when data flows can be sorted at their sources."
+              name="Merge Join"
+              version="1">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the type of join to perform."
+                  name="JoinType"
+                  typeConverter="JoinType">2</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the number of columns in the ordering key."
+                  name="NumKeyColumns">1</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the null values are treated as equal values."
+                  name="TreatNullsAsEqual">true</property>
+                <property
+                  dataType="System.Int32"
+                  description="Indicates the requested maximum buffers per input before blocking."
+                  name="MaxBuffersPerInput">5</property>
+              </properties>
+              <inputs>
+                <input
+                  refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Merge Join.Inputs[Merge Join Left Input]"
+                  hasSideEffects="true"
+                  name="Merge Join Left Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Merge Join.Inputs[Merge Join Left Input].Columns[STE_MIGRATIONREQNO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="200"
+                      cachedName="STE_MIGRATIONREQNO"
+                      cachedSortKeyPosition="1"
+                      lineageId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Sort.Outputs[Sort Output].Columns[STE_MIGRATIONREQNO]" />
+                    <inputColumn
+                      refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Merge Join.Inputs[Merge Join Left Input].Columns[WONUM]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="WONUM"
+                      lineageId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Sort.Outputs[Sort Output].Columns[WONUM]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+                <input
+                  refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Merge Join.Inputs[Merge Join Right Input]"
+                  hasSideEffects="true"
+                  name="Merge Join Right Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Merge Join.Inputs[Merge Join Right Input].Columns[TICKETID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="TICKETID"
+                      cachedSortKeyPosition="1"
+                      lineageId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Sort 1.Outputs[Sort Output].Columns[TICKETID]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Merge Join.Outputs[Merge Join Output]"
+                  isSorted="true"
+                  name="Merge Join Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Merge Join.Outputs[Merge Join Output].Columns[WONUM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      lineageId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Merge Join.Outputs[Merge Join Output].Columns[WONUM]"
+                      name="WONUM">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Merge Join.Inputs[Merge Join Left Input].Columns[WONUM]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Merge Join.Outputs[Merge Join Output].Columns[STE_MIGRATIONREQNO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      lineageId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Merge Join.Outputs[Merge Join Output].Columns[STE_MIGRATIONREQNO]"
+                      name="STE_MIGRATIONREQNO"
+                      sortKeyPosition="1">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Merge Join.Inputs[Merge Join Left Input].Columns[STE_MIGRATIONREQNO]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Merge Join.Outputs[Merge Join Output].Columns[TICKETID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      lineageId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Merge Join.Outputs[Merge Join Output].Columns[TICKETID]"
+                      name="TICKETID">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Merge Join.Inputs[Merge Join Right Input].Columns[TICKETID]}</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\OLE DB Command"
+              componentClassID="Microsoft.OLEDBCommand"
+              contactInfo="OLE DB Command;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;2"
+              description="Runs an SQL statement for each row in a data flow. For example, call a 'new employee setup' stored procedure for each row in the 'new employees' table. Note: running an SQL statement for each row of a large data flow may take a long time."
+              name="OLE DB Command"
+              usesDispositions="true"
+              version="2">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">UPDATE MAXIMO.WORKORDER SET ORIGRECORDID = ?, ORIGRECORDCLASS = 'SR' where wonum = ?  </property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\OLE DB Command.Connections[OleDbConnection]"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\OLE DB Command.Inputs[OLE DB Command Input]"
+                  errorOrTruncationOperation="Command Execution"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Command Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\OLE DB Command.Inputs[OLE DB Command Input].Columns[TICKETID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="TICKETID"
+                      externalMetadataColumnId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_0]"
+                      lineageId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Merge Join.Outputs[Merge Join Output].Columns[TICKETID]" />
+                    <inputColumn
+                      refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\OLE DB Command.Inputs[OLE DB Command Input].Columns[WONUM]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="WONUM"
+                      externalMetadataColumnId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_1]"
+                      lineageId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Merge Join.Outputs[Merge Join Output].Columns[WONUM]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_0]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="Param_0">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Parameter information.  Matches OLE DB's DBPARAMFLAGSENUM values."
+                          name="DBParamInfoFlags">64</property>
+                      </properties>
+                    </externalMetadataColumn>
+                    <externalMetadataColumn
+                      refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_1]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="Param_1">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Parameter information.  Matches OLE DB's DBPARAMFLAGSENUM values."
+                          name="DBParamInfoFlags">64</property>
+                      </properties>
+                    </externalMetadataColumn>
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\OLE DB Command.Outputs[OLE DB Command Output]"
+                  exclusionGroup="1"
+                  name="OLE DB Command Output"
+                  synchronousInputId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\OLE DB Command.Inputs[OLE DB Command Input]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\OLE DB Command.Outputs[OLE DB Command Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Command Error Output"
+                  synchronousInputId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\OLE DB Command.Inputs[OLE DB Command Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\OLE DB Command.Outputs[OLE DB Command Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\OLE DB Command.Outputs[OLE DB Command Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\OLE DB Command.Outputs[OLE DB Command Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\OLE DB Command.Outputs[OLE DB Command Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Sort"
+              componentClassID="Microsoft.Sort"
+              contactInfo="Sort;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
+              description="Sorts input data in ascending or descending order when it cannot be sorted at its source. For example, sort sales data by 'customer id' before it is written to a flat file and delivered to another department. Note: We do not recommend this transformation for large data flows."
+              name="Sort"
+              version="1">
+              <properties>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the Sort transformation removes rows with duplicate sort values."
+                  name="EliminateDuplicates">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the maximum number of threads to use for sorting."
+                  expressionType="Notify"
+                  name="MaximumThreads">-1</property>
+              </properties>
+              <inputs>
+                <input
+                  refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Sort.Inputs[Sort Input]"
+                  name="Sort Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Sort.Inputs[Sort Input].Columns[WONUM]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="WONUM"
+                      lineageId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\WORKORDER.Outputs[OLE DB Source Output].Columns[WONUM]">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the comparison options for character data."
+                          name="NewComparisonFlags">0</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the sort order of the column."
+                          name="NewSortKeyPosition">0</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Sort.Inputs[Sort Input].Columns[STE_MIGRATIONREQNO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="200"
+                      cachedName="STE_MIGRATIONREQNO"
+                      lineageId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\WORKORDER.Outputs[OLE DB Source Output].Columns[STE_MIGRATIONREQNO]">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the comparison options for character data."
+                          name="NewComparisonFlags">0</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the sort order of the column."
+                          name="NewSortKeyPosition">1</property>
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Sort.Outputs[Sort Output]"
+                  isSorted="true"
+                  name="Sort Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Sort.Outputs[Sort Output].Columns[WONUM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      lineageId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Sort.Outputs[Sort Output].Columns[WONUM]"
+                      name="WONUM">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the lineage identifier of the input column that is associated with this output column."
+                          name="SortColumnId">#{Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\WORKORDER.Outputs[OLE DB Source Output].Columns[WONUM]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Sort.Outputs[Sort Output].Columns[STE_MIGRATIONREQNO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      lineageId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Sort.Outputs[Sort Output].Columns[STE_MIGRATIONREQNO]"
+                      name="STE_MIGRATIONREQNO"
+                      sortKeyPosition="1">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the lineage identifier of the input column that is associated with this output column."
+                          name="SortColumnId">#{Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\WORKORDER.Outputs[OLE DB Source Output].Columns[STE_MIGRATIONREQNO]}</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Sort 1"
+              componentClassID="Microsoft.Sort"
+              contactInfo="Sort;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
+              description="Sorts input data in ascending or descending order when it cannot be sorted at its source. For example, sort sales data by 'customer id' before it is written to a flat file and delivered to another department. Note: We do not recommend this transformation for large data flows."
+              name="Sort 1"
+              version="1">
+              <properties>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the Sort transformation removes rows with duplicate sort values."
+                  name="EliminateDuplicates">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the maximum number of threads to use for sorting."
+                  expressionType="Notify"
+                  name="MaximumThreads">-1</property>
+              </properties>
+              <inputs>
+                <input
+                  refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Sort 1.Inputs[Sort Input]"
+                  name="Sort Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Sort 1.Inputs[Sort Input].Columns[TICKETID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="TICKETID"
+                      lineageId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\TICKET.Outputs[OLE DB Source Output].Columns[TICKETID]">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the comparison options for character data."
+                          name="NewComparisonFlags">0</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the sort order of the column."
+                          name="NewSortKeyPosition">1</property>
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Sort 1.Outputs[Sort Output]"
+                  isSorted="true"
+                  name="Sort Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Sort 1.Outputs[Sort Output].Columns[TICKETID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      lineageId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Sort 1.Outputs[Sort Output].Columns[TICKETID]"
+                      name="TICKETID"
+                      sortKeyPosition="1">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the lineage identifier of the input column that is associated with this output column."
+                          name="SortColumnId">#{Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\TICKET.Outputs[OLE DB Source Output].Columns[TICKETID]}</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\TICKET"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="TICKET"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select ticketid from maximo.ticket where ste_migrationid is not null</property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">2</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\TICKET.Connections[OleDbConnection]"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\TICKET.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\TICKET.Outputs[OLE DB Source Output].Columns[TICKETID]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\TICKET.Outputs[OLE DB Source Output].ExternalColumns[TICKETID]"
+                      length="10"
+                      lineageId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\TICKET.Outputs[OLE DB Source Output].Columns[TICKETID]"
+                      name="TICKETID"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\TICKET.Outputs[OLE DB Source Output].ExternalColumns[TICKETID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="TICKETID" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\TICKET.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\TICKET.Outputs[OLE DB Source Error Output].Columns[TICKETID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      lineageId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\TICKET.Outputs[OLE DB Source Error Output].Columns[TICKETID]"
+                      name="TICKETID" />
+                    <outputColumn
+                      refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\TICKET.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\TICKET.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\TICKET.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\TICKET.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\WORKORDER"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="WORKORDER"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select wonum, ste_migrationreqno from maximo.workorder where origrecordid is null and ste_migrationid is not null and 
+coalesce(STE_MIGRATIONREQNO,'0') != '0'</property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">2</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\WORKORDER.Connections[OleDbConnection]"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\WORKORDER.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\WORKORDER.Outputs[OLE DB Source Output].Columns[WONUM]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\WORKORDER.Outputs[OLE DB Source Output].ExternalColumns[WONUM]"
+                      length="10"
+                      lineageId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\WORKORDER.Outputs[OLE DB Source Output].Columns[WONUM]"
+                      name="WONUM"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\WORKORDER.Outputs[OLE DB Source Output].Columns[STE_MIGRATIONREQNO]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\WORKORDER.Outputs[OLE DB Source Output].ExternalColumns[STE_MIGRATIONREQNO]"
+                      length="200"
+                      lineageId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\WORKORDER.Outputs[OLE DB Source Output].Columns[STE_MIGRATIONREQNO]"
+                      name="STE_MIGRATIONREQNO"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\WORKORDER.Outputs[OLE DB Source Output].ExternalColumns[WONUM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="WONUM" />
+                    <externalMetadataColumn
+                      refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\WORKORDER.Outputs[OLE DB Source Output].ExternalColumns[STE_MIGRATIONREQNO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      name="STE_MIGRATIONREQNO" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\WORKORDER.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\WORKORDER.Outputs[OLE DB Source Error Output].Columns[WONUM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      lineageId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\WORKORDER.Outputs[OLE DB Source Error Output].Columns[WONUM]"
+                      name="WONUM" />
+                    <outputColumn
+                      refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\WORKORDER.Outputs[OLE DB Source Error Output].Columns[STE_MIGRATIONREQNO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      lineageId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\WORKORDER.Outputs[OLE DB Source Error Output].Columns[STE_MIGRATIONREQNO]"
+                      name="STE_MIGRATIONREQNO" />
+                    <outputColumn
+                      refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\WORKORDER.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\WORKORDER.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\WORKORDER.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\WORKORDER.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET.Paths[Merge Join Output]"
+              endId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\OLE DB Command.Inputs[OLE DB Command Input]"
+              name="Merge Join Output"
+              startId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Merge Join.Outputs[Merge Join Output]" />
+            <path
+              refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET.Paths[OLE DB Source Output]"
+              endId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Sort.Inputs[Sort Input]"
+              name="OLE DB Source Output"
+              startId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\WORKORDER.Outputs[OLE DB Source Output]" />
+            <path
+              refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET.Paths[OLE DB Source Output1]"
+              endId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Sort 1.Inputs[Sort Input]"
+              name="OLE DB Source Output"
+              startId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\TICKET.Outputs[OLE DB Source Output]" />
+            <path
+              refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET.Paths[Sort Output]"
+              endId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Merge Join.Inputs[Merge Join Left Input]"
+              name="Sort Output"
+              startId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Sort.Outputs[Sort Output]" />
+            <path
+              refId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET.Paths[Sort Output1]"
+              endId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Merge Join.Inputs[Merge Join Right Input]"
+              name="Sort Output"
+              startId="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Sort 1.Outputs[Sort Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{6c42680b-e3c9-455f-b903-e839793144e5}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Merge Join"
+              componentClassID="Microsoft.MergeJoin"
+              contactInfo="Merge Join;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
+              description="Combine two sorted data flows into one using the FULL, LEFT, or INNER join. We recommend this transformation when data flows can be sorted at their sources."
+              name="Merge Join"
+              version="1">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the type of join to perform."
+                  name="JoinType"
+                  typeConverter="JoinType">2</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the number of columns in the ordering key."
+                  name="NumKeyColumns">1</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the null values are treated as equal values."
+                  name="TreatNullsAsEqual">true</property>
+                <property
+                  dataType="System.Int32"
+                  description="Indicates the requested maximum buffers per input before blocking."
+                  name="MaxBuffersPerInput">5</property>
+              </properties>
+              <inputs>
+                <input
+                  refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Merge Join.Inputs[Merge Join Left Input]"
+                  hasSideEffects="true"
+                  name="Merge Join Left Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Merge Join.Inputs[Merge Join Left Input].Columns[STE_CSWNWOID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="STE_CSWNWOID"
+                      cachedSortKeyPosition="1"
+                      lineageId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Sort.Outputs[Sort Output].Columns[STE_CSWNWOID]" />
+                    <inputColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Merge Join.Inputs[Merge Join Left Input].Columns[WONUM]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="WONUM"
+                      lineageId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Sort.Outputs[Sort Output].Columns[WONUM]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+                <input
+                  refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Merge Join.Inputs[Merge Join Right Input]"
+                  hasSideEffects="true"
+                  name="Merge Join Right Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Merge Join.Inputs[Merge Join Right Input].Columns[STE_MIGRATIONWOREF]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="200"
+                      cachedName="STE_MIGRATIONWOREF"
+                      cachedSortKeyPosition="1"
+                      lineageId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Sort 1.Outputs[Sort Output].Columns[STE_MIGRATIONWOREF]" />
+                    <inputColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Merge Join.Inputs[Merge Join Right Input].Columns[TICKETID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="TICKETID"
+                      lineageId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Sort 1.Outputs[Sort Output].Columns[TICKETID]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Merge Join.Outputs[Merge Join Output]"
+                  isSorted="true"
+                  name="Merge Join Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Merge Join.Outputs[Merge Join Output].Columns[WONUM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      lineageId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Merge Join.Outputs[Merge Join Output].Columns[WONUM]"
+                      name="WONUM">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Merge Join.Inputs[Merge Join Left Input].Columns[WONUM]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Merge Join.Outputs[Merge Join Output].Columns[STE_CSWNWOID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      lineageId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Merge Join.Outputs[Merge Join Output].Columns[STE_CSWNWOID]"
+                      name="STE_CSWNWOID"
+                      sortKeyPosition="1">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Merge Join.Inputs[Merge Join Left Input].Columns[STE_CSWNWOID]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Merge Join.Outputs[Merge Join Output].Columns[TICKETID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      lineageId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Merge Join.Outputs[Merge Join Output].Columns[TICKETID]"
+                      name="TICKETID">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Merge Join.Inputs[Merge Join Right Input].Columns[TICKETID]}</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\OLE DB Command"
+              componentClassID="Microsoft.OLEDBCommand"
+              contactInfo="OLE DB Command;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;2"
+              description="Runs an SQL statement for each row in a data flow. For example, call a 'new employee setup' stored procedure for each row in the 'new employees' table. Note: running an SQL statement for each row of a large data flow may take a long time."
+              name="OLE DB Command"
+              usesDispositions="true"
+              version="2">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">UPDATE MAXIMO.WORKORDER SET ORIGRECORDID = ?, ORIGRECORDCLASS = 'SR' where wonum = ?  </property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\OLE DB Command.Connections[OleDbConnection]"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\OLE DB Command.Inputs[OLE DB Command Input]"
+                  errorOrTruncationOperation="Command Execution"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Command Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\OLE DB Command.Inputs[OLE DB Command Input].Columns[TICKETID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="TICKETID"
+                      externalMetadataColumnId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_0]"
+                      lineageId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Merge Join.Outputs[Merge Join Output].Columns[TICKETID]" />
+                    <inputColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\OLE DB Command.Inputs[OLE DB Command Input].Columns[WONUM]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="WONUM"
+                      externalMetadataColumnId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_1]"
+                      lineageId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Merge Join.Outputs[Merge Join Output].Columns[WONUM]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_0]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="Param_0">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Parameter information.  Matches OLE DB's DBPARAMFLAGSENUM values."
+                          name="DBParamInfoFlags">64</property>
+                      </properties>
+                    </externalMetadataColumn>
+                    <externalMetadataColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_1]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="Param_1">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Parameter information.  Matches OLE DB's DBPARAMFLAGSENUM values."
+                          name="DBParamInfoFlags">64</property>
+                      </properties>
+                    </externalMetadataColumn>
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\OLE DB Command.Outputs[OLE DB Command Output]"
+                  exclusionGroup="1"
+                  name="OLE DB Command Output"
+                  synchronousInputId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\OLE DB Command.Inputs[OLE DB Command Input]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\OLE DB Command.Outputs[OLE DB Command Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Command Error Output"
+                  synchronousInputId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\OLE DB Command.Inputs[OLE DB Command Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\OLE DB Command.Outputs[OLE DB Command Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\OLE DB Command.Outputs[OLE DB Command Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\OLE DB Command.Outputs[OLE DB Command Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\OLE DB Command.Outputs[OLE DB Command Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Sort"
+              componentClassID="Microsoft.Sort"
+              contactInfo="Sort;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
+              description="Sorts input data in ascending or descending order when it cannot be sorted at its source. For example, sort sales data by 'customer id' before it is written to a flat file and delivered to another department. Note: We do not recommend this transformation for large data flows."
+              name="Sort"
+              version="1">
+              <properties>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the Sort transformation removes rows with duplicate sort values."
+                  name="EliminateDuplicates">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the maximum number of threads to use for sorting."
+                  expressionType="Notify"
+                  name="MaximumThreads">-1</property>
+              </properties>
+              <inputs>
+                <input
+                  refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Sort.Inputs[Sort Input]"
+                  name="Sort Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Sort.Inputs[Sort Input].Columns[WONUM]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="WONUM"
+                      lineageId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\WORKORDER.Outputs[OLE DB Source Output].Columns[WONUM]">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the comparison options for character data."
+                          name="NewComparisonFlags">0</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the sort order of the column."
+                          name="NewSortKeyPosition">0</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Sort.Inputs[Sort Input].Columns[STE_CSWNWOID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="STE_CSWNWOID"
+                      lineageId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\WORKORDER.Outputs[OLE DB Source Output].Columns[STE_CSWNWOID]">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the comparison options for character data."
+                          name="NewComparisonFlags">0</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the sort order of the column."
+                          name="NewSortKeyPosition">1</property>
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Sort.Outputs[Sort Output]"
+                  isSorted="true"
+                  name="Sort Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Sort.Outputs[Sort Output].Columns[WONUM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      lineageId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Sort.Outputs[Sort Output].Columns[WONUM]"
+                      name="WONUM">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the lineage identifier of the input column that is associated with this output column."
+                          name="SortColumnId">#{Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\WORKORDER.Outputs[OLE DB Source Output].Columns[WONUM]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Sort.Outputs[Sort Output].Columns[STE_CSWNWOID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      lineageId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Sort.Outputs[Sort Output].Columns[STE_CSWNWOID]"
+                      name="STE_CSWNWOID"
+                      sortKeyPosition="1">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the lineage identifier of the input column that is associated with this output column."
+                          name="SortColumnId">#{Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\WORKORDER.Outputs[OLE DB Source Output].Columns[STE_CSWNWOID]}</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Sort 1"
+              componentClassID="Microsoft.Sort"
+              contactInfo="Sort;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
+              description="Sorts input data in ascending or descending order when it cannot be sorted at its source. For example, sort sales data by 'customer id' before it is written to a flat file and delivered to another department. Note: We do not recommend this transformation for large data flows."
+              name="Sort 1"
+              version="1">
+              <properties>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the Sort transformation removes rows with duplicate sort values."
+                  name="EliminateDuplicates">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the maximum number of threads to use for sorting."
+                  expressionType="Notify"
+                  name="MaximumThreads">-1</property>
+              </properties>
+              <inputs>
+                <input
+                  refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Sort 1.Inputs[Sort Input]"
+                  name="Sort Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Sort 1.Inputs[Sort Input].Columns[TICKETID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="TICKETID"
+                      lineageId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\TICKET.Outputs[OLE DB Source Output].Columns[TICKETID]">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the comparison options for character data."
+                          name="NewComparisonFlags">0</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the sort order of the column."
+                          name="NewSortKeyPosition">0</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Sort 1.Inputs[Sort Input].Columns[STE_MIGRATIONWOREF]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="200"
+                      cachedName="STE_MIGRATIONWOREF"
+                      lineageId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\TICKET.Outputs[OLE DB Source Output].Columns[STE_MIGRATIONWOREF]">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the comparison options for character data."
+                          name="NewComparisonFlags">0</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the sort order of the column."
+                          name="NewSortKeyPosition">1</property>
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Sort 1.Outputs[Sort Output]"
+                  isSorted="true"
+                  name="Sort Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Sort 1.Outputs[Sort Output].Columns[TICKETID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      lineageId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Sort 1.Outputs[Sort Output].Columns[TICKETID]"
+                      name="TICKETID">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the lineage identifier of the input column that is associated with this output column."
+                          name="SortColumnId">#{Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\TICKET.Outputs[OLE DB Source Output].Columns[TICKETID]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Sort 1.Outputs[Sort Output].Columns[STE_MIGRATIONWOREF]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      lineageId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Sort 1.Outputs[Sort Output].Columns[STE_MIGRATIONWOREF]"
+                      name="STE_MIGRATIONWOREF"
+                      sortKeyPosition="1">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the lineage identifier of the input column that is associated with this output column."
+                          name="SortColumnId">#{Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\TICKET.Outputs[OLE DB Source Output].Columns[STE_MIGRATIONWOREF]}</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\TICKET"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="TICKET"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT ticketid, ste_migrationworef
+FROM 
+(
+SELECT
+  ticketid, STE_MIGRATIONWOREF,
+  ROW_NUMBER() OVER(PARTITION BY STE_MIGRATIONWOREF ORDER BY ticketid asc) AS row_number
+FROM Maximo.ticket
+WHERE coalesce(STE_MIGRATIONWOREF,'0') != '0'
+) C
+WHERE ROW_NUMBER = 1</property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">2</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\TICKET.Connections[OleDbConnection]"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\TICKET.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\TICKET.Outputs[OLE DB Source Output].Columns[TICKETID]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\TICKET.Outputs[OLE DB Source Output].ExternalColumns[TICKETID]"
+                      length="10"
+                      lineageId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\TICKET.Outputs[OLE DB Source Output].Columns[TICKETID]"
+                      name="TICKETID"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\TICKET.Outputs[OLE DB Source Output].Columns[STE_MIGRATIONWOREF]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\TICKET.Outputs[OLE DB Source Output].ExternalColumns[STE_MIGRATIONWOREF]"
+                      length="200"
+                      lineageId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\TICKET.Outputs[OLE DB Source Output].Columns[STE_MIGRATIONWOREF]"
+                      name="STE_MIGRATIONWOREF"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\TICKET.Outputs[OLE DB Source Output].ExternalColumns[TICKETID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="TICKETID" />
+                    <externalMetadataColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\TICKET.Outputs[OLE DB Source Output].ExternalColumns[STE_MIGRATIONWOREF]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      name="STE_MIGRATIONWOREF" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\TICKET.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\TICKET.Outputs[OLE DB Source Error Output].Columns[TICKETID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      lineageId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\TICKET.Outputs[OLE DB Source Error Output].Columns[TICKETID]"
+                      name="TICKETID" />
+                    <outputColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\TICKET.Outputs[OLE DB Source Error Output].Columns[STE_MIGRATIONWOREF]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      lineageId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\TICKET.Outputs[OLE DB Source Error Output].Columns[STE_MIGRATIONWOREF]"
+                      name="STE_MIGRATIONWOREF" />
+                    <outputColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\TICKET.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\TICKET.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\TICKET.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\TICKET.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\WORKORDER"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="WORKORDER"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select wonum, ste_cswnwoid from maximo.workorder where origrecordid is null and ste_migrationid is not null</property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">2</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\WORKORDER.Connections[OleDbConnection]"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\WORKORDER.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\WORKORDER.Outputs[OLE DB Source Output].Columns[WONUM]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\WORKORDER.Outputs[OLE DB Source Output].ExternalColumns[WONUM]"
+                      length="10"
+                      lineageId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\WORKORDER.Outputs[OLE DB Source Output].Columns[WONUM]"
+                      name="WONUM"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\WORKORDER.Outputs[OLE DB Source Output].Columns[STE_CSWNWOID]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\WORKORDER.Outputs[OLE DB Source Output].ExternalColumns[STE_CSWNWOID]"
+                      length="10"
+                      lineageId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\WORKORDER.Outputs[OLE DB Source Output].Columns[STE_CSWNWOID]"
+                      name="STE_CSWNWOID"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\WORKORDER.Outputs[OLE DB Source Output].ExternalColumns[WONUM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="WONUM" />
+                    <externalMetadataColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\WORKORDER.Outputs[OLE DB Source Output].ExternalColumns[STE_CSWNWOID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="STE_CSWNWOID" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\WORKORDER.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\WORKORDER.Outputs[OLE DB Source Error Output].Columns[WONUM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      lineageId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\WORKORDER.Outputs[OLE DB Source Error Output].Columns[WONUM]"
+                      name="WONUM" />
+                    <outputColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\WORKORDER.Outputs[OLE DB Source Error Output].Columns[STE_CSWNWOID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      lineageId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\WORKORDER.Outputs[OLE DB Source Error Output].Columns[STE_CSWNWOID]"
+                      name="STE_CSWNWOID" />
+                    <outputColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\WORKORDER.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\WORKORDER.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\WORKORDER.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\WORKORDER.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF).Paths[Merge Join Output]"
+              endId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\OLE DB Command.Inputs[OLE DB Command Input]"
+              name="Merge Join Output"
+              startId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Merge Join.Outputs[Merge Join Output]" />
+            <path
+              refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF).Paths[OLE DB Source Output]"
+              endId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Sort.Inputs[Sort Input]"
+              name="OLE DB Source Output"
+              startId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\WORKORDER.Outputs[OLE DB Source Output]" />
+            <path
+              refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF).Paths[OLE DB Source Output1]"
+              endId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Sort 1.Inputs[Sort Input]"
+              name="OLE DB Source Output"
+              startId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\TICKET.Outputs[OLE DB Source Output]" />
+            <path
+              refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF).Paths[Sort Output]"
+              endId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Merge Join.Inputs[Merge Join Left Input]"
+              name="Sort Output"
+              startId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Sort.Outputs[Sort Output]" />
+            <path
+              refId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF).Paths[Sort Output1]"
+              endId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Merge Join.Inputs[Merge Join Right Input]"
+              name="Sort Output"
+              startId="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Sort 1.Outputs[Sort Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{CFD3C477-72D4-499C-B159-4F9B7C0A13D8}"
+      DTS:From="Package\Update Ticket with ORIGRECORD as WO"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{B80DA6B5-A229-40B1-91CC-9FFAFF16A33F}"
+      DTS:From="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="188.8,41.6"
+          Id="Package\Update FollowUp Ticket"
+          TopLeft="679.566641032531,50.2666663171185" />
+        <NodeLayout
+          Size="184.8,41.6"
+          Id="Package\Update FollowUp WO"
+          TopLeft="683.499974456928,129.000000524322" />
+        <NodeLayout
+          Size="184.8,41.6"
+          Id="Package\Update FollowUp WO 1"
+          TopLeft="680.166641305719,231.466667184962" />
+        <NodeLayout
+          Size="272.8,41.6"
+          Id="Package\Update Ticket with ORIGRECORD as WO"
+          TopLeft="164.166657696996,38.1333330681589" />
+        <NodeLayout
+          Size="414.4,41.6"
+          Id="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET"
+          TopLeft="94.1666615216268,141.533335183528" />
+        <NodeLayout
+          Size="415.2,41.6"
+          Id="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)"
+          TopLeft="99.1666612484392,221.866665123834" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="300.966659609311,79.7333330681589">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,61.8000021153689"
+              Start="0,0"
+              End="0,54.3000021153689">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,54.3000021153689" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="304.066661385033,183.133335183528">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,38.7333299403062"
+              Start="0,0"
+              End="0,31.2333299403062">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,31.2333299403062" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Update Ticket with ORIGRECORD as WO">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="115.2,41.6"
+          Id="Package\Update Ticket with ORIGRECORD as WO\TICKET"
+          TopLeft="71.6666627509728,61.5333329054382" />
+        <NodeLayout
+          Size="129.6,41.6"
+          Id="Package\Update Ticket with ORIGRECORD as WO\Merge Join"
+          TopLeft="211.66665510171,213.199998517434" />
+        <NodeLayout
+          Size="148,41.6"
+          Id="Package\Update Ticket with ORIGRECORD as WO\WORKORDER"
+          TopLeft="294.166650594109,58.9333329235183" />
+        <NodeLayout
+          Size="167.2,41.6"
+          Id="Package\Update Ticket with ORIGRECORD as WO\OLE DB Command"
+          TopLeft="242.499986750385,323.266664418711" />
+        <NodeLayout
+          Size="97.6,41.6"
+          Id="Package\Update Ticket with ORIGRECORD as WO\Sort"
+          TopLeft="134.166659336123,141.266665684316" />
+        <NodeLayout
+          Size="106.4,41.6"
+          Id="Package\Update Ticket with ORIGRECORD as WO\Sort 1"
+          TopLeft="332.499981833002,140.399999023676" />
+        <EdgeLayout
+          Id="Package\Update Ticket with ORIGRECORD as WO.Paths[Sort Output1]"
+          TopLeft="385.699981833002,181.999999023676">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-88.9666600646247,31.1999994937579"
+              Start="0,0"
+              End="-88.9666600646247,23.6999994937579">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,14.4917070170321" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,14.4917070170321"
+                    Point2="0,18.4917070170321"
+                    Point3="-4,18.4917070170321" />
+                  <mssgle:LineSegment
+                    End="-84.9666600646247,18.4917070170321" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-84.9666600646247,18.4917070170321"
+                    Point2="-88.9666600646247,18.4917070170321"
+                    Point3="-88.9666600646247,22.4917070170321" />
+                  <mssgle:LineSegment
+                    End="-88.9666600646247,23.6999994937579" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Update Ticket with ORIGRECORD as WO.Paths[Sort Output]"
+          TopLeft="182.966659336123,182.866665684316">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="93.4999957655869,30.3333328331179"
+              Start="0,0"
+              End="93.4999957655869,22.8333328331179">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,11.1666664165589" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,11.1666664165589"
+                    Point2="0,15.1666664165589"
+                    Point3="4,15.1666664165589" />
+                  <mssgle:LineSegment
+                    End="89.4999957655869,15.1666664165589" />
+                  <mssgle:CubicBezierSegment
+                    Point1="89.4999957655869,15.1666664165589"
+                    Point2="93.4999957655869,15.1666664165589"
+                    Point3="93.4999957655869,19.1666664165589" />
+                  <mssgle:LineSegment
+                    End="93.4999957655869,22.8333328331179" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Update Ticket with ORIGRECORD as WO.Paths[OLE DB Source Output1]"
+          TopLeft="368.166650594109,100.533332923518">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="17.5333312388924,39.8666661001576"
+              Start="0,0"
+              End="17.5333312388924,32.3666661001576">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,15.9333330500788" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,15.9333330500788"
+                    Point2="0,19.9333330500788"
+                    Point3="4,19.9333330500788" />
+                  <mssgle:LineSegment
+                    End="13.5333312388924,19.9333330500788" />
+                  <mssgle:CubicBezierSegment
+                    Point1="13.5333312388924,19.9333330500788"
+                    Point2="17.5333312388924,19.9333330500788"
+                    Point3="17.5333312388924,23.9333330500788" />
+                  <mssgle:LineSegment
+                    End="17.5333312388924,32.3666661001576" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Update Ticket with ORIGRECORD as WO.Paths[OLE DB Source Output]"
+          TopLeft="129.266662750973,103.133332905438">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="53.6999965851507,38.1333327788777"
+              Start="0,0"
+              End="53.6999965851507,30.6333327788777">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,15.0666663894389" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,15.0666663894389"
+                    Point2="0,19.0666663894389"
+                    Point3="4,19.0666663894389" />
+                  <mssgle:LineSegment
+                    End="49.6999965851507,19.0666663894389" />
+                  <mssgle:CubicBezierSegment
+                    Point1="49.6999965851507,19.0666663894389"
+                    Point2="53.6999965851507,19.0666663894389"
+                    Point3="53.6999965851507,23.0666663894389" />
+                  <mssgle:LineSegment
+                    End="53.6999965851507,30.6333327788777" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Update Ticket with ORIGRECORD as WO.Paths[Merge Join Output]"
+          TopLeft="276.46665510171,254.799998517434">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="49.6333316486742,68.4666659012769"
+              Start="0,0"
+              End="49.6333316486742,60.9666659012769">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,30.2333329506384" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,30.2333329506384"
+                    Point2="0,34.2333329506384"
+                    Point3="4,34.2333329506384" />
+                  <mssgle:LineSegment
+                    End="45.6333316486742,34.2333329506384" />
+                  <mssgle:CubicBezierSegment
+                    Point1="45.6333316486742,34.2333329506384"
+                    Point2="49.6333316486742,34.2333329506384"
+                    Point3="49.6333316486742,38.2333329506384" />
+                  <mssgle:LineSegment
+                    End="49.6333316486742,60.9666659012769" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Update Ticket with ORIGRECORD as WO\TICKET">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Update Ticket with ORIGRECORD as WO\WORKORDER">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="106.4,41.6"
+          Id="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Sort 1"
+          TopLeft="411.999993860722,130.999998047948" />
+        <NodeLayout
+          Size="148,41.6"
+          Id="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\WORKORDER"
+          TopLeft="80.1666537829574,52.9333330129253" />
+        <NodeLayout
+          Size="115.2,41.6"
+          Id="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\TICKET"
+          TopLeft="435.999993503094,60.9999990910292" />
+        <NodeLayout
+          Size="129.6,41.6"
+          Id="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Merge Join"
+          TopLeft="247.999996304512,206.99999691546" />
+        <NodeLayout
+          Size="97.6,41.6"
+          Id="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\Sort"
+          TopLeft="133.999998003244,129.999998062849" />
+        <NodeLayout
+          Size="167.2,41.6"
+          Id="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\OLE DB Command"
+          TopLeft="271.999995946884,303.999995470047" />
+        <EdgeLayout
+          Id="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET.Paths[OLE DB Source Output1]"
+          TopLeft="493.599993503094,102.599999091029">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-28.3999996423722,28.3999989569187"
+              Start="0,0"
+              End="-28.3999996423722,20.8999989569187">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,10.1999994784594" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,10.1999994784594"
+                    Point2="0,14.1999994784594"
+                    Point3="-4,14.1999994784594" />
+                  <mssgle:LineSegment
+                    End="-24.3999996423722,14.1999994784594" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-24.3999996423722,14.1999994784594"
+                    Point2="-28.3999996423722,14.1999994784594"
+                    Point3="-28.3999996423722,18.1999994784594" />
+                  <mssgle:LineSegment
+                    End="-28.3999996423722,20.8999989569187" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET.Paths[OLE DB Source Output]"
+          TopLeft="154.166653782957,94.5333330129253">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="28.633344220287,35.4666650499238"
+              Start="0,0"
+              End="28.633344220287,27.9666650499238">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,13.7333325249619" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,13.7333325249619"
+                    Point2="0,17.7333325249619"
+                    Point3="4,17.7333325249619" />
+                  <mssgle:LineSegment
+                    End="24.633344220287,17.7333325249619" />
+                  <mssgle:CubicBezierSegment
+                    Point1="24.633344220287,17.7333325249619"
+                    Point2="28.633344220287,17.7333325249619"
+                    Point3="28.633344220287,21.7333325249619" />
+                  <mssgle:LineSegment
+                    End="28.633344220287,27.9666650499238" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET.Paths[Merge Join Output]"
+          TopLeft="312.799996304512,248.59999691546">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="42.7999996423721,55.3999985545874"
+              Start="0,0"
+              End="42.7999996423721,47.8999985545874">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,23.6999992772937" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,23.6999992772937"
+                    Point2="0,27.6999992772937"
+                    Point3="4,27.6999992772937" />
+                  <mssgle:LineSegment
+                    End="38.7999996423721,27.6999992772937" />
+                  <mssgle:CubicBezierSegment
+                    Point1="38.7999996423721,27.6999992772937"
+                    Point2="42.7999996423721,27.6999992772937"
+                    Point3="42.7999996423721,31.6999992772937" />
+                  <mssgle:LineSegment
+                    End="42.7999996423721,47.8999985545874" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET.Paths[Sort Output1]"
+          TopLeft="465.199993860722,172.599998047948">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-132.133330889543,34.3999988675118"
+              Start="0,0"
+              End="-132.133330889543,26.8999988675118">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,16.3882920117204" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,16.3882920117204"
+                    Point2="0,20.3882920117204"
+                    Point3="-4,20.3882920117204" />
+                  <mssgle:LineSegment
+                    End="-128.133330889543,20.3882920117204" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-128.133330889543,20.3882920117204"
+                    Point2="-132.133330889543,20.3882920117204"
+                    Point3="-132.133330889543,24.3882920117204" />
+                  <mssgle:LineSegment
+                    End="-132.133330889543,26.8999988675118" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET.Paths[Sort Output]"
+          TopLeft="182.799998003244,171.599998062849">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="109.733331634601,35.3999988526106"
+              Start="0,0"
+              End="109.733331634601,27.8999988526106">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,16.980974929718" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,16.980974929718"
+                    Point2="0,20.980974929718"
+                    Point3="4,20.980974929718" />
+                  <mssgle:LineSegment
+                    End="105.733331634601,20.980974929718" />
+                  <mssgle:CubicBezierSegment
+                    Point1="105.733331634601,20.980974929718"
+                    Point2="109.733331634601,20.980974929718"
+                    Point3="109.733331634601,24.980974929718" />
+                  <mssgle:LineSegment
+                    End="109.733331634601,27.8999988526106" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\WORKORDER">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Update WO with (STE_MIGRATIONREQNO) ORIGRECORD as TICKET\TICKET">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="148,41.6"
+          Id="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\WORKORDER"
+          TopLeft="80.1666537829574,52.9333330129253" />
+        <NodeLayout
+          Size="115.2,41.6"
+          Id="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\TICKET"
+          TopLeft="418.999993756414,50.9999992400408" />
+        <NodeLayout
+          Size="167.2,41.6"
+          Id="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\OLE DB Command"
+          TopLeft="271.999995946884,303.999995470047" />
+        <NodeLayout
+          Size="97.6,41.6"
+          Id="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Sort"
+          TopLeft="150.499997839332,124.69999833107" />
+        <EdgeLayout
+          Id="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF).Paths[OLE DB Source Output]"
+          TopLeft="154.166653782957,94.5333330129253">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="45.1333440563743,30.1666653181446"
+              Start="0,0"
+              End="45.1333440563743,22.6666653181446">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,11.0833326590723" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,11.0833326590723"
+                    Point2="0,15.0833326590723"
+                    Point3="4,15.0833326590723" />
+                  <mssgle:LineSegment
+                    End="41.1333440563743,15.0833326590723" />
+                  <mssgle:CubicBezierSegment
+                    Point1="41.1333440563743,15.0833326590723"
+                    Point2="45.1333440563743,15.0833326590723"
+                    Point3="45.1333440563743,19.0833326590723" />
+                  <mssgle:LineSegment
+                    End="45.1333440563743,22.6666653181446" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="106.4,41.6"
+          Id="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Sort 1"
+          TopLeft="433.999993532896,128.19999819696" />
+        <EdgeLayout
+          Id="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF).Paths[OLE DB Source Output1]"
+          TopLeft="476.599993756414,92.5999992400408">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="10.5999997764824,35.5999989569187"
+              Start="0,0"
+              End="10.5999997764824,28.0999989569187">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,13.7999994784594" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,13.7999994784594"
+                    Point2="0,17.7999994784594"
+                    Point3="4,17.7999994784594" />
+                  <mssgle:LineSegment
+                    End="6.59999977648238,17.7999994784594" />
+                  <mssgle:CubicBezierSegment
+                    Point1="6.59999977648238,17.7999994784594"
+                    Point2="10.5999997764824,17.7999994784594"
+                    Point3="10.5999997764824,21.7999994784594" />
+                  <mssgle:LineSegment
+                    End="10.5999997764824,28.0999989569187" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="129.6,41.6"
+          Id="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\Merge Join"
+          TopLeft="268.499996528029,192.699997764826" />
+        <EdgeLayout
+          Id="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF).Paths[Sort Output]"
+          TopLeft="199.299997839332,166.29999833107">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="133.999998688698,26.3999994337559"
+              Start="0,0"
+              End="133.999998688698,18.8999994337559">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,9.19999971687794" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,9.19999971687794"
+                    Point2="0,13.1999997168779"
+                    Point3="4,13.1999997168779" />
+                  <mssgle:LineSegment
+                    End="129.999998688698,13.1999997168779" />
+                  <mssgle:CubicBezierSegment
+                    Point1="129.999998688698,13.1999997168779"
+                    Point2="133.999998688698,13.1999997168779"
+                    Point3="133.999998688698,17.1999997168779" />
+                  <mssgle:LineSegment
+                    End="133.999998688698,18.8999994337559" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF).Paths[Sort Output1]"
+          TopLeft="487.199993532896,169.79999819696">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-133.6333303382,22.8999995678663"
+              Start="0,0"
+              End="-133.6333303382,15.3999995678663">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,9.57243876827198" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,9.57243876827198"
+                    Point2="0,13.572438768272"
+                    Point3="-4,13.572438768272" />
+                  <mssgle:LineSegment
+                    End="-129.6333303382,13.572438768272" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-129.6333303382,13.572438768272"
+                    Point2="-133.6333303382,13.572438768272"
+                    Point3="-133.6333303382,17.572438768272" />
+                  <mssgle:LineSegment
+                    End="-133.6333303382,15.3999995678663" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF).Paths[Merge Join Output]"
+          TopLeft="333.29999652803,234.299997764826">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="22.2999994188544,69.6999977052212"
+              Start="0,0"
+              End="22.2999994188544,62.1999977052212">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,30.8499988526106" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,30.8499988526106"
+                    Point2="0,34.8499988526106"
+                    Point3="4,34.8499988526106" />
+                  <mssgle:LineSegment
+                    End="18.2999994188544,34.8499988526106" />
+                  <mssgle:CubicBezierSegment
+                    Point1="18.2999994188544,34.8499988526106"
+                    Point2="22.2999994188544,34.8499988526106"
+                    Point3="22.2999994188544,38.8499988526106" />
+                  <mssgle:LineSegment
+                    End="22.2999994188544,62.1999977052212" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\TICKET">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Update WO with ORIGRECORD as TICKET (STE_MIGRATIONWOREF)\WORKORDER">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
