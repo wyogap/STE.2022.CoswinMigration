@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0201_Inventory_Inventory_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="110"
-  DTS:VersionGUID="{87624BE2-D5F0-4F71-8BF2-BDA9A3218430}"
+  DTS:VersionBuild="114"
+  DTS:VersionGUID="{A96CB73F-FAB5-44F2-971B-097CC80B5BE7}"
   DTS:VersionMajor="2"
   DTS:VersionMinor="2">
   <DTS:Property
@@ -137,6 +137,13 @@
                       cachedDataType="r8"
                       cachedName="MAX_QTY"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[MAX_QTY]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\Derived Column.Inputs[Derived Column Input].Columns[ABCTYPE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="2"
+                      cachedName="ABCTYPE"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ABCTYPE]" />
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -649,6 +656,30 @@
                           name="FriendlyExpression">MAX_QTY</property>
                       </properties>
                     </outputColumn>
+                    <outputColumn
+                      refId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[v_abctype]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="1"
+                      lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[v_abctype]"
+                      name="v_abctype"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_STR,1,1252)#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ABCTYPE]}</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_STR,1,1252)ABCTYPE</property>
+                      </properties>
+                    </outputColumn>
                   </outputColumns>
                   <externalMetadataColumns />
                 </output>
@@ -749,14 +780,6 @@
                   hasSideEffects="true"
                   name="OLE DB Destination Input">
                   <inputColumns>
-                    <inputColumn
-                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[ABCTYPE]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="2"
-                      cachedName="ABCTYPE"
-                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ABCTYPE]"
-                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ABCTYPE]" />
                     <inputColumn
                       refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_category]"
                       cachedCodepage="1252"
@@ -1021,6 +1044,21 @@
                       cachedName="v_maxlevel"
                       externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[MAXLEVEL]"
                       lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[v_maxlevel]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_abctype]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="1"
+                      cachedName="v_abctype"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ABCTYPE]"
+                      lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[v_abctype]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[TIMESTAMP]"
+                      cachedDataType="numeric"
+                      cachedName="TIMESTAMP"
+                      cachedPrecision="10"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONTS]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[TIMESTAMP]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1390,6 +1428,10 @@
                       dataType="decimal"
                       name="STE_CSWNPOPULATION"
                       scale="10" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONTS]"
+                      dataType="i4"
+                      name="STE_MIGRATIONTS" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -1438,6 +1480,7 @@
                   name="SqlCommand"
                   UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT 
 	si.PK_STORES_ITEMS 
+	, si.TIMESTAMP
 	, si.IS_STOR_CD
 	--, i.PK_ITEM_ 
 	, i.ITEM_CD
@@ -1476,7 +1519,7 @@
 	, CASE WHEN i.ABC_CLASS = 65 THEN 'A'
 		   WHEN i.ABC_CLASS = 66 THEN 'B'
 		   WHEN i.ABC_CLASS = 67 THEN 'C'
-		   ELSE CAST(i.ABC_CLASS AS VARCHAR(2)) 
+		   ELSE '' 
 	  END AS ABCTYPE
 FROM COSWIN.STORES_ITEMS si 
 -- MUST BE VALID ITEM
@@ -1737,6 +1780,13 @@ order by si.PK_STORES_ITEMS</property>
                       externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ITEM_NUMBER1]"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_NUMBER1]"
                       name="ITEM_NUMBER1" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[TIMESTAMP]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[TIMESTAMP]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[TIMESTAMP]"
+                      name="TIMESTAMP"
+                      precision="10" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1852,7 +1902,7 @@ order by si.PK_STORES_ITEMS</property>
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ABCTYPE]"
                       codePage="1252"
                       dataType="str"
-                      length="2"
+                      length="1"
                       name="ABCTYPE" />
                     <externalMetadataColumn
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_ITEM_INFO]"
@@ -1879,6 +1929,11 @@ order by si.PK_STORES_ITEMS</property>
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ITEM_NUMBER1]"
                       dataType="r8"
                       name="ITEM_NUMBER1" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[TIMESTAMP]"
+                      dataType="numeric"
+                      name="TIMESTAMP"
+                      precision="10" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -2045,7 +2100,7 @@ order by si.PK_STORES_ITEMS</property>
                       codePage="1252"
                       dataType="str"
                       externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ABCTYPE]"
-                      length="2"
+                      length="1"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[ABCTYPE]"
                       name="ABCTYPE" />
                     <outputColumn
@@ -2085,6 +2140,13 @@ order by si.PK_STORES_ITEMS</property>
                       externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ITEM_NUMBER1]"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[ITEM_NUMBER1]"
                       name="ITEM_NUMBER1" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[TIMESTAMP]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[TIMESTAMP]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[TIMESTAMP]"
+                      name="TIMESTAMP"
+                      precision="10" />
                     <outputColumn
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -2371,6 +2433,56 @@ order by si.PK_STORES_ITEMS</property>
           Id="Package\Execute SQL Task"
           TopLeft="57.9749974388632,524.799999231597" />
         <NodeLayout
+          Size="137.6,41.6"
+          Id="Package\POST-PKG\FINISH LOG"
+          TopLeft="51.9333115693606,32.199997812311" />
+        <ContainerLayout
+          HeaderHeight="43.2"
+          IsExpanded="False"
+          PanelSize="270.4,130.4"
+          Size="270.4,43.2"
+          Id="Package\POST-PKG"
+          TopLeft="303.999996585151,524.939150321539" />
+        <NodeLayout
+          Size="135.2,41.6"
+          Id="Package\PRE-PKG\GET LOGID"
+          TopLeft="47.4999810134378,99.1999989151955" />
+        <NodeLayout
+          Size="137.6,41.6"
+          Id="Package\PRE-PKG\START LOG"
+          TopLeft="45.833314437834,26.3999994214376" />
+        <EdgeLayout
+          Id="Package\PRE-PKG.PrecedenceConstraints[Constraint]"
+          TopLeft="114.866647725636,67.9999994214376">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,31.1999994937579"
+              Start="0,0"
+              End="0,23.6999994937579">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,23.6999994937579" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43.2"
+          IsExpanded="False"
+          PanelSize="268,196.8"
+          Size="268,43.2"
+          Id="Package\PRE-PKG"
+          TopLeft="292.541663877873,107.333332625197" />
+        <NodeLayout
           Size="164.8,41.6"
           Id="Package\Pre-Task\Execute SQL Task"
           TopLeft="5.50000000000001,5.49999999999995" />
@@ -2451,56 +2563,6 @@ order by si.PK_STORES_ITEMS</property>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="135.2,41.6"
-          Id="Package\PRE-PKG\GET LOGID"
-          TopLeft="47.4999810134378,99.1999989151955" />
-        <NodeLayout
-          Size="137.6,41.6"
-          Id="Package\PRE-PKG\START LOG"
-          TopLeft="45.833314437834,26.3999994214376" />
-        <EdgeLayout
-          Id="Package\PRE-PKG.PrecedenceConstraints[Constraint]"
-          TopLeft="114.866647725636,67.9999994214376">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,31.1999994937579"
-              Start="0,0"
-              End="0,23.6999994937579">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,23.6999994937579" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <ContainerLayout
-          HeaderHeight="43.2"
-          IsExpanded="False"
-          PanelSize="268,196.8"
-          Size="268,43.2"
-          Id="Package\PRE-PKG"
-          TopLeft="292.541663877873,107.333332625197" />
-        <NodeLayout
-          Size="137.6,41.6"
-          Id="Package\POST-PKG\FINISH LOG"
-          TopLeft="51.9333115693606,32.199997812311" />
-        <ContainerLayout
-          HeaderHeight="43.2"
-          IsExpanded="False"
-          PanelSize="270.4,130.4"
-          Size="270.4,43.2"
-          Id="Package\POST-PKG"
-          TopLeft="303.999996585151,524.939150321539" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 2]"
           TopLeft="292.541663877873,128.933332625197">
@@ -2570,13 +2632,13 @@ order by si.PK_STORES_ITEMS</property>
           Id="Package\Data Flow Task\OLE DB Destination"
           TopLeft="317.999982925754,154.566665630076" />
         <NodeLayout
-          Size="144.8,41.6"
-          Id="Package\Data Flow Task\Oracle Source"
-          TopLeft="19.5000000000001,5.5" />
-        <NodeLayout
           Size="158.4,41.6"
           Id="Package\Data Flow Task\Derived Column"
           TopLeft="181,79" />
+        <NodeLayout
+          Size="144.8,41.6"
+          Id="Package\Data Flow Task\Oracle Source"
+          TopLeft="19.5000000000001,5.5" />
         <EdgeLayout
           Id="Package\Data Flow Task.Paths[Oracle Source Output]"
           TopLeft="91.9000000000001,47.1">

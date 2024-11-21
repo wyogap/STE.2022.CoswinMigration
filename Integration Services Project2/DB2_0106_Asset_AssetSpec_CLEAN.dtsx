@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0106_Asset_AssetSpec_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="169"
-  DTS:VersionGUID="{3F0F6620-657E-4593-8B87-55EA3699856C}"
+  DTS:VersionBuild="174"
+  DTS:VersionGUID="{EC0FF2BC-F5D9-4A94-881E-C8D0FB9FFE99}"
   DTS:VersionMajor="4">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -1121,12 +1121,6 @@
                       externalMetadataColumnId="Package\DF - EQP_TECH\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONEQCD]"
                       lineageId="Package\DF - EQP_TECH\Oracle Source.Outputs[Oracle Source Output].Columns[TS_EQCD]" />
                     <inputColumn
-                      refId="Package\DF - EQP_TECH\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[RowNo]"
-                      cachedDataType="i4"
-                      cachedName="RowNo"
-                      externalMetadataColumnId="Package\DF - EQP_TECH\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONID]"
-                      lineageId="Package\DF - EQP_TECH\Running Number.Outputs[Output 0].Columns[RowNo]" />
-                    <inputColumn
                       refId="Package\DF - EQP_TECH\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[V_MIGRATIONSOURCE]"
                       cachedCodepage="1252"
                       cachedDataType="str"
@@ -1142,6 +1136,19 @@
                       cachedName="v_assetattrid"
                       externalMetadataColumnId="Package\DF - EQP_TECH\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ASSETATTRID]"
                       lineageId="Package\DF - EQP_TECH\Derived Column.Outputs[Derived Column Output].Columns[v_assetattrid]" />
+                    <inputColumn
+                      refId="Package\DF - EQP_TECH\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[TIMESTAMP]"
+                      cachedDataType="numeric"
+                      cachedName="TIMESTAMP"
+                      cachedPrecision="10"
+                      externalMetadataColumnId="Package\DF - EQP_TECH\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONTS]"
+                      lineageId="Package\DF - EQP_TECH\Oracle Source.Outputs[Oracle Source Output].Columns[TIMESTAMP]" />
+                    <inputColumn
+                      refId="Package\DF - EQP_TECH\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[PK_EQP_NOTE]"
+                      cachedDataType="i4"
+                      cachedName="PK_EQP_NOTE"
+                      externalMetadataColumnId="Package\DF - EQP_TECH\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONID]"
+                      lineageId="Package\DF - EQP_TECH\Oracle Source.Outputs[Oracle Source Output].Columns[PK_EQP_NOTE]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1496,6 +1503,7 @@ SELECT a.COMMONKEY, a.INDX, a.TN_TEXT as value
 	, (eh.PK_EQP_HEAD * 100) + tl.INDX AS attrid
 	-- , concat(tl2.TH_TEXT, concat(' - ', tl.TH_TEXT)) AS attrdesc
 	, et.TS_EQCD, et2.PK_EQP_TOPO, et2.EQ_ASSET_ID
+	, en.TIMESTAMP, en.PK_EQP_NOTE
 FROM COSWIN.TN_LINE a
 JOIN COSWIN.EQP_NOTE en ON en.PK_EQP_NOTE=a.COMMONKEY 
 JOIN COSWIN.EQP_TECH et ON et.PK_EQP_TECH=en.TS_TN_03  
@@ -1597,6 +1605,19 @@ ORDER BY et2.PK_EQP_TOPO, eh.PK_EQP_HEAD, tl.INDX;</property>
                       length="40"
                       lineageId="Package\DF - EQP_TECH\Oracle Source.Outputs[Oracle Source Output].Columns[EQ_ASSET_ID]"
                       name="EQ_ASSET_ID" />
+                    <outputColumn
+                      refId="Package\DF - EQP_TECH\Oracle Source.Outputs[Oracle Source Output].Columns[TIMESTAMP]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\DF - EQP_TECH\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[TIMESTAMP]"
+                      lineageId="Package\DF - EQP_TECH\Oracle Source.Outputs[Oracle Source Output].Columns[TIMESTAMP]"
+                      name="TIMESTAMP"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\DF - EQP_TECH\Oracle Source.Outputs[Oracle Source Output].Columns[PK_EQP_NOTE]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - EQP_TECH\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_EQP_NOTE]"
+                      lineageId="Package\DF - EQP_TECH\Oracle Source.Outputs[Oracle Source Output].Columns[PK_EQP_NOTE]"
+                      name="PK_EQP_NOTE" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1634,6 +1655,15 @@ ORDER BY et2.PK_EQP_TOPO, eh.PK_EQP_HEAD, tl.INDX;</property>
                       dataType="str"
                       length="40"
                       name="EQ_ASSET_ID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - EQP_TECH\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[TIMESTAMP]"
+                      dataType="numeric"
+                      name="TIMESTAMP"
+                      precision="10" />
+                    <externalMetadataColumn
+                      refId="Package\DF - EQP_TECH\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_EQP_NOTE]"
+                      dataType="i4"
+                      name="PK_EQP_NOTE" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -1689,6 +1719,19 @@ ORDER BY et2.PK_EQP_TOPO, eh.PK_EQP_HEAD, tl.INDX;</property>
                       length="40"
                       lineageId="Package\DF - EQP_TECH\Oracle Source.Outputs[Oracle Source Error Output].Columns[EQ_ASSET_ID]"
                       name="EQ_ASSET_ID" />
+                    <outputColumn
+                      refId="Package\DF - EQP_TECH\Oracle Source.Outputs[Oracle Source Error Output].Columns[TIMESTAMP]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\DF - EQP_TECH\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[TIMESTAMP]"
+                      lineageId="Package\DF - EQP_TECH\Oracle Source.Outputs[Oracle Source Error Output].Columns[TIMESTAMP]"
+                      name="TIMESTAMP"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\DF - EQP_TECH\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_EQP_NOTE]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - EQP_TECH\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_EQP_NOTE]"
+                      lineageId="Package\DF - EQP_TECH\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_EQP_NOTE]"
+                      name="PK_EQP_NOTE" />
                     <outputColumn
                       refId="Package\DF - EQP_TECH\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -3532,6 +3575,17 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       cachedLength="16"
                       cachedName="V_MIGRATIONSOURCE"
                       lineageId="Package\DF - ITEM_\Sort 2.Outputs[Sort Output].Columns[V_MIGRATIONSOURCE]" />
+                    <inputColumn
+                      refId="Package\DF - ITEM_\Merge Join.Inputs[Merge Join Left Input].Columns[TIMESTAMP]"
+                      cachedDataType="numeric"
+                      cachedName="TIMESTAMP"
+                      cachedPrecision="10"
+                      lineageId="Package\DF - ITEM_\Sort 2.Outputs[Sort Output].Columns[TIMESTAMP]" />
+                    <inputColumn
+                      refId="Package\DF - ITEM_\Merge Join.Inputs[Merge Join Left Input].Columns[PK_EQP_NOTE]"
+                      cachedDataType="i4"
+                      cachedName="PK_EQP_NOTE"
+                      lineageId="Package\DF - ITEM_\Sort 2.Outputs[Sort Output].Columns[PK_EQP_NOTE]" />
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -4000,6 +4054,33 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="InputColumnID">#{Package\DF - ITEM_\Merge Join.Inputs[Merge Join Right Input].Columns[ASSETSPECID]}</property>
                       </properties>
                     </outputColumn>
+                    <outputColumn
+                      refId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[TIMESTAMP]"
+                      dataType="numeric"
+                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[TIMESTAMP]"
+                      name="TIMESTAMP"
+                      precision="10">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\DF - ITEM_\Merge Join.Inputs[Merge Join Left Input].Columns[TIMESTAMP]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[PK_EQP_NOTE]"
+                      dataType="i4"
+                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[PK_EQP_NOTE]"
+                      name="PK_EQP_NOTE">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\DF - ITEM_\Merge Join.Inputs[Merge Join Left Input].Columns[PK_EQP_NOTE]}</property>
+                      </properties>
+                    </outputColumn>
                   </outputColumns>
                   <externalMetadataColumns />
                 </output>
@@ -4130,21 +4211,22 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       cachedLength="254"
                       cachedName="v_alnvalue"
                       externalMetadataColumnId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ALNVALUE]"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_alnvalue]" />
+                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_alnvalue]" />
                     <inputColumn
                       refId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_PrefixAssetNum]"
                       cachedCodepage="1252"
                       cachedDataType="str"
                       cachedLength="13"
                       cachedName="v_PrefixAssetNum"
+                      cachedSortKeyPosition="1"
                       externalMetadataColumnId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ASSETNUM]"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_PrefixAssetNum]" />
+                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_PrefixAssetNum]" />
                     <inputColumn
                       refId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_assetspecid]"
                       cachedDataType="i8"
                       cachedName="v_assetspecid"
                       externalMetadataColumnId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ASSETSPECID]"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_assetspecid]" />
+                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_assetspecid]" />
                     <inputColumn
                       refId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_changeby]"
                       cachedCodepage="1252"
@@ -4152,63 +4234,64 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       cachedLength="16"
                       cachedName="v_changeby"
                       externalMetadataColumnId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[CHANGEBY]"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_changeby]" />
+                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_changeby]" />
                     <inputColumn
                       refId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_changedate]"
                       cachedDataType="dbTimeStamp"
                       cachedName="v_changedate"
                       externalMetadataColumnId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[CHANGEDATE]"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_changedate]" />
+                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_changedate]" />
                     <inputColumn
                       refId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_classstructureid]"
                       cachedCodepage="1252"
                       cachedDataType="str"
                       cachedLength="8"
                       cachedName="v_classstructureid"
+                      cachedSortKeyPosition="3"
                       externalMetadataColumnId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[CLASSSTRUCTUREID]"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_classstructureid]" />
+                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_classstructureid]" />
                     <inputColumn
                       refId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_continuous]"
                       cachedDataType="i4"
                       cachedName="v_continuous"
                       externalMetadataColumnId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[CONTINUOUS]"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_continuous]" />
+                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_continuous]" />
                     <inputColumn
                       refId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_datevalue]"
                       cachedDataType="dbDate"
                       cachedName="v_datevalue"
                       externalMetadataColumnId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[DATEVALUE]"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_datevalue]" />
+                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_datevalue]" />
                     <inputColumn
                       refId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_displaysequence]"
                       cachedDataType="i4"
                       cachedName="v_displaysequence"
                       externalMetadataColumnId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[DISPLAYSEQUENCE]"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_displaysequence]" />
+                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_displaysequence]" />
                     <inputColumn
                       refId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_inheritedfromitem]"
                       cachedDataType="i4"
                       cachedName="v_inheritedfromitem"
                       externalMetadataColumnId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[INHERITEDFROMITEM]"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_inheritedfromitem]" />
+                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_inheritedfromitem]" />
                     <inputColumn
                       refId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_itemspecvalchanged]"
                       cachedDataType="i4"
                       cachedName="v_itemspecvalchanged"
                       externalMetadataColumnId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ITEMSPECVALCHANGED]"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_itemspecvalchanged]" />
+                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_itemspecvalchanged]" />
                     <inputColumn
                       refId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_linearassetspecid]"
                       cachedDataType="i4"
                       cachedName="v_linearassetspecid"
                       externalMetadataColumnId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[LINEARASSETSPECID]"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_linearassetspecid]" />
+                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_linearassetspecid]" />
                     <inputColumn
                       refId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_mandatory]"
                       cachedDataType="i4"
                       cachedName="v_mandatory"
                       externalMetadataColumnId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[MANDATORY]"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_mandatory]" />
+                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_mandatory]" />
                     <inputColumn
                       refId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_numvalue]"
                       cachedDataType="numeric"
@@ -4216,7 +4299,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       cachedPrecision="30"
                       cachedScale="10"
                       externalMetadataColumnId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[NUMVALUE]"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_numvalue]" />
+                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_numvalue]" />
                     <inputColumn
                       refId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[V_ORGID]"
                       cachedCodepage="1252"
@@ -4224,7 +4307,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       cachedLength="8"
                       cachedName="V_ORGID"
                       externalMetadataColumnId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ORGID]"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[V_ORGID]" />
+                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[V_ORGID]" />
                     <inputColumn
                       refId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[V_SITEID]"
                       cachedCodepage="1252"
@@ -4232,7 +4315,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       cachedLength="8"
                       cachedName="V_SITEID"
                       externalMetadataColumnId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[SITEID]"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[V_SITEID]" />
+                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[V_SITEID]" />
                     <inputColumn
                       refId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[EQ_ASSET_ID]"
                       cachedCodepage="1252"
@@ -4240,20 +4323,13 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       cachedLength="40"
                       cachedName="EQ_ASSET_ID"
                       externalMetadataColumnId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONASSETID]"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[EQ_ASSET_ID]" />
+                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[EQ_ASSET_ID]" />
                     <inputColumn
                       refId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[V_MIGRATIONDATE]"
                       cachedDataType="dbTimeStamp"
                       cachedName="V_MIGRATIONDATE"
                       externalMetadataColumnId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[V_MIGRATIONDATE]" />
-                    <inputColumn
-                      refId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[RowNo]"
-                      cachedDataType="i4"
-                      cachedName="RowNo"
-                      cachedSortKeyPosition="1"
-                      externalMetadataColumnId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONID]"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[RowNo]" />
+                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[V_MIGRATIONDATE]" />
                     <inputColumn
                       refId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[V_MIGRATIONSOURCE]"
                       cachedCodepage="1252"
@@ -4261,15 +4337,37 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       cachedLength="16"
                       cachedName="V_MIGRATIONSOURCE"
                       externalMetadataColumnId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONSOURCE]"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[V_MIGRATIONSOURCE]" />
+                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[V_MIGRATIONSOURCE]" />
                     <inputColumn
                       refId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_assetattrid]"
                       cachedCodepage="1252"
                       cachedDataType="str"
                       cachedLength="22"
                       cachedName="v_assetattrid"
+                      cachedSortKeyPosition="2"
                       externalMetadataColumnId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ASSETATTRID]"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_assetattrid]" />
+                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_assetattrid]" />
+                    <inputColumn
+                      refId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[PK_EQP_NOTE]"
+                      cachedDataType="i4"
+                      cachedName="PK_EQP_NOTE"
+                      externalMetadataColumnId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONID]"
+                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[PK_EQP_NOTE]" />
+                    <inputColumn
+                      refId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[TIMESTAMP]"
+                      cachedDataType="numeric"
+                      cachedName="TIMESTAMP"
+                      cachedPrecision="10"
+                      externalMetadataColumnId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONTS]"
+                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[TIMESTAMP]" />
+                    <inputColumn
+                      refId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[EQ_EQCD]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="EQ_EQCD"
+                      externalMetadataColumnId="Package\DF - ITEM_\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONEQCD]"
+                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[EQ_EQCD]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -4804,6 +4902,7 @@ SELECT a.COMMONKEY, a.INDX, a.TN_TEXT as value
 	-- , concat(tl2.TH_TEXT, concat(' - ', tl.TH_TEXT)) AS attrdesc
 	, it.ITEM_CD 
 	, et.EQ_EQCD, et.PK_EQP_TOPO, et.EQ_ASSET_ID  
+	, en.TIMESTAMP, en.PK_EQP_NOTE
 FROM COSWIN.TN_LINE a
 JOIN COSWIN.EQP_NOTE en ON en.PK_EQP_NOTE=a.COMMONKEY 
 JOIN COSWIN.ITEM_ it ON it.PK_ITEM_=en.IT_TS_01
@@ -4913,6 +5012,19 @@ ORDER BY et.PK_EQP_TOPO, eh.PK_EQP_HEAD, tl.INDX;</property>
                       length="40"
                       lineageId="Package\DF - ITEM_\Oracle Source.Outputs[Oracle Source Output].Columns[EQ_ASSET_ID]"
                       name="EQ_ASSET_ID" />
+                    <outputColumn
+                      refId="Package\DF - ITEM_\Oracle Source.Outputs[Oracle Source Output].Columns[TIMESTAMP]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\DF - ITEM_\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[TIMESTAMP]"
+                      lineageId="Package\DF - ITEM_\Oracle Source.Outputs[Oracle Source Output].Columns[TIMESTAMP]"
+                      name="TIMESTAMP"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\DF - ITEM_\Oracle Source.Outputs[Oracle Source Output].Columns[PK_EQP_NOTE]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - ITEM_\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_EQP_NOTE]"
+                      lineageId="Package\DF - ITEM_\Oracle Source.Outputs[Oracle Source Output].Columns[PK_EQP_NOTE]"
+                      name="PK_EQP_NOTE" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -4956,6 +5068,15 @@ ORDER BY et.PK_EQP_TOPO, eh.PK_EQP_HEAD, tl.INDX;</property>
                       dataType="str"
                       length="40"
                       name="EQ_ASSET_ID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ITEM_\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[TIMESTAMP]"
+                      dataType="numeric"
+                      name="TIMESTAMP"
+                      precision="10" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ITEM_\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_EQP_NOTE]"
+                      dataType="i4"
+                      name="PK_EQP_NOTE" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -5019,6 +5140,19 @@ ORDER BY et.PK_EQP_TOPO, eh.PK_EQP_HEAD, tl.INDX;</property>
                       length="40"
                       lineageId="Package\DF - ITEM_\Oracle Source.Outputs[Oracle Source Error Output].Columns[EQ_ASSET_ID]"
                       name="EQ_ASSET_ID" />
+                    <outputColumn
+                      refId="Package\DF - ITEM_\Oracle Source.Outputs[Oracle Source Error Output].Columns[TIMESTAMP]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\DF - ITEM_\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[TIMESTAMP]"
+                      lineageId="Package\DF - ITEM_\Oracle Source.Outputs[Oracle Source Error Output].Columns[TIMESTAMP]"
+                      name="TIMESTAMP"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\DF - ITEM_\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_EQP_NOTE]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - ITEM_\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_EQP_NOTE]"
+                      lineageId="Package\DF - ITEM_\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_EQP_NOTE]"
+                      name="PK_EQP_NOTE" />
                     <outputColumn
                       refId="Package\DF - ITEM_\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -6531,6 +6665,39 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA]]></arrayElement>
                           name="NewSortKeyPosition">1</property>
                       </properties>
                     </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - ITEM_\Sort 2.Inputs[Sort Input].Columns[TIMESTAMP]"
+                      cachedDataType="numeric"
+                      cachedName="TIMESTAMP"
+                      cachedPrecision="10"
+                      lineageId="Package\DF - ITEM_\Oracle Source.Outputs[Oracle Source Output].Columns[TIMESTAMP]">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the comparison options for character data."
+                          name="NewComparisonFlags">0</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the sort order of the column."
+                          name="NewSortKeyPosition">0</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - ITEM_\Sort 2.Inputs[Sort Input].Columns[PK_EQP_NOTE]"
+                      cachedDataType="i4"
+                      cachedName="PK_EQP_NOTE"
+                      lineageId="Package\DF - ITEM_\Oracle Source.Outputs[Oracle Source Output].Columns[PK_EQP_NOTE]">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the comparison options for character data."
+                          name="NewComparisonFlags">0</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the sort order of the column."
+                          name="NewSortKeyPosition">0</property>
+                      </properties>
+                    </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -6949,972 +7116,31 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA]]></arrayElement>
                           name="SortColumnId">#{Package\DF - ITEM_\Derived Column.Outputs[Derived Column Output].Columns[v_PrefixAssetNum]}</property>
                       </properties>
                     </outputColumn>
-                  </outputColumns>
-                  <externalMetadataColumns />
-                </output>
-              </outputs>
-            </component>
-            <component
-              refId="Package\DF - ITEM_\Sort 3"
-              componentClassID="Microsoft.Sort"
-              contactInfo="Sort;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
-              description="Sorts input data in ascending or descending order when it cannot be sorted at its source. For example, sort sales data by 'customer id' before it is written to a flat file and delivered to another department. Note: We do not recommend this transformation for large data flows."
-              name="Sort 3"
-              version="1">
-              <properties>
-                <property
-                  dataType="System.Boolean"
-                  description="Indicates whether the Sort transformation removes rows with duplicate sort values."
-                  name="EliminateDuplicates">false</property>
-                <property
-                  dataType="System.Int32"
-                  description="Specifies the maximum number of threads to use for sorting."
-                  expressionType="Notify"
-                  name="MaximumThreads">-1</property>
-              </properties>
-              <inputs>
-                <input
-                  refId="Package\DF - ITEM_\Sort 3.Inputs[Sort Input]"
-                  name="Sort Input">
-                  <inputColumns>
-                    <inputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Inputs[Sort Input].Columns[PK_EQP_TOPO]"
-                      cachedDataType="i4"
-                      cachedName="PK_EQP_TOPO"
-                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[PK_EQP_TOPO]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Inputs[Sort Input].Columns[EQ_EQCD]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="20"
-                      cachedName="EQ_EQCD"
-                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[EQ_EQCD]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Inputs[Sort Input].Columns[EQ_ASSET_ID]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="40"
-                      cachedName="EQ_ASSET_ID"
-                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[EQ_ASSET_ID]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Inputs[Sort Input].Columns[COMMONKEY]"
-                      cachedDataType="i4"
-                      cachedName="COMMONKEY"
-                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[COMMONKEY]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Inputs[Sort Input].Columns[INDX]"
-                      cachedDataType="i2"
-                      cachedName="INDX"
-                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[INDX]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Inputs[Sort Input].Columns[ATTRID]"
-                      cachedDataType="r8"
-                      cachedName="ATTRID"
-                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[ATTRID]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Inputs[Sort Input].Columns[ITEM_CD]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="20"
-                      cachedName="ITEM_CD"
-                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[ITEM_CD]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Inputs[Sort Input].Columns[VALUE]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="21"
-                      cachedName="VALUE"
-                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[VALUE]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Inputs[Sort Input].Columns[RowNo]"
-                      cachedDataType="i4"
-                      cachedName="RowNo"
-                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[RowNo]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">1</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Inputs[Sort Input].Columns[V_SITEID]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="8"
-                      cachedName="V_SITEID"
-                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[V_SITEID]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Inputs[Sort Input].Columns[V_ORGID]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="8"
-                      cachedName="V_ORGID"
-                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[V_ORGID]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Inputs[Sort Input].Columns[v_assetnum]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="10"
-                      cachedName="v_assetnum"
-                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_assetnum]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Inputs[Sort Input].Columns[v_assetattrid]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="22"
-                      cachedName="v_assetattrid"
-                      cachedSortKeyPosition="2"
-                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_assetattrid]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Inputs[Sort Input].Columns[v_classstructureid]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="8"
-                      cachedName="v_classstructureid"
-                      cachedSortKeyPosition="3"
-                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_classstructureid]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Inputs[Sort Input].Columns[v_inheritedfromitem]"
-                      cachedDataType="i4"
-                      cachedName="v_inheritedfromitem"
-                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_inheritedfromitem]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Inputs[Sort Input].Columns[v_itemspecvalchanged]"
-                      cachedDataType="i4"
-                      cachedName="v_itemspecvalchanged"
-                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_itemspecvalchanged]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Inputs[Sort Input].Columns[v_displaysequence]"
-                      cachedDataType="i4"
-                      cachedName="v_displaysequence"
-                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_displaysequence]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Inputs[Sort Input].Columns[v_changedate]"
-                      cachedDataType="dbTimeStamp"
-                      cachedName="v_changedate"
-                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_changedate]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Inputs[Sort Input].Columns[v_changeby]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="16"
-                      cachedName="v_changeby"
-                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_changeby]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Inputs[Sort Input].Columns[v_assetspecid]"
-                      cachedDataType="i8"
-                      cachedName="v_assetspecid"
-                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_assetspecid]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Inputs[Sort Input].Columns[v_mandatory]"
-                      cachedDataType="i4"
-                      cachedName="v_mandatory"
-                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_mandatory]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Inputs[Sort Input].Columns[v_continuous]"
-                      cachedDataType="i4"
-                      cachedName="v_continuous"
-                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_continuous]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Inputs[Sort Input].Columns[v_linearassetspecid]"
-                      cachedDataType="i4"
-                      cachedName="v_linearassetspecid"
-                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_linearassetspecid]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Inputs[Sort Input].Columns[V_MIGRATIONDATE]"
-                      cachedDataType="dbTimeStamp"
-                      cachedName="V_MIGRATIONDATE"
-                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[V_MIGRATIONDATE]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Inputs[Sort Input].Columns[v_alnvalue]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="254"
-                      cachedName="v_alnvalue"
-                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_alnvalue]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Inputs[Sort Input].Columns[v_numvalue]"
-                      cachedDataType="numeric"
-                      cachedName="v_numvalue"
-                      cachedPrecision="30"
-                      cachedScale="10"
-                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_numvalue]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Inputs[Sort Input].Columns[v_datevalue]"
-                      cachedDataType="dbDate"
-                      cachedName="v_datevalue"
-                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_datevalue]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Inputs[Sort Input].Columns[V_MIGRATIONSOURCE]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="16"
-                      cachedName="V_MIGRATIONSOURCE"
-                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[V_MIGRATIONSOURCE]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Inputs[Sort Input].Columns[v_PrefixAssetNum]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="13"
-                      cachedName="v_PrefixAssetNum"
-                      cachedSortKeyPosition="1"
-                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_PrefixAssetNum]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Inputs[Sort Input].Columns[ASSETSPECID]"
-                      cachedDataType="i8"
-                      cachedName="ASSETSPECID"
-                      lineageId="Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[ASSETSPECID]">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the comparison options for character data."
-                          name="NewComparisonFlags">0</property>
-                        <property
-                          dataType="System.Int32"
-                          description="Specifies the sort order of the column."
-                          name="NewSortKeyPosition">0</property>
-                      </properties>
-                    </inputColumn>
-                  </inputColumns>
-                  <externalMetadataColumns />
-                </input>
-              </inputs>
-              <outputs>
-                <output
-                  refId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output]"
-                  isSorted="true"
-                  name="Sort Output">
-                  <outputColumns>
                     <outputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[PK_EQP_TOPO]"
-                      dataType="i4"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[PK_EQP_TOPO]"
-                      name="PK_EQP_TOPO">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[PK_EQP_TOPO]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[EQ_EQCD]"
-                      codePage="1252"
-                      dataType="str"
-                      length="20"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[EQ_EQCD]"
-                      name="EQ_EQCD">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[EQ_EQCD]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[EQ_ASSET_ID]"
-                      codePage="1252"
-                      dataType="str"
-                      length="40"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[EQ_ASSET_ID]"
-                      name="EQ_ASSET_ID">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[EQ_ASSET_ID]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[COMMONKEY]"
-                      dataType="i4"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[COMMONKEY]"
-                      name="COMMONKEY">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[COMMONKEY]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[INDX]"
-                      dataType="i2"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[INDX]"
-                      name="INDX">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[INDX]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[ATTRID]"
-                      dataType="r8"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[ATTRID]"
-                      name="ATTRID">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[ATTRID]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[ITEM_CD]"
-                      codePage="1252"
-                      dataType="str"
-                      length="20"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[ITEM_CD]"
-                      name="ITEM_CD">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[ITEM_CD]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[VALUE]"
-                      codePage="1252"
-                      dataType="str"
-                      length="21"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[VALUE]"
-                      name="VALUE">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[VALUE]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[RowNo]"
-                      dataType="i4"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[RowNo]"
-                      name="RowNo"
-                      sortKeyPosition="1">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[RowNo]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[V_SITEID]"
-                      codePage="1252"
-                      dataType="str"
-                      length="8"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[V_SITEID]"
-                      name="V_SITEID">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[V_SITEID]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[V_ORGID]"
-                      codePage="1252"
-                      dataType="str"
-                      length="8"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[V_ORGID]"
-                      name="V_ORGID">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[V_ORGID]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_assetnum]"
-                      codePage="1252"
-                      dataType="str"
-                      length="10"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_assetnum]"
-                      name="v_assetnum">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_assetnum]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_assetattrid]"
-                      codePage="1252"
-                      dataType="str"
-                      length="22"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_assetattrid]"
-                      name="v_assetattrid">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_assetattrid]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_classstructureid]"
-                      codePage="1252"
-                      dataType="str"
-                      length="8"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_classstructureid]"
-                      name="v_classstructureid">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_classstructureid]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_inheritedfromitem]"
-                      dataType="i4"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_inheritedfromitem]"
-                      name="v_inheritedfromitem">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_inheritedfromitem]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_itemspecvalchanged]"
-                      dataType="i4"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_itemspecvalchanged]"
-                      name="v_itemspecvalchanged">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_itemspecvalchanged]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_displaysequence]"
-                      dataType="i4"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_displaysequence]"
-                      name="v_displaysequence">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_displaysequence]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_changedate]"
-                      dataType="dbTimeStamp"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_changedate]"
-                      name="v_changedate">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_changedate]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_changeby]"
-                      codePage="1252"
-                      dataType="str"
-                      length="16"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_changeby]"
-                      name="v_changeby">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_changeby]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_assetspecid]"
-                      dataType="i8"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_assetspecid]"
-                      name="v_assetspecid">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_assetspecid]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_mandatory]"
-                      dataType="i4"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_mandatory]"
-                      name="v_mandatory">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_mandatory]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_continuous]"
-                      dataType="i4"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_continuous]"
-                      name="v_continuous">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_continuous]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_linearassetspecid]"
-                      dataType="i4"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_linearassetspecid]"
-                      name="v_linearassetspecid">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_linearassetspecid]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[V_MIGRATIONDATE]"
-                      dataType="dbTimeStamp"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[V_MIGRATIONDATE]"
-                      name="V_MIGRATIONDATE">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[V_MIGRATIONDATE]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_alnvalue]"
-                      codePage="1252"
-                      dataType="str"
-                      length="254"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_alnvalue]"
-                      name="v_alnvalue">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_alnvalue]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_numvalue]"
+                      refId="Package\DF - ITEM_\Sort 2.Outputs[Sort Output].Columns[TIMESTAMP]"
                       dataType="numeric"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_numvalue]"
-                      name="v_numvalue"
-                      precision="30"
-                      scale="10">
+                      lineageId="Package\DF - ITEM_\Sort 2.Outputs[Sort Output].Columns[TIMESTAMP]"
+                      name="TIMESTAMP"
+                      precision="10">
                       <properties>
                         <property
                           containsID="true"
                           dataType="System.Int32"
                           description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_numvalue]}</property>
+                          name="SortColumnId">#{Package\DF - ITEM_\Oracle Source.Outputs[Oracle Source Output].Columns[TIMESTAMP]}</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_datevalue]"
-                      dataType="dbDate"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_datevalue]"
-                      name="v_datevalue">
+                      refId="Package\DF - ITEM_\Sort 2.Outputs[Sort Output].Columns[PK_EQP_NOTE]"
+                      dataType="i4"
+                      lineageId="Package\DF - ITEM_\Sort 2.Outputs[Sort Output].Columns[PK_EQP_NOTE]"
+                      name="PK_EQP_NOTE">
                       <properties>
                         <property
                           containsID="true"
                           dataType="System.Int32"
                           description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_datevalue]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[V_MIGRATIONSOURCE]"
-                      codePage="1252"
-                      dataType="str"
-                      length="16"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[V_MIGRATIONSOURCE]"
-                      name="V_MIGRATIONSOURCE">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[V_MIGRATIONSOURCE]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_PrefixAssetNum]"
-                      codePage="1252"
-                      dataType="str"
-                      length="13"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[v_PrefixAssetNum]"
-                      name="v_PrefixAssetNum">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[v_PrefixAssetNum]}</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[ASSETSPECID]"
-                      dataType="i8"
-                      lineageId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output].Columns[ASSETSPECID]"
-                      name="ASSETSPECID">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Specifies the lineage identifier of the input column that is associated with this output column."
-                          name="SortColumnId">#{Package\DF - ITEM_\Merge Join.Outputs[Merge Join Output].Columns[ASSETSPECID]}</property>
+                          name="SortColumnId">#{Package\DF - ITEM_\Oracle Source.Outputs[Oracle Source Output].Columns[PK_EQP_NOTE]}</property>
                       </properties>
                     </outputColumn>
                   </outputColumns>
@@ -7931,7 +7157,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA]]></arrayElement>
               startId="Package\DF - ITEM_\Aggregate.Outputs[Aggregate Output 1]" />
             <path
               refId="Package\DF - ITEM_.Paths[Case 1]"
-              endId="Package\DF - ITEM_\Sort 3.Inputs[Sort Input]"
+              endId="Package\DF - ITEM_\Multicast.Inputs[Multicast Input 1]"
               name="Case 1"
               startId="Package\DF - ITEM_\Conditional Split.Outputs[Case 1]" />
             <path
@@ -7979,11 +7205,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA]]></arrayElement>
               endId="Package\DF - ITEM_\Merge Join.Inputs[Merge Join Right Input]"
               name="Sort Output"
               startId="Package\DF - ITEM_\Sort 1.Outputs[Sort Output]" />
-            <path
-              refId="Package\DF - ITEM_.Paths[Sort Output2]"
-              endId="Package\DF - ITEM_\Multicast.Inputs[Multicast Input 1]"
-              name="Sort Output"
-              startId="Package\DF - ITEM_\Sort 3.Outputs[Sort Output]" />
           </paths>
         </pipeline>
       </DTS:ObjectData>
@@ -8289,6 +7510,56 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA]]></arrayElement>
           Id="Package\MAXSEQ (ASSETSPEC)"
           TopLeft="98.3000000000001,658.23333305008" />
         <NodeLayout
+          Size="137.6,41.6"
+          Id="Package\POST-PKG\FINISH LOG"
+          TopLeft="51.9333115693606,32.199997812311" />
+        <ContainerLayout
+          HeaderHeight="43.2"
+          IsExpanded="False"
+          PanelSize="270.4,130.4"
+          Size="270.4,43.2"
+          Id="Package\POST-PKG"
+          TopLeft="403.899994536241,659.396292243684" />
+        <NodeLayout
+          Size="135.2,41.6"
+          Id="Package\PRE-PKG\GET LOGID"
+          TopLeft="47.4999810134378,99.1999989151955" />
+        <NodeLayout
+          Size="137.6,41.6"
+          Id="Package\PRE-PKG\START LOG"
+          TopLeft="45.833314437834,26.3999994214376" />
+        <EdgeLayout
+          Id="Package\PRE-PKG.PrecedenceConstraints[Constraint]"
+          TopLeft="114.866647725636,67.9999994214376">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,31.1999994937579"
+              Start="0,0"
+              End="0,23.6999994937579">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,23.6999994937579" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43.2"
+          IsExpanded="False"
+          PanelSize="268,196.8"
+          Size="268,43.2"
+          Id="Package\PRE-PKG"
+          TopLeft="390.566661931409,5.49999999999996" />
+        <NodeLayout
           Size="164.8,41.6"
           Id="Package\Pre-Task\Execute SQL Task"
           TopLeft="25.4999989072482,41.0333330862389" />
@@ -8390,100 +7661,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 34]"
-          TopLeft="180.7,496.633333050079">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,59.9999999999999"
-              Start="0,0"
-              End="0,52.4999999999999">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,52.4999999999999" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 9]"
-          TopLeft="176.9,293.433333050079">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,60"
-              Start="0,0"
-              End="0,52.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,52.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="137.6,41.6"
-          Id="Package\POST-PKG\FINISH LOG"
-          TopLeft="51.9333115693606,32.199997812311" />
-        <ContainerLayout
-          HeaderHeight="43.2"
-          IsExpanded="False"
-          PanelSize="270.4,130.4"
-          Size="270.4,43.2"
-          Id="Package\POST-PKG"
-          TopLeft="403.899994536241,659.396292243684" />
-        <NodeLayout
-          Size="135.2,41.6"
-          Id="Package\PRE-PKG\GET LOGID"
-          TopLeft="47.4999810134378,99.1999989151955" />
-        <NodeLayout
-          Size="137.6,41.6"
-          Id="Package\PRE-PKG\START LOG"
-          TopLeft="45.833314437834,26.3999994214376" />
-        <EdgeLayout
-          Id="Package\PRE-PKG.PrecedenceConstraints[Constraint]"
-          TopLeft="114.866647725636,67.9999994214376">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,31.1999994937579"
-              Start="0,0"
-              End="0,23.6999994937579">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,23.6999994937579" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <ContainerLayout
-          HeaderHeight="43.2"
-          IsExpanded="False"
-          PanelSize="268,196.8"
-          Size="268,43.2"
-          Id="Package\PRE-PKG"
-          TopLeft="390.566661931409,5.49999999999996" />
-        <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 3]"
           TopLeft="390.566661931409,27.1">
           <EdgeLayout.Curve>
@@ -8518,6 +7695,28 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 34]"
+          TopLeft="180.7,496.633333050079">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,59.9999999999999"
+              Start="0,0"
+              End="0,52.4999999999999">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.4999999999999" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 4]"
           TopLeft="293.5,680.014812646882">
           <EdgeLayout.Curve>
@@ -8539,6 +7738,28 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA]]></arrayElement>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 9]"
+          TopLeft="176.9,293.433333050079">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </Package>
@@ -8547,6 +7768,10 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA]]></arrayElement>
     <LayoutInfo>
       <GraphLayout
         Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="144.8,41.6"
+          Id="Package\DF - EQP_TECH\Oracle Source"
+          TopLeft="21.6666654828523,13.8666665702396" />
         <NodeLayout
           Size="161.6,41.6"
           Id="Package\DF - EQP_TECH\Running Number"
@@ -8559,10 +7784,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA]]></arrayElement>
           Size="119.2,41.6"
           Id="Package\DF - EQP_TECH\Multicast"
           TopLeft="299.166650320921,197.066665485435" />
-        <NodeLayout
-          Size="144.8,41.6"
-          Id="Package\DF - EQP_TECH\Oracle Source"
-          TopLeft="21.6666654828523,13.8666665702396" />
         <NodeLayout
           Size="140.8,41.6"
           Id="Package\DF - EQP_TECH\Derived Column"
@@ -8581,6 +7802,28 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA]]></arrayElement>
                   Capacity="5">
                   <mssgle:LineSegment
                     End="0,42.03333333936" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - EQP_TECH.Paths[Oracle Source Output]"
+          TopLeft="166.466665482852,33.2333332851198">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="76.5333345171477,0"
+              Start="0,0"
+              End="69.0333345171477,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="69.0333345171477,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -8633,28 +7876,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA]]></arrayElement>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - EQP_TECH.Paths[Oracle Source Output]"
-          TopLeft="166.466665482852,33.2333332851198">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="76.5333345171477,0"
-              Start="0,0"
-              End="69.0333345171477,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="69.0333345171477,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
@@ -8685,34 +7906,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA]]></arrayElement>
       <GraphLayout
         Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
-          Size="153.6,41.6"
-          Id="Package\DF - ITEM_\Conditional Split"
-          TopLeft="583.999991297722,287.066663039658" />
-        <NodeLayout
-          Size="106.4,41.6"
-          Id="Package\DF - ITEM_\Sort 3"
-          TopLeft="481.566640486156,360.46666467819" />
-        <NodeLayout
-          Size="152,41.6"
-          Id="Package\DF - ITEM_\OLE DB Source"
-          TopLeft="543.999991893768,24.3999995529652" />
-        <NodeLayout
-          Size="106.4,41.6"
-          Id="Package\DF - ITEM_\Sort 2"
-          TopLeft="342.999994888902,189.066664082739" />
-        <NodeLayout
-          Size="144.8,41.6"
-          Id="Package\DF - ITEM_\Oracle Source"
-          TopLeft="0.166666697296805,17.1999999701977" />
-        <NodeLayout
-          Size="161.6,41.6"
-          Id="Package\DF - ITEM_\Running Number"
-          TopLeft="237.499999985099,22.5666667053435" />
-        <NodeLayout
-          Size="129.6,41.6"
-          Id="Package\DF - ITEM_\Aggregate"
-          TopLeft="840.666664555668,292.566664097641" />
-        <NodeLayout
           Size="129.6,41.6"
           Id="Package\DF - ITEM_\Merge Join"
           TopLeft="516.9999922961,213.066663725112" />
@@ -8725,10 +7918,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA]]></arrayElement>
           Id="Package\DF - ITEM_\Derived Column"
           TopLeft="241.999999940395,121.066666630838" />
         <NodeLayout
-          Size="106.4,41.6"
-          Id="Package\DF - ITEM_\Sort 1"
-          TopLeft="566.999991551042,109.066665274832" />
-        <NodeLayout
           Size="167.2,41.6"
           Id="Package\DF - ITEM_\Derived Column 1"
           TopLeft="813.666664585471,357.233330903385" />
@@ -8736,28 +7925,34 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA]]></arrayElement>
           Size="119.2,41.6"
           Id="Package\DF - ITEM_\Multicast"
           TopLeft="474.499987068276,429.766666930053" />
-        <EdgeLayout
-          Id="Package\DF - ITEM_.Paths[Sort Output2]"
-          TopLeft="534.433313777216,402.06666467819">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,27.7000022518632"
-              Start="0,0"
-              End="0,20.2000022518632">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,20.2000022518632" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
+        <NodeLayout
+          Size="153.6,41.6"
+          Id="Package\DF - ITEM_\Conditional Split"
+          TopLeft="583.999991297722,287.066663039658" />
+        <NodeLayout
+          Size="161.6,41.6"
+          Id="Package\DF - ITEM_\Running Number"
+          TopLeft="237.499999985099,22.5666667053435" />
+        <NodeLayout
+          Size="152,41.6"
+          Id="Package\DF - ITEM_\OLE DB Source"
+          TopLeft="543.999991893768,24.3999995529652" />
+        <NodeLayout
+          Size="106.4,41.6"
+          Id="Package\DF - ITEM_\Sort 1"
+          TopLeft="566.999991551042,109.066665274832" />
+        <NodeLayout
+          Size="106.4,41.6"
+          Id="Package\DF - ITEM_\Sort 2"
+          TopLeft="342.999994888902,189.066664082739" />
+        <NodeLayout
+          Size="144.8,41.6"
+          Id="Package\DF - ITEM_\Oracle Source"
+          TopLeft="0.16666669729679,17.1999999701977" />
+        <NodeLayout
+          Size="129.6,41.6"
+          Id="Package\DF - ITEM_\Aggregate"
+          TopLeft="840.666664555668,292.566664097641" />
         <EdgeLayout
           Id="Package\DF - ITEM_.Paths[Sort Output1]"
           TopLeft="620.199991551042,150.666665274832">
@@ -8840,6 +8035,28 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA]]></arrayElement>
                   Capacity="5">
                   <mssgle:LineSegment
                     End="0,49.3999999254945" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - ITEM_.Paths[Oracle Source Output]"
+          TopLeft="144.966666697297,40.6833333377706">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="92.5333332878022,0"
+              Start="0,0"
+              End="85.0333332878022,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="85.0333332878022,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -8985,42 +8202,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - ITEM_.Paths[Case 1]"
-          TopLeft="660.799991297722,328.666663039658">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-126.033350811566,31.8000016385319"
-              Start="0,0"
-              End="-126.033350811566,24.3000016385319">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,11.9000008192659" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,11.9000008192659"
-                    Point2="0,15.9000008192659"
-                    Point3="-4,15.9000008192659" />
-                  <mssgle:LineSegment
-                    End="-122.033350811566,15.9000008192659" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-122.033350811566,15.9000008192659"
-                    Point2="-126.033350811566,15.9000008192659"
-                    Point3="-126.033350811566,19.9000008192659" />
-                  <mssgle:LineSegment
-                    End="-126.033350811566,24.3000016385319" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-78.2347613432832,20.9000008192659,30.436171875,9.5537109375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
           Id="Package\DF - ITEM_.Paths[Aggregate Output 1]"
           TopLeft="905.466664555668,334.166664097641">
           <EdgeLayout.Curve>
@@ -9055,25 +8236,39 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - ITEM_.Paths[Oracle Source Output]"
-          TopLeft="144.966666697297,40.6833333377706">
+          Id="Package\DF - ITEM_.Paths[Case 1]"
+          TopLeft="660.799991297722,328.666663039658">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="92.5333332878017,0"
+              EndConnector="-126.700004229446,101.100003890395"
               Start="0,0"
-              End="85.0333332878017,0">
+              End="-126.700004229446,93.600003890395">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="85.0333332878017,0" />
+                    End="0,46.5500019451975" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,46.5500019451975"
+                    Point2="0,50.5500019451975"
+                    Point3="-4,50.5500019451975" />
+                  <mssgle:LineSegment
+                    End="-122.700004229446,50.5500019451975" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-122.700004229446,50.5500019451975"
+                    Point2="-126.700004229446,50.5500019451975"
+                    Point3="-126.700004229446,54.5500019451975" />
+                  <mssgle:LineSegment
+                    End="-126.700004229446,93.600003890395" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="-78.5680880522229,55.5500019451975,30.436171875,9.5537109375"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
