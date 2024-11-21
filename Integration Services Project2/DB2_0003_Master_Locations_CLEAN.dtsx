@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0003_Master_Locations_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="199"
-  DTS:VersionGUID="{5F8F9C1F-361A-453D-B398-45165FBD6E0A}"
+  DTS:VersionBuild="215"
+  DTS:VersionGUID="{84CFFE60-4793-4A3F-9FF8-BA3DCB723EB1}"
   DTS:VersionMajor="7">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -59,6 +59,618 @@
     DTS:FilterKind="0"
     DTS:LoggingMode="2" />
   <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\AUTOKEY (LOCATION)"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{367d253a-04bd-4d04-8ec6-8a902b0630d3}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="AUTOKEY (LOCATION)"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\AUTOKEY (LOCATION)\Aggregate"
+              componentClassID="Microsoft.Aggregate"
+              contactInfo="Aggregate;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;3"
+              description="Aggregates data with functions such as Average, Sum, Count, Max, and Min. For example, group data to compute the sum of sales per product or the average visits per day."
+              name="Aggregate"
+              version="3">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the approximate number of group by keys that the aggregation produces. Low indicates 500,000 key values, Medium indicates 5 million key values, and High indicates more than 25 million key values. Unspecified indicates no KeyScale value is used."
+                  name="KeyScale"
+                  typeConverter="KeyScaleType">0</property>
+                <property
+                  dataType="System.Null"
+                  description="Specifies the exact number of group by keys that the aggregation produces. If a KeyScale value is specified, the value in Keys takes precedence."
+                  name="Keys" />
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the approximate number of distinct values in a column that the aggregation counts distinctly. Low indicates 500,000 key values, Medium indicates 5 million key values, and High indicates more than 25 million key values. Unspecified indicates no CountDistinctScale value is used."
+                  name="CountDistinctScale"
+                  typeConverter="KeyScaleType">0</property>
+                <property
+                  dataType="System.Null"
+                  description="Specifies the exact number of distinct values in a column that the aggregation counts distinctly. If a CountDistinctScale value is specified, the value in CountDistinctKeys takes precedence."
+                  name="CountDistinctKeys" />
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the percentage by which memory can be extended during the aggregation. Valid values are between 1 and 100."
+                  name="AutoExtendFactor">25</property>
+              </properties>
+              <inputs>
+                <input
+                  refId="Package\AUTOKEY (LOCATION)\Aggregate.Inputs[Aggregate Input 1]"
+                  name="Aggregate Input 1">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\AUTOKEY (LOCATION)\Aggregate.Inputs[Aggregate Input 1].Columns[v_location]"
+                      cachedDataType="i8"
+                      cachedName="v_location"
+                      lineageId="Package\AUTOKEY (LOCATION)\Derived Column.Outputs[Derived Column Output].Columns[v_location]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\AUTOKEY (LOCATION)\Aggregate.Outputs[Aggregate Output 1]"
+                  name="Aggregate Output 1">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the approximate number of group by keys that the aggregation produces. Low indicates 500,000 key values, Medium indicates 5 million key values, and High indicates more than 25 million key values. Unspecified indicates no KeyScale value is used."
+                      name="KeyScale"
+                      typeConverter="KeyScaleType">0</property>
+                    <property
+                      dataType="System.Null"
+                      description="Specifies the exact number of group by keys that the aggregation produces. If a KeyScale value is specified, the value in Keys takes precedence."
+                      name="Keys" />
+                  </properties>
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTOKEY (LOCATION)\Aggregate.Outputs[Aggregate Output 1].Columns[v_location]"
+                      dataType="i8"
+                      lineageId="Package\AUTOKEY (LOCATION)\Aggregate.Outputs[Aggregate Output 1].Columns[v_location]"
+                      name="v_location">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the ID of the input column used in the aggregation."
+                          name="AggregationColumnId">#{Package\AUTOKEY (LOCATION)\Derived Column.Outputs[Derived Column Output].Columns[v_location]}</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the type of aggregation."
+                          name="AggregationType"
+                          typeConverter="AggregationType">7</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Indicates whether the column requires special handling because it may contain oversized data or it requires precision beyond a float data type."
+                          name="IsBig">1</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the string comparison options."
+                          name="AggregationComparisonFlags">0</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\AUTOKEY (LOCATION)\Derived Column"
+              componentClassID="Microsoft.DerivedColumn"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="Derived Column"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\AUTOKEY (LOCATION)\Derived Column.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\AUTOKEY (LOCATION)\Derived Column.Inputs[Derived Column Input].Columns[LOCATION]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="16"
+                      cachedName="LOCATION"
+                      lineageId="Package\AUTOKEY (LOCATION)\OLE DB Source.Outputs[OLE DB Source Output].Columns[LOCATION]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\AUTOKEY (LOCATION)\Derived Column.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\AUTOKEY (LOCATION)\Derived Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTOKEY (LOCATION)\Derived Column.Outputs[Derived Column Output].Columns[v_location]"
+                      dataType="i8"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="IgnoreFailure"
+                      lineageId="Package\AUTOKEY (LOCATION)\Derived Column.Outputs[Derived Column Output].Columns[v_location]"
+                      name="v_location"
+                      truncationRowDisposition="IgnoreFailure">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_I8)#{Package\AUTOKEY (LOCATION)\OLE DB Source.Outputs[OLE DB Source Output].Columns[LOCATION]}</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_I8)LOCATION</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\AUTOKEY (LOCATION)\Derived Column.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\AUTOKEY (LOCATION)\Derived Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTOKEY (LOCATION)\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\AUTOKEY (LOCATION)\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\AUTOKEY (LOCATION)\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\AUTOKEY (LOCATION)\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\AUTOKEY (LOCATION)\Derived Column 1"
+              componentClassID="Microsoft.DerivedColumn"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="Derived Column 1"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\AUTOKEY (LOCATION)\Derived Column 1.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\AUTOKEY (LOCATION)\Derived Column 1.Inputs[Derived Column Input].Columns[v_location]"
+                      cachedDataType="i8"
+                      cachedName="v_location"
+                      lineageId="Package\AUTOKEY (LOCATION)\Aggregate.Outputs[Aggregate Output 1].Columns[v_location]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\AUTOKEY (LOCATION)\Derived Column 1.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\AUTOKEY (LOCATION)\Derived Column 1.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTOKEY (LOCATION)\Derived Column 1.Outputs[Derived Column Output].Columns[v_autokey]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="16"
+                      lineageId="Package\AUTOKEY (LOCATION)\Derived Column 1.Outputs[Derived Column Output].Columns[v_autokey]"
+                      name="v_autokey"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_STR,16,1252)"LOCATION"</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_STR,16,1252)"LOCATION"</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\AUTOKEY (LOCATION)\Derived Column 1.Outputs[Derived Column Output].Columns[v_orgid]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="8"
+                      lineageId="Package\AUTOKEY (LOCATION)\Derived Column 1.Outputs[Derived Column Output].Columns[v_orgid]"
+                      name="v_orgid"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_STR,8,1252)"SBST"</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_STR,8,1252)"SBST"</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\AUTOKEY (LOCATION)\Derived Column 1.Outputs[Derived Column Output].Columns[v_seed]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="16"
+                      lineageId="Package\AUTOKEY (LOCATION)\Derived Column 1.Outputs[Derived Column Output].Columns[v_seed]"
+                      name="v_seed"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_STR,16,1252)(#{Package\AUTOKEY (LOCATION)\Aggregate.Outputs[Aggregate Output 1].Columns[v_location]} + 1)</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_STR,16,1252)(v_location + 1)</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\AUTOKEY (LOCATION)\Derived Column 1.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\AUTOKEY (LOCATION)\Derived Column 1.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTOKEY (LOCATION)\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\AUTOKEY (LOCATION)\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\AUTOKEY (LOCATION)\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\AUTOKEY (LOCATION)\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\AUTOKEY (LOCATION)\Multicast"
+              componentClassID="Microsoft.Multicast"
+              contactInfo="Multicast;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Distributes every input row to every row in one or more outputs. For example, branch your data flow to make a copy of data so that some values can be masked before sharing with external partners."
+              name="Multicast">
+              <inputs>
+                <input
+                  refId="Package\AUTOKEY (LOCATION)\Multicast.Inputs[Multicast Input 1]"
+                  name="Multicast Input 1">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\AUTOKEY (LOCATION)\Multicast.Outputs[Multicast Output 1]"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 1"
+                  synchronousInputId="Package\AUTOKEY (LOCATION)\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\AUTOKEY (LOCATION)\Multicast.Outputs[Multicast Output 3]"
+                  dangling="true"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 3"
+                  synchronousInputId="Package\AUTOKEY (LOCATION)\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\AUTOKEY (LOCATION)\OLE DB Source"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="OLE DB Source"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT REPLACE(location, 'L', '') AS location from maximo.LOCATIONS a WHERE ste_migrationid IS NOT NULL;</property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">2</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\AUTOKEY (LOCATION)\OLE DB Source.Connections[OleDbConnection]"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\AUTOKEY (LOCATION)\OLE DB Source.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTOKEY (LOCATION)\OLE DB Source.Outputs[OLE DB Source Output].Columns[LOCATION]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\AUTOKEY (LOCATION)\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[LOCATION]"
+                      length="16"
+                      lineageId="Package\AUTOKEY (LOCATION)\OLE DB Source.Outputs[OLE DB Source Output].Columns[LOCATION]"
+                      name="LOCATION"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\AUTOKEY (LOCATION)\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[LOCATION]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="LOCATION" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\AUTOKEY (LOCATION)\OLE DB Source.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTOKEY (LOCATION)\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[LOCATION]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      lineageId="Package\AUTOKEY (LOCATION)\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[LOCATION]"
+                      name="LOCATION" />
+                    <outputColumn
+                      refId="Package\AUTOKEY (LOCATION)\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\AUTOKEY (LOCATION)\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\AUTOKEY (LOCATION)\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\AUTOKEY (LOCATION)\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\AUTOKEY (LOCATION)\UPDATE AUTOKEY"
+              componentClassID="Microsoft.OLEDBCommand"
+              contactInfo="OLE DB Command;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;2"
+              description="Runs an SQL statement for each row in a data flow. For example, call a 'new employee setup' stored procedure for each row in the 'new employees' table. Note: running an SQL statement for each row of a large data flow may take a long time."
+              name="UPDATE AUTOKEY"
+              usesDispositions="true"
+              version="2">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">update maximo.autokey set seed=cast(? as varchar(16)) where autokeyname=?;</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\AUTOKEY (LOCATION)\UPDATE AUTOKEY.Connections[OleDbConnection]"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\AUTOKEY (LOCATION)\UPDATE AUTOKEY.Inputs[OLE DB Command Input]"
+                  errorOrTruncationOperation="Command Execution"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Command Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\AUTOKEY (LOCATION)\UPDATE AUTOKEY.Inputs[OLE DB Command Input].Columns[v_autokey]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="16"
+                      cachedName="v_autokey"
+                      externalMetadataColumnId="Package\AUTOKEY (LOCATION)\UPDATE AUTOKEY.Inputs[OLE DB Command Input].ExternalColumns[Param_1]"
+                      lineageId="Package\AUTOKEY (LOCATION)\Derived Column 1.Outputs[Derived Column Output].Columns[v_autokey]" />
+                    <inputColumn
+                      refId="Package\AUTOKEY (LOCATION)\UPDATE AUTOKEY.Inputs[OLE DB Command Input].Columns[v_seed]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="16"
+                      cachedName="v_seed"
+                      externalMetadataColumnId="Package\AUTOKEY (LOCATION)\UPDATE AUTOKEY.Inputs[OLE DB Command Input].ExternalColumns[Param_0]"
+                      lineageId="Package\AUTOKEY (LOCATION)\Derived Column 1.Outputs[Derived Column Output].Columns[v_seed]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\AUTOKEY (LOCATION)\UPDATE AUTOKEY.Inputs[OLE DB Command Input].ExternalColumns[Param_0]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="Param_0">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Parameter information.  Matches OLE DB's DBPARAMFLAGSENUM values."
+                          name="DBParamInfoFlags">64</property>
+                      </properties>
+                    </externalMetadataColumn>
+                    <externalMetadataColumn
+                      refId="Package\AUTOKEY (LOCATION)\UPDATE AUTOKEY.Inputs[OLE DB Command Input].ExternalColumns[Param_1]"
+                      codePage="1252"
+                      dataType="str"
+                      length="40"
+                      name="Param_1">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Parameter information.  Matches OLE DB's DBPARAMFLAGSENUM values."
+                          name="DBParamInfoFlags">64</property>
+                      </properties>
+                    </externalMetadataColumn>
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\AUTOKEY (LOCATION)\UPDATE AUTOKEY.Outputs[OLE DB Command Output]"
+                  exclusionGroup="1"
+                  name="OLE DB Command Output"
+                  synchronousInputId="Package\AUTOKEY (LOCATION)\UPDATE AUTOKEY.Inputs[OLE DB Command Input]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\AUTOKEY (LOCATION)\UPDATE AUTOKEY.Outputs[OLE DB Command Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Command Error Output"
+                  synchronousInputId="Package\AUTOKEY (LOCATION)\UPDATE AUTOKEY.Inputs[OLE DB Command Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTOKEY (LOCATION)\UPDATE AUTOKEY.Outputs[OLE DB Command Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\AUTOKEY (LOCATION)\UPDATE AUTOKEY.Outputs[OLE DB Command Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\AUTOKEY (LOCATION)\UPDATE AUTOKEY.Outputs[OLE DB Command Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\AUTOKEY (LOCATION)\UPDATE AUTOKEY.Outputs[OLE DB Command Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\AUTOKEY (LOCATION).Paths[Aggregate Output 1]"
+              endId="Package\AUTOKEY (LOCATION)\Derived Column 1.Inputs[Derived Column Input]"
+              name="Aggregate Output 1"
+              startId="Package\AUTOKEY (LOCATION)\Aggregate.Outputs[Aggregate Output 1]" />
+            <path
+              refId="Package\AUTOKEY (LOCATION).Paths[Derived Column Output]"
+              endId="Package\AUTOKEY (LOCATION)\Aggregate.Inputs[Aggregate Input 1]"
+              name="Derived Column Output"
+              startId="Package\AUTOKEY (LOCATION)\Derived Column.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\AUTOKEY (LOCATION).Paths[Derived Column Output1]"
+              endId="Package\AUTOKEY (LOCATION)\Multicast.Inputs[Multicast Input 1]"
+              name="Derived Column Output"
+              startId="Package\AUTOKEY (LOCATION)\Derived Column 1.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\AUTOKEY (LOCATION).Paths[Multicast Output 1]"
+              endId="Package\AUTOKEY (LOCATION)\UPDATE AUTOKEY.Inputs[OLE DB Command Input]"
+              name="Multicast Output 1"
+              startId="Package\AUTOKEY (LOCATION)\Multicast.Outputs[Multicast Output 1]" />
+            <path
+              refId="Package\AUTOKEY (LOCATION).Paths[OLE DB Source Output]"
+              endId="Package\AUTOKEY (LOCATION)\Derived Column.Inputs[Derived Column Input]"
+              name="OLE DB Source Output"
+              startId="Package\AUTOKEY (LOCATION)\OLE DB Source.Outputs[OLE DB Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
     <DTS:Executable
       DTS:refId="Package\DF - EQ_TOPO"
       DTS:CreationName="Microsoft.Pipeline"
@@ -8022,11 +8634,11 @@ order by PK_STORES</property>
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint]"
       DTS:CreationName=""
-      DTS:DTSID="{FC9DBC28-4611-46C6-9335-362FA5ABCB7C}"
+      DTS:DTSID="{53D652E4-AE8B-4E6B-AAED-D549CE1498B9}"
       DTS:From="Package\DF - EQ_TOPO"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint"
-      DTS:To="Package\MAXSEQ (LOCATIONS)" />
+      DTS:To="Package\AUTOKEY (LOCATION)" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
       DTS:CreationName=""
@@ -8083,6 +8695,14 @@ order by PK_STORES</property>
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 7"
       DTS:To="Package\DF - EQ_TOPO" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 8]"
+      DTS:CreationName=""
+      DTS:DTSID="{4F1A15F2-6168-45BD-A525-7532D3845C9E}"
+      DTS:From="Package\AUTOKEY (LOCATION)"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 8"
+      DTS:To="Package\MAXSEQ (LOCATIONS)" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
 <!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
@@ -8099,7 +8719,7 @@ order by PK_STORES</property>
         <NodeLayout
           Size="198.4,41.6"
           Id="Package\DF - EQ_TOPO"
-          TopLeft="74.9444406501676,801.344444579043" />
+          TopLeft="74.9444406501676,781.411111384323" />
         <NodeLayout
           Size="198.4,41.6"
           Id="Package\DF - FM_FACILITY"
@@ -8119,7 +8739,7 @@ order by PK_STORES</property>
         <NodeLayout
           Size="192.8,41.6"
           Id="Package\MAXSEQ (LOCATIONS)"
-          TopLeft="91.7444406501675,902.944444579045" />
+          TopLeft="75.9111081819293,967.944444127043" />
         <NodeLayout
           Size="137.6,41.6"
           Id="Package\POST-PKG\FINISH LOG"
@@ -8130,7 +8750,7 @@ order by PK_STORES</property>
           PanelSize="270.4,130.4"
           Size="270.4,43.2"
           Id="Package\POST-PKG"
-          TopLeft="354.574055001509,898.618519389714" />
+          TopLeft="356.240721577113,962.751852277072" />
         <NodeLayout
           Size="135.2,41.6"
           Id="Package\PRE-PKG\GET LOGID"
@@ -8220,40 +8840,6 @@ order by PK_STORES</property>
           Id="Package\Pre-Task"
           TopLeft="92.6259217775163,79.7888886879991" />
         <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="174.144440650167,842.944444579043">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="14,60.0000000000002"
-              Start="0,0"
-              End="14,52.5000000000002">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,26.0000000000002" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,26.0000000000002"
-                    Point2="0,30.0000000000002"
-                    Point3="4,30.0000000000002" />
-                  <mssgle:LineSegment
-                    End="10,30.0000000000002" />
-                  <mssgle:CubicBezierSegment
-                    Point1="10,30.0000000000002"
-                    Point2="14,30.0000000000002"
-                    Point3="14,34.0000000000002" />
-                  <mssgle:LineSegment
-                    End="14,52.5000000000002" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 1]"
           TopLeft="177.385181213841,328.588888687999">
           <EdgeLayout.Curve>
@@ -8333,18 +8919,18 @@ order by PK_STORES</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 4]"
-          TopLeft="284.544440650168,921.98148198438">
+          TopLeft="268.711108181929,986.548148202058">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="70.0296143513411,0"
+              EndConnector="87.5296133951836,0"
               Start="0,0"
-              End="62.5296143513411,0">
+              End="80.0296133951836,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="62.5296143513411,0" />
+                    End="80.0296133951836,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -8399,18 +8985,90 @@ order by PK_STORES</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 7]"
-          TopLeft="174.144440650167,741.344444579043">
+          TopLeft="174.144440650168,741.344444579042">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,59.9999999999999"
+              EndConnector="0,40.0666668052814"
               Start="0,0"
-              End="0,52.4999999999999">
+              End="0,32.5666668052814">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,52.4999999999999" />
+                    End="0,32.5666668052814" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="191.2,41.6"
+          Id="Package\AUTOKEY (LOCATION)"
+          TopLeft="66.6666630241608,873.866665268474" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="174.144440650168,823.011111384323">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-11.8777776260068,50.8555538841508"
+              Start="0,0"
+              End="-11.8777776260068,43.3555538841508">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,21.4277769420754" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,21.4277769420754"
+                    Point2="0,25.4277769420754"
+                    Point3="-4,25.4277769420754" />
+                  <mssgle:LineSegment
+                    End="-7.8777776260068,25.4277769420754" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-7.8777776260068,25.4277769420754"
+                    Point2="-11.8777776260068,25.4277769420754"
+                    Point3="-11.8777776260068,29.4277769420754" />
+                  <mssgle:LineSegment
+                    End="-11.8777776260068,43.3555538841508" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 8]"
+          TopLeft="162.266663024161,915.466665268474">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="10.0444451577685,52.4777788585689"
+              Start="0,0"
+              End="10.0444451577685,44.9777788585689">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,22.2388894292844" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,22.2388894292844"
+                    Point2="0,26.2388894292844"
+                    Point3="4,26.2388894292844" />
+                  <mssgle:LineSegment
+                    End="6.04444515776845,26.2388894292844" />
+                  <mssgle:CubicBezierSegment
+                    Point1="6.04444515776845,26.2388894292844"
+                    Point2="10.0444451577685,26.2388894292844"
+                    Point3="10.0444451577685,30.2388894292844" />
+                  <mssgle:LineSegment
+                    End="10.0444451577685,44.9777788585689" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -8976,6 +9634,156 @@ order by PK_STORES</property>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
     design-time-name="Package\DF - STORES\Oracle Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\AUTOKEY (LOCATION)">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="126.4,41.6"
+          Id="Package\AUTOKEY (LOCATION)\Aggregate"
+          TopLeft="522.999992206693,51.9999992251396" />
+        <NodeLayout
+          Size="172.8,53.6"
+          Id="Package\AUTOKEY (LOCATION)\UPDATE AUTOKEY"
+          TopLeft="500.999992534518,301.599996146361" />
+        <NodeLayout
+          Size="119.2,41.6"
+          Id="Package\AUTOKEY (LOCATION)\Multicast"
+          TopLeft="524.999971315266,224.866665358875" />
+        <NodeLayout
+          Size="161.6,41.6"
+          Id="Package\AUTOKEY (LOCATION)\Derived Column 1"
+          TopLeft="506.999992445111,138.999997928739" />
+        <NodeLayout
+          Size="152.8,41.6"
+          Id="Package\AUTOKEY (LOCATION)\Derived Column"
+          TopLeft="293.999995619059,51.9999992251396" />
+        <NodeLayout
+          Size="152,41.6"
+          Id="Package\AUTOKEY (LOCATION)\OLE DB Source"
+          TopLeft="67.999998986721,49.9999992549419" />
+        <EdgeLayout
+          Id="Package\AUTOKEY (LOCATION).Paths[Derived Column Output]"
+          TopLeft="446.799995619059,72.7999992251396">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="76.199996587634,0"
+              Start="0,0"
+              End="68.699996587634,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="68.699996587634,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\AUTOKEY (LOCATION).Paths[OLE DB Source Output]"
+          TopLeft="219.999998986721,71.7999992400408">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="73.9999966323378,0"
+              Start="0,0"
+              End="66.4999966323378,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="66.4999966323378,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\AUTOKEY (LOCATION).Paths[Multicast Output 1]"
+          TopLeft="585.999981924892,266.466665358875">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,35.1333307874861"
+              Start="0,0"
+              End="0,27.6333307874861">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,27.6333307874861" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\AUTOKEY (LOCATION).Paths[Aggregate Output 1]"
+          TopLeft="586.999992325902,93.5999992251396">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,45.3999987035989"
+              Start="0,0"
+              End="0,37.8999987035989">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,37.8999987035989" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\AUTOKEY (LOCATION).Paths[Derived Column Output1]"
+          TopLeft="586.199981880188,180.599997928739">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,44.2666674301356"
+              Start="0,0"
+              End="0,36.7666674301356">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,36.7666674301356" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\AUTOKEY (LOCATION)\OLE DB Source">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>

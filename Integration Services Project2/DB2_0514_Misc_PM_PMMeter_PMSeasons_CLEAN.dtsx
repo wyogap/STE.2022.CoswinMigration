@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0514_Misc_PM_PMMeter_PMSeasons_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="238"
-  DTS:VersionGUID="{1D71D6FA-D8A3-4AE8-96CA-252981DE28AC}"
+  DTS:VersionBuild="248"
+  DTS:VersionGUID="{AB538006-D9CA-4E95-A144-4F61B96AA421}"
   DTS:VersionMajor="2"
   DTS:VersionMinor="4">
   <DTS:Property
@@ -815,6 +815,619 @@
     DTS:FilterKind="0"
     DTS:LoggingMode="2" />
   <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\AUTOKEY (PMNUM)"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{50865207-41cb-49cf-9469-435c8a265e2c}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="AUTOKEY (PMNUM)"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\AUTOKEY (PMNUM)\Aggregate"
+              componentClassID="Microsoft.Aggregate"
+              contactInfo="Aggregate;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;3"
+              description="Aggregates data with functions such as Average, Sum, Count, Max, and Min. For example, group data to compute the sum of sales per product or the average visits per day."
+              name="Aggregate"
+              version="3">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the approximate number of group by keys that the aggregation produces. Low indicates 500,000 key values, Medium indicates 5 million key values, and High indicates more than 25 million key values. Unspecified indicates no KeyScale value is used."
+                  name="KeyScale"
+                  typeConverter="KeyScaleType">0</property>
+                <property
+                  dataType="System.Null"
+                  description="Specifies the exact number of group by keys that the aggregation produces. If a KeyScale value is specified, the value in Keys takes precedence."
+                  name="Keys" />
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the approximate number of distinct values in a column that the aggregation counts distinctly. Low indicates 500,000 key values, Medium indicates 5 million key values, and High indicates more than 25 million key values. Unspecified indicates no CountDistinctScale value is used."
+                  name="CountDistinctScale"
+                  typeConverter="KeyScaleType">0</property>
+                <property
+                  dataType="System.Null"
+                  description="Specifies the exact number of distinct values in a column that the aggregation counts distinctly. If a CountDistinctScale value is specified, the value in CountDistinctKeys takes precedence."
+                  name="CountDistinctKeys" />
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the percentage by which memory can be extended during the aggregation. Valid values are between 1 and 100."
+                  name="AutoExtendFactor">25</property>
+              </properties>
+              <inputs>
+                <input
+                  refId="Package\AUTOKEY (PMNUM)\Aggregate.Inputs[Aggregate Input 1]"
+                  name="Aggregate Input 1">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\AUTOKEY (PMNUM)\Aggregate.Inputs[Aggregate Input 1].Columns[v_pmnum]"
+                      cachedDataType="i8"
+                      cachedName="v_pmnum"
+                      lineageId="Package\AUTOKEY (PMNUM)\Derived Column.Outputs[Derived Column Output].Columns[v_pmnum]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\AUTOKEY (PMNUM)\Aggregate.Outputs[Aggregate Output 1]"
+                  name="Aggregate Output 1">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the approximate number of group by keys that the aggregation produces. Low indicates 500,000 key values, Medium indicates 5 million key values, and High indicates more than 25 million key values. Unspecified indicates no KeyScale value is used."
+                      name="KeyScale"
+                      typeConverter="KeyScaleType">0</property>
+                    <property
+                      dataType="System.Null"
+                      description="Specifies the exact number of group by keys that the aggregation produces. If a KeyScale value is specified, the value in Keys takes precedence."
+                      name="Keys" />
+                  </properties>
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTOKEY (PMNUM)\Aggregate.Outputs[Aggregate Output 1].Columns[v_pmnum]"
+                      dataType="i8"
+                      lineageId="Package\AUTOKEY (PMNUM)\Aggregate.Outputs[Aggregate Output 1].Columns[v_pmnum]"
+                      name="v_pmnum">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the ID of the input column used in the aggregation."
+                          name="AggregationColumnId">#{Package\AUTOKEY (PMNUM)\Derived Column.Outputs[Derived Column Output].Columns[v_pmnum]}</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the type of aggregation."
+                          name="AggregationType"
+                          typeConverter="AggregationType">7</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Indicates whether the column requires special handling because it may contain oversized data or it requires precision beyond a float data type."
+                          name="IsBig">1</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the string comparison options."
+                          name="AggregationComparisonFlags">0</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\AUTOKEY (PMNUM)\Derived Column"
+              componentClassID="Microsoft.DerivedColumn"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="Derived Column"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\AUTOKEY (PMNUM)\Derived Column.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\AUTOKEY (PMNUM)\Derived Column.Inputs[Derived Column Input].Columns[PMNUM]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="16"
+                      cachedName="PMNUM"
+                      lineageId="Package\AUTOKEY (PMNUM)\OLE DB Source.Outputs[OLE DB Source Output].Columns[PMNUM]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\AUTOKEY (PMNUM)\Derived Column.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\AUTOKEY (PMNUM)\Derived Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTOKEY (PMNUM)\Derived Column.Outputs[Derived Column Output].Columns[v_pmnum]"
+                      dataType="i8"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="IgnoreFailure"
+                      lineageId="Package\AUTOKEY (PMNUM)\Derived Column.Outputs[Derived Column Output].Columns[v_pmnum]"
+                      name="v_pmnum"
+                      truncationRowDisposition="IgnoreFailure">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_I8)#{Package\AUTOKEY (PMNUM)\OLE DB Source.Outputs[OLE DB Source Output].Columns[PMNUM]}</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_I8)PMNUM</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\AUTOKEY (PMNUM)\Derived Column.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\AUTOKEY (PMNUM)\Derived Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTOKEY (PMNUM)\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\AUTOKEY (PMNUM)\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\AUTOKEY (PMNUM)\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\AUTOKEY (PMNUM)\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\AUTOKEY (PMNUM)\Derived Column 1"
+              componentClassID="Microsoft.DerivedColumn"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="Derived Column 1"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\AUTOKEY (PMNUM)\Derived Column 1.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\AUTOKEY (PMNUM)\Derived Column 1.Inputs[Derived Column Input].Columns[v_pmnum]"
+                      cachedDataType="i8"
+                      cachedName="v_pmnum"
+                      lineageId="Package\AUTOKEY (PMNUM)\Aggregate.Outputs[Aggregate Output 1].Columns[v_pmnum]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\AUTOKEY (PMNUM)\Derived Column 1.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\AUTOKEY (PMNUM)\Derived Column 1.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTOKEY (PMNUM)\Derived Column 1.Outputs[Derived Column Output].Columns[v_autokey]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="16"
+                      lineageId="Package\AUTOKEY (PMNUM)\Derived Column 1.Outputs[Derived Column Output].Columns[v_autokey]"
+                      name="v_autokey"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_STR,16,1252)"PMNUM"</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_STR,16,1252)"PMNUM"</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\AUTOKEY (PMNUM)\Derived Column 1.Outputs[Derived Column Output].Columns[v_orgid]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="8"
+                      lineageId="Package\AUTOKEY (PMNUM)\Derived Column 1.Outputs[Derived Column Output].Columns[v_orgid]"
+                      name="v_orgid"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_STR,8,1252)"SBST"</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_STR,8,1252)"SBST"</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\AUTOKEY (PMNUM)\Derived Column 1.Outputs[Derived Column Output].Columns[v_seed]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="16"
+                      lineageId="Package\AUTOKEY (PMNUM)\Derived Column 1.Outputs[Derived Column Output].Columns[v_seed]"
+                      name="v_seed"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_STR,16,1252)(#{Package\AUTOKEY (PMNUM)\Aggregate.Outputs[Aggregate Output 1].Columns[v_pmnum]} + 1)</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_STR,16,1252)(v_pmnum + 1)</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\AUTOKEY (PMNUM)\Derived Column 1.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\AUTOKEY (PMNUM)\Derived Column 1.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTOKEY (PMNUM)\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\AUTOKEY (PMNUM)\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\AUTOKEY (PMNUM)\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\AUTOKEY (PMNUM)\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\AUTOKEY (PMNUM)\Multicast"
+              componentClassID="Microsoft.Multicast"
+              contactInfo="Multicast;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Distributes every input row to every row in one or more outputs. For example, branch your data flow to make a copy of data so that some values can be masked before sharing with external partners."
+              name="Multicast">
+              <inputs>
+                <input
+                  refId="Package\AUTOKEY (PMNUM)\Multicast.Inputs[Multicast Input 1]"
+                  name="Multicast Input 1">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\AUTOKEY (PMNUM)\Multicast.Outputs[Multicast Output 1]"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 1"
+                  synchronousInputId="Package\AUTOKEY (PMNUM)\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\AUTOKEY (PMNUM)\Multicast.Outputs[Multicast Output 3]"
+                  dangling="true"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 3"
+                  synchronousInputId="Package\AUTOKEY (PMNUM)\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\AUTOKEY (PMNUM)\OLE DB Source"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="OLE DB Source"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT REPLACE(PMNUM, 'PM', '') AS PMNUM from maximo.PM a WHERE ste_migrationid IS NOT NULL;</property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">2</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\AUTOKEY (PMNUM)\OLE DB Source.Connections[OleDbConnection]"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\AUTOKEY (PMNUM)\OLE DB Source.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTOKEY (PMNUM)\OLE DB Source.Outputs[OLE DB Source Output].Columns[PMNUM]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\AUTOKEY (PMNUM)\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[PMNUM]"
+                      length="16"
+                      lineageId="Package\AUTOKEY (PMNUM)\OLE DB Source.Outputs[OLE DB Source Output].Columns[PMNUM]"
+                      name="PMNUM"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\AUTOKEY (PMNUM)\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[PMNUM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="PMNUM" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\AUTOKEY (PMNUM)\OLE DB Source.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTOKEY (PMNUM)\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[PMNUM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      lineageId="Package\AUTOKEY (PMNUM)\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[PMNUM]"
+                      name="PMNUM" />
+                    <outputColumn
+                      refId="Package\AUTOKEY (PMNUM)\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\AUTOKEY (PMNUM)\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\AUTOKEY (PMNUM)\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\AUTOKEY (PMNUM)\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\AUTOKEY (PMNUM)\UPDATE AUTOKEY"
+              componentClassID="Microsoft.OLEDBCommand"
+              contactInfo="OLE DB Command;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;2"
+              description="Runs an SQL statement for each row in a data flow. For example, call a 'new employee setup' stored procedure for each row in the 'new employees' table. Note: running an SQL statement for each row of a large data flow may take a long time."
+              name="UPDATE AUTOKEY"
+              usesDispositions="true"
+              version="2">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">update maximo.autokey set seed=cast(? as varchar(16))
+where autokeyname=?;</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\AUTOKEY (PMNUM)\UPDATE AUTOKEY.Connections[OleDbConnection]"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\AUTOKEY (PMNUM)\UPDATE AUTOKEY.Inputs[OLE DB Command Input]"
+                  errorOrTruncationOperation="Command Execution"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Command Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\AUTOKEY (PMNUM)\UPDATE AUTOKEY.Inputs[OLE DB Command Input].Columns[v_autokey]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="16"
+                      cachedName="v_autokey"
+                      externalMetadataColumnId="Package\AUTOKEY (PMNUM)\UPDATE AUTOKEY.Inputs[OLE DB Command Input].ExternalColumns[Param_1]"
+                      lineageId="Package\AUTOKEY (PMNUM)\Derived Column 1.Outputs[Derived Column Output].Columns[v_autokey]" />
+                    <inputColumn
+                      refId="Package\AUTOKEY (PMNUM)\UPDATE AUTOKEY.Inputs[OLE DB Command Input].Columns[v_seed]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="16"
+                      cachedName="v_seed"
+                      externalMetadataColumnId="Package\AUTOKEY (PMNUM)\UPDATE AUTOKEY.Inputs[OLE DB Command Input].ExternalColumns[Param_0]"
+                      lineageId="Package\AUTOKEY (PMNUM)\Derived Column 1.Outputs[Derived Column Output].Columns[v_seed]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\AUTOKEY (PMNUM)\UPDATE AUTOKEY.Inputs[OLE DB Command Input].ExternalColumns[Param_0]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="Param_0">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Parameter information.  Matches OLE DB's DBPARAMFLAGSENUM values."
+                          name="DBParamInfoFlags">64</property>
+                      </properties>
+                    </externalMetadataColumn>
+                    <externalMetadataColumn
+                      refId="Package\AUTOKEY (PMNUM)\UPDATE AUTOKEY.Inputs[OLE DB Command Input].ExternalColumns[Param_1]"
+                      codePage="1252"
+                      dataType="str"
+                      length="40"
+                      name="Param_1">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Parameter information.  Matches OLE DB's DBPARAMFLAGSENUM values."
+                          name="DBParamInfoFlags">64</property>
+                      </properties>
+                    </externalMetadataColumn>
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\AUTOKEY (PMNUM)\UPDATE AUTOKEY.Outputs[OLE DB Command Output]"
+                  exclusionGroup="1"
+                  name="OLE DB Command Output"
+                  synchronousInputId="Package\AUTOKEY (PMNUM)\UPDATE AUTOKEY.Inputs[OLE DB Command Input]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\AUTOKEY (PMNUM)\UPDATE AUTOKEY.Outputs[OLE DB Command Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Command Error Output"
+                  synchronousInputId="Package\AUTOKEY (PMNUM)\UPDATE AUTOKEY.Inputs[OLE DB Command Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTOKEY (PMNUM)\UPDATE AUTOKEY.Outputs[OLE DB Command Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\AUTOKEY (PMNUM)\UPDATE AUTOKEY.Outputs[OLE DB Command Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\AUTOKEY (PMNUM)\UPDATE AUTOKEY.Outputs[OLE DB Command Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\AUTOKEY (PMNUM)\UPDATE AUTOKEY.Outputs[OLE DB Command Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\AUTOKEY (PMNUM).Paths[Aggregate Output 1]"
+              endId="Package\AUTOKEY (PMNUM)\Derived Column 1.Inputs[Derived Column Input]"
+              name="Aggregate Output 1"
+              startId="Package\AUTOKEY (PMNUM)\Aggregate.Outputs[Aggregate Output 1]" />
+            <path
+              refId="Package\AUTOKEY (PMNUM).Paths[Derived Column Output]"
+              endId="Package\AUTOKEY (PMNUM)\Aggregate.Inputs[Aggregate Input 1]"
+              name="Derived Column Output"
+              startId="Package\AUTOKEY (PMNUM)\Derived Column.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\AUTOKEY (PMNUM).Paths[Derived Column Output1]"
+              endId="Package\AUTOKEY (PMNUM)\Multicast.Inputs[Multicast Input 1]"
+              name="Derived Column Output"
+              startId="Package\AUTOKEY (PMNUM)\Derived Column 1.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\AUTOKEY (PMNUM).Paths[Multicast Output 1]"
+              endId="Package\AUTOKEY (PMNUM)\UPDATE AUTOKEY.Inputs[OLE DB Command Input]"
+              name="Multicast Output 1"
+              startId="Package\AUTOKEY (PMNUM)\Multicast.Outputs[Multicast Output 1]" />
+            <path
+              refId="Package\AUTOKEY (PMNUM).Paths[OLE DB Source Output]"
+              endId="Package\AUTOKEY (PMNUM)\Derived Column.Inputs[Derived Column Input]"
+              name="OLE DB Source Output"
+              startId="Package\AUTOKEY (PMNUM)\OLE DB Source.Outputs[OLE DB Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
     <DTS:Executable
       DTS:refId="Package\DF - PM"
       DTS:CreationName="Microsoft.Pipeline"
@@ -2466,7 +3079,7 @@
                   description="Specifies the SQL statement that generates the lookup table."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT jpnum, STE_CSWNJOBID
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT jobplanid, jpnum, STE_CSWNJOBID
 FROM     maximo.jobplan
 WHERE  (ste_migrationid IS NOT NULL)</property>
                 <property
@@ -2474,7 +3087,7 @@ WHERE  (ste_migrationid IS NOT NULL)</property>
                   description="Specifies a SQL statement that uses parameters to generate the lookup table."
                   expressionType="Notify"
                   name="SqlCommandParam"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (SELECT jpnum, STE_CSWNJOBID
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (SELECT jobplanid, jpnum, STE_CSWNJOBID
 FROM     maximo.jobplan
 WHERE  (ste_migrationid IS NOT NULL)) "refTable"
 where "refTable"."STE_CSWNJOBID" = ?</property>
@@ -2508,7 +3121,7 @@ where "refTable"."STE_CSWNJOBID" = ?</property>
                 <property
                   dataType="System.String"
                   description="Indicates whether to reference metadata in an XML format."
-                  name="ReferenceMetadataXml">&lt;referenceMetadata&gt;&lt;referenceColumns&gt;&lt;referenceColumn name="JPNUM" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_CSWNJOBID" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;/referenceColumns&gt;&lt;/referenceMetadata&gt;</property>
+                  name="ReferenceMetadataXml">&lt;referenceMetadata&gt;&lt;referenceColumns&gt;&lt;referenceColumn name="JOBPLANID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="JPNUM" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_CSWNJOBID" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;/referenceColumns&gt;&lt;/referenceMetadata&gt;</property>
                 <property
                   containsID="true"
                   dataType="System.String"
@@ -2580,6 +3193,20 @@ where "refTable"."STE_CSWNJOBID" = ?</property>
                           dataType="System.String"
                           description="Specifies the column in the reference table from which a column is copied."
                           name="CopyFromReferenceColumn">JPNUM</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\DF - PM\JP Lookup.Outputs[Lookup Match Output].Columns[JOBPLANID]"
+                      dataType="i8"
+                      errorOrTruncationOperation="Copy Column"
+                      lineageId="Package\DF - PM\JP Lookup.Outputs[Lookup Match Output].Columns[JOBPLANID]"
+                      name="JOBPLANID"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          dataType="System.String"
+                          description="Specifies the column in the reference table from which a column is copied."
+                          name="CopyFromReferenceColumn">JOBPLANID</property>
                       </properties>
                     </outputColumn>
                   </outputColumns>
@@ -9265,6 +9892,19 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="OutputColumnLineageID">#{Package\DF - PM\Union All 1.Outputs[Union All Output 1].Columns[jpnum]}</property>
                       </properties>
                     </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - PM\Union All 1.Inputs[Union All Input 1].Columns[JOBPLANID]"
+                      cachedDataType="i8"
+                      cachedName="JOBPLANID"
+                      lineageId="Package\DF - PM\JP Lookup.Outputs[Lookup Match Output].Columns[JOBPLANID]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - PM\Union All 1.Outputs[Union All Output 1].Columns[jobplanid]}</property>
+                      </properties>
+                    </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -9955,6 +10595,19 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           dataType="System.Int32"
                           description="Output column lineage ID"
                           name="OutputColumnLineageID">#{Package\DF - PM\Union All 1.Outputs[Union All Output 1].Columns[jpnum]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - PM\Union All 1.Inputs[Union All Input 2].Columns[jobplanid]"
+                      cachedDataType="i8"
+                      cachedName="jobplanid"
+                      lineageId="Package\DF - PM\Derived Column 2.Outputs[Derived Column Output].Columns[jobplanid]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - PM\Union All 1.Outputs[Union All Output 1].Columns[jobplanid]}</property>
                       </properties>
                     </inputColumn>
                   </inputColumns>
@@ -15115,11 +15768,11 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint]"
       DTS:CreationName=""
-      DTS:DTSID="{079905CF-3A63-434C-BC5F-A7B757B0AF0A}"
+      DTS:DTSID="{C2F377D4-92F3-46DE-905E-BCF5CC37662B}"
       DTS:From="Package\DF - PM"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint"
-      DTS:To="Package\MAXSEQ (PM)" />
+      DTS:To="Package\AUTOKEY (PMNUM)" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
       DTS:CreationName=""
@@ -15160,6 +15813,14 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 11"
       DTS:To="Package\POST-PKG" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 12]"
+      DTS:CreationName=""
+      DTS:DTSID="{538FEDEF-7E82-4880-9312-60E274E7D151}"
+      DTS:From="Package\AUTOKEY (PMNUM)"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 12"
+      DTS:To="Package\MAXSEQ (PM)" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
       DTS:CreationName=""
@@ -15236,7 +15897,7 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
     design-time-name="Package">
     <LayoutInfo>
       <GraphLayout
-        Capacity="64" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        Capacity="64" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="155.2,41.6"
           Id="Package\DF - PM"
@@ -15260,7 +15921,7 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
         <NodeLayout
           Size="148,41.6"
           Id="Package\MAXSEQ (PM)"
-          TopLeft="181.377768474211,516.90000497202" />
+          TopLeft="188.877768064429,597.500004411538" />
         <NodeLayout
           Size="205.6,41.6"
           Id="Package\MAXSEQ (PMANCESTOR)"
@@ -15277,6 +15938,56 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
           Size="152,41.6"
           Id="Package\PMANCESTOR"
           TopLeft="1058.99994308585,408.57778623524" />
+        <NodeLayout
+          Size="137.6,41.6"
+          Id="Package\POST-PKG\FINISH LOG"
+          TopLeft="51.9333115693606,32.199997812311" />
+        <ContainerLayout
+          HeaderHeight="43.2"
+          IsExpanded="False"
+          PanelSize="270.4,130.4"
+          Size="156,43.2"
+          Id="Package\POST-PKG"
+          TopLeft="164.144449574309,750.072482250653" />
+        <NodeLayout
+          Size="135.2,41.6"
+          Id="Package\PRE-PKG\GET LOGID"
+          TopLeft="47.4999810134378,99.1999989151955" />
+        <NodeLayout
+          Size="137.6,41.6"
+          Id="Package\PRE-PKG\START LOG"
+          TopLeft="45.833314437834,26.3999994214376" />
+        <EdgeLayout
+          Id="Package\PRE-PKG.PrecedenceConstraints[Constraint]"
+          TopLeft="114.866647725636,67.9999994214376">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,31.1999994937579"
+              Start="0,0"
+              End="0,23.6999994937579">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,23.6999994937579" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43.2"
+          IsExpanded="False"
+          PanelSize="268,196.8"
+          Size="149.6,43.2"
+          Id="Package\PRE-PKG"
+          TopLeft="171.644449164527,0.300000036160057" />
         <NodeLayout
           Size="164.8,41.6"
           Id="Package\Pre-Task\Execute SQL Task"
@@ -15478,6 +16189,96 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 10]"
+          TopLeft="249.555553567356,43.5000000361601">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,57.3333326342371"
+              Start="0,0"
+              End="0,49.8333326342371">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,49.8333326342371" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 11]"
+          TopLeft="1135.39994513475,559.122232152202">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-893.255495560441,190.950250098451"
+              Start="0,0"
+              End="-893.255495560441,183.450250098451">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,91.4751250492257" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,91.4751250492257"
+                    Point2="0,95.4751250492257"
+                    Point3="-4,95.4751250492257" />
+                  <mssgle:LineSegment
+                    End="-889.255495560441,95.4751250492257" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-889.255495560441,95.4751250492257"
+                    Point2="-893.255495560441,95.4751250492257"
+                    Point3="-893.255495560441,99.4751250492257" />
+                  <mssgle:LineSegment
+                    End="-893.255495560441,183.450250098451" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="286.211101397762,597.500004411538">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="235.677762555139,-242.222224504329"
+              Start="0,0"
+              End="235.677762555139,-234.722224504329">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,-117.36516612863" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,-117.36516612863"
+                    Point2="0,-121.36516612863"
+                    Point3="4,-121.36516612863" />
+                  <mssgle:LineSegment
+                    End="231.677762555139,-121.36516612863" />
+                  <mssgle:CubicBezierSegment
+                    Point1="231.677762555139,-121.36516612863"
+                    Point2="235.677762555139,-121.36516612863"
+                    Point3="235.677762555139,-125.36516612863" />
+                  <mssgle:LineSegment
+                    End="235.677762555139,-234.722224504329" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 3]"
           TopLeft="1170.22216586962,340.633342524038">
           <EdgeLayout.Curve>
@@ -15503,140 +16304,6 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
                     Point3="-35.2222227837751,31.5450447477842" />
                   <mssgle:LineSegment
                     End="-35.2222227837751,60.444443711201" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 7]"
-          TopLeft="1135.1999441103,450.17778623524">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,67.3444459169621"
-              Start="0,0"
-              End="0,59.8444459169621">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,59.8444459169621" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 8]"
-          TopLeft="899.255514182759,514.411117513467">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="214.966651686861,-173.777774989428"
-              Start="0,0"
-              End="214.966651686861,-166.277774989428">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,-82.7797501876152" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,-82.7797501876152"
-                    Point2="0,-86.7797501876152"
-                    Point3="4,-86.7797501876152" />
-                  <mssgle:LineSegment
-                    End="210.966651686861,-86.7797501876152" />
-                  <mssgle:CubicBezierSegment
-                    Point1="210.966651686861,-86.7797501876152"
-                    Point2="214.966651686861,-86.7797501876152"
-                    Point3="214.966651686861,-90.7797501876152" />
-                  <mssgle:LineSegment
-                    End="214.966651686861,-166.277774989428" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 9]"
-          TopLeft="1369.4610417745,401.588900620849">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,50.73333127823"
-              Start="0,0"
-              End="0,43.23333127823">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,43.23333127823" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="254.022213222197,449.633332670396">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,67.2666723016235"
-              Start="0,0"
-              End="0,59.7666723016235">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,59.7666723016235" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 2]"
-          TopLeft="278.711101807544,516.90000497202">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="243.177762145357,-161.622225064812"
-              Start="0,0"
-              End="243.177762145357,-154.122225064812">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,-76.9806294001696" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,-76.9806294001696"
-                    Point2="0,-80.9806294001696"
-                    Point3="4,-80.9806294001696" />
-                  <mssgle:LineSegment
-                    End="239.177762145357,-80.9806294001696" />
-                  <mssgle:CubicBezierSegment
-                    Point1="239.177762145357,-80.9806294001696"
-                    Point2="243.177762145357,-80.9806294001696"
-                    Point3="243.177762145357,-84.9806294001696" />
-                  <mssgle:LineSegment
-                    End="243.177762145357,-154.122225064812" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -15735,68 +16402,20 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="135.2,41.6"
-          Id="Package\PRE-PKG\GET LOGID"
-          TopLeft="47.4999810134378,99.1999989151955" />
-        <NodeLayout
-          Size="137.6,41.6"
-          Id="Package\PRE-PKG\START LOG"
-          TopLeft="45.833314437834,26.3999994214376" />
         <EdgeLayout
-          Id="Package\PRE-PKG.PrecedenceConstraints[Constraint]"
-          TopLeft="114.866647725636,67.9999994214376">
+          Id="Package.PrecedenceConstraints[Constraint 7]"
+          TopLeft="1135.1999441103,450.17778623524">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,31.1999994937579"
+              EndConnector="0,67.3444459169621"
               Start="0,0"
-              End="0,23.6999994937579">
+              End="0,59.8444459169621">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,23.6999994937579" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <ContainerLayout
-          HeaderHeight="43.2"
-          IsExpanded="False"
-          PanelSize="268,196.8"
-          Size="149.6,43.2"
-          Id="Package\PRE-PKG"
-          TopLeft="171.644449164527,0.300000036160057" />
-        <NodeLayout
-          Size="137.6,41.6"
-          Id="Package\POST-PKG\FINISH LOG"
-          TopLeft="51.9333115693606,32.199997812311" />
-        <ContainerLayout
-          HeaderHeight="43.2"
-          IsExpanded="False"
-          PanelSize="270.4,130.4"
-          Size="156,43.2"
-          Id="Package\POST-PKG"
-          TopLeft="158.311116559695,637.605816204736" />
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 10]"
-          TopLeft="249.555553567356,43.5000000361601">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,57.3333326342371"
-              Start="0,0"
-              End="0,49.8333326342371">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,49.8333326342371" />
+                    End="0,59.8444459169621" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -15806,31 +16425,125 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 11]"
-          TopLeft="1135.39994513475,559.122232152202">
+          Id="Package.PrecedenceConstraints[Constraint 8]"
+          TopLeft="899.255514182759,514.411117513467">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-899.08882857506,78.4835840525343"
+              EndConnector="214.966651686861,-173.777774989428"
               Start="0,0"
-              End="-899.08882857506,70.9835840525343">
+              End="214.966651686861,-166.277774989428">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,35.2417920262671" />
+                    End="0,-82.7797501876152" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,35.2417920262671"
-                    Point2="0,39.2417920262671"
-                    Point3="-4,39.2417920262671" />
+                    Point1="0,-82.7797501876152"
+                    Point2="0,-86.7797501876152"
+                    Point3="4,-86.7797501876152" />
                   <mssgle:LineSegment
-                    End="-895.08882857506,39.2417920262671" />
+                    End="210.966651686861,-86.7797501876152" />
                   <mssgle:CubicBezierSegment
-                    Point1="-895.08882857506,39.2417920262671"
-                    Point2="-899.08882857506,39.2417920262671"
-                    Point3="-899.08882857506,43.2417920262671" />
+                    Point1="210.966651686861,-86.7797501876152"
+                    Point2="214.966651686861,-86.7797501876152"
+                    Point3="214.966651686861,-90.7797501876152" />
                   <mssgle:LineSegment
-                    End="-899.08882857506,70.9835840525343" />
+                    End="214.966651686861,-166.277774989428" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 9]"
+          TopLeft="1369.4610417745,401.588900620849">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,50.73333127823"
+              Start="0,0"
+              End="0,43.23333127823">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,43.23333127823" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="176.8,41.6"
+          Id="Package\AUTOKEY (PMNUM)"
+          TopLeft="139.977784228051,506.605817994663" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="252.666657970184,449.633332670396">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-24.2888737421332,56.9724853242674"
+              Start="0,0"
+              End="-24.2888737421332,49.4724853242674">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,24.4862426621337" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,24.4862426621337"
+                    Point2="0,28.4862426621337"
+                    Point3="-4,28.4862426621337" />
+                  <mssgle:LineSegment
+                    End="-20.2888737421332,28.4862426621337" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-20.2888737421332,28.4862426621337"
+                    Point2="-24.2888737421332,28.4862426621337"
+                    Point3="-24.2888737421332,32.4862426621337" />
+                  <mssgle:LineSegment
+                    End="-24.2888737421332,49.4724853242674" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 12]"
+          TopLeft="228.377784228051,548.205817994663">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="11.1666505030449,49.2941864168741"
+              Start="0,0"
+              End="11.1666505030449,41.7941864168741">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,25.2601855201766" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,25.2601855201766"
+                    Point2="0,29.2601855201766"
+                    Point3="4,29.2601855201766" />
+                  <mssgle:LineSegment
+                    End="7.16665050304493,29.2601855201766" />
+                  <mssgle:CubicBezierSegment
+                    Point1="7.16665050304493,29.2601855201766"
+                    Point2="11.1666505030449,29.2601855201766"
+                    Point3="11.1666505030449,33.2601855201766" />
+                  <mssgle:LineSegment
+                    End="11.1666505030449,41.7941864168741" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -15848,25 +16561,17 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
       <GraphLayout
         Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
-          Size="128.8,41.6"
-          Id="Package\DF - PM\Union All 1"
-          TopLeft="243.9,615.099999999999" />
-        <NodeLayout
-          Size="161.6,41.6"
-          Id="Package\DF - PM\Derived Column 4"
-          TopLeft="5.50000000000014,919.899999999999" />
-        <NodeLayout
           Size="167.2,41.6"
           Id="Package\DF - PM\Derived Column 1"
           TopLeft="224.7,310.3" />
         <NodeLayout
-          Size="153.6,41.6"
-          Id="Package\DF - PM\Conditional Split"
-          TopLeft="231.5,818.299999999999" />
-        <NodeLayout
           Size="131.2,41.6"
           Id="Package\DF - PM\JP Lookup"
           TopLeft="242.7,411.9" />
+        <NodeLayout
+          Size="153.6,41.6"
+          Id="Package\DF - PM\Conditional Split"
+          TopLeft="231.5,818.299999999999" />
         <NodeLayout
           Size="120,41.6"
           Id="Package\DF - PM\Union All"
@@ -15903,174 +16608,14 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
           Size="167.2,41.6"
           Id="Package\DF - PM\Derived Column 2"
           TopLeft="79.7000000000001,513.5" />
-        <EdgeLayout
-          Id="Package\DF - PM.Paths[Derived Column Output5]"
-          TopLeft="459.133325092164,965.833333303199">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-152.966670855549,34.4333321099159"
-              Start="0,0"
-              End="-152.966670855549,26.9333321099159">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,16.3881571703449" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,16.3881571703449"
-                    Point2="0,20.3881571703449"
-                    Point3="-4,20.3881571703449" />
-                  <mssgle:LineSegment
-                    End="-148.966670855549,20.3881571703449" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-148.966670855549,20.3881571703449"
-                    Point2="-152.966670855549,20.3881571703449"
-                    Point3="-152.966670855549,24.3881571703449" />
-                  <mssgle:LineSegment
-                    End="-152.966670855549,26.9333321099159" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - PM.Paths[Derived Column Output4]"
-          TopLeft="86.3000000000001,961.499999999999">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="201.199987569949,38.7666654131159"
-              Start="0,0"
-              End="201.199987569949,31.2666654131159">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,15.383332706558" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,15.383332706558"
-                    Point2="0,19.383332706558"
-                    Point3="4,19.383332706558" />
-                  <mssgle:LineSegment
-                    End="197.199987569949,19.383332706558" />
-                  <mssgle:CubicBezierSegment
-                    Point1="197.199987569949,19.383332706558"
-                    Point2="201.199987569949,19.383332706558"
-                    Point3="201.199987569949,23.383332706558" />
-                  <mssgle:LineSegment
-                    End="201.199987569949,31.2666654131159" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - PM.Paths[Derived Column Output3]"
-          TopLeft="308.3,351.9">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,59.9999999999999"
-              Start="0,0"
-              End="0,52.4999999999999">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,52.4999999999999" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - PM.Paths[Derived Column Output2]"
-          TopLeft="308.3,758.299999999999">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,59.9999999999999"
-              Start="0,0"
-              End="0,52.4999999999999">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,52.4999999999999" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - PM.Paths[Derived Column Output1]"
-          TopLeft="163.3,555.1">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="124.866666666667,59.9999999999999"
-              Start="0,0"
-              End="124.866666666667,52.4999999999999">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,31.5582822085889" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,31.5582822085889"
-                    Point2="0,35.5582822085889"
-                    Point3="4,35.5582822085889" />
-                  <mssgle:LineSegment
-                    End="120.866666666667,35.5582822085889" />
-                  <mssgle:CubicBezierSegment
-                    Point1="120.866666666667,35.5582822085889"
-                    Point2="124.866666666667,35.5582822085889"
-                    Point3="124.866666666667,39.5582822085889" />
-                  <mssgle:LineSegment
-                    End="124.866666666667,52.4999999999999" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - PM.Paths[Derived Column Output]"
-          TopLeft="308.3,250.3">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,59.9999999999999"
-              Start="0,0"
-              End="0,52.4999999999999">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,52.4999999999999" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
+        <NodeLayout
+          Size="161.6,41.6"
+          Id="Package\DF - PM\Derived Column 4"
+          TopLeft="5.50000000000014,919.899999999999" />
+        <NodeLayout
+          Size="128.8,41.6"
+          Id="Package\DF - PM\Union All 1"
+          TopLeft="243.9,615.099999999999" />
         <EdgeLayout
           Id="Package\DF - PM.Paths[ASSET]"
           TopLeft="332.566666666667,859.899999999999">
@@ -16337,6 +16882,174 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - PM.Paths[Derived Column Output5]"
+          TopLeft="459.133325092164,965.833333303199">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-152.966670855549,34.4333321099159"
+              Start="0,0"
+              End="-152.966670855549,26.9333321099159">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,16.3881571703449" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,16.3881571703449"
+                    Point2="0,20.3881571703449"
+                    Point3="-4,20.3881571703449" />
+                  <mssgle:LineSegment
+                    End="-148.966670855549,20.3881571703449" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-148.966670855549,20.3881571703449"
+                    Point2="-152.966670855549,20.3881571703449"
+                    Point3="-152.966670855549,24.3881571703449" />
+                  <mssgle:LineSegment
+                    End="-152.966670855549,26.9333321099159" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - PM.Paths[Derived Column Output4]"
+          TopLeft="86.3000000000001,961.499999999999">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="201.199987569949,38.7666654131159"
+              Start="0,0"
+              End="201.199987569949,31.2666654131159">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,15.383332706558" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,15.383332706558"
+                    Point2="0,19.383332706558"
+                    Point3="4,19.383332706558" />
+                  <mssgle:LineSegment
+                    End="197.199987569949,19.383332706558" />
+                  <mssgle:CubicBezierSegment
+                    Point1="197.199987569949,19.383332706558"
+                    Point2="201.199987569949,19.383332706558"
+                    Point3="201.199987569949,23.383332706558" />
+                  <mssgle:LineSegment
+                    End="201.199987569949,31.2666654131159" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - PM.Paths[Derived Column Output3]"
+          TopLeft="308.3,351.9">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,59.9999999999999"
+              Start="0,0"
+              End="0,52.4999999999999">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.4999999999999" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - PM.Paths[Derived Column Output2]"
+          TopLeft="308.3,758.299999999999">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,59.9999999999999"
+              Start="0,0"
+              End="0,52.4999999999999">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.4999999999999" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - PM.Paths[Derived Column Output1]"
+          TopLeft="163.3,555.1">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="124.866666666667,59.9999999999999"
+              Start="0,0"
+              End="124.866666666667,52.4999999999999">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,31.5582822085889" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,31.5582822085889"
+                    Point2="0,35.5582822085889"
+                    Point3="4,35.5582822085889" />
+                  <mssgle:LineSegment
+                    End="120.866666666667,35.5582822085889" />
+                  <mssgle:CubicBezierSegment
+                    Point1="120.866666666667,35.5582822085889"
+                    Point2="124.866666666667,35.5582822085889"
+                    Point3="124.866666666667,39.5582822085889" />
+                  <mssgle:LineSegment
+                    End="124.866666666667,52.4999999999999" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - PM.Paths[Derived Column Output]"
+          TopLeft="308.3,250.3">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,59.9999999999999"
+              Start="0,0"
+              End="0,52.4999999999999">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.4999999999999" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
@@ -16346,7 +17059,7 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
       <Property>
         <Name>OverwriteParamsSQLProp</Name>
         <Value
-          type="q2:string">false</Value>
+          type="q2:boolean">false</Value>
       </Property>
       <Property>
         <Name>UsedTableName</Name>
@@ -16356,7 +17069,7 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
       <Property>
         <Name>TableInfoObjectType</Name>
         <Value
-          type="q4:string">0</Value>
+          type="q4:int">0</Value>
       </Property>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -16388,49 +17101,27 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
     design-time-name="Package\DF - PMANCESTOR">
     <LayoutInfo>
       <GraphLayout
-        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
-          Size="167.2,41.6"
-          Id="Package\DF - PMANCESTOR\Running Number"
-          TopLeft="238.166653949354,79.3333334383038" />
-        <NodeLayout
-          Size="158.4,41.6"
-          Id="Package\DF - PMANCESTOR\Derived Column"
-          TopLeft="236.666657262379,155.333333790965" />
+          Size="171.2,41.6"
+          Id="Package\DF - PMANCESTOR\OLE DB Destination"
+          TopLeft="238.833328884509,308.533336015608" />
         <NodeLayout
           Size="119.2,41.6"
           Id="Package\DF - PMANCESTOR\Multicast"
           TopLeft="253.166657500797,223.73333624608" />
         <NodeLayout
+          Size="167.2,41.6"
+          Id="Package\DF - PMANCESTOR\Running Number"
+          TopLeft="238.166653949354,79.3333334383038" />
+        <NodeLayout
           Size="152,41.6"
           Id="Package\DF - PMANCESTOR\OLE DB Source"
           TopLeft="42.9999993592501,0.999999985098832" />
         <NodeLayout
-          Size="171.2,41.6"
-          Id="Package\DF - PMANCESTOR\OLE DB Destination"
-          TopLeft="238.833328884509,308.533336015608" />
-        <EdgeLayout
-          Id="Package\DF - PMANCESTOR.Paths[Derived Column Output]"
-          TopLeft="314.316657381588,196.933333790965">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,26.8000024551151"
-              Start="0,0"
-              End="0,19.3000024551151">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,19.3000024551151" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
+          Size="158.4,41.6"
+          Id="Package\DF - PMANCESTOR\Derived Column"
+          TopLeft="236.666657262379,155.333333790965" />
         <EdgeLayout
           Id="Package\DF - PMANCESTOR.Paths[Output 0]"
           TopLeft="318.816655605867,120.933333438304">
@@ -16450,7 +17141,9 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -16484,7 +17177,9 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -16518,7 +17213,33 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - PMANCESTOR.Paths[Derived Column Output]"
+          TopLeft="314.316657381588,196.933333790965">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,26.8000024551151"
+              Start="0,0"
+              End="0,19.3000024551151">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,19.3000024551151" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
@@ -16551,9 +17272,9 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
       <GraphLayout
         Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
-          Size="119.2,41.6"
-          Id="Package\DF - PMMeter\Multicast"
-          TopLeft="112.83332723048,371.800001758337" />
+          Size="158.4,41.6"
+          Id="Package\DF - PMMeter\Derived Column 1"
+          TopLeft="83.9999998509884,299.999999791384" />
         <NodeLayout
           Size="132,41.6"
           Id="Package\DF - PMMeter\Multicast 1"
@@ -16563,25 +17284,109 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
           Id="Package\DF - PMMeter\OLE DB Destination"
           TopLeft="79.4999988973141,448.600001647075" />
         <NodeLayout
-          Size="158.4,41.6"
-          Id="Package\DF - PMMeter\Derived Column"
-          TopLeft="264.499999940395,28.5" />
+          Size="176,41.6"
+          Id="Package\DF - PMMeter\Flat File Destination"
+          TopLeft="456.999999940395,375" />
         <NodeLayout
           Size="144.8,41.6"
           Id="Package\DF - PMMeter\Oracle Source"
           TopLeft="9.49999994039538,15.1" />
         <NodeLayout
-          Size="158.4,41.6"
-          Id="Package\DF - PMMeter\Derived Column 1"
-          TopLeft="83.9999998509884,299.999999791384" />
+          Size="119.2,41.6"
+          Id="Package\DF - PMMeter\Multicast"
+          TopLeft="112.83332723048,371.800001758337" />
         <NodeLayout
           Size="135.2,41.6"
           Id="Package\DF - PMMeter\PM Lookup"
           TopLeft="275.999999940395,208" />
         <NodeLayout
-          Size="176,41.6"
-          Id="Package\DF - PMMeter\Flat File Destination"
-          TopLeft="456.999999940395,375" />
+          Size="158.4,41.6"
+          Id="Package\DF - PMMeter\Derived Column"
+          TopLeft="264.499999940395,28.5" />
+        <EdgeLayout
+          Id="Package\DF - PMMeter.Paths[Oracle Source Output]"
+          TopLeft="154.299999940395,35.9">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="110.2,13.4"
+              Start="0,0"
+              End="102.7,13.4">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="51.1,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="51.1,0"
+                    Point2="55.1,0"
+                    Point3="55.1,4" />
+                  <mssgle:LineSegment
+                    End="55.1,9.39999999999998" />
+                  <mssgle:CubicBezierSegment
+                    Point1="55.1,9.39999999999998"
+                    Point2="55.1,13.4"
+                    Point3="59.1,13.4" />
+                  <mssgle:LineSegment
+                    End="102.7,13.4" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - PMMeter.Paths[Multicast Output 21]"
+          TopLeft="168.766663063897,413.400001758337">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,35.1999998887376"
+              Start="0,0"
+              End="0,27.6999998887376">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,27.6999998887376" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - PMMeter.Paths[Multicast Output 2]"
+          TopLeft="548.722222162617,251.444444444445">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,123.555555555555"
+              Start="0,0"
+              End="0,116.055555555555">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,116.055555555555" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - PMMeter.Paths[Lookup No Match Output]"
           TopLeft="410.999999940395,229.722222222223">
@@ -16673,7 +17478,9 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -16695,85 +17502,9 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - PMMeter.Paths[Oracle Source Output]"
-          TopLeft="154.299999940395,35.9">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="110.2,13.4"
-              Start="0,0"
-              End="102.7,13.4">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="51.1,0" />
-                  <mssgle:CubicBezierSegment
-                    Point1="51.1,0"
-                    Point2="55.1,0"
-                    Point3="55.1,4" />
-                  <mssgle:LineSegment
-                    End="55.1,9.39999999999998" />
-                  <mssgle:CubicBezierSegment
-                    Point1="55.1,9.39999999999998"
-                    Point2="55.1,13.4"
-                    Point3="59.1,13.4" />
-                  <mssgle:LineSegment
-                    End="102.7,13.4" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - PMMeter.Paths[Multicast Output 21]"
-          TopLeft="168.766663063897,413.400001758337">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,35.1999998887376"
-              Start="0,0"
-              End="0,27.6999998887376">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,27.6999998887376" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - PMMeter.Paths[Multicast Output 2]"
-          TopLeft="548.722222162617,251.444444444445">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,123.555555555555"
-              Start="0,0"
-              End="0,116.055555555555">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,116.055555555555" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
@@ -16833,13 +17564,13 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
           Id="Package\DF - PMSeasons\Flat File Destination"
           TopLeft="475.000000089407,364.999999985099" />
         <NodeLayout
-          Size="144.8,41.6"
-          Id="Package\DF - PMSeasons\Oracle Source"
-          TopLeft="5.5,34.0236220472441" />
-        <NodeLayout
           Size="132,41.6"
           Id="Package\DF - PMSeasons\Multicast 1"
           TopLeft="502.444444444444,195.444444444445" />
+        <NodeLayout
+          Size="144.8,41.6"
+          Id="Package\DF - PMSeasons\Oracle Source"
+          TopLeft="5.5,34.0236220472441" />
         <NodeLayout
           Size="135.2,41.6"
           Id="Package\DF - PMSeasons\PM Lookup"
@@ -16856,6 +17587,30 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
           Size="171.2,41.6"
           Id="Package\DF - PMSeasons\OLE DB Destination"
           TopLeft="147.499997884035,356.400002660353" />
+        <EdgeLayout
+          Id="Package\DF - PMSeasons.Paths[Lookup No Match Output]"
+          TopLeft="402.2,216.522222229673">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="100.244444444444,0"
+              Start="0,0"
+              End="92.744444444444,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="92.744444444444,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-9.43416449652799,5,111.6127734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - PMSeasons.Paths[Lookup Match Output]"
           TopLeft="334.6,237.600000014901">
@@ -16911,7 +17666,9 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -16945,7 +17702,9 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -16967,7 +17726,9 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -16989,30 +17750,8 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - PMSeasons.Paths[Lookup No Match Output]"
-          TopLeft="402.2,216.522222229673">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="100.244444444444,0"
-              Start="0,0"
-              End="92.744444444444,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="92.744444444444,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="-9.43416449652799,5,111.6127734375,11.609375"
+              BoundingBox="0,0,0,0"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
@@ -17060,6 +17799,156 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
         <Name>TableInfoObjectType</Name>
         <Value
           type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\AUTOKEY (PMNUM)">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="126.4,41.6"
+          Id="Package\AUTOKEY (PMNUM)\Aggregate"
+          TopLeft="522.999992206693,51.9999992251396" />
+        <NodeLayout
+          Size="172.8,53.6"
+          Id="Package\AUTOKEY (PMNUM)\UPDATE AUTOKEY"
+          TopLeft="500.999992534518,301.599996146361" />
+        <NodeLayout
+          Size="119.2,41.6"
+          Id="Package\AUTOKEY (PMNUM)\Multicast"
+          TopLeft="524.999971315266,224.866665358875" />
+        <NodeLayout
+          Size="161.6,41.6"
+          Id="Package\AUTOKEY (PMNUM)\Derived Column 1"
+          TopLeft="506.999992445111,138.999997928739" />
+        <NodeLayout
+          Size="152.8,41.6"
+          Id="Package\AUTOKEY (PMNUM)\Derived Column"
+          TopLeft="293.999995619059,51.9999992251396" />
+        <NodeLayout
+          Size="152,41.6"
+          Id="Package\AUTOKEY (PMNUM)\OLE DB Source"
+          TopLeft="68.833332274523,49.9999992549419" />
+        <EdgeLayout
+          Id="Package\AUTOKEY (PMNUM).Paths[Derived Column Output]"
+          TopLeft="446.799995619059,72.7999992251396">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="76.199996587634,0"
+              Start="0,0"
+              End="68.699996587634,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="68.699996587634,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\AUTOKEY (PMNUM).Paths[OLE DB Source Output]"
+          TopLeft="220.833332274523,71.7999992400407">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="73.1666633445361,0"
+              Start="0,0"
+              End="65.6666633445361,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="65.6666633445361,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\AUTOKEY (PMNUM).Paths[Multicast Output 1]"
+          TopLeft="585.999981924892,266.466665358875">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,35.1333307874861"
+              Start="0,0"
+              End="0,27.6333307874861">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,27.6333307874861" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\AUTOKEY (PMNUM).Paths[Aggregate Output 1]"
+          TopLeft="586.999992325902,93.5999992251396">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,45.3999987035989"
+              Start="0,0"
+              End="0,37.8999987035989">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,37.8999987035989" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\AUTOKEY (PMNUM).Paths[Derived Column Output1]"
+          TopLeft="586.199981880188,180.599997928739">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,44.2666674301356"
+              Start="0,0"
+              End="0,36.7666674301356">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,36.7666674301356" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\AUTOKEY (PMNUM)\OLE DB Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
