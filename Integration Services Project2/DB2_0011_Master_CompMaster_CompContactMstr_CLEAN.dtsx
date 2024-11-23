@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0011_Master_CompMaster_CompContactMstr_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="256"
-  DTS:VersionGUID="{A6BA1871-E191-416A-BE21-047B4CC37BBD}"
+  DTS:VersionBuild="258"
+  DTS:VersionGUID="{331FE2D1-AC56-46E9-9954-F7263C93C3BE}"
   DTS:VersionMajor="5">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -25681,7 +25681,7 @@ order by s.PK_SUPPLIER_</property>
       DTS:LocaleID="-1"
       DTS:ObjectName="MAXSEQ (COMPMASTER)"
       DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-      DTS:ThreadHint="1">
+      DTS:ThreadHint="2">
       <DTS:Variables />
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
@@ -25739,21 +25739,27 @@ order by s.PK_SUPPLIER_</property>
           DTS:refId="Package\PRE-PKG\GET LOGID"
           DTS:CreationName="Microsoft.ExecuteSQLTask"
           DTS:Description="Execute SQL Task"
-          DTS:DTSID="{32da364b-3320-45b4-b366-8f44c7195711}"
+          DTS:DTSID="{764c4966-e854-47a3-bd80-5dfcdbef7d1f}"
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="GET LOGID"
           DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-          DTS:ThreadHint="0">
+          DTS:ThreadHint="1">
           <DTS:Variables />
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-              SQLTask:SqlStatementSource="SELECT IDENTITY_VAL_LOCAL() AS PackageLogID FROM SYSIBM.DUAL;"
+              SQLTask:SqlStatementSource="SELECT ID FROM MIGRATION.ste_migration_logs &#xA;WHERE package_name=?&#xA;ORDER BY ID DESC LIMIT 1"
               SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
               <SQLTask:ResultBinding
-                SQLTask:ResultName="PackageLogId"
+                SQLTask:ResultName="ID"
                 SQLTask:DtsVariableName="User::log_id" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="NewParameterName"
+                SQLTask:DtsVariableName="System::PackageName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
             </SQLTask:SqlTaskData>
           </DTS:ObjectData>
         </DTS:Executable>
@@ -25761,7 +25767,7 @@ order by s.PK_SUPPLIER_</property>
           DTS:refId="Package\PRE-PKG\START LOG"
           DTS:CreationName="Microsoft.ExecuteSQLTask"
           DTS:Description="Execute SQL Task"
-          DTS:DTSID="{709521de-7ad1-4c60-bad4-3cde301467a2}"
+          DTS:DTSID="{c8f0095e-ee4c-4ac7-bb7f-e39a18b38147}"
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="START LOG"
@@ -25771,7 +25777,7 @@ order by s.PK_SUPPLIER_</property>
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-              SQLTask:SqlStatementSource="INSERT INTO MIGRATION.ste_migration_logs (&#xA; package_name&#xA; ,version&#xA; ,start_date &#xA;)&#xA;VALUES (&#xA; ?&#xA; , CONCAT(?, '.', ?) &#xA; ,CURRENT_TIMESTAMP&#xA;);&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              SQLTask:SqlStatementSource="INSERT INTO MIGRATION.ste_migration_logs (&#xA; package_name&#xA; ,version&#xA; ,start_date &#xA;)&#xA;VALUES (&#xA; ?&#xA; , CONCAT(?,CONCAT( '.', ?))&#xA; ,CURRENT_TIMESTAMP&#xA;);" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
               <SQLTask:ParameterBinding
                 SQLTask:ParameterName="PkgName"
                 SQLTask:DtsVariableName="System::PackageName"
@@ -25794,16 +25800,6 @@ order by s.PK_SUPPLIER_</property>
           </DTS:ObjectData>
         </DTS:Executable>
       </DTS:Executables>
-      <DTS:PrecedenceConstraints>
-        <DTS:PrecedenceConstraint
-          DTS:refId="Package\PRE-PKG.PrecedenceConstraints[Constraint]"
-          DTS:CreationName=""
-          DTS:DTSID="{8387065b-771a-4b6f-99df-dc16020c4845}"
-          DTS:From="Package\PRE-PKG\START LOG"
-          DTS:LogicalAnd="True"
-          DTS:ObjectName="Constraint"
-          DTS:To="Package\PRE-PKG\GET LOGID" />
-      </DTS:PrecedenceConstraints>
     </DTS:Executable>
     <DTS:Executable
       DTS:refId="Package\Pre-Task"
@@ -26116,107 +26112,107 @@ order by s.PK_SUPPLIER_</property>
     design-time-name="Package">
     <LayoutInfo>
       <GraphLayout
-        Capacity="64" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        Capacity="64" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
           Size="232.8,41.6"
           Id="Package\DF - CompMaster (DIR_MANF)"
-          TopLeft="424.761881963721,528.20000203401" />
+          TopLeft="424.761881963721,529.06666869465" />
         <NodeLayout
           Size="232.8,41.6"
           Id="Package\DF - CompMaster (DIR_SUBC)"
-          TopLeft="424.761881963721,730.533335373368" />
+          TopLeft="424.761881963721,731.400002034008" />
         <NodeLayout
           Size="231.2,41.6"
           Id="Package\DF - CompMaster (DIR_SUPP)"
-          TopLeft="79.1333294631709,732.333332534798" />
+          TopLeft="79.1333294631709,733.199999195438" />
         <NodeLayout
           Size="236.8,41.6"
           Id="Package\DF - CompMaster (SUPPLIER_)"
-          TopLeft="76.3333294631709,529.999999195437" />
+          TopLeft="76.3333294631709,530.866665856077" />
         <NodeLayout
           Size="201.6,41.6"
           Id="Package\DF - Contact (DIR_MANF)"
-          TopLeft="785.064244082395,1097.4619113155" />
+          TopLeft="785.064244082395,1098.32857797614" />
         <NodeLayout
           Size="207.2,41.6"
           Id="Package\DF - Contact (DIR_SUBC)"
-          TopLeft="1092.32375095101,1098.44286632495" />
+          TopLeft="1092.32375095101,1099.30953298559" />
         <NodeLayout
           Size="201.6,41.6"
           Id="Package\DF - Contact (DIR_SUPP)"
-          TopLeft="448.516644047355,1105.07143165795" />
+          TopLeft="448.516644047355,1105.93809831859" />
         <NodeLayout
           Size="201.6,41.6"
           Id="Package\DF - Contact (SUPPLIER_)"
-          TopLeft="81.1357111147826,1103.90952445954" />
+          TopLeft="81.1357111147826,1104.77619112018" />
         <NodeLayout
           Size="168,41.6"
           Id="Package\DF - Tech Contact (DIR_MANF)"
-          TopLeft="802.697577370197,1301.52857797614" />
+          TopLeft="802.697577370197,1302.39524463678" />
         <NodeLayout
           Size="168,41.6"
           Id="Package\DF - Tech Contact (DIR_SUBC)"
-          TopLeft="1111.92375095101,1301.64286632495" />
+          TopLeft="1111.92375095101,1302.50953298559" />
         <NodeLayout
           Size="224.8,41.6"
           Id="Package\DF - Tech Contact (DIR_SUPP)"
-          TopLeft="436.916644047355,1308.27143165795" />
+          TopLeft="436.916644047355,1309.13809831859" />
         <NodeLayout
           Size="168,41.6"
           Id="Package\DF - Tech Contact (SUPPLIER_)"
-          TopLeft="97.9357111147826,1307.10952445954" />
+          TopLeft="97.9357111147826,1307.97619112018" />
         <NodeLayout
           Size="134.4,41.6"
           Id="Package\Get Max ID"
-          TopLeft="114.735711114783,1205.50952445954" />
+          TopLeft="114.735711114783,1206.37619112018" />
         <NodeLayout
           Size="134.4,41.6"
           Id="Package\Get Max ID 1"
-          TopLeft="127.533329463171,630.733332534798" />
+          TopLeft="127.533329463171,631.599999195438" />
         <NodeLayout
           Size="134.4,41.6"
           Id="Package\Get Max ID 1 1"
-          TopLeft="473.961881963721,426.60000203401" />
+          TopLeft="473.961881963721,427.46666869465" />
         <NodeLayout
           Size="134.4,41.6"
           Id="Package\Get Max ID 1 1 1"
-          TopLeft="473.961881963721,629.80000203401" />
+          TopLeft="473.961881963721,630.66666869465" />
         <NodeLayout
           Size="134.4,41.6"
           Id="Package\Get Max ID 2"
-          TopLeft="114.735711114783,1002.30952445955" />
+          TopLeft="114.735711114783,1003.17619112019" />
         <NodeLayout
           Size="152,41.6"
           Id="Package\Get Max ID 2 1"
-          TopLeft="473.316644047355,1003.47143165796" />
+          TopLeft="473.316644047355,1004.3380983186" />
         <NodeLayout
           Size="152,41.6"
           Id="Package\Get Max ID 2 1 1"
-          TopLeft="810.697577370197,996.728577976141" />
+          TopLeft="810.697577370197,997.595244636781" />
         <NodeLayout
           Size="152,41.6"
           Id="Package\Get Max ID 2 1 2"
-          TopLeft="1121.95946518794,1006.00953311861" />
+          TopLeft="1121.95946518794,1006.87619977925" />
         <NodeLayout
           Size="134.4,41.6"
           Id="Package\Get Max ID 3"
-          TopLeft="482.116644047355,1206.67143165795" />
+          TopLeft="482.116644047355,1207.53809831859" />
         <NodeLayout
           Size="134.4,41.6"
           Id="Package\Get Max ID 3 1"
-          TopLeft="819.497577370197,1199.92857797614" />
+          TopLeft="819.497577370197,1200.79524463678" />
         <NodeLayout
           Size="134.4,41.6"
           Id="Package\Get Max ID 3 2"
-          TopLeft="1128.72375095101,1200.04286632495" />
+          TopLeft="1128.72375095101,1200.90953298559" />
         <NodeLayout
           Size="243.2,41.6"
           Id="Package\MAXSEQ (COMPCONTACTMSTR)"
-          TopLeft="1078.305498907,1414.40001007964" />
+          TopLeft="1078.305498907,1415.26667674028" />
         <NodeLayout
           Size="207.2,41.6"
           Id="Package\MAXSEQ (COMPMASTER)"
-          TopLeft="427.08330999853,851.999999276797" />
+          TopLeft="427.08330999853,852.866665937437" />
         <NodeLayout
           Size="137.6,41.6"
           Id="Package\POST-PKG\FINISH LOG"
@@ -26227,46 +26223,22 @@ order by s.PK_SUPPLIER_</property>
           PanelSize="270.4,130.4"
           Size="156,43.2"
           Id="Package\POST-PKG"
-          TopLeft="89.5833284387161,1537.79628950455" />
+          TopLeft="89.5833284387161,1538.66295616519" />
+        <NodeLayout
+          Size="128,41.6"
+          Id="Package\PRE-PKG\START LOG"
+          TopLeft="60,60" />
         <NodeLayout
           Size="135.2,41.6"
           Id="Package\PRE-PKG\GET LOGID"
-          TopLeft="47.4999810134378,99.1999989151955" />
-        <NodeLayout
-          Size="137.6,41.6"
-          Id="Package\PRE-PKG\START LOG"
-          TopLeft="45.833314437834,26.3999994214376" />
-        <EdgeLayout
-          Id="Package\PRE-PKG.PrecedenceConstraints[Constraint]"
-          TopLeft="114.866647725636,67.9999994214376">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,31.1999994937579"
-              Start="0,0"
-              End="0,23.6999994937579">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,23.6999994937579" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
+          TopLeft="61.6666665756038,132.799999493758" />
         <ContainerLayout
           HeaderHeight="43.2"
-          IsExpanded="False"
-          PanelSize="268,196.8"
-          Size="268,43.2"
+          IsExpanded="True"
+          PanelSize="268,229.6"
+          Size="268,272.8"
           Id="Package\PRE-PKG"
-          TopLeft="110.416660633767,0.333336738413966" />
+          TopLeft="110.416660633767,0.333336738413976" />
         <NodeLayout
           Size="164.8,41.6"
           Id="Package\Pre-Task\Execute SQL Task"
@@ -26329,10 +26301,10 @@ order by s.PK_SUPPLIER_</property>
           PanelSize="176,305.6"
           Size="176,348.8"
           Id="Package\Pre-Task"
-          TopLeft="106.733329463171,120.333332534797" />
+          TopLeft="106.733329463171,121.199999195437" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="1197.91462492901,1343.24286632495">
+          TopLeft="1197.91462492901,1344.10953298559">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -26354,7 +26326,7 @@ order by s.PK_SUPPLIER_</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 1]"
-          TopLeft="194.733329463171,469.133332534797">
+          TopLeft="194.733329463171,469.999999195437">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -26376,7 +26348,7 @@ order by s.PK_SUPPLIER_</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 10]"
-          TopLeft="194.733329463171,672.333332534798">
+          TopLeft="194.733329463171,673.199999195438">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -26398,7 +26370,7 @@ order by s.PK_SUPPLIER_</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 10 1]"
-          TopLeft="541.161881963721,468.20000203401">
+          TopLeft="541.161881963721,469.06666869465">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -26420,7 +26392,7 @@ order by s.PK_SUPPLIER_</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 11]"
-          TopLeft="231.933329463171,732.333332534798">
+          TopLeft="231.933329463171,733.199999195438">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -26454,7 +26426,7 @@ order by s.PK_SUPPLIER_</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 12]"
-          TopLeft="1199.905498907,1456.00001007964">
+          TopLeft="1199.905498907,1456.86667674028">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -26488,7 +26460,7 @@ order by s.PK_SUPPLIER_</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 13]"
-          TopLeft="181.935711114782,1043.90952445954">
+          TopLeft="181.935711114782,1044.77619112018">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -26510,7 +26482,7 @@ order by s.PK_SUPPLIER_</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 13 1]"
-          TopLeft="549.316644047355,1045.07143165796">
+          TopLeft="549.316644047355,1045.9380983186">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -26532,7 +26504,7 @@ order by s.PK_SUPPLIER_</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 13 1 1]"
-          TopLeft="886.280910726296,1038.32857797614">
+          TopLeft="886.280910726296,1039.19524463678">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -26554,7 +26526,7 @@ order by s.PK_SUPPLIER_</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 15]"
-          TopLeft="208.602377781449,1307.10952445954">
+          TopLeft="208.602377781449,1307.97619112018">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -26588,7 +26560,7 @@ order by s.PK_SUPPLIER_</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 16]"
-          TopLeft="541.161881963721,671.400002034011">
+          TopLeft="541.161881963721,672.266668694651">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -26610,7 +26582,7 @@ order by s.PK_SUPPLIER_</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 18]"
-          TopLeft="1221.95946518794,1047.60953311861">
+          TopLeft="1221.95946518794,1048.47619977925">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -26644,7 +26616,7 @@ order by s.PK_SUPPLIER_</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 19]"
-          TopLeft="1195.92375095101,1140.04286632495">
+          TopLeft="1195.92375095101,1140.90953298559">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -26666,7 +26638,7 @@ order by s.PK_SUPPLIER_</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 2]"
-          TopLeft="541.161881963721,569.800002034011">
+          TopLeft="541.161881963721,570.666668694651">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -26688,7 +26660,7 @@ order by s.PK_SUPPLIER_</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 20]"
-          TopLeft="1195.92375095101,1241.64286632495">
+          TopLeft="1195.92375095101,1242.50953298559">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -26710,7 +26682,7 @@ order by s.PK_SUPPLIER_</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 3]"
-          TopLeft="194.733329463171,571.599999195437">
+          TopLeft="194.733329463171,572.466665856077">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -26732,30 +26704,24 @@ order by s.PK_SUPPLIER_</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 4]"
-          TopLeft="244.416660633767,43.533336738414">
+          TopLeft="244.416660633767,273.133336738414">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-49.6833311705957,76.7999957963829"
+              EndConnector="38.316668829404,22.466662457023"
               Start="0,0"
-              End="-49.6833311705957,69.2999957963829">
+              End="30.816668829404,22.466662457023">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,34.3999978981914" />
+                    End="0,18.466662457023" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,34.3999978981914"
-                    Point2="0,38.3999978981914"
-                    Point3="-4,38.3999978981914" />
+                    Point1="0,18.466662457023"
+                    Point2="0,22.466662457023"
+                    Point3="4,22.466662457023" />
                   <mssgle:LineSegment
-                    End="-45.6833311705957,38.3999978981914" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-45.6833311705957,38.3999978981914"
-                    Point2="-49.6833311705957,38.3999978981914"
-                    Point3="-49.6833311705957,42.3999978981914" />
-                  <mssgle:LineSegment
-                    End="-49.6833311705957,69.2999957963829" />
+                    End="30.816668829404,22.466662457023" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -26766,7 +26732,7 @@ order by s.PK_SUPPLIER_</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 5]"
-          TopLeft="541.161881963721,772.133335373368">
+          TopLeft="541.161881963721,773.000002034008">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -26800,7 +26766,7 @@ order by s.PK_SUPPLIER_</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 6]"
-          TopLeft="181.935711114782,1145.50952445954">
+          TopLeft="181.935711114782,1146.37619112018">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -26822,7 +26788,7 @@ order by s.PK_SUPPLIER_</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 6 1]"
-          TopLeft="549.316644047355,1146.67143165795">
+          TopLeft="549.316644047355,1147.53809831859">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -26844,7 +26810,7 @@ order by s.PK_SUPPLIER_</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 6 1 1]"
-          TopLeft="886.280910726295,1139.0619113155">
+          TopLeft="886.280910726295,1139.92857797614">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -26866,7 +26832,7 @@ order by s.PK_SUPPLIER_</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 7]"
-          TopLeft="181.935711114782,1247.10952445954">
+          TopLeft="181.935711114782,1247.97619112018">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -26888,7 +26854,7 @@ order by s.PK_SUPPLIER_</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 7 1]"
-          TopLeft="549.316644047355,1248.27143165795">
+          TopLeft="549.316644047355,1249.13809831859">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -26910,7 +26876,7 @@ order by s.PK_SUPPLIER_</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 7 1 1]"
-          TopLeft="886.697577370196,1241.52857797614">
+          TopLeft="886.697577370196,1242.39524463678">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -26932,7 +26898,7 @@ order by s.PK_SUPPLIER_</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 8]"
-          TopLeft="585.449977380689,1308.27143165795">
+          TopLeft="585.449977380689,1309.13809831859">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -26966,7 +26932,7 @@ order by s.PK_SUPPLIER_</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 9]"
-          TopLeft="913.364244036863,1301.52857797614">
+          TopLeft="913.364244036863,1302.39524463678">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -27708,10 +27674,15 @@ order by s.PK_SUPPLIER_</property>
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\DF - CompMaster (DIR_SUBC)\Oracle Source">
+    design-time-name="Package\DF - CompMaster (DIR_SUBC)\OLE DB Source">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
@@ -27725,6 +27696,14 @@ order by s.PK_SUPPLIER_</property>
         <Name>TableInfoObjectType</Name>
         <Value
           type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - CompMaster (DIR_SUBC)\Oracle Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
@@ -27995,10 +27974,15 @@ order by s.PK_SUPPLIER_</property>
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\DF - CompMaster (DIR_SUPP)\Oracle Source">
+    design-time-name="Package\DF - CompMaster (DIR_SUPP)\OLE DB Source">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
@@ -28012,6 +27996,14 @@ order by s.PK_SUPPLIER_</property>
         <Name>TableInfoObjectType</Name>
         <Value
           type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - CompMaster (DIR_SUPP)\Oracle Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
@@ -28303,6 +28295,19 @@ order by s.PK_SUPPLIER_</property>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
     design-time-name="Package\DF - CompMaster (SUPPLIER_)\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - CompMaster (SUPPLIER_)\OLE DB Source">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -29697,45 +29702,6 @@ order by s.PK_SUPPLIER_</property>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
     design-time-name="Package\DF - Tech Contact (SUPPLIER_)\OLE DB Destination">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\DF - CompMaster (DIR_SUBC)\OLE DB Source">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\DF - CompMaster (SUPPLIER_)\OLE DB Source">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\DF - CompMaster (DIR_SUPP)\OLE DB Source">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
