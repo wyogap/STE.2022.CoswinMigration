@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0107_Asset_SpareParts_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="93"
-  DTS:VersionGUID="{D885FCD2-6339-4BAD-9841-C6B0850133C7}"
+  DTS:VersionBuild="97"
+  DTS:VersionGUID="{26BC1970-9F7C-455C-A039-413E6B4ECC7E}"
   DTS:VersionMajor="3">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -470,7 +470,7 @@
                 <connection
                   refId="Package\Data Flow Task\OLE DB Destination.Connections[OleDbConnection]"
                   connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  connectionManagerRefId="Project.ConnectionManagers[BLUDB]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -788,7 +788,7 @@ WHERE et.EQ_ASSET_ID IS NOT NULL</property>
                 <connection
                   refId="Package\Data Flow Task\Oracle Source.Connections[ORACLEConnection]"
                   connectionManagerID="{1BBC9476-D9E4-4553-8563-89CF216CBE10}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[Oracle Connection Manager]"
+                  connectionManagerRefId="Project.ConnectionManagers[COSWIN]"
                   description="The ORACLE runtime connection used to access the database."
                   name="ORACLEConnection" />
               </connections>
@@ -1164,7 +1164,7 @@ WHERE et.EQ_ASSET_ID IS NOT NULL</property>
           DTS:refId="Package\PRE-PKG\GET LOGID"
           DTS:CreationName="Microsoft.ExecuteSQLTask"
           DTS:Description="Execute SQL Task"
-          DTS:DTSID="{9592e89c-f949-48c7-a035-6be102a2d8fe}"
+          DTS:DTSID="{e5fe0faf-b0dc-49f4-a52c-ef578fff4718}"
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="GET LOGID"
@@ -1174,11 +1174,17 @@ WHERE et.EQ_ASSET_ID IS NOT NULL</property>
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-              SQLTask:SqlStatementSource="SELECT IDENTITY_VAL_LOCAL() AS PackageLogID FROM SYSIBM.DUAL;"
+              SQLTask:SqlStatementSource="SELECT ID FROM MIGRATION.ste_migration_logs &#xA;WHERE package_name=?&#xA;ORDER BY ID DESC LIMIT 1"
               SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
               <SQLTask:ResultBinding
-                SQLTask:ResultName="PackageLogId"
+                SQLTask:ResultName="ID"
                 SQLTask:DtsVariableName="User::log_id" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="NewParameterName"
+                SQLTask:DtsVariableName="System::PackageName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
             </SQLTask:SqlTaskData>
           </DTS:ObjectData>
         </DTS:Executable>
@@ -1186,7 +1192,7 @@ WHERE et.EQ_ASSET_ID IS NOT NULL</property>
           DTS:refId="Package\PRE-PKG\START LOG"
           DTS:CreationName="Microsoft.ExecuteSQLTask"
           DTS:Description="Execute SQL Task"
-          DTS:DTSID="{72365981-c888-4726-9c74-1ac90db58d7f}"
+          DTS:DTSID="{b5250349-471d-49ce-82b3-a5cee5d4fac4}"
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="START LOG"
@@ -1196,7 +1202,7 @@ WHERE et.EQ_ASSET_ID IS NOT NULL</property>
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-              SQLTask:SqlStatementSource="INSERT INTO MIGRATION.ste_migration_logs (&#xA; package_name&#xA; ,version&#xA; ,start_date &#xA;)&#xA;VALUES (&#xA; ?&#xA; , CONCAT(?, '.', ?) &#xA; ,CURRENT_TIMESTAMP&#xA;);&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              SQLTask:SqlStatementSource="INSERT INTO MIGRATION.ste_migration_logs (&#xA; package_name&#xA; ,version&#xA; ,start_date &#xA;)&#xA;VALUES (&#xA; ?&#xA; , CONCAT(?,CONCAT( '.', ?))&#xA; ,CURRENT_TIMESTAMP&#xA;);" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
               <SQLTask:ParameterBinding
                 SQLTask:ParameterName="PkgName"
                 SQLTask:DtsVariableName="System::PackageName"
@@ -1223,7 +1229,7 @@ WHERE et.EQ_ASSET_ID IS NOT NULL</property>
         <DTS:PrecedenceConstraint
           DTS:refId="Package\PRE-PKG.PrecedenceConstraints[Constraint]"
           DTS:CreationName=""
-          DTS:DTSID="{6f107d06-c85e-4628-b548-ea21c091ea7d}"
+          DTS:DTSID="{4A08CA59-CC33-4F19-8B30-A7C43C8E86EC}"
           DTS:From="Package\PRE-PKG\START LOG"
           DTS:LogicalAnd="True"
           DTS:ObjectName="Constraint"
@@ -1308,7 +1314,7 @@ WHERE et.EQ_ASSET_ID IS NOT NULL</property>
     design-time-name="Package">
     <LayoutInfo>
       <GraphLayout
-        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
           Size="155.2,41.6"
           Id="Package\Data Flow Task"
@@ -1331,39 +1337,37 @@ WHERE et.EQ_ASSET_ID IS NOT NULL</property>
         <NodeLayout
           Size="135.2,41.6"
           Id="Package\PRE-PKG\GET LOGID"
-          TopLeft="47.4999810134378,99.1999989151955" />
+          TopLeft="61.6666665756038,132.799999493758" />
         <NodeLayout
-          Size="137.6,41.6"
+          Size="128,41.6"
           Id="Package\PRE-PKG\START LOG"
-          TopLeft="45.833314437834,26.3999994214376" />
+          TopLeft="60,60" />
         <EdgeLayout
           Id="Package\PRE-PKG.PrecedenceConstraints[Constraint]"
-          TopLeft="114.866647725636,67.9999994214376">
+          TopLeft="126.633333287802,101.6">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,31.1999994937579"
+              EndConnector="0,31.199999493758"
               Start="0,0"
-              End="0,23.6999994937579">
+              End="0,23.699999493758">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,23.6999994937579" />
+                    End="0,23.699999493758" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <ContainerLayout
           HeaderHeight="43.2"
           IsExpanded="False"
-          PanelSize="268,196.8"
+          PanelSize="268,229.6"
           Size="268,43.2"
           Id="Package\PRE-PKG"
           TopLeft="368.999997404715,5.50000000000006" />
@@ -1440,26 +1444,26 @@ WHERE et.EQ_ASSET_ID IS NOT NULL</property>
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-60.0000000000001,59.6"
+              EndConnector="-60.0000000000005,59.6"
               Start="0,0"
-              End="-52.5000000000001,59.6">
+              End="-52.5000000000005,59.6">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="-26,0" />
+                    End="-26.0000000000003,0" />
                   <mssgle:CubicBezierSegment
-                    Point1="-26,0"
-                    Point2="-30,0"
-                    Point3="-30,4" />
+                    Point1="-26.0000000000003,0"
+                    Point2="-30.0000000000003,0"
+                    Point3="-30.0000000000003,4" />
                   <mssgle:LineSegment
-                    End="-30,55.6" />
+                    End="-30.0000000000003,55.6" />
                   <mssgle:CubicBezierSegment
-                    Point1="-30,55.6"
-                    Point2="-30,59.6"
-                    Point3="-34,59.6" />
+                    Point1="-30.0000000000003,55.6"
+                    Point2="-30.0000000000003,59.6"
+                    Point3="-34.0000000000003,59.6" />
                   <mssgle:LineSegment
-                    End="-52.5000000000001,59.6" />
+                    End="-52.5000000000005,59.6" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>

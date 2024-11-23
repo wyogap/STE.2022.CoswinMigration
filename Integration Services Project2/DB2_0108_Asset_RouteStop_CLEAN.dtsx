@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0108_Asset_RouteStop_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="99"
-  DTS:VersionGUID="{CEACA213-5E7E-42DF-ACBF-96F0733B3779}"
+  DTS:VersionBuild="101"
+  DTS:VersionGUID="{51E0C671-C62B-4D47-9784-C383897D1E57}"
   DTS:VersionMajor="4">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -545,7 +545,7 @@
                 <connection
                   refId="Package\DF - ROUTE_STOP\OLE DB Destination.Connections[OleDbConnection]"
                   connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  connectionManagerRefId="Project.ConnectionManagers[BLUDB]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -1029,7 +1029,7 @@ JOIN COSWIN.EQP_TOPO gr ON gr.EQ_GRFL = 71 and gr.PK_EQP_TOPO = eg.EQ_GR_16</pro
                 <connection
                   refId="Package\DF - ROUTE_STOP\Oracle Source.Connections[ORACLEConnection]"
                   connectionManagerID="{1BBC9476-D9E4-4553-8563-89CF216CBE10}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[Oracle Connection Manager]"
+                  connectionManagerRefId="Project.ConnectionManagers[COSWIN]"
                   description="The ORACLE runtime connection used to access the database."
                   name="ORACLEConnection" />
               </connections>
@@ -1446,7 +1446,7 @@ JOIN COSWIN.EQP_TOPO gr ON gr.EQ_GRFL = 71 and gr.PK_EQP_TOPO = eg.EQ_GR_16</pro
           DTS:refId="Package\PRE-PKG\GET LOGID"
           DTS:CreationName="Microsoft.ExecuteSQLTask"
           DTS:Description="Execute SQL Task"
-          DTS:DTSID="{8b12e45a-fb8a-4b2c-99bc-4cf062f42390}"
+          DTS:DTSID="{72f50cf0-24ac-43d7-83d2-a8c8e2345bb0}"
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="GET LOGID"
@@ -1456,11 +1456,17 @@ JOIN COSWIN.EQP_TOPO gr ON gr.EQ_GRFL = 71 and gr.PK_EQP_TOPO = eg.EQ_GR_16</pro
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-              SQLTask:SqlStatementSource="SELECT IDENTITY_VAL_LOCAL() AS PackageLogID FROM SYSIBM.DUAL;"
+              SQLTask:SqlStatementSource="SELECT ID FROM MIGRATION.ste_migration_logs &#xA;WHERE package_name=?&#xA;ORDER BY ID DESC LIMIT 1"
               SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
               <SQLTask:ResultBinding
-                SQLTask:ResultName="PackageLogId"
+                SQLTask:ResultName="ID"
                 SQLTask:DtsVariableName="User::log_id" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="NewParameterName"
+                SQLTask:DtsVariableName="System::PackageName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
             </SQLTask:SqlTaskData>
           </DTS:ObjectData>
         </DTS:Executable>
@@ -1468,7 +1474,7 @@ JOIN COSWIN.EQP_TOPO gr ON gr.EQ_GRFL = 71 and gr.PK_EQP_TOPO = eg.EQ_GR_16</pro
           DTS:refId="Package\PRE-PKG\START LOG"
           DTS:CreationName="Microsoft.ExecuteSQLTask"
           DTS:Description="Execute SQL Task"
-          DTS:DTSID="{e867b8c0-5c57-4703-813d-bc64b06d337c}"
+          DTS:DTSID="{a5e1bcc1-08e9-44ee-bb2b-2bc1aa72cdb4}"
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="START LOG"
@@ -1478,7 +1484,7 @@ JOIN COSWIN.EQP_TOPO gr ON gr.EQ_GRFL = 71 and gr.PK_EQP_TOPO = eg.EQ_GR_16</pro
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-              SQLTask:SqlStatementSource="INSERT INTO MIGRATION.ste_migration_logs (&#xA; package_name&#xA; ,version&#xA; ,start_date &#xA;)&#xA;VALUES (&#xA; ?&#xA; , CONCAT(?, '.', ?) &#xA; ,CURRENT_TIMESTAMP&#xA;);&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              SQLTask:SqlStatementSource="INSERT INTO MIGRATION.ste_migration_logs (&#xA; package_name&#xA; ,version&#xA; ,start_date &#xA;)&#xA;VALUES (&#xA; ?&#xA; , CONCAT(?,CONCAT( '.', ?))&#xA; ,CURRENT_TIMESTAMP&#xA;);" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
               <SQLTask:ParameterBinding
                 SQLTask:ParameterName="PkgName"
                 SQLTask:DtsVariableName="System::PackageName"
@@ -1505,7 +1511,7 @@ JOIN COSWIN.EQP_TOPO gr ON gr.EQ_GRFL = 71 and gr.PK_EQP_TOPO = eg.EQ_GR_16</pro
         <DTS:PrecedenceConstraint
           DTS:refId="Package\PRE-PKG.PrecedenceConstraints[Constraint]"
           DTS:CreationName=""
-          DTS:DTSID="{48b4ca61-768a-4c08-a6bb-7025e63af0a7}"
+          DTS:DTSID="{2B44F8E0-47BD-4D3F-AF46-D5C3DD7B847A}"
           DTS:From="Package\PRE-PKG\START LOG"
           DTS:LogicalAnd="True"
           DTS:ObjectName="Constraint"
@@ -1598,7 +1604,7 @@ JOIN COSWIN.EQP_TOPO gr ON gr.EQ_GRFL = 71 and gr.PK_EQP_TOPO = eg.EQ_GR_16</pro
     design-time-name="Package">
     <LayoutInfo>
       <GraphLayout
-        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
           Size="172,41.6"
           Id="Package\DF - ROUTE_STOP"
@@ -1625,42 +1631,40 @@ JOIN COSWIN.EQP_TOPO gr ON gr.EQ_GRFL = 71 and gr.PK_EQP_TOPO = eg.EQ_GR_16</pro
         <NodeLayout
           Size="135.2,41.6"
           Id="Package\PRE-PKG\GET LOGID"
-          TopLeft="47.4999810134378,99.1999989151955" />
+          TopLeft="61.6666665756038,132.799999493758" />
         <NodeLayout
-          Size="137.6,41.6"
+          Size="128,41.6"
           Id="Package\PRE-PKG\START LOG"
-          TopLeft="45.833314437834,26.3999994214376" />
+          TopLeft="60,60" />
         <EdgeLayout
           Id="Package\PRE-PKG.PrecedenceConstraints[Constraint]"
-          TopLeft="114.866647725636,67.9999994214376">
+          TopLeft="126.633333287802,101.6">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,31.1999994937579"
+              EndConnector="0,31.199999493758"
               Start="0,0"
-              End="0,23.6999994937579">
+              End="0,23.699999493758">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,23.6999994937579" />
+                    End="0,23.699999493758" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <ContainerLayout
           HeaderHeight="43.2"
           IsExpanded="False"
-          PanelSize="268,196.8"
+          PanelSize="268,229.6"
           Size="268,43.2"
           Id="Package\PRE-PKG"
-          TopLeft="385.466663433943,5.50000000000007" />
+          TopLeft="385.466663433943,5.50000000000009" />
         <NodeLayout
           Size="164.8,41.6"
           Id="Package\Pre-Task\Execute SQL Task"
@@ -1746,26 +1750,26 @@ JOIN COSWIN.EQP_TOPO gr ON gr.EQ_GRFL = 71 and gr.PK_EQP_TOPO = eg.EQ_GR_16</pro
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-60,67.6"
+              EndConnector="-60.0000000000003,67.6"
               Start="0,0"
-              End="-52.5,67.6">
+              End="-52.5000000000003,67.6">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="-26,0" />
+                    End="-26.0000000000002,0" />
                   <mssgle:CubicBezierSegment
-                    Point1="-26,0"
-                    Point2="-30,0"
-                    Point3="-30,4" />
+                    Point1="-26.0000000000002,0"
+                    Point2="-30.0000000000002,0"
+                    Point3="-30.0000000000002,4" />
                   <mssgle:LineSegment
-                    End="-30,63.6" />
+                    End="-30.0000000000002,63.6" />
                   <mssgle:CubicBezierSegment
-                    Point1="-30,63.6"
-                    Point2="-30,67.6"
-                    Point3="-34,67.6" />
+                    Point1="-30.0000000000002,63.6"
+                    Point2="-30.0000000000002,67.6"
+                    Point3="-34.0000000000002,67.6" />
                   <mssgle:LineSegment
-                    End="-52.5,67.6" />
+                    End="-52.5000000000003,67.6" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>

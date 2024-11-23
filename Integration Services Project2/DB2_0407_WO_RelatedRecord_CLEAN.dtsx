@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0407_WO_RelatedRecord_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="230"
-  DTS:VersionGUID="{C7BEAC93-3701-4BE8-B6ED-EAD30A972786}"
+  DTS:VersionBuild="234"
+  DTS:VersionGUID="{5374E377-8C2B-4EFE-91B9-08A33EE75064}"
   DTS:VersionMajor="3">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -32,7 +32,7 @@
           <OraConnectionString>SERVER=172.17.123.201:1521/TRN1;USERNAME=coswin;WINAUTH=0;</OraConnectionString>
           <OraPassword
             Sensitive="1"
-            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAzJdgj0t4w0u+dO1tbY5XXQAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAABxc+dFyR/XBx9yJI/DgdelRtbqkNrnuAdKHdyT4RS9OQAAAAAOgAAAAAIAACAAAAC5IkmllbXM2/o6+ADRldtaB2lGxU7MuUDcN6iy7wAymRAAAAD2lOw5ZesPBWWbzJOA/FggQAAAAF+qi/TNrt9UOcjXPYUYVeNAaeP9toiE3wjWu9OJXZSKRkC9Lvm85gRThytcu/01lJLaLc6cRB8QsuQoii8CQiI</OraPassword>
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAzJdgj0t4w0u+dO1tbY5XXQAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAABtQp/o0+3eq7DWDZ4SeoawW89GxEO/KViVXg1rKL8QrwAAAAAOgAAAAAIAACAAAADJcCKNn2uJuA1Vw6q7aMQ4ucUJyxZN/b1NaW0Oj3XKBRAAAAByf8mcG6aEtgVilou1/simQAAAAPNRGrHCu0v2sFhXQv5aVpQrpXyNX5wXAwfVzuo0fnFCoyze6mZjaZQzjSlwPSM39LGRNZ+s//Ajd2HmykQ4/aw</OraPassword>
           <OraRetain>False</OraRetain>
           <OraInitialCatalog></OraInitialCatalog>
           <OraServerName>172.17.123.201:1521/TRN1</OraServerName>
@@ -61,7 +61,7 @@
           <DTS:Password
             DTS:Name="Password"
             Sensitive="1"
-            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAzJdgj0t4w0u+dO1tbY5XXQAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAACEQq8K8HTKspYq81+WmBOPlfLgllYyMDagElg+073XaQAAAAAOgAAAAAIAACAAAAAACl16THDzdJlj50zZFUZg38eeIBgIvYcLl9MlBqtbihAAAAD3Oy/EPeNzHTwIV8CsgPW1QAAAAGt1G7uFTpqY+eMEHoANceaumk6wP+bNam3kEA2tIeTVhy6L8vwPERKq9XxF7RPofY2yQdw1kr9KvitGyr+8QdQ</DTS:Password>
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAzJdgj0t4w0u+dO1tbY5XXQAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAABF6OTyC3UhrD+gniijWRoHL4fV5QzaQE/MNhJbAdAoVwAAAAAOgAAAAAIAACAAAAA0Ew4/alyi0UOQKbxdFlNDQ+ZXRYRSGLbaZOgkxeBAbxAAAAC9ZdOyXvdsBZAA3AuSFs43QAAAABjpYLaUnXG8Dv9vladebbIkAmfSI/tGGtXBCBN9hTmXvvhcKH2ryTQOMVhpbVTUhiyjoWOyKIudedICyXjHtfo</DTS:Password>
         </DTS:ConnectionManager>
       </DTS:ObjectData>
     </DTS:ConnectionManager>
@@ -804,7 +804,7 @@
           DTS:refId="Package\PRE-PKG\GET LOGID"
           DTS:CreationName="Microsoft.ExecuteSQLTask"
           DTS:Description="Execute SQL Task"
-          DTS:DTSID="{0c7a8d3b-ad5e-4deb-b390-3585eb6e20e1}"
+          DTS:DTSID="{f157ada3-caf5-4a0a-ad53-63a710b1bd12}"
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="GET LOGID"
@@ -814,11 +814,17 @@
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-              SQLTask:SqlStatementSource="SELECT IDENTITY_VAL_LOCAL() AS PackageLogID FROM SYSIBM.DUAL;"
+              SQLTask:SqlStatementSource="SELECT ID FROM MIGRATION.ste_migration_logs &#xA;WHERE package_name=?&#xA;ORDER BY ID DESC LIMIT 1"
               SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
               <SQLTask:ResultBinding
-                SQLTask:ResultName="PackageLogId"
+                SQLTask:ResultName="ID"
                 SQLTask:DtsVariableName="User::log_id" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="NewParameterName"
+                SQLTask:DtsVariableName="System::PackageName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
             </SQLTask:SqlTaskData>
           </DTS:ObjectData>
         </DTS:Executable>
@@ -826,7 +832,7 @@
           DTS:refId="Package\PRE-PKG\START LOG"
           DTS:CreationName="Microsoft.ExecuteSQLTask"
           DTS:Description="Execute SQL Task"
-          DTS:DTSID="{83548ba4-e378-4930-a1a7-453c3b31c44f}"
+          DTS:DTSID="{1ecb6e19-9baf-4aeb-9e72-da4fea901864}"
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="START LOG"
@@ -836,7 +842,7 @@
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-              SQLTask:SqlStatementSource="INSERT INTO MIGRATION.ste_migration_logs (&#xA; package_name&#xA; ,version&#xA; ,start_date &#xA;)&#xA;VALUES (&#xA; ?&#xA; , CONCAT(?, '.', ?) &#xA; ,CURRENT_TIMESTAMP&#xA;);&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              SQLTask:SqlStatementSource="INSERT INTO MIGRATION.ste_migration_logs (&#xA; package_name&#xA; ,version&#xA; ,start_date &#xA;)&#xA;VALUES (&#xA; ?&#xA; , CONCAT(?,CONCAT( '.', ?))&#xA; ,CURRENT_TIMESTAMP&#xA;);" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
               <SQLTask:ParameterBinding
                 SQLTask:ParameterName="PkgName"
                 SQLTask:DtsVariableName="System::PackageName"
@@ -863,7 +869,7 @@
         <DTS:PrecedenceConstraint
           DTS:refId="Package\PRE-PKG.PrecedenceConstraints[Constraint]"
           DTS:CreationName=""
-          DTS:DTSID="{2ce4bdde-f498-4acd-b657-a28fc2b7b31e}"
+          DTS:DTSID="{345932CF-23A3-4FEE-BEB9-F8AF02047527}"
           DTS:From="Package\PRE-PKG\START LOG"
           DTS:LogicalAnd="True"
           DTS:ObjectName="Constraint"
@@ -1756,7 +1762,7 @@
                 <connection
                   refId="Package\SR-FOLLOWUP-WO (SR-WOREF) FOLLOWUP (BAK)\OLE DB Destination.Connections[OleDbConnection]"
                   connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  connectionManagerRefId="Project.ConnectionManagers[BLUDB]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -2959,7 +2965,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                 <connection
                   refId="Package\SR-FOLLOWUP-WO (SR-WOREF) FOLLOWUP (BAK)\TICKET.Connections[OleDbConnection]"
                   connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  connectionManagerRefId="Project.ConnectionManagers[BLUDB]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -3095,7 +3101,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                 <connection
                   refId="Package\SR-FOLLOWUP-WO (SR-WOREF) FOLLOWUP (BAK)\WORKORDER.Connections[OleDbConnection]"
                   connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  connectionManagerRefId="Project.ConnectionManagers[BLUDB]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -4088,7 +4094,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                 <connection
                   refId="Package\SR-FOLLOWUP-WO (SR-WOREF) ORIGINATOR (BAK)\OLE DB Destination.Connections[OleDbConnection]"
                   connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  connectionManagerRefId="Project.ConnectionManagers[BLUDB]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -5291,7 +5297,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                 <connection
                   refId="Package\SR-FOLLOWUP-WO (SR-WOREF) ORIGINATOR (BAK)\TICKET.Connections[OleDbConnection]"
                   connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  connectionManagerRefId="Project.ConnectionManagers[BLUDB]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -5427,7 +5433,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                 <connection
                   refId="Package\SR-FOLLOWUP-WO (SR-WOREF) ORIGINATOR (BAK)\WORKORDER.Connections[OleDbConnection]"
                   connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  connectionManagerRefId="Project.ConnectionManagers[BLUDB]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -6416,7 +6422,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                 <connection
                   refId="Package\SR-FOLLOWUP-WO (WO-REQNO) FOLLOWUP (BAK)\OLE DB Destination.Connections[OleDbConnection]"
                   connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  connectionManagerRefId="Project.ConnectionManagers[BLUDB]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -7586,7 +7592,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                 <connection
                   refId="Package\SR-FOLLOWUP-WO (WO-REQNO) FOLLOWUP (BAK)\TICKET.Connections[OleDbConnection]"
                   connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  connectionManagerRefId="Project.ConnectionManagers[BLUDB]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -7716,7 +7722,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                 <connection
                   refId="Package\SR-FOLLOWUP-WO (WO-REQNO) FOLLOWUP (BAK)\WORKORDER.Connections[OleDbConnection]"
                   connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  connectionManagerRefId="Project.ConnectionManagers[BLUDB]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -8665,7 +8671,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                 <connection
                   refId="Package\SR-FOLLOWUP-WO (WO-REQNO) ORIGINATOR (BAK)\OLE DB Destination.Connections[OleDbConnection]"
                   connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  connectionManagerRefId="Project.ConnectionManagers[BLUDB]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -9835,7 +9841,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                 <connection
                   refId="Package\SR-FOLLOWUP-WO (WO-REQNO) ORIGINATOR (BAK)\TICKET.Connections[OleDbConnection]"
                   connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  connectionManagerRefId="Project.ConnectionManagers[BLUDB]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -9947,7 +9953,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                 <connection
                   refId="Package\SR-FOLLOWUP-WO (WO-REQNO) ORIGINATOR (BAK)\WORKORDER.Connections[OleDbConnection]"
                   connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  connectionManagerRefId="Project.ConnectionManagers[BLUDB]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -10884,7 +10890,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                 <connection
                   refId="Package\WO-FOLLOWUP-SR (SR-SRCWO) FOLLOWUP (BAK)\OLE DB Destination.Connections[OleDbConnection]"
                   connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  connectionManagerRefId="Project.ConnectionManagers[BLUDB]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -12087,7 +12093,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                 <connection
                   refId="Package\WO-FOLLOWUP-SR (SR-SRCWO) FOLLOWUP (BAK)\TICKET.Connections[OleDbConnection]"
                   connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  connectionManagerRefId="Project.ConnectionManagers[BLUDB]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -12223,7 +12229,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                 <connection
                   refId="Package\WO-FOLLOWUP-SR (SR-SRCWO) FOLLOWUP (BAK)\WORKORDER.Connections[OleDbConnection]"
                   connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[db2_cert]"
+                  connectionManagerRefId="Project.ConnectionManagers[BLUDB]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -12601,7 +12607,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
     design-time-name="Package">
     <LayoutInfo>
       <GraphLayout
-        Capacity="64" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        Capacity="64" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
           Size="134.4,41.6"
           Id="Package\Get Max ID"
@@ -12640,39 +12646,37 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         <NodeLayout
           Size="135.2,41.6"
           Id="Package\PRE-PKG\GET LOGID"
-          TopLeft="47.4999810134378,99.1999989151955" />
+          TopLeft="61.6666665756038,132.799999493758" />
         <NodeLayout
-          Size="137.6,41.6"
+          Size="128,41.6"
           Id="Package\PRE-PKG\START LOG"
-          TopLeft="45.833314437834,26.3999994214376" />
+          TopLeft="60,60" />
         <EdgeLayout
           Id="Package\PRE-PKG.PrecedenceConstraints[Constraint]"
-          TopLeft="114.866647725636,67.9999994214376">
+          TopLeft="126.633333287802,101.6">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,31.1999994937579"
+              EndConnector="0,31.199999493758"
               Start="0,0"
-              End="0,23.6999994937579">
+              End="0,23.699999493758">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,23.6999994937579" />
+                    End="0,23.699999493758" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <ContainerLayout
           HeaderHeight="43.2"
           IsExpanded="False"
-          PanelSize="268,196.8"
+          PanelSize="268,229.6"
           Size="268,43.2"
           Id="Package\PRE-PKG"
           TopLeft="618.633321404127,57.4999996383983" />
