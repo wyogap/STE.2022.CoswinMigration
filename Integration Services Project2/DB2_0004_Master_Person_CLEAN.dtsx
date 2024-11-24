@@ -13,8 +13,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0004_Master_Person_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="375"
-  DTS:VersionGUID="{6C738C33-4B2F-4765-8848-F4BD0F6351E0}"
+  DTS:VersionBuild="388"
+  DTS:VersionGUID="{FC36C927-CEC4-4D6D-B66F-E37F0BD3490D}"
   DTS:VersionMajor="8"
   DTS:VersionMinor="1">
   <DTS:Property
@@ -1317,35 +1317,423 @@
   <DTS:Executables>
     <DTS:Executable
       DTS:refId="Package\Build Lookup"
-      DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:Description="Execute SQL Task"
-      DTS:DTSID="{9778E21A-CB4C-4CC3-ADFA-912138E66B5E}"
-      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{1D3ED950-0803-448D-B43F-E01C65099844}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
       DTS:LocaleID="-1"
-      DTS:ObjectName="Build Lookup"
-      DTS:ThreadHint="0">
+      DTS:ObjectName="Build Lookup">
       <DTS:Variables />
-      <DTS:ObjectData>
-        <SQLTask:SqlTaskData
-          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-          SQLTask:SqlStatementSource="delete from MIGRATION.ste_migration_user_lookup where persistent=0;&#xA;&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;select UPPER(a.personid) as display_name, a.personid as personid, 0 as persistent&#xA;&#x9;, 1 as status, 0 as id&#xA;from maximo.person a&#xA;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(a.personid)&#xA;where b.display_name is null and a.status = 'ACTIVE'&#xA;&#x9;and a.displayname not like '%(RESIGNED%'&#xA;&#x9;and a.displayname not like '%(CONTRACT END%'&#xA;&#x9;AND a.displayname not like '%(DO NOT USE%'&#xA;&#x9;AND a.displayname not like '%(POSTED OUT%'&#xA;&#x9;AND a.displayname not like '%(WRONG%'&#xA;&#x9;;&#xA;&#x9;&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;select UPPER(a.personid) as display_name, a.personid as personid, 0 as persistent&#xA;&#x9;, 0 as status, a.ste_migrationid as id&#xA;from maximo.person a&#xA;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(a.personid)&#xA;where b.display_name is null and &#xA;&#x9;(a.status = 'INACTIVE'&#xA;&#x9;&#x9;or a.displayname like '%(RESIGNED%'&#xA;&#x9;&#x9;or a.displayname like '%(CONTRACT END%'&#xA;&#x9;&#x9;or a.displayname like '%(DO NOT USE%'&#xA;&#x9;&#x9;or a.displayname like '%(POSTED OUT%'&#xA;&#x9;&#x9;or a.displayname like '%(WRONG%'&#xA;&#x9;)&#xA;&#x9;;&#xA;&#x9;&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;select UPPER(a.STE_MIGRATIONEMNO) as display_name, a.personid as personid, 0 as persistent&#xA;&#x9;, 1 as status, a.ste_migrationid as id&#xA;from maximo.person a&#xA;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(a.STE_MIGRATIONEMNO)&#xA;where b.display_name is null and a.STE_MIGRATIONEMNO is not null&#xA;&#x9;and a.status = 'ACTIVE'&#xA;&#x9;and a.displayname not like '%(RESIGNED%'&#xA;&#x9;and a.displayname not like '%(CONTRACT END%'&#xA;&#x9;AND a.displayname not like '%(DO NOT USE%'&#xA;&#x9;AND a.displayname not like '%(POSTED OUT%'&#xA;&#x9;AND a.displayname not like '%(WRONG%'&#xA;&#x9;;&#xA;&#x9;&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;select UPPER(a.STE_MIGRATIONEMNO) as display_name, a.personid as personid, 0 as persistent&#xA;&#x9;, 0 as status, a.ste_migrationid as id&#xA;from maximo.person a&#xA;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(a.STE_MIGRATIONEMNO)&#xA;where b.display_name is null and a.STE_MIGRATIONEMNO is not null &#xA;&#x9;and (a.status = 'INACTIVE'&#xA;&#x9;&#x9;or a.displayname like '%(RESIGNED%'&#xA;&#x9;&#x9;or a.displayname like '%(CONTRACT END%'&#xA;&#x9;&#x9;or a.displayname like '%(DO NOT USE%'&#xA;&#x9;&#x9;or a.displayname like '%(POSTED OUT%'&#xA;&#x9;&#x9;or a.displayname like '%(WRONG%'&#xA;&#x9;)&#xA;&#x9;;&#xA;&#x9;&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT display_name, personid, persistent, status, STE_MIGRATIONID&#xA;FROM (&#xA;&#x9;select UPPER(a.displayname) as display_name, a.personid as personid, 0 as persistent&#xA;&#x9;&#x9;, 1 as status, 0 as STE_MIGRATIONID&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY UPPER(a.displayname) ORDER BY a.personid) AS RN&#xA;&#x9;from maximo.person a&#xA;&#x9;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(a.displayname)&#xA;&#x9;where b.display_name is null and a.status = 'ACTIVE'&#xA;&#x9;&#x9;and a.displayname not like '%(RESIGNED%'&#xA;&#x9;&#x9;and a.displayname not like '%(CONTRACT END%'&#xA;&#x9;&#x9;AND a.displayname not like '%(DO NOT USE%'&#xA;&#x9;&#x9;AND a.displayname not like '%(POSTED OUT%'&#xA;&#x9;&#x9;AND a.displayname not like '%(WRONG%'&#xA;) A&#xA;WHERE A.RN=1&#xA;;&#xA;&#x9;&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT display_name, personid, persistent, status, STE_MIGRATIONID&#xA;FROM (&#xA;&#x9;select UPPER(a.displayname) as display_name, a.personid as personid, 0 as persistent&#xA;&#x9;&#x9;, 0 as status, 0 as STE_MIGRATIONID&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY UPPER(a.displayname) ORDER BY a.personid) AS RN&#xA;&#x9;from maximo.person a&#xA;&#x9;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(a.displayname)&#xA;&#x9;where b.display_name is null and a.status = 'INACTIVE'&#xA;&#x9;&#x9;and a.displayname not like '%(RESIGNED%'&#xA;&#x9;&#x9;and a.displayname not like '%(CONTRACT END%'&#xA;&#x9;&#x9;AND a.displayname not like '%(DO NOT USE%'&#xA;&#x9;&#x9;AND a.displayname not like '%(POSTED OUT%'&#xA;&#x9;&#x9;AND a.displayname not like '%(WRONG%'&#xA;) A&#xA;WHERE A.RN=1&#xA;;&#xA;&#x9;&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT a.display_name, a.personid, a.persistent, a.status, a.STE_MIGRATIONID&#xA;FROM &#xA;(&#xA;&#x9;select UPPER(TRIM(SUBSTRING(a.displayname, 0, LOCATE('(RESIGNED', a.displayname)))) as display_name, a.personid as personid&#xA;&#x9;&#x9;, 0 as persistent, 0 as status, 0 as STE_MIGRATIONID&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY UPPER(TRIM(SUBSTRING(a.displayname, 0, LOCATE('(RESIGNED', a.displayname)))) ORDER BY a.personid) AS RN&#xA;&#x9;from maximo.person a&#xA;&#x9;WHERE a.displayname like '%(RESIGNED%'&#xA;) a&#xA;left join MIGRATION.ste_migration_user_lookup b on b.display_name=a.display_name&#xA;where b.display_name is NULL AND TRIM(a.display_name)!='' AND a.RN=1;&#xA;&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT a.display_name, a.personid, a.persistent, a.status, a.STE_MIGRATIONID&#xA;FROM &#xA;(&#xA;&#x9;select UPPER(TRIM(SUBSTRING(a.displayname, 0, LOCATE('(CONTRACT END', a.displayname)))) as display_name, a.personid as personid&#xA;&#x9;&#x9;, 0 as persistent, 0 as status, 0 as STE_MIGRATIONID&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY UPPER(TRIM(SUBSTRING(a.displayname, 0, LOCATE('(CONTRACT END', a.displayname)))) ORDER BY a.personid) AS RN&#xA;&#x9;from maximo.person a&#xA;&#x9;WHERE a.displayname like '%(CONTRACT END%'&#xA;) a&#xA;left join MIGRATION.ste_migration_user_lookup b on b.display_name=a.display_name&#xA;where b.display_name is NULL AND TRIM(a.display_name)!='' AND a.RN=1;&#xA;&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT a.display_name, a.personid, a.persistent, a.status, a.STE_MIGRATIONID&#xA;FROM &#xA;(&#xA;&#x9;select UPPER(TRIM(SUBSTRING(a.displayname, 0, LOCATE('(DO NOT USE', a.displayname)))) as display_name, a.personid as personid&#xA;&#x9;&#x9;, 0 as persistent, 0 as status, 0 as STE_MIGRATIONID&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY UPPER(TRIM(SUBSTRING(a.displayname, 0, LOCATE('(DO NOT USE', a.displayname)))) ORDER BY a.personid) AS RN&#xA;&#x9;from maximo.person a&#xA;&#x9;WHERE a.displayname like '%(DO NOT USE%'&#xA;) a&#xA;left join MIGRATION.ste_migration_user_lookup b on b.display_name=a.display_name&#xA;where b.display_name is NULL AND TRIM(a.display_name)!='' AND a.RN=1;&#xA;&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT a.display_name, a.personid, a.persistent, a.status, a.STE_MIGRATIONID&#xA;FROM &#xA;(&#xA;&#x9;select UPPER(TRIM(SUBSTRING(a.displayname, 0, LOCATE('(POSTED OUT', a.displayname)))) as display_name, a.personid as personid&#xA;&#x9;&#x9;, 0 as persistent, 0 as status, 0 as STE_MIGRATIONID&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY UPPER(TRIM(SUBSTRING(a.displayname, 0, LOCATE('(POSTED OUT', a.displayname)))) ORDER BY a.personid) AS RN&#xA;&#x9;from maximo.person a&#xA;&#x9;WHERE a.displayname like '%(POSTED OUT%'&#xA;) a&#xA;left join MIGRATION.ste_migration_user_lookup b on b.display_name=a.display_name&#xA;where b.display_name is NULL AND TRIM(a.display_name)!='' AND a.RN=1;&#xA;&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT a.display_name, a.personid, a.persistent, a.status, a.STE_MIGRATIONID&#xA;FROM &#xA;(&#xA;&#x9;select UPPER(TRIM(SUBSTRING(a.displayname, 0, LOCATE('(WRONG', a.displayname)))) as display_name, a.personid as personid&#xA;&#x9;&#x9;, 0 as persistent, 0 as status, 0 as STE_MIGRATIONID&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY UPPER(TRIM(SUBSTRING(a.displayname, 0, LOCATE('(WRONG', a.displayname)))) ORDER BY a.personid) AS RN&#xA;&#x9;from maximo.person a&#xA;&#x9;WHERE a.displayname like '%(WRONG%'&#xA;) a&#xA;left join MIGRATION.ste_migration_user_lookup b on b.display_name=a.display_name&#xA;where b.display_name is NULL AND TRIM(a.display_name)!='' AND a.RN=1;&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
-      </DTS:ObjectData>
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Build Lookup\Build Lookup"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{7753a8fa-95f5-4863-929f-57e1b373efa1}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Build Lookup"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="delete from MIGRATION.ste_migration_user_lookup where persistent=0;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Build Lookup\Build Lookup 1"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{12902ec8-2be9-449c-a875-51d49624cbe0}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Build Lookup 1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;select UPPER(a.personid) as display_name, a.personid as personid, 0 as persistent&#xA;&#x9;, 1 as status, 0 as id&#xA;from maximo.person a&#xA;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(a.personid)&#xA;where b.display_name is null and a.status = 'ACTIVE'&#xA;&#x9;and a.displayname not like '%(RESIGNED%'&#xA;&#x9;and a.displayname not like '%(CONTRACT END%'&#xA;&#x9;AND a.displayname not like '%(DO NOT USE%'&#xA;&#x9;AND a.displayname not like '%(POSTED OUT%'&#xA;&#x9;AND a.displayname not like '%(WRONG%'&#xA;&#x9;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Build Lookup\Build Lookup 10"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{4dcda3b2-5d6d-41cc-96b1-43a4b787ab2d}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Build Lookup 10"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT a.display_name, a.personid, a.persistent, a.status, a.STE_MIGRATIONID&#xA;FROM &#xA;(&#xA;&#x9;select UPPER(TRIM(SUBSTRING(a.displayname, 0, LOCATE('(POSTED OUT', a.displayname)))) as display_name, a.personid as personid&#xA;&#x9;&#x9;, 0 as persistent, 0 as status, 0 as STE_MIGRATIONID&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY UPPER(TRIM(SUBSTRING(a.displayname, 0, LOCATE('(POSTED OUT', a.displayname)))) ORDER BY a.personid) AS RN&#xA;&#x9;from maximo.person a&#xA;&#x9;WHERE a.displayname like '%(POSTED OUT%'&#xA;) a&#xA;left join MIGRATION.ste_migration_user_lookup b on b.display_name=a.display_name&#xA;where b.display_name is NULL AND TRIM(a.display_name)!='' AND a.RN=1;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Build Lookup\Build Lookup 11"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{78362b76-5332-45b0-9bef-e23e18888f76}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Build Lookup 11"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT a.display_name, a.personid, a.persistent, a.status, a.STE_MIGRATIONID&#xA;FROM &#xA;(&#xA;&#x9;select UPPER(TRIM(SUBSTRING(a.displayname, 0, LOCATE('(WRONG', a.displayname)))) as display_name, a.personid as personid&#xA;&#x9;&#x9;, 0 as persistent, 0 as status, 0 as STE_MIGRATIONID&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY UPPER(TRIM(SUBSTRING(a.displayname, 0, LOCATE('(WRONG', a.displayname)))) ORDER BY a.personid) AS RN&#xA;&#x9;from maximo.person a&#xA;&#x9;WHERE a.displayname like '%(WRONG%'&#xA;) a&#xA;left join MIGRATION.ste_migration_user_lookup b on b.display_name=a.display_name&#xA;where b.display_name is NULL AND TRIM(a.display_name)!='' AND a.RN=1;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Build Lookup\Build Lookup 2"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{b0f9c73f-c4ed-431b-937a-2bbd0fd39f08}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Build Lookup 2"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;select UPPER(a.personid) as display_name, a.personid as personid, 0 as persistent&#xA;&#x9;, 0 as status, a.ste_migrationid as id&#xA;from maximo.person a&#xA;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(a.personid)&#xA;where b.display_name is null and &#xA;&#x9;(a.status = 'INACTIVE'&#xA;&#x9;&#x9;or a.displayname like '%(RESIGNED%'&#xA;&#x9;&#x9;or a.displayname like '%(CONTRACT END%'&#xA;&#x9;&#x9;or a.displayname like '%(DO NOT USE%'&#xA;&#x9;&#x9;or a.displayname like '%(POSTED OUT%'&#xA;&#x9;&#x9;or a.displayname like '%(WRONG%'&#xA;&#x9;)&#xA;&#x9;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Build Lookup\Build Lookup 3"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{304a6f41-ce62-4695-ac35-d5e4d237cf2d}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Build Lookup 3"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;select UPPER(a.STE_MIGRATIONEMNO) as display_name, a.personid as personid, 0 as persistent&#xA;&#x9;, 1 as status, a.ste_migrationid as id&#xA;from maximo.person a&#xA;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(a.STE_MIGRATIONEMNO)&#xA;where b.display_name is null and a.STE_MIGRATIONEMNO is not null&#xA;&#x9;and a.status = 'ACTIVE'&#xA;&#x9;and a.displayname not like '%(RESIGNED%'&#xA;&#x9;and a.displayname not like '%(CONTRACT END%'&#xA;&#x9;AND a.displayname not like '%(DO NOT USE%'&#xA;&#x9;AND a.displayname not like '%(POSTED OUT%'&#xA;&#x9;AND a.displayname not like '%(WRONG%'&#xA;&#x9;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Build Lookup\Build Lookup 4"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{b51030b0-5afc-46d6-963f-177579591f76}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Build Lookup 4"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;select UPPER(a.STE_MIGRATIONEMNO) as display_name, a.personid as personid, 0 as persistent&#xA;&#x9;, 0 as status, a.ste_migrationid as id&#xA;from maximo.person a&#xA;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(a.STE_MIGRATIONEMNO)&#xA;where b.display_name is null and a.STE_MIGRATIONEMNO is not null &#xA;&#x9;and (a.status = 'INACTIVE'&#xA;&#x9;&#x9;or a.displayname like '%(RESIGNED%'&#xA;&#x9;&#x9;or a.displayname like '%(CONTRACT END%'&#xA;&#x9;&#x9;or a.displayname like '%(DO NOT USE%'&#xA;&#x9;&#x9;or a.displayname like '%(POSTED OUT%'&#xA;&#x9;&#x9;or a.displayname like '%(WRONG%'&#xA;&#x9;)&#xA;&#x9;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Build Lookup\Build Lookup 5"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{3dedfabd-4b7e-499a-8915-17f072f2f27f}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Build Lookup 5"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT display_name, personid, persistent, status, STE_MIGRATIONID&#xA;FROM (&#xA;&#x9;select UPPER(a.displayname) as display_name, a.personid as personid, 0 as persistent&#xA;&#x9;&#x9;, 1 as status, 0 as STE_MIGRATIONID&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY UPPER(a.displayname) ORDER BY a.personid) AS RN&#xA;&#x9;from maximo.person a&#xA;&#x9;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(a.displayname)&#xA;&#x9;where b.display_name is null and a.status = 'ACTIVE'&#xA;&#x9;&#x9;and a.displayname not like '%(RESIGNED%'&#xA;&#x9;&#x9;and a.displayname not like '%(CONTRACT END%'&#xA;&#x9;&#x9;AND a.displayname not like '%(DO NOT USE%'&#xA;&#x9;&#x9;AND a.displayname not like '%(POSTED OUT%'&#xA;&#x9;&#x9;AND a.displayname not like '%(WRONG%'&#xA;) A&#xA;WHERE A.RN=1&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Build Lookup\Build Lookup 6"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{88a64168-e293-42bb-aef0-86bd9b586976}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Build Lookup 6"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT display_name, personid, persistent, status, STE_MIGRATIONID&#xA;FROM (&#xA;&#x9;select UPPER(a.displayname) as display_name, a.personid as personid, 0 as persistent&#xA;&#x9;&#x9;, 0 as status, 0 as STE_MIGRATIONID&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY UPPER(a.displayname) ORDER BY a.personid) AS RN&#xA;&#x9;from maximo.person a&#xA;&#x9;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(a.displayname)&#xA;&#x9;where b.display_name is null and a.status = 'INACTIVE'&#xA;&#x9;&#x9;and a.displayname not like '%(RESIGNED%'&#xA;&#x9;&#x9;and a.displayname not like '%(CONTRACT END%'&#xA;&#x9;&#x9;AND a.displayname not like '%(DO NOT USE%'&#xA;&#x9;&#x9;AND a.displayname not like '%(POSTED OUT%'&#xA;&#x9;&#x9;AND a.displayname not like '%(WRONG%'&#xA;) A&#xA;WHERE A.RN=1&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Build Lookup\Build Lookup 7"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{29ef41dc-dcbe-4924-8609-dd0441e34f22}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Build Lookup 7"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT a.display_name, a.personid, a.persistent, a.status, a.STE_MIGRATIONID&#xA;FROM &#xA;(&#xA;&#x9;select UPPER(TRIM(SUBSTRING(a.displayname, 0, LOCATE('(RESIGNED', a.displayname)))) as display_name, a.personid as personid&#xA;&#x9;&#x9;, 0 as persistent, 0 as status, 0 as STE_MIGRATIONID&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY UPPER(TRIM(SUBSTRING(a.displayname, 0, LOCATE('(RESIGNED', a.displayname)))) ORDER BY a.personid) AS RN&#xA;&#x9;from maximo.person a&#xA;&#x9;WHERE a.displayname like '%(RESIGNED%'&#xA;) a&#xA;left join MIGRATION.ste_migration_user_lookup b on b.display_name=a.display_name&#xA;where b.display_name is NULL AND TRIM(a.display_name)!='' AND a.RN=1;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Build Lookup\Build Lookup 8"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{4e10e1a3-44b2-421a-b7b7-40f131477229}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Build Lookup 8"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT a.display_name, a.personid, a.persistent, a.status, a.STE_MIGRATIONID&#xA;FROM &#xA;(&#xA;&#x9;select UPPER(TRIM(SUBSTRING(a.displayname, 0, LOCATE('(CONTRACT END', a.displayname)))) as display_name, a.personid as personid&#xA;&#x9;&#x9;, 0 as persistent, 0 as status, 0 as STE_MIGRATIONID&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY UPPER(TRIM(SUBSTRING(a.displayname, 0, LOCATE('(CONTRACT END', a.displayname)))) ORDER BY a.personid) AS RN&#xA;&#x9;from maximo.person a&#xA;&#x9;WHERE a.displayname like '%(CONTRACT END%'&#xA;) a&#xA;left join MIGRATION.ste_migration_user_lookup b on b.display_name=a.display_name&#xA;where b.display_name is NULL AND TRIM(a.display_name)!='' AND a.RN=1;&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Build Lookup\Build Lookup 9"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{54aaea1e-69d1-4ee6-89d7-73d35f05ef05}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Build Lookup 9"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT a.display_name, a.personid, a.persistent, a.status, a.STE_MIGRATIONID&#xA;FROM &#xA;(&#xA;&#x9;select UPPER(TRIM(SUBSTRING(a.displayname, 0, LOCATE('(DO NOT USE', a.displayname)))) as display_name, a.personid as personid&#xA;&#x9;&#x9;, 0 as persistent, 0 as status, 0 as STE_MIGRATIONID&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY UPPER(TRIM(SUBSTRING(a.displayname, 0, LOCATE('(DO NOT USE', a.displayname)))) ORDER BY a.personid) AS RN&#xA;&#x9;from maximo.person a&#xA;&#x9;WHERE a.displayname like '%(DO NOT USE%'&#xA;) a&#xA;left join MIGRATION.ste_migration_user_lookup b on b.display_name=a.display_name&#xA;where b.display_name is NULL AND TRIM(a.display_name)!='' AND a.RN=1;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Build Lookup.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{466CC167-15E3-4A29-BAE3-46BAE1937AC8}"
+          DTS:From="Package\Build Lookup\Build Lookup"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\Build Lookup\Build Lookup 1" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Build Lookup.PrecedenceConstraints[Constraint 1]"
+          DTS:CreationName=""
+          DTS:DTSID="{E40B539B-8597-4C1F-A2C7-4D211C85B486}"
+          DTS:From="Package\Build Lookup\Build Lookup 1"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 1"
+          DTS:To="Package\Build Lookup\Build Lookup 2" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Build Lookup.PrecedenceConstraints[Constraint 10]"
+          DTS:CreationName=""
+          DTS:DTSID="{49E58F38-4904-4FD9-8B71-6D8A7218F63B}"
+          DTS:From="Package\Build Lookup\Build Lookup 10"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 10"
+          DTS:To="Package\Build Lookup\Build Lookup 11" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Build Lookup.PrecedenceConstraints[Constraint 2]"
+          DTS:CreationName=""
+          DTS:DTSID="{98565F8A-ED54-43CE-8BE4-F9197E2BB317}"
+          DTS:From="Package\Build Lookup\Build Lookup 2"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 2"
+          DTS:To="Package\Build Lookup\Build Lookup 3" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Build Lookup.PrecedenceConstraints[Constraint 3]"
+          DTS:CreationName=""
+          DTS:DTSID="{3743E4BB-A1D3-43EB-91BE-011C7C930FCB}"
+          DTS:From="Package\Build Lookup\Build Lookup 3"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 3"
+          DTS:To="Package\Build Lookup\Build Lookup 4" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Build Lookup.PrecedenceConstraints[Constraint 4]"
+          DTS:CreationName=""
+          DTS:DTSID="{A7444607-7000-4DB3-9232-1ED62CD6D4BD}"
+          DTS:From="Package\Build Lookup\Build Lookup 4"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 4"
+          DTS:To="Package\Build Lookup\Build Lookup 5" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Build Lookup.PrecedenceConstraints[Constraint 5]"
+          DTS:CreationName=""
+          DTS:DTSID="{CAD89F3C-4454-4D55-9A92-C075A4F4343F}"
+          DTS:From="Package\Build Lookup\Build Lookup 5"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 5"
+          DTS:To="Package\Build Lookup\Build Lookup 6" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Build Lookup.PrecedenceConstraints[Constraint 6]"
+          DTS:CreationName=""
+          DTS:DTSID="{4C47FE17-CF2A-4FC5-B2C6-87C655846DE1}"
+          DTS:From="Package\Build Lookup\Build Lookup 6"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 6"
+          DTS:To="Package\Build Lookup\Build Lookup 7" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Build Lookup.PrecedenceConstraints[Constraint 7]"
+          DTS:CreationName=""
+          DTS:DTSID="{2F5989A1-88A9-4F4A-9D4E-9A09C7DC9C74}"
+          DTS:From="Package\Build Lookup\Build Lookup 7"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 7"
+          DTS:To="Package\Build Lookup\Build Lookup 8" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Build Lookup.PrecedenceConstraints[Constraint 8]"
+          DTS:CreationName=""
+          DTS:DTSID="{989A0B92-2A32-4FD7-9649-C86F4E7484D2}"
+          DTS:From="Package\Build Lookup\Build Lookup 8"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 8"
+          DTS:To="Package\Build Lookup\Build Lookup 9" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Build Lookup.PrecedenceConstraints[Constraint 9]"
+          DTS:CreationName=""
+          DTS:DTSID="{045AC5EE-2E74-4E9F-8E3D-703B7422DF36}"
+          DTS:From="Package\Build Lookup\Build Lookup 9"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 9"
+          DTS:To="Package\Build Lookup\Build Lookup 10" />
+      </DTS:PrecedenceConstraints>
     </DTS:Executable>
     <DTS:Executable
-      DTS:refId="Package\Clean-up"
-      DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:Description="Execute SQL Task"
-      DTS:DTSID="{41163EAE-9CFD-4B6E-B49F-3FD96C3D6033}"
-      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:refId="Package\Clean Up"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{6B750437-288D-4AC1-AA2A-83FFA2102BC8}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
       DTS:LocaleID="-1"
-      DTS:ObjectName="Clean-up"
-      DTS:ThreadHint="0">
+      DTS:ObjectName="Clean Up">
       <DTS:Variables />
-      <DTS:ObjectData>
-        <SQLTask:SqlTaskData
-          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-          SQLTask:SqlStatementSource="update maximo.person set firstname = substring(TRIM(SUBSTRING(displayname, 0, LOCATE('(RESIGNED', displayname))),0,30)&#xA; where displayname like '%(RESIGNED%';&#xA;&#xA;update maximo.person set firstname = substring(TRIM(SUBSTRING(displayname, 0, LOCATE('(CONTRACT END', displayname))),0,30)&#xA; where displayname like '%(CONTRACT END%';&#xA;&#xA;update maximo.person set firstname = substring(TRIM(SUBSTRING(displayname, 0, LOCATE('(DO NOT USE', displayname))),0,30), lastname = TRIM(SUBSTRING(displayname, LOCATE('(DO NOT USE', displayname), LENGTH(displayname)))&#xA; where displayname like '%(DO NOT USE%';&#xA;&#xA;update maximo.person set firstname = substring(TRIM(SUBSTRING(displayname, 0, LOCATE('(POSTED OUT', displayname))),0,30)&#xA; where displayname like '%(POSTED OUT%';&#xA;&#xA;update maximo.person set firstname = substring(TRIM(SUBSTRING(displayname, 0, LOCATE('(WRONG', displayname))),0,30)&#xA; where displayname like '%(WRONG%';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
-      </DTS:ObjectData>
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Clean Up\Clean-up"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{5fd340cf-b61a-43cb-96fc-406b36f2a7a8}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Clean-up"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="update maximo.person set firstname = substring(TRIM(SUBSTRING(displayname, 0, LOCATE('(RESIGNED', displayname))),0,30)&#xA; where displayname like '%(RESIGNED%';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Clean Up\Clean-up 1"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{2658187f-39be-4a6d-aa9d-872a82e8aede}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Clean-up 1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="update maximo.person set firstname = substring(TRIM(SUBSTRING(displayname, 0, LOCATE('(CONTRACT END', displayname))),0,30)&#xA; where displayname like '%(CONTRACT END%';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Clean Up\Clean-up 2"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{0dd36d90-c8fb-4c52-b0eb-b9fd8e41bfdf}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Clean-up 2"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="update maximo.person set firstname = substring(TRIM(SUBSTRING(displayname, 0, LOCATE('(DO NOT USE', displayname))),0,30), lastname = TRIM(SUBSTRING(displayname, LOCATE('(DO NOT USE', displayname), LENGTH(displayname)))&#xA; where displayname like '%(DO NOT USE%';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Clean Up\Clean-up 3"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{67ef74fe-5784-40a6-b0ad-9e48e6e0d9fc}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Clean-up 3"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="update maximo.person set firstname = substring(TRIM(SUBSTRING(displayname, 0, LOCATE('(POSTED OUT', displayname))),0,30)&#xA; where displayname like '%(POSTED OUT%';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Clean Up\Clean-up 4"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{8cc937d0-ef58-4d16-bbc0-6503701ae0e8}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Clean-up 4"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="update maximo.person set firstname = substring(TRIM(SUBSTRING(displayname, 0, LOCATE('(WRONG', displayname))),0,30)&#xA; where displayname like '%(WRONG%';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Clean Up.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{BA1AC748-1332-4D3C-B8CA-16F916AAF2B7}"
+          DTS:From="Package\Clean Up\Clean-up"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\Clean Up\Clean-up 1" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Clean Up.PrecedenceConstraints[Constraint 1]"
+          DTS:CreationName=""
+          DTS:DTSID="{EFB63B5A-D425-4E75-940E-3A9D928A3044}"
+          DTS:From="Package\Clean Up\Clean-up 1"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 1"
+          DTS:To="Package\Clean Up\Clean-up 2" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Clean Up.PrecedenceConstraints[Constraint 2]"
+          DTS:CreationName=""
+          DTS:DTSID="{DE04B28B-264F-48ED-A078-EBD01B616764}"
+          DTS:From="Package\Clean Up\Clean-up 2"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 2"
+          DTS:To="Package\Clean Up\Clean-up 3" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Clean Up.PrecedenceConstraints[Constraint 3]"
+          DTS:CreationName=""
+          DTS:DTSID="{7B02115B-9E3F-482E-96E9-911AF57B6456}"
+          DTS:From="Package\Clean Up\Clean-up 3"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 3"
+          DTS:To="Package\Clean Up\Clean-up 4" />
+      </DTS:PrecedenceConstraints>
     </DTS:Executable>
     <DTS:Executable
       DTS:refId="Package\DF - RES_EMPL (ACTIVE)"
@@ -10584,22 +10972,6 @@ ON upper(wu.USER_ID)  = re.re_brcd</property>
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
-      DTS:refId="Package\EmployeeType"
-      DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:Description="Execute SQL Task"
-      DTS:DTSID="{4180a9e3-6ec5-4949-bb9b-b57c38f035ff}"
-      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
-      DTS:LocaleID="-1"
-      DTS:ObjectName="EmployeeType"
-      DTS:ThreadHint="0">
-      <DTS:Variables />
-      <DTS:ObjectData>
-        <SQLTask:SqlTaskData
-          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-          SQLTask:SqlStatementSource="--update maximo.PERSON set EmployeeType = 'T' where --EmployeeType = '1.0' and ste_migrationid is not NULL&#xA;&#xA;update maximo.PERSON set EmployeeType = 'T' where CAST(EMPLOYEETYPE AS varchar) = '1.0E0' and ste_migrationid is not null;&#xA;&#xA;update maximo.PERSON set EmployeeType = 'P' where CAST(EMPLOYEETYPE AS varchar) = '2.0E0' and ste_migrationid is not null;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
-      </DTS:ObjectData>
-    </DTS:Executable>
-    <DTS:Executable
       DTS:refId="Package\Get Max ID"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
       DTS:Description="Execute SQL Task"
@@ -10750,137 +11122,6 @@ ON upper(wu.USER_ID)  = re.re_brcd</property>
           version="1">
           <components>
             <component
-              refId="Package\PERSONANCESTOR\ADO NET Destination"
-              componentClassID="Microsoft.ManagedComponentHost"
-              contactInfo="Loads data into an ADO.NET-compliant database that uses a database table or view. Load data into a new or existing table. For example, use an ADO.NET provider for ODBC to load data into an ODBC destination.;Microsoft Corporation; Microsoft SQL Server; © Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;2"
-              description="Loads data into an ADO.NET-compliant database that uses a database table or view. Load data into a new or existing table. For example, use an ADO.NET provider for ODBC to load data into an ODBC destination."
-              name="ADO NET Destination"
-              usesDispositions="true"
-              version="2">
-              <properties>
-                <property
-                  dataType="System.String"
-                  description="The Destination database table name."
-                  expressionType="Notify"
-                  name="TableOrViewName"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">"MAXIMO"."PERSONANCESTOR"</property>
-                <property
-                  dataType="System.Int32"
-                  description="Specify the number of rows per batch. The default is 0 which uses the same size as SSIS internal buffer. "
-                  expressionType="Notify"
-                  name="BatchSize">0</property>
-                <property
-                  dataType="System.Int32"
-                  description="The number of seconds before a command times out. A value of 0 indicates infinite time-out. "
-                  expressionType="Notify"
-                  name="CommandTimeout">30</property>
-                <property
-                  dataType="System.Boolean"
-                  description="Specifies whether to use the SqlBulkCopy interface to improve the performance of bulk insert operations. Only certain providers support this interface."
-                  expressionType="Notify"
-                  name="UseBulkInsertWhenPossible">true</property>
-                <property
-                  dataType="System.String"
-                  name="UserComponentTypeName">Microsoft.ADONETDestination</property>
-              </properties>
-              <connections>
-                <connection
-                  refId="Package\PERSONANCESTOR\ADO NET Destination.Connections[IDbConnection]"
-                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[BLUDB]"
-                  description="Managed connection manager"
-                  name="IDbConnection" />
-              </connections>
-              <inputs>
-                <input
-                  refId="Package\PERSONANCESTOR\ADO NET Destination.Inputs[ADO NET Destination Input]"
-                  errorRowDisposition="FailComponent"
-                  hasSideEffects="true"
-                  name="ADO NET Destination Input">
-                  <inputColumns>
-                    <inputColumn
-                      refId="Package\PERSONANCESTOR\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[PERSONID]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="100"
-                      cachedName="PERSONID"
-                      cachedSortKeyPosition="1"
-                      externalMetadataColumnId="Package\PERSONANCESTOR\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[PERSONID]"
-                      lineageId="Package\PERSONANCESTOR\Sort.Outputs[Sort Output].Columns[PERSONID]" />
-                    <inputColumn
-                      refId="Package\PERSONANCESTOR\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[ancestor]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="100"
-                      cachedName="ancestor"
-                      externalMetadataColumnId="Package\PERSONANCESTOR\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[ANCESTOR]"
-                      lineageId="Package\PERSONANCESTOR\Derived Column.Outputs[Derived Column Output].Columns[ancestor]" />
-                    <inputColumn
-                      refId="Package\PERSONANCESTOR\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[hierarchylevels]"
-                      cachedDataType="i4"
-                      cachedName="hierarchylevels"
-                      externalMetadataColumnId="Package\PERSONANCESTOR\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[HIERARCHYLEVELS]"
-                      lineageId="Package\PERSONANCESTOR\Derived Column.Outputs[Derived Column Output].Columns[hierarchylevels]" />
-                    <inputColumn
-                      refId="Package\PERSONANCESTOR\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[v_personuid]"
-                      cachedDataType="i8"
-                      cachedName="v_personuid"
-                      externalMetadataColumnId="Package\PERSONANCESTOR\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[PERSONANCESTORID]"
-                      lineageId="Package\PERSONANCESTOR\Derived Column.Outputs[Derived Column Output].Columns[v_personuid]" />
-                  </inputColumns>
-                  <externalMetadataColumns
-                    isUsed="True">
-                    <externalMetadataColumn
-                      refId="Package\PERSONANCESTOR\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[ANCESTOR]"
-                      dataType="wstr"
-                      length="100"
-                      name="ANCESTOR" />
-                    <externalMetadataColumn
-                      refId="Package\PERSONANCESTOR\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[PERSONID]"
-                      dataType="wstr"
-                      length="100"
-                      name="PERSONID" />
-                    <externalMetadataColumn
-                      refId="Package\PERSONANCESTOR\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[HIERARCHYLEVELS]"
-                      dataType="i4"
-                      name="HIERARCHYLEVELS" />
-                    <externalMetadataColumn
-                      refId="Package\PERSONANCESTOR\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[PERSONANCESTORID]"
-                      dataType="i8"
-                      name="PERSONANCESTORID" />
-                    <externalMetadataColumn
-                      refId="Package\PERSONANCESTOR\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[ROWSTAMP]"
-                      dataType="i8"
-                      name="ROWSTAMP" />
-                  </externalMetadataColumns>
-                </input>
-              </inputs>
-              <outputs>
-                <output
-                  refId="Package\PERSONANCESTOR\ADO NET Destination.Outputs[ADO NET Destination Error Output]"
-                  exclusionGroup="1"
-                  isErrorOut="true"
-                  name="ADO NET Destination Error Output"
-                  synchronousInputId="Package\PERSONANCESTOR\ADO NET Destination.Inputs[ADO NET Destination Input]">
-                  <outputColumns>
-                    <outputColumn
-                      refId="Package\PERSONANCESTOR\ADO NET Destination.Outputs[ADO NET Destination Error Output].Columns[ErrorCode]"
-                      dataType="i4"
-                      lineageId="Package\PERSONANCESTOR\ADO NET Destination.Outputs[ADO NET Destination Error Output].Columns[ErrorCode]"
-                      name="ErrorCode"
-                      specialFlags="1" />
-                    <outputColumn
-                      refId="Package\PERSONANCESTOR\ADO NET Destination.Outputs[ADO NET Destination Error Output].Columns[ErrorColumn]"
-                      dataType="i4"
-                      lineageId="Package\PERSONANCESTOR\ADO NET Destination.Outputs[ADO NET Destination Error Output].Columns[ErrorColumn]"
-                      name="ErrorColumn"
-                      specialFlags="2" />
-                  </outputColumns>
-                  <externalMetadataColumns />
-                </output>
-              </outputs>
-            </component>
-            <component
               refId="Package\PERSONANCESTOR\Derived Column"
               componentClassID="Microsoft.DerivedColumn"
               contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
@@ -10919,12 +11160,12 @@ ON upper(wu.USER_ID)  = re.re_brcd</property>
                   synchronousInputId="Package\PERSONANCESTOR\Derived Column.Inputs[Derived Column Input]">
                   <outputColumns>
                     <outputColumn
-                      refId="Package\PERSONANCESTOR\Derived Column.Outputs[Derived Column Output].Columns[v_personuid]"
+                      refId="Package\PERSONANCESTOR\Derived Column.Outputs[Derived Column Output].Columns[v_personancestorid]"
                       dataType="i8"
                       errorOrTruncationOperation="Computation"
                       errorRowDisposition="FailComponent"
-                      lineageId="Package\PERSONANCESTOR\Derived Column.Outputs[Derived Column Output].Columns[v_personuid]"
-                      name="v_personuid"
+                      lineageId="Package\PERSONANCESTOR\Derived Column.Outputs[Derived Column Output].Columns[v_personancestorid]"
+                      name="v_personancestorid"
                       truncationRowDisposition="FailComponent">
                       <properties>
                         <property
@@ -10941,14 +11182,14 @@ ON upper(wu.USER_ID)  = re.re_brcd</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
-                      refId="Package\PERSONANCESTOR\Derived Column.Outputs[Derived Column Output].Columns[ancestor]"
+                      refId="Package\PERSONANCESTOR\Derived Column.Outputs[Derived Column Output].Columns[v_ancestor]"
                       codePage="1252"
                       dataType="str"
                       errorOrTruncationOperation="Computation"
                       errorRowDisposition="FailComponent"
                       length="100"
-                      lineageId="Package\PERSONANCESTOR\Derived Column.Outputs[Derived Column Output].Columns[ancestor]"
-                      name="ancestor"
+                      lineageId="Package\PERSONANCESTOR\Derived Column.Outputs[Derived Column Output].Columns[v_ancestor]"
+                      name="v_ancestor"
                       truncationRowDisposition="FailComponent">
                       <properties>
                         <property
@@ -10965,12 +11206,12 @@ ON upper(wu.USER_ID)  = re.re_brcd</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
-                      refId="Package\PERSONANCESTOR\Derived Column.Outputs[Derived Column Output].Columns[hierarchylevels]"
+                      refId="Package\PERSONANCESTOR\Derived Column.Outputs[Derived Column Output].Columns[v_hierarchylevels]"
                       dataType="i4"
                       errorOrTruncationOperation="Computation"
                       errorRowDisposition="FailComponent"
-                      lineageId="Package\PERSONANCESTOR\Derived Column.Outputs[Derived Column Output].Columns[hierarchylevels]"
-                      name="hierarchylevels"
+                      lineageId="Package\PERSONANCESTOR\Derived Column.Outputs[Derived Column Output].Columns[v_hierarchylevels]"
+                      name="v_hierarchylevels"
                       truncationRowDisposition="FailComponent">
                       <properties>
                         <property
@@ -10984,6 +11225,28 @@ ON upper(wu.USER_ID)  = re.re_brcd</property>
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
                           name="FriendlyExpression">0</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\PERSONANCESTOR\Derived Column.Outputs[Derived Column Output].Columns[v_migrationdate]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\PERSONANCESTOR\Derived Column.Outputs[Derived Column Output].Columns[v_migrationdate]"
+                      name="v_migrationdate"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_DBTIMESTAMP)[GETDATE]()</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_DBTIMESTAMP)GETDATE()</property>
                       </properties>
                     </outputColumn>
                   </outputColumns>
@@ -11028,13 +11291,6 @@ ON upper(wu.USER_ID)  = re.re_brcd</property>
                 </input>
               </inputs>
               <outputs>
-                <output
-                  refId="Package\PERSONANCESTOR\Multicast.Outputs[Multicast Output 1]"
-                  deleteOutputOnPathDetached="true"
-                  name="Multicast Output 1"
-                  synchronousInputId="Package\PERSONANCESTOR\Multicast.Inputs[Multicast Input 1]">
-                  <externalMetadataColumns />
-                </output>
                 <output
                   refId="Package\PERSONANCESTOR\Multicast.Outputs[Multicast Output 2]"
                   deleteOutputOnPathDetached="true"
@@ -11090,7 +11346,7 @@ ON upper(wu.USER_ID)  = re.re_brcd</property>
                   dataType="System.Int32"
                   description="Specifies the mode used to access the database."
                   name="AccessMode"
-                  typeConverter="AccessMode">0</property>
+                  typeConverter="AccessMode">3</property>
                 <property
                   dataType="System.Boolean"
                   description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
@@ -11102,7 +11358,7 @@ ON upper(wu.USER_ID)  = re.re_brcd</property>
                 <property
                   dataType="System.String"
                   description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
-                  name="FastLoadOptions"></property>
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
@@ -11133,25 +11389,37 @@ ON upper(wu.USER_ID)  = re.re_brcd</property>
                       externalMetadataColumnId="Package\PERSONANCESTOR\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[PERSONID]"
                       lineageId="Package\PERSONANCESTOR\Sort.Outputs[Sort Output].Columns[PERSONID]" />
                     <inputColumn
-                      refId="Package\PERSONANCESTOR\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[ancestor]"
+                      refId="Package\PERSONANCESTOR\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_ancestor]"
                       cachedCodepage="1252"
                       cachedDataType="str"
                       cachedLength="100"
-                      cachedName="ancestor"
+                      cachedName="v_ancestor"
                       externalMetadataColumnId="Package\PERSONANCESTOR\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ANCESTOR]"
-                      lineageId="Package\PERSONANCESTOR\Derived Column.Outputs[Derived Column Output].Columns[ancestor]" />
+                      lineageId="Package\PERSONANCESTOR\Derived Column.Outputs[Derived Column Output].Columns[v_ancestor]" />
                     <inputColumn
-                      refId="Package\PERSONANCESTOR\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[hierarchylevels]"
+                      refId="Package\PERSONANCESTOR\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_hierarchylevels]"
                       cachedDataType="i4"
-                      cachedName="hierarchylevels"
+                      cachedName="v_hierarchylevels"
                       externalMetadataColumnId="Package\PERSONANCESTOR\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[HIERARCHYLEVELS]"
-                      lineageId="Package\PERSONANCESTOR\Derived Column.Outputs[Derived Column Output].Columns[hierarchylevels]" />
+                      lineageId="Package\PERSONANCESTOR\Derived Column.Outputs[Derived Column Output].Columns[v_hierarchylevels]" />
                     <inputColumn
-                      refId="Package\PERSONANCESTOR\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_personuid]"
+                      refId="Package\PERSONANCESTOR\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_personancestorid]"
                       cachedDataType="i8"
-                      cachedName="v_personuid"
+                      cachedName="v_personancestorid"
                       externalMetadataColumnId="Package\PERSONANCESTOR\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[PERSONANCESTORID]"
-                      lineageId="Package\PERSONANCESTOR\Derived Column.Outputs[Derived Column Output].Columns[v_personuid]" />
+                      lineageId="Package\PERSONANCESTOR\Derived Column.Outputs[Derived Column Output].Columns[v_personancestorid]" />
+                    <inputColumn
+                      refId="Package\PERSONANCESTOR\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[STE_MIGRATIONID]"
+                      cachedDataType="i8"
+                      cachedName="STE_MIGRATIONID"
+                      externalMetadataColumnId="Package\PERSONANCESTOR\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONID]"
+                      lineageId="Package\PERSONANCESTOR\Sort.Outputs[Sort Output].Columns[STE_MIGRATIONID]" />
+                    <inputColumn
+                      refId="Package\PERSONANCESTOR\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_migrationdate]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="v_migrationdate"
+                      externalMetadataColumnId="Package\PERSONANCESTOR\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
+                      lineageId="Package\PERSONANCESTOR\Derived Column.Outputs[Derived Column Output].Columns[v_migrationdate]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -11179,6 +11447,15 @@ ON upper(wu.USER_ID)  = re.re_brcd</property>
                       refId="Package\PERSONANCESTOR\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[ROWSTAMP]"
                       dataType="i8"
                       name="ROWSTAMP" />
+                    <externalMetadataColumn
+                      refId="Package\PERSONANCESTOR\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONID]"
+                      dataType="i8"
+                      name="STE_MIGRATIONID" />
+                    <externalMetadataColumn
+                      refId="Package\PERSONANCESTOR\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
+                      dataType="dbTimeStamp2"
+                      name="STE_MIGRATIONDATE"
+                      scale="7" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -14062,6 +14339,40 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="NewSortKeyPosition">1</property>
                       </properties>
                     </inputColumn>
+                    <inputColumn
+                      refId="Package\PERSONANCESTOR\Sort.Inputs[Sort Input].Columns[STE_MIGRATIONID]"
+                      cachedDataType="i8"
+                      cachedName="STE_MIGRATIONID"
+                      lineageId="Package\PERSONANCESTOR\OLE DB Source.Outputs[OLE DB Source Output].Columns[STE_MIGRATIONID]">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the comparison options for character data."
+                          name="NewComparisonFlags">0</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the sort order of the column."
+                          name="NewSortKeyPosition">0</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\PERSONANCESTOR\Sort.Inputs[Sort Input].Columns[STE_MIGRATIONSOURCE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="200"
+                      cachedName="STE_MIGRATIONSOURCE"
+                      lineageId="Package\PERSONANCESTOR\OLE DB Source.Outputs[OLE DB Source Output].Columns[STE_MIGRATIONSOURCE]">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the comparison options for character data."
+                          name="NewComparisonFlags">0</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the sort order of the column."
+                          name="NewSortKeyPosition">0</property>
+                      </properties>
+                    </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -14088,6 +14399,34 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="SortColumnId">#{Package\PERSONANCESTOR\OLE DB Source.Outputs[OLE DB Source Output].Columns[PERSONID]}</property>
                       </properties>
                     </outputColumn>
+                    <outputColumn
+                      refId="Package\PERSONANCESTOR\Sort.Outputs[Sort Output].Columns[STE_MIGRATIONID]"
+                      dataType="i8"
+                      lineageId="Package\PERSONANCESTOR\Sort.Outputs[Sort Output].Columns[STE_MIGRATIONID]"
+                      name="STE_MIGRATIONID">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the lineage identifier of the input column that is associated with this output column."
+                          name="SortColumnId">#{Package\PERSONANCESTOR\OLE DB Source.Outputs[OLE DB Source Output].Columns[STE_MIGRATIONID]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\PERSONANCESTOR\Sort.Outputs[Sort Output].Columns[STE_MIGRATIONSOURCE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="200"
+                      lineageId="Package\PERSONANCESTOR\Sort.Outputs[Sort Output].Columns[STE_MIGRATIONSOURCE]"
+                      name="STE_MIGRATIONSOURCE">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the lineage identifier of the input column that is associated with this output column."
+                          name="SortColumnId">#{Package\PERSONANCESTOR\OLE DB Source.Outputs[OLE DB Source Output].Columns[STE_MIGRATIONSOURCE]}</property>
+                      </properties>
+                    </outputColumn>
                   </outputColumns>
                   <externalMetadataColumns />
                 </output>
@@ -14100,11 +14439,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               endId="Package\PERSONANCESTOR\Multicast.Inputs[Multicast Input 1]"
               name="Derived Column Output"
               startId="Package\PERSONANCESTOR\Derived Column.Outputs[Derived Column Output]" />
-            <path
-              refId="Package\PERSONANCESTOR.Paths[Multicast Output 1]"
-              endId="Package\PERSONANCESTOR\ADO NET Destination.Inputs[ADO NET Destination Input]"
-              name="Multicast Output 1"
-              startId="Package\PERSONANCESTOR\Multicast.Outputs[Multicast Output 1]" />
             <path
               refId="Package\PERSONANCESTOR.Paths[Multicast Output 2]"
               endId="Package\PERSONANCESTOR\OLE DB Destination.Inputs[ADO NET Destination Input]"
@@ -14298,23 +14632,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </DTS:ObjectData>
         </DTS:Executable>
         <DTS:Executable
-          DTS:refId="Package\Pre-Task\RESET (PHONE)"
-          DTS:CreationName="Microsoft.ExecuteSQLTask"
-          DTS:Description="Execute SQL Task"
-          DTS:DTSID="{E11B0D00-FC9C-44DB-AA1E-D5BF88B7E897}"
-          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
-          DTS:LocaleID="-1"
-          DTS:ObjectName="RESET (PHONE)"
-          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-          DTS:ThreadHint="0">
-          <DTS:Variables />
-          <DTS:ObjectData>
-            <SQLTask:SqlTaskData
-              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-              SQLTask:SqlStatementSource="DELETE FROM maximo.phone WHERE ste_migrationid IS NOT null" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
-          </DTS:ObjectData>
-        </DTS:Executable>
-        <DTS:Executable
           DTS:refId="Package\Pre-Task\RESET (STE_MIGRATION_USER_LOOKUP)"
           DTS:CreationName="Microsoft.ExecuteSQLTask"
           DTS:Description="Execute SQL Task"
@@ -14341,15 +14658,41 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           DTS:LogicalAnd="True"
           DTS:ObjectName="Constraint 1"
           DTS:To="Package\Pre-Task\RESET (STE_MIGRATION_USER_LOOKUP)" />
-        <DTS:PrecedenceConstraint
-          DTS:refId="Package\Pre-Task.PrecedenceConstraints[Constraint 2]"
-          DTS:CreationName=""
-          DTS:DTSID="{2032BEF6-BE99-4875-B3BA-E7ACB209BB1D}"
-          DTS:From="Package\Pre-Task\RESET (STE_MIGRATION_USER_LOOKUP)"
-          DTS:LogicalAnd="True"
-          DTS:ObjectName="Constraint 2"
-          DTS:To="Package\Pre-Task\RESET (PHONE)" />
       </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\RESET (PERSONANCESTOR)"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{f6039e70-143e-41b8-9872-590c00642b42}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="RESET (PERSONANCESTOR)"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="delete from maximo.personancestor where STE_MIGRATIONID is not null;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\RESET (PHONE)"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{1fe931ed-32f1-444c-a553-12d2e982c9f4}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="RESET (PHONE)"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="DELETE FROM maximo.phone WHERE ste_migrationid IS NOT null" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
       DTS:refId="Package\Sequence Container"
@@ -32287,6 +32630,60 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
       </DTS:PrecedenceConstraints>
     </DTS:Executable>
     <DTS:Executable
+      DTS:refId="Package\Update Employee Type"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{713681AE-5666-4BB3-BE24-65E40DA5126A}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Update Employee Type">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Update Employee Type\EmployeeType"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{e77adbbe-3962-42f0-ada6-117be36604e9}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="EmployeeType"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="--update maximo.PERSON set EmployeeType = 'T' where --EmployeeType = '1.0' and ste_migrationid is not NULL&#xA;&#xA;update maximo.PERSON set EmployeeType = 'T' where CAST(EMPLOYEETYPE AS varchar) = '1.0E0' and ste_migrationid is not null;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Update Employee Type\EmployeeType 1"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{12e03ab9-6406-46c3-b0bc-ada96057b4c7}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="EmployeeType 1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="update maximo.PERSON set EmployeeType = 'P' where CAST(EMPLOYEETYPE AS varchar) = '2.0E0' and ste_migrationid is not null;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Update Employee Type.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{390065A6-62D1-4D2A-8987-4DB73ACCAA00}"
+          DTS:From="Package\Update Employee Type\EmployeeType"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\Update Employee Type\EmployeeType 1" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+    <DTS:Executable
       DTS:refId="Package\User Lookup"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:Description="Data Flow Task"
@@ -32915,8 +33312,8 @@ where "refTable"."DISPLAY_NAME" = ?</property>
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 10]"
       DTS:CreationName=""
-      DTS:DTSID="{E8A85FBF-7275-405E-995E-FB6CAF9211F1}"
-      DTS:From="Package\EmployeeType"
+      DTS:DTSID="{04FD8F8A-D596-4085-8452-90BA4B57B0AC}"
+      DTS:From="Package\Update Employee Type"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 10"
       DTS:To="Package\MAXSEQ (PERSON)" />
@@ -32937,6 +33334,46 @@ where "refTable"."DISPLAY_NAME" = ?</property>
       DTS:ObjectName="Constraint 12"
       DTS:To="Package\POST-PKG" />
     <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 13]"
+      DTS:CreationName=""
+      DTS:DTSID="{3A87E669-B72F-4F19-B5CC-C262935BB653}"
+      DTS:From="Package\Clean Up"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 13"
+      DTS:To="Package\Build Lookup" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 14]"
+      DTS:CreationName=""
+      DTS:DTSID="{F9BD9C38-80A6-4B86-BF2D-A9FAF7ABCD8A}"
+      DTS:From="Package\Build Lookup"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 14"
+      DTS:To="Package\User Lookup" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 15]"
+      DTS:CreationName=""
+      DTS:DTSID="{282927FE-06A9-4187-8259-42039EB4B9BD}"
+      DTS:From="Package\RESET (PERSONANCESTOR)"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 15"
+      DTS:To="Package\Get Max ID 8 1" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 16]"
+      DTS:CreationName=""
+      DTS:DTSID="{38FEDC3E-5BC0-423E-9E33-88B8A46EB6C5}"
+      DTS:From="Package\MAXSEQ (PERSON)"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 16"
+      DTS:To="Package\RESET (PHONE)" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 17]"
+      DTS:CreationName=""
+      DTS:DTSID="{2929F382-B702-4393-9464-8A73E6EFB690}"
+      DTS:From="Package\RESET (PHONE)"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 17"
+      DTS:To="Package\PHONE" />
+    <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
       DTS:CreationName=""
       DTS:DTSID="{415565C1-BBD4-4BC4-A7A6-3F96FC2B7C70}"
@@ -32944,30 +33381,6 @@ where "refTable"."DISPLAY_NAME" = ?</property>
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 2"
       DTS:To="Package\Get Max ID" />
-    <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[Constraint 23]"
-      DTS:CreationName=""
-      DTS:DTSID="{220DC9FC-BD60-4EBB-8A72-7273CA6ADB02}"
-      DTS:From="Package\Clean-up"
-      DTS:LogicalAnd="True"
-      DTS:ObjectName="Constraint 23"
-      DTS:To="Package\Build Lookup" />
-    <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[Constraint 24]"
-      DTS:CreationName=""
-      DTS:DTSID="{0A12055A-2DBE-4601-8A5A-73FB60F8E82A}"
-      DTS:From="Package\Build Lookup"
-      DTS:LogicalAnd="True"
-      DTS:ObjectName="Constraint 24"
-      DTS:To="Package\User Lookup" />
-    <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[Constraint 26]"
-      DTS:CreationName=""
-      DTS:DTSID="{003BA4E4-99C3-436A-8F71-6ACACE1746CD}"
-      DTS:From="Package\MAXSEQ (PERSON)"
-      DTS:LogicalAnd="True"
-      DTS:ObjectName="Constraint 26"
-      DTS:To="Package\PHONE" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 27]"
       DTS:CreationName=""
@@ -32987,19 +33400,19 @@ where "refTable"."DISPLAY_NAME" = ?</property>
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
       DTS:CreationName=""
-      DTS:DTSID="{24876612-47C2-40DD-B02D-135280766096}"
+      DTS:DTSID="{EC1F44AA-E039-485A-847F-F74B4F769FFF}"
       DTS:From="Package\User Lookup"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 3"
-      DTS:To="Package\EmployeeType" />
+      DTS:To="Package\Update Employee Type" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 4]"
       DTS:CreationName=""
-      DTS:DTSID="{85C324BF-4DCA-4BB5-83CF-948EFC1A5A06}"
+      DTS:DTSID="{314B5577-2AB6-4743-9D75-1187C83C4C8E}"
       DTS:From="Package\MAXSEQ (PHONE)"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 4"
-      DTS:To="Package\Get Max ID 8 1" />
+      DTS:To="Package\RESET (PERSONANCESTOR)" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 42]"
       DTS:CreationName=""
@@ -33043,11 +33456,11 @@ where "refTable"."DISPLAY_NAME" = ?</property>
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 9]"
       DTS:CreationName=""
-      DTS:DTSID="{011D6E19-F7C5-4D4F-8D80-23671BEC8795}"
+      DTS:DTSID="{ED3645AD-25CF-4393-B13E-D49515A42ED7}"
       DTS:From="Package\Sequence Container"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 9"
-      DTS:To="Package\Clean-up" />
+      DTS:To="Package\Clean Up" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
 <!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
@@ -33063,12 +33476,482 @@ where "refTable"."DISPLAY_NAME" = ?</property>
         Capacity="128" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="143.2,41.6"
+          Id="Package\Build Lookup\Build Lookup"
+          TopLeft="60,60" />
+        <NodeLayout
+          Size="147.2,41.6"
+          Id="Package\Build Lookup\Build Lookup 1"
+          TopLeft="238.33332358963,59.3333340444829" />
+        <NodeLayout
+          Size="152.8,41.6"
+          Id="Package\Build Lookup\Build Lookup 10"
+          TopLeft="233.333323862818,327.666670457455" />
+        <NodeLayout
+          Size="143.2,41.6"
+          Id="Package\Build Lookup\Build Lookup 11"
+          TopLeft="58.333333424396,316.600004574259" />
+        <NodeLayout
+          Size="147.2,41.6"
+          Id="Package\Build Lookup\Build Lookup 2"
+          TopLeft="423.333313481676,61.0666673657627" />
+        <NodeLayout
+          Size="143.2,41.6"
+          Id="Package\Build Lookup\Build Lookup 3"
+          TopLeft="426.666646632884,141.866667510403" />
+        <NodeLayout
+          Size="143.2,41.6"
+          Id="Package\Build Lookup\Build Lookup 4"
+          TopLeft="243.333323316442,146.400001518726" />
+        <NodeLayout
+          Size="147.2,41.6"
+          Id="Package\Build Lookup\Build Lookup 5"
+          TopLeft="63.333333151208,145.733335563209" />
+        <NodeLayout
+          Size="143.2,41.6"
+          Id="Package\Build Lookup\Build Lookup 6"
+          TopLeft="58.333333424396,227.200001663366" />
+        <NodeLayout
+          Size="143.2,41.6"
+          Id="Package\Build Lookup\Build Lookup 7"
+          TopLeft="246.66665646765,231.733335671689" />
+        <NodeLayout
+          Size="143.2,41.6"
+          Id="Package\Build Lookup\Build Lookup 8"
+          TopLeft="429.999979784092,232.800003037452" />
+        <NodeLayout
+          Size="147.2,41.6"
+          Id="Package\Build Lookup\Build Lookup 9"
+          TopLeft="423.333313481676,325.733336431053" />
+        <EdgeLayout
+          Id="Package\Build Lookup.PrecedenceConstraints[Constraint]"
+          TopLeft="203.2,80.4666670222414">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="35.1333235896302,0"
+              Start="0,0"
+              End="27.6333235896302,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="27.6333235896302,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Build Lookup.PrecedenceConstraints[Constraint 1]"
+          TopLeft="385.53332358963,81.0000007051228">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="37.7999898920459,0"
+              Start="0,0"
+              End="30.2999898920459,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="30.2999898920459,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Build Lookup.PrecedenceConstraints[Constraint 10]"
+          TopLeft="233.333323862818,348.466670457455">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-31.7999904384222,-11.066665883196"
+              Start="0,0"
+              End="-24.2999904384222,-11.066665883196">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="-11.8999952192111,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-11.8999952192111,0"
+                    Point2="-15.8999952192111,0"
+                    Point3="-15.8999952192111,-4" />
+                  <mssgle:LineSegment
+                    End="-15.8999952192111,-7.06666588319604" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-15.8999952192111,-7.06666588319604"
+                    Point2="-15.8999952192111,-11.066665883196"
+                    Point3="-19.8999952192111,-11.066665883196" />
+                  <mssgle:LineSegment
+                    End="-24.2999904384222,-11.066665883196" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Build Lookup.PrecedenceConstraints[Constraint 2]"
+          TopLeft="497.59998005728,102.666667365763">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,39.2000001446405"
+              Start="0,0"
+              End="0,31.7000001446405">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,31.7000001446405" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Build Lookup.PrecedenceConstraints[Constraint 3]"
+          TopLeft="426.666646632884,164.933334514564">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-40.133323316442,0"
+              Start="0,0"
+              End="-32.633323316442,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="-32.633323316442,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Build Lookup.PrecedenceConstraints[Constraint 4]"
+          TopLeft="243.333323316442,166.866668540967">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-32.799990165234,0"
+              Start="0,0"
+              End="-25.299990165234,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="-25.299990165234,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Build Lookup.PrecedenceConstraints[Constraint 5]"
+          TopLeft="133.433333287802,187.333335563209">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,39.8666661001577"
+              Start="0,0"
+              End="0,32.3666661001577">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,32.3666661001577" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Build Lookup.PrecedenceConstraints[Constraint 6]"
+          TopLeft="201.533333424396,250.266668667528">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="45.1333230432541,0"
+              Start="0,0"
+              End="37.6333230432541,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="37.6333230432541,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Build Lookup.PrecedenceConstraints[Constraint 7]"
+          TopLeft="389.86665646765,253.066669354571">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="40.1333233164421,0"
+              Start="0,0"
+              End="32.6333233164421,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="32.6333233164421,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Build Lookup.PrecedenceConstraints[Constraint 8]"
+          TopLeft="499.266646632884,274.400003037452">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,51.3333333936004"
+              Start="0,0"
+              End="0,43.8333333936004">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,43.8333333936004" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Build Lookup.PrecedenceConstraints[Constraint 9]"
+          TopLeft="423.333313481676,347.500003444254">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-37.1999896188579,0"
+              Start="0,0"
+              End="-29.6999896188579,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="-29.6999896188579,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="False"
+          PanelSize="680,463.2"
+          Size="680,43.2"
           Id="Package\Build Lookup"
-          TopLeft="239.266656070286,1046.16666942689" />
+          TopLeft="228.333320857751,1035.06666393055" />
         <NodeLayout
           Size="124,41.6"
-          Id="Package\Clean-up"
-          TopLeft="251.366655921275,956.766666516005" />
+          Id="Package\Clean Up\Clean-up"
+          TopLeft="40.0000010927518,51.3333333936002" />
+        <NodeLayout
+          Size="124,41.6"
+          Id="Package\Clean Up\Clean-up 1"
+          TopLeft="221.66665783359,48.9333341168031" />
+        <NodeLayout
+          Size="124,41.6"
+          Id="Package\Clean Up\Clean-up 2"
+          TopLeft="40.0000010927518,152.9333333936" />
+        <NodeLayout
+          Size="124,41.6"
+          Id="Package\Clean Up\Clean-up 3"
+          TopLeft="213.33332495557,152.266667438083" />
+        <NodeLayout
+          Size="124,41.6"
+          Id="Package\Clean Up\Clean-up 4"
+          TopLeft="40.0000010927518,254.5333333936" />
+        <EdgeLayout
+          Id="Package\Clean Up.PrecedenceConstraints[Constraint]"
+          TopLeft="164.000001092752,70.9333337552016">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="57.6666567408381,0"
+              Start="0,0"
+              End="50.1666567408381,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="50.1666567408381,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Clean Up.PrecedenceConstraints[Constraint 1]"
+          TopLeft="283.66665783359,90.533334116803">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-181.666656740838,62.3999992767972"
+              Start="0,0"
+              End="-181.666656740838,54.8999992767972">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,27.1999996383986" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,27.1999996383986"
+                    Point2="0,31.1999996383986"
+                    Point3="-4,31.1999996383986" />
+                  <mssgle:LineSegment
+                    End="-177.666656740838,31.1999996383986" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-177.666656740838,31.1999996383986"
+                    Point2="-181.666656740838,31.1999996383986"
+                    Point3="-181.666656740838,35.1999996383986" />
+                  <mssgle:LineSegment
+                    End="-181.666656740838,54.8999992767972" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Clean Up.PrecedenceConstraints[Constraint 2]"
+          TopLeft="164.000001092752,173.400000415842">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="49.333323862818,0"
+              Start="0,0"
+              End="41.833323862818,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="41.833323862818,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Clean Up.PrecedenceConstraints[Constraint 3]"
+          TopLeft="275.33332495557,193.866667438083">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-173.333323862818,60.666665955517"
+              Start="0,0"
+              End="-173.333323862818,53.166665955517">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,26.3333329777585" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,26.3333329777585"
+                    Point2="0,30.3333329777585"
+                    Point3="-4,30.3333329777585" />
+                  <mssgle:LineSegment
+                    End="-169.333323862818,30.3333329777585" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-169.333323862818,30.3333329777585"
+                    Point2="-173.333323862818,30.3333329777585"
+                    Point3="-173.333323862818,34.3333329777585" />
+                  <mssgle:LineSegment
+                    End="-173.333323862818,53.166665955517" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="False"
+          PanelSize="456.8,351.2"
+          Size="145.6,43.2"
+          Id="Package\Clean Up"
+          TopLeft="219.999987979731,940.66666421983" />
         <NodeLayout
           Size="212,41.6"
           Id="Package\DF - RES_EMPL (ACTIVE)"
@@ -33082,10 +33965,6 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           Id="Package\DF - WIN_USER"
           TopLeft="737.13329504149,734.63334769495" />
         <NodeLayout
-          Size="148,41.6"
-          Id="Package\EmployeeType"
-          TopLeft="232.166654853358,1245.30001353682" />
-        <NodeLayout
           Size="134.4,41.6"
           Id="Package\Get Max ID"
           TopLeft="480.333309793639,634.166667257283" />
@@ -33096,7 +33975,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
         <NodeLayout
           Size="148,41.6"
           Id="Package\Get Max ID 8 1"
-          TopLeft="502.999974158904,1265.03334812887" />
+          TopLeft="1120.9166070641,1380.73334732431" />
         <NodeLayout
           Size="134.4,41.6"
           Id="Package\Get Max ID 9"
@@ -33104,23 +33983,23 @@ where "refTable"."DISPLAY_NAME" = ?</property>
         <NodeLayout
           Size="191.2,41.6"
           Id="Package\MAXSEQ (PERSON)"
-          TopLeft="204.999988799294,1338.73333482192" />
+          TopLeft="373.3333129353,1446.20000074128" />
         <NodeLayout
           Size="178.4,41.6"
           Id="Package\MAXSEQ (PERSONANCESTOR)"
-          TopLeft="481.333307334948,1442.23334830967" />
+          TopLeft="1107.58327311816,1540.60001429231" />
         <NodeLayout
           Size="169.6,41.6"
           Id="Package\MAXSEQ (PHONE)"
-          TopLeft="488.466641852095,1128.30001370471" />
+          TopLeft="741.383294700008,1498.8000111283" />
         <NodeLayout
           Size="180,41.6"
           Id="Package\PERSONANCESTOR"
-          TopLeft="481.333309818475,1357.10001486184" />
+          TopLeft="1107.58327560169,1457.20001416576" />
         <NodeLayout
           Size="115.2,41.6"
           Id="Package\PHONE"
-          TopLeft="513.466640486157,1036.23334697175" />
+          TopLeft="766.383293334068,1406.73334439534" />
         <NodeLayout
           Size="137.6,41.6"
           Id="Package\POST-PKG\FINISH LOG"
@@ -33131,7 +34010,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           PanelSize="270.4,130.4"
           Size="270.4,43.2"
           Id="Package\POST-PKG"
-          TopLeft="198.966669580672,1550.1296199963" />
+          TopLeft="1066.04995553867,1627.26295279326" />
         <NodeLayout
           Size="135.2,41.6"
           Id="Package\PRE-PKG\GET LOGID"
@@ -33159,7 +34038,9 @@ where "refTable"."DISPLAY_NAME" = ?</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <ContainerLayout
@@ -33173,10 +34054,6 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           Size="164.8,41.6"
           Id="Package\Pre-Task\RESET (PERSON)"
           TopLeft="22.9999990438422,45.5666670945618" />
-        <NodeLayout
-          Size="160,41.6"
-          Id="Package\Pre-Task\RESET (PHONE)"
-          TopLeft="22.9999990438422,248.766667094562" />
         <NodeLayout
           Size="164.8,41.6"
           Id="Package\Pre-Task\RESET (STE_MIGRATION_USER_LOOKUP)"
@@ -33195,28 +34072,6 @@ where "refTable"."DISPLAY_NAME" = ?</property>
                   Capacity="5">
                   <mssgle:LineSegment
                     End="0,52.4999999999999" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Pre-Task.PrecedenceConstraints[Constraint 2]"
-          TopLeft="104.199999043842,188.766667094562">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,60"
-              Start="0,0"
-              End="0,52.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,52.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -33682,10 +34537,10 @@ where "refTable"."DISPLAY_NAME" = ?</property>
         <NodeLayout
           Size="137.6,41.6"
           Id="Package\User Lookup"
-          TopLeft="237.433322496879,1136.43334384389" />
+          TopLeft="229.099989618859,1249.10000972709" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="572.166641169126,1077.83334697174">
+          TopLeft="825.083294017038,1448.33334439533">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -33719,40 +34574,6 @@ where "refTable"."DISPLAY_NAME" = ?</property>
                   Capacity="5">
                   <mssgle:LineSegment
                     End="0,40.1666982103808" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 10]"
-          TopLeft="306.166654853358,1286.90001353682">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-36.0999993873975,51.8333212850994"
-              Start="0,0"
-              End="-36.0999993873975,44.3333212850994">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,26.8419015447439" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,26.8419015447439"
-                    Point2="0,30.8419015447439"
-                    Point3="-4,30.8419015447439" />
-                  <mssgle:LineSegment
-                    End="-32.0999993873975,30.8419015447439" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-32.0999993873975,30.8419015447439"
-                    Point2="-36.0999993873975,30.8419015447439"
-                    Point3="-36.0999993873975,34.8419015447439" />
-                  <mssgle:LineSegment
-                    End="-36.0999993873975,44.3333212850994" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -33797,30 +34618,86 @@ where "refTable"."DISPLAY_NAME" = ?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 12]"
-          TopLeft="570.533307334947,1483.83334830967">
+          TopLeft="1199.01661432841,1582.20001429231">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-236.366637754276,66.2962716866255"
+              EndConnector="0,45.0629385009508"
               Start="0,0"
-              End="-236.366637754276,58.7962716866255">
+              End="0,37.5629385009508">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,29.1481358433127" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,29.1481358433127"
-                    Point2="0,33.1481358433127"
-                    Point3="-4,33.1481358433127" />
+                    End="0,37.5629385009508" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 13]"
+          TopLeft="292.799987979731,983.86666421983">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="275.53333287802,51.19999971072"
+              Start="0,0"
+              End="275.53333287802,43.69999971072">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
                   <mssgle:LineSegment
-                    End="-232.366637754276,33.1481358433127" />
+                    End="0,21.59999985536" />
                   <mssgle:CubicBezierSegment
-                    Point1="-232.366637754276,33.1481358433127"
-                    Point2="-236.366637754276,33.1481358433127"
-                    Point3="-236.366637754276,37.1481358433127" />
+                    Point1="0,21.59999985536"
+                    Point2="0,25.59999985536"
+                    Point3="4,25.59999985536" />
                   <mssgle:LineSegment
-                    End="-236.366637754276,58.7962716866255" />
+                    End="271.53333287802,25.59999985536" />
+                  <mssgle:CubicBezierSegment
+                    Point1="271.53333287802,25.59999985536"
+                    Point2="275.53333287802,25.59999985536"
+                    Point3="275.53333287802,29.59999985536" />
+                  <mssgle:LineSegment
+                    End="275.53333287802,43.69999971072" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 14]"
+          TopLeft="568.333320857751,1078.26666393055">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-270.433331238892,170.83334579654"
+              Start="0,0"
+              End="-270.433331238892,163.33334579654">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,81.41667289827" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,81.41667289827"
+                    Point2="0,85.41667289827"
+                    Point3="-4,85.41667289827" />
+                  <mssgle:LineSegment
+                    End="-266.433331238892,85.41667289827" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-266.433331238892,85.41667289827"
+                    Point2="-270.433331238892,85.41667289827"
+                    Point3="-270.433331238892,89.41667289827" />
+                  <mssgle:LineSegment
+                    End="-270.433331238892,163.33334579654" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -33864,97 +34741,19 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 23]"
-          TopLeft="312.11665599578,998.366666516005">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,47.8000029108912"
-              Start="0,0"
-              End="0,40.3000029108912">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,40.3000029108912" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 24]"
-          TopLeft="308.549989283582,1087.76666942689">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,48.666674417002"
-              Start="0,0"
-              End="0,41.166674417002">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,41.166674417002" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 26]"
-          TopLeft="331.133322132627,1338.73333482192">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="222.066651686862,-260.899987850181"
-              Start="0,0"
-              End="222.066651686862,-253.399987850181">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,-125.57414410652" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,-125.57414410652"
-                    Point2="0,-129.57414410652"
-                    Point3="4,-129.57414410652" />
-                  <mssgle:LineSegment
-                    End="218.066651686862,-129.57414410652" />
-                  <mssgle:CubicBezierSegment
-                    Point1="218.066651686862,-129.57414410652"
-                    Point2="222.066651686862,-129.57414410652"
-                    Point3="222.066651686862,-133.57414410652" />
-                  <mssgle:LineSegment
-                    End="222.066651686862,-253.399987850181" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 27]"
-          TopLeft="570.933308576711,1398.70001486183">
+          TopLeft="1197.18327435992,1498.80001416576">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,43.5333334478405"
+              EndConnector="0,41.8000001265505"
               Start="0,0"
-              End="0,36.0333334478405">
+              End="0,34.3000001265505">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,36.0333334478405" />
+                    End="0,34.3000001265505" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -33986,63 +34785,19 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 3]"
-          TopLeft="306.199988675118,1178.03334384389">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,67.2666696929339"
-              Start="0,0"
-              End="0,59.7666696929339">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,59.7666696929339" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 4]"
-          TopLeft="575.1333080055,1169.90001370471">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,95.1333344241675"
-              Start="0,0"
-              End="0,87.6333344241675">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,87.6333344241675" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 42]"
-          TopLeft="574.166641988689,1306.63334812887">
+          TopLeft="1196.24994133289,1422.33334732431">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,50.4666667329602"
+              EndConnector="0,34.8666668414505"
               Start="0,0"
-              End="0,42.9666667329602">
+              End="0,27.3666668414505">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,42.9666667329602" />
+                    End="0,27.3666668414505" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -34169,26 +34924,263 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-139.255554159261,58.96666993314"
+              EndConnector="-159.822222100805,42.8666676369647"
               Start="0,0"
-              End="-139.255554159261,51.46666993314">
+              End="-159.822222100805,35.3666676369647">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,25.48333496657" />
+                    End="0,17.4333338184824" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,25.48333496657"
-                    Point2="0,29.48333496657"
-                    Point3="-4,29.48333496657" />
+                    Point1="0,17.4333338184824"
+                    Point2="0,21.4333338184824"
+                    Point3="-4,21.4333338184824" />
                   <mssgle:LineSegment
-                    End="-135.255554159261,29.48333496657" />
+                    End="-155.822222100805,21.4333338184824" />
                   <mssgle:CubicBezierSegment
-                    Point1="-135.255554159261,29.48333496657"
-                    Point2="-139.255554159261,29.48333496657"
-                    Point3="-139.255554159261,33.48333496657" />
+                    Point1="-155.822222100805,21.4333338184824"
+                    Point2="-159.822222100805,21.4333338184824"
+                    Point3="-159.822222100805,25.4333338184824" />
                   <mssgle:LineSegment
-                    End="-139.255554159261,51.46666993314" />
+                    End="-159.822222100805,35.3666676369647" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="148,41.6"
+          Id="Package\Update Employee Type\EmployeeType"
+          TopLeft="60,60" />
+        <NodeLayout
+          Size="148,41.6"
+          Id="Package\Update Employee Type\EmployeeType 1"
+          TopLeft="239.999990165234,64.5333340083228" />
+        <EdgeLayout
+          Id="Package\Update Employee Type.PrecedenceConstraints[Constraint]"
+          TopLeft="208,83.0666670041614">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="31.9999901652341,0"
+              Start="0,0"
+              End="24.4999901652341,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="24.4999901652341,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43.2"
+          IsExpanded="False"
+          PanelSize="444.8,175.2"
+          Size="211.2,43.2"
+          Id="Package\Update Employee Type"
+          TopLeft="229.999987433354,1340.26666324351" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 3]"
+          TopLeft="297.899989618859,1290.70000972709">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="37.6999978144954,49.5666535164157"
+              Start="0,0"
+              End="37.6999978144954,42.0666535164157">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,20.7833267582079" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,20.7833267582079"
+                    Point2="0,24.7833267582079"
+                    Point3="4,24.7833267582079" />
+                  <mssgle:LineSegment
+                    End="33.6999978144954,24.7833267582079" />
+                  <mssgle:CubicBezierSegment
+                    Point1="33.6999978144954,24.7833267582079"
+                    Point2="37.6999978144954,24.7833267582079"
+                    Point3="37.6999978144954,28.7833267582079" />
+                  <mssgle:LineSegment
+                    End="37.6999978144954,42.0666535164157" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 10]"
+          TopLeft="335.599987433354,1383.46666324351">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="102.799992168612,62.7333374977741"
+              Start="0,0"
+              End="102.799992168612,55.2333374977741">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,33.3276373327004" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,33.3276373327004"
+                    Point2="0,37.3276373327004"
+                    Point3="4,37.3276373327004" />
+                  <mssgle:LineSegment
+                    End="98.7999921686123,37.3276373327004" />
+                  <mssgle:CubicBezierSegment
+                    Point1="98.7999921686123,37.3276373327004"
+                    Point2="102.799992168612,37.3276373327004"
+                    Point3="102.799992168612,41.3276373327004" />
+                  <mssgle:LineSegment
+                    End="102.799992168612,55.2333374977741" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="224.8,41.6"
+          Id="Package\RESET (PERSONANCESTOR)"
+          TopLeft="1109.86660661085,1290.19628918815" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 4]"
+          TopLeft="853.116628033341,1498.8000111283">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="333.016645244176,-167.003721940149"
+              Start="0,0"
+              End="333.016645244176,-159.503721940149">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,-79.7387524997693" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,-79.7387524997693"
+                    Point2="0,-83.7387524997693"
+                    Point3="4,-83.7387524997693" />
+                  <mssgle:LineSegment
+                    End="329.016645244176,-83.7387524997693" />
+                  <mssgle:CubicBezierSegment
+                    Point1="329.016645244176,-83.7387524997693"
+                    Point2="333.016645244176,-83.7387524997693"
+                    Point3="333.016645244176,-87.7387524997693" />
+                  <mssgle:LineSegment
+                    End="333.016645244176,-159.503721940149" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 15]"
+          TopLeft="1222.26660661085,1331.79628918815">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-27.3499995467523,48.9370581361559"
+              Start="0,0"
+              End="-27.3499995467523,41.4370581361559">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,20.4685290680779" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,20.4685290680779"
+                    Point2="0,24.4685290680779"
+                    Point3="-4,24.4685290680779" />
+                  <mssgle:LineSegment
+                    End="-23.3499995467523,24.4685290680779" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-23.3499995467523,24.4685290680779"
+                    Point2="-27.3499995467523,24.4685290680779"
+                    Point3="-27.3499995467523,28.4685290680779" />
+                  <mssgle:LineSegment
+                    End="-27.3499995467523,41.4370581361559" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="160,41.6"
+          Id="Package\RESET (PHONE)"
+          TopLeft="723.199961070718,1286.72962254559" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 16]"
+          TopLeft="499.466646268633,1446.20000074128">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="303.733314802084,-117.870378195688"
+              Start="0,0"
+              End="303.733314802084,-110.370378195688">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,-43.7350577257227" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,-43.7350577257227"
+                    Point2="0,-47.7350577257227"
+                    Point3="4,-47.7350577257227" />
+                  <mssgle:LineSegment
+                    End="299.733314802084,-47.7350577257227" />
+                  <mssgle:CubicBezierSegment
+                    Point1="299.733314802084,-47.7350577257227"
+                    Point2="303.733314802084,-47.7350577257227"
+                    Point3="303.733314802084,-51.7350577257227" />
+                  <mssgle:LineSegment
+                    End="303.733314802084,-110.370378195688" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 17]"
+          TopLeft="826.258293869059,1328.32962254559">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,78.4037218497483"
+              Start="0,0"
+              End="0,70.9037218497483">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,70.9037218497483" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -34870,7 +35862,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
     design-time-name="Package\PERSONANCESTOR">
     <LayoutInfo>
       <GraphLayout
-        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
           Size="161.6,41.6"
           Id="Package\PERSONANCESTOR\Running Number"
@@ -34882,7 +35874,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
         <NodeLayout
           Size="171.2,41.6"
           Id="Package\PERSONANCESTOR\OLE DB Destination"
-          TopLeft="31.9999995231628,511.999995172024" />
+          TopLeft="154.499992830058,509.399995190104" />
         <NodeLayout
           Size="119.2,41.6"
           Id="Package\PERSONANCESTOR\Multicast"
@@ -34891,10 +35883,6 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           Size="158.4,41.6"
           Id="Package\PERSONANCESTOR\Derived Column"
           TopLeft="154.499993940195,299.400000888507" />
-        <NodeLayout
-          Size="179.2,41.6"
-          Id="Package\PERSONANCESTOR\ADO NET Destination"
-          TopLeft="276.833322730329,504.066669020388" />
         <NodeLayout
           Size="152,41.6"
           Id="Package\PERSONANCESTOR\OLE DB Source"
@@ -34918,9 +35906,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -34942,9 +35928,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -34966,81 +35950,29 @@ where "refTable"."DISPLAY_NAME" = ?</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\PERSONANCESTOR.Paths[Multicast Output 2]"
-          TopLeft="221.066663984458,439.599996870756">
+          TopLeft="239.849995073925,439.599996870756">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-103.466664461295,72.3999983012675"
+              EndConnector="0,69.7999983193479"
               Start="0,0"
-              End="-103.466664461295,64.8999983012675">
+              End="0,62.2999983193479">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,25.5353635454177" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,25.5353635454177"
-                    Point2="0,29.5353635454177"
-                    Point3="-4,29.5353635454177" />
-                  <mssgle:LineSegment
-                    End="-99.4666644612949,29.5353635454177" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-99.4666644612949,29.5353635454177"
-                    Point2="-103.466664461295,29.5353635454177"
-                    Point3="-103.466664461295,33.5353635454177" />
-                  <mssgle:LineSegment
-                    End="-103.466664461295,64.8999983012675" />
+                    End="0,62.2999983193479" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\PERSONANCESTOR.Paths[Multicast Output 1]"
-          TopLeft="239.599997317791,439.599996870756">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="126.833325412538,64.4666721496316"
-              Start="0,0"
-              End="126.833325412538,56.9666721496316">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,28.2333360748158" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,28.2333360748158"
-                    Point2="0,32.2333360748158"
-                    Point3="4,32.2333360748158" />
-                  <mssgle:LineSegment
-                    End="122.833325412538,32.2333360748158" />
-                  <mssgle:CubicBezierSegment
-                    Point1="122.833325412538,32.2333360748158"
-                    Point2="126.833325412538,32.2333360748158"
-                    Point3="126.833325412538,36.2333360748158" />
-                  <mssgle:LineSegment
-                    End="126.833325412538,56.9666721496316" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -35062,9 +35994,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
@@ -35080,14 +36010,6 @@ where "refTable"."DISPLAY_NAME" = ?</property>
         <Name>TableInfoObjectType</Name>
         <Value
           type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\PERSONANCESTOR\ADO NET Destination">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
