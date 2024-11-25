@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0409_WO_MATUSETRANS_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="120"
-  DTS:VersionGUID="{2B8E26C3-2EBD-4298-80AD-12F167D212A5}"
+  DTS:VersionBuild="121"
+  DTS:VersionGUID="{871BDD98-813F-4296-A928-A677E15866A9}"
   DTS:VersionMajor="3"
   DTS:VersionMinor="1">
   <DTS:Property
@@ -3223,49 +3223,55 @@ where "refTable"."STE_CSWNWOID" = ?</property>
                   description="The SQL command to be executed."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT 
-	ii.PK_ISS_ITEMS
-	--, ii."TIMESTAMP"
-	--, ii.S_DEM_ISS_ITEM
-	--, ii.S_ITEM_ISS
-	, ii.DT_ISS_ITEMS
-	, ii.TM_ISS_ITEMS
-	, ii.ISS_REF
-	, ii.ISS_DT
-	--, ii.ISS_ASK_QTY
-	, ii.ISS_QTY
-	--, ii.ISS_VAL
-	--, ii.RTN_TO_STORE
-	--, ii.EXP_DT_RET
-	--, ii.EXP_SH_RET
-	--, ii.ISS_TP_FLG
-	--, ii.ISS_ACT_NO
-	--, ii.ISS_IT_NUMBER1
-	--, ii.ISS_IT_STRING1
-	--, d.PK_DEM_ISS 
-	--, d.DEM_DT 
-	, d.DEM_REF 
-	, d.DT_DEM_ISS 
-	, d.DEM_ISSUER
-	, d.DEM_WO_REF
-	--, i.PK_ITEM_ 
-	, i.ITEM_CD
-	, i.ITEM_SHORT 
-	, i.STOCK_UNITS
-	, i.BUY_PRICE 
-	, COALESCE(i.BUY_CURR, 'SGD') AS BUY_CURR 
-	, i.MAIN_STORE 
-	, si.IS_STOR_CD
-	, ROW_NUMBER() OVER (PARTITION BY d.PK_DEM_ISS ORDER BY i.ITEM_CD) LINENUM
-FROM COSWIN.ISS_ITEMS ii
-JOIN COSWIN.DEM_ISS d ON d.PK_DEM_ISS = ii.S_DEM_ISS_ITEM 
--- must be valid item
-JOIN COSWIN.ITEM_ i ON i.PK_ITEM_ = ii.S_ITEM_ISS 
--- storeloc
-LEFT JOIN coswin.DEM_LOC_INT dli ON dli.S_ISS_LOC_INT = ii.PK_ISS_ITEMS 
-LEFT JOIN coswin.LOCATION_ l ON l.PK_LOCATION_ = dli.S_LOC_DEM_INT 
-LEFT JOIN coswin.STORES_ITEMS si ON si.PK_STORES_ITEMS = l.S_STORES_ITEM_LOC 
-ORDER BY ii.PK_ISS_ITEMS</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT *
+FROM (
+	SELECT 
+		ii.PK_ISS_ITEMS
+		, ii."TIMESTAMP"
+		--, ii.S_DEM_ISS_ITEM
+		--, ii.S_ITEM_ISS
+		, ii.DT_ISS_ITEMS
+		, ii.TM_ISS_ITEMS
+		, ii.ISS_REF
+		, ii.ISS_DT
+		--, ii.ISS_ASK_QTY
+		, ii.ISS_QTY
+		--, ii.ISS_VAL
+		--, ii.RTN_TO_STORE
+		--, ii.EXP_DT_RET
+		--, ii.EXP_SH_RET
+		--, ii.ISS_TP_FLG
+		--, ii.ISS_ACT_NO
+		--, ii.ISS_IT_NUMBER1
+		--, ii.ISS_IT_STRING1
+		, d.PK_DEM_ISS 
+		--, d.DEM_DT 
+		, d.DEM_REF 
+		, d.DT_DEM_ISS 
+		, d.DEM_ISSUER
+		, d.DEM_WO_REF
+		--, i.PK_ITEM_ 
+		, i.ITEM_CD
+		, i.ITEM_SHORT 
+		, i.STOCK_UNITS
+		, i.BUY_PRICE 
+		, COALESCE(i.BUY_CURR, 'SGD') AS BUY_CURR 
+		, i.MAIN_STORE 
+		, si.IS_STOR_CD
+		, ROW_NUMBER() OVER (PARTITION BY d.PK_DEM_ISS ORDER BY i.ITEM_CD) LINENUM
+		, ROW_NUMBER() OVER (PARTITION BY ii.PK_ISS_ITEMS ORDER BY dli.PK_DEM_LOC_INT desc) RN
+	FROM COSWIN.ISS_ITEMS ii
+	JOIN COSWIN.DEM_ISS d ON d.PK_DEM_ISS = ii.S_DEM_ISS_ITEM 
+	-- must be valid item
+	JOIN COSWIN.ITEM_ i ON i.PK_ITEM_ = ii.S_ITEM_ISS 
+	-- storeloc
+	LEFT JOIN coswin.DEM_LOC_INT dli ON dli.S_ISS_LOC_INT = ii.PK_ISS_ITEMS 
+	LEFT JOIN coswin.LOCATION_ l ON l.PK_LOCATION_ = dli.S_LOC_DEM_INT 
+	LEFT JOIN coswin.STORES_ITEMS si ON si.PK_STORES_ITEMS = l.S_STORES_ITEM_LOC 
+	ORDER BY ii.PK_ISS_ITEMS
+) a 
+-- IN CASE DUPLICATE, USE THE LATEST ONE
+WHERE a.RN=1</property>
                 <property
                   dataType="System.Int32"
                   description="Specify the number of rows fetched per batch."
@@ -3438,6 +3444,25 @@ ORDER BY ii.PK_ISS_ITEMS</property>
                       length="10"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[IS_STOR_CD]"
                       name="IS_STOR_CD" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[TIMESTAMP]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[TIMESTAMP]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[TIMESTAMP]"
+                      name="TIMESTAMP"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DEM_ISS]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DEM_ISS]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DEM_ISS]"
+                      name="PK_DEM_ISS" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[RN]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[RN]"
+                      name="RN" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -3536,6 +3561,19 @@ ORDER BY ii.PK_ISS_ITEMS</property>
                       dataType="str"
                       length="10"
                       name="IS_STOR_CD" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[TIMESTAMP]"
+                      dataType="numeric"
+                      name="TIMESTAMP"
+                      precision="10" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DEM_ISS]"
+                      dataType="i4"
+                      name="PK_DEM_ISS" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
+                      dataType="r8"
+                      name="RN" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -3672,6 +3710,25 @@ ORDER BY ii.PK_ISS_ITEMS</property>
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       name="ErrorCode"
                       specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[TIMESTAMP]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[TIMESTAMP]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[TIMESTAMP]"
+                      name="TIMESTAMP"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_DEM_ISS]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DEM_ISS]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_DEM_ISS]"
+                      name="PK_DEM_ISS" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[RN]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[RN]"
+                      name="RN" />
                     <outputColumn
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorColumn]"
                       dataType="i4"
@@ -6534,18 +6591,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
       <GraphLayout
         Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
-          Size="155.2,41.6"
-          Id="Package\Data Flow Task\Lookup - WOID"
-          TopLeft="666.333320115175,296.433332004613" />
-        <NodeLayout
-          Size="148.8,41.6"
-          Id="Package\Data Flow Task\Oracle Source"
-          TopLeft="303.49999576807,13.6999999850988" />
-        <NodeLayout
-          Size="170.4,41.6"
-          Id="Package\Data Flow Task\Flat File Destination"
-          TopLeft="708.999972348413,567.333330214686" />
-        <NodeLayout
           Size="171.2,41.6"
           Id="Package\Data Flow Task\OLE DB Destination"
           TopLeft="473.999985188246,564.933329563803" />
@@ -6553,6 +6598,10 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           Size="128.8,41.6"
           Id="Package\Data Flow Task\Union All 1"
           TopLeft="496.499983958901,384.399996857246" />
+        <NodeLayout
+          Size="128,41.6"
+          Id="Package\Data Flow Task\Multicast 3"
+          TopLeft="733.333304283519,479.499996938373" />
         <NodeLayout
           Size="146.4,41.6"
           Id="Package\Data Flow Task\Lookup - ITEM"
@@ -6562,9 +6611,17 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           Id="Package\Data Flow Task\Derived Column 1"
           TopLeft="288.999995842576,302.999998629093" />
         <NodeLayout
-          Size="128,41.6"
-          Id="Package\Data Flow Task\Multicast 3"
-          TopLeft="733.333304283519,479.499996938373" />
+          Size="155.2,41.6"
+          Id="Package\Data Flow Task\Lookup - WOID"
+          TopLeft="666.333320115175,296.433332004613" />
+        <NodeLayout
+          Size="144.8,41.6"
+          Id="Package\Data Flow Task\Running Number"
+          TopLeft="505.999992609024,19.7333385891387" />
+        <NodeLayout
+          Size="148.8,41.6"
+          Id="Package\Data Flow Task\Oracle Source"
+          TopLeft="303.49999576807,13.6999999850988" />
         <NodeLayout
           Size="159.2,41.6"
           Id="Package\Data Flow Task\Conditional Split"
@@ -6573,6 +6630,10 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           Size="141.6,41.6"
           Id="Package\Data Flow Task\Derived Column"
           TopLeft="503.999995738268,134.199998182058" />
+        <NodeLayout
+          Size="170.4,41.6"
+          Id="Package\Data Flow Task\Flat File Destination"
+          TopLeft="708.999972348413,567.333330214686" />
         <EdgeLayout
           Id="Package\Data Flow Task.Paths[WOREF_NULL]"
           TopLeft="556.333329175909,256.999998629093">
@@ -6659,6 +6720,50 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                   Capacity="5">
                   <mssgle:LineSegment
                     End="0,43.2333340264022" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Output 0]"
+          TopLeft="576.599994173646,61.3333385891387">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,72.8666595929196"
+              Start="0,0"
+              End="0,65.3666595929196">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,65.3666595929196" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Oracle Source Output]"
+          TopLeft="452.29999576807,37.5166692871188">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="53.6999968409538,0"
+              Start="0,0"
+              End="46.1999968409538,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="46.1999968409538,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -6804,9 +6909,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="76.0833273914955,28.5869928149665,16,16"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -6828,98 +6931,12 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-8,7.85000022351743,16,16"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="144.8,41.6"
-          Id="Package\Data Flow Task\Running Number"
-          TopLeft="505.999992609024,19.7333385891387" />
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Oracle Source Output]"
-          TopLeft="452.29999576807,37.5166692871188">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="53.6999968409538,0"
-              Start="0,0"
-              End="46.1999968409538,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="46.1999968409538,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Output 0]"
-          TopLeft="576.599994173646,61.3333385891387">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,72.8666595929196"
-              Start="0,0"
-              End="0,65.3666595929196">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,65.3666595929196" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
-  <PipelineComponentMetadata
-    design-time-name="Package\Data Flow Task\Lookup - WOID">
-    <Properties>
-      <Property>
-        <Name>OverwriteParamsSQLProp</Name>
-        <Value
-          type="q2:string">false</Value>
-      </Property>
-      <Property>
-        <Name>UsedTableName</Name>
-        <Value
-          type="q3:string"></Value>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q4:string">0</Value>
-      </Property>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\Data Flow Task\Oracle Source">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
   <PipelineComponentMetadata
     design-time-name="Package\Data Flow Task\OLE DB Destination">
     <Properties>
@@ -6953,6 +6970,42 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
       </Property>
       <Property>
         <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Data Flow Task\Lookup - WOID">
+    <Properties>
+      <Property>
+        <Name>OverwriteParamsSQLProp</Name>
+        <Value
+          type="q2:string">false</Value>
+      </Property>
+      <Property>
+        <Name>UsedTableName</Name>
+        <Value
+          type="q3:string"></Value>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q4:string">0</Value>
+      </Property>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Data Flow Task\Oracle Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
