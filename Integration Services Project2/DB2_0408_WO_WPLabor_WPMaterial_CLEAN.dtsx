@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0408_WO_WPLabor_WPMaterial_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="207"
-  DTS:VersionGUID="{C66F2E50-7BA9-4873-AD12-536FBB9CC6EC}"
+  DTS:VersionBuild="212"
+  DTS:VersionGUID="{F579E6DC-4CE3-48F2-86A7-025EE1735C94}"
   DTS:VersionMajor="2"
   DTS:VersionMinor="1">
   <DTS:Property
@@ -1010,18 +1010,6 @@
       </DTS:ObjectData>
     </DTS:ConnectionManager>
   </DTS:ConnectionManagers>
-  <DTS:LogProviders>
-    <DTS:LogProvider
-      DTS:ConfigString="{D387A138-D817-49BD-937B-28F8E3CDFDA5}"
-      DTS:CreationName="Microsoft.LogProviderSQLServer"
-      DTS:Description="Writes log entries for events to a SQL Server database"
-      DTS:DTSID="{94B9968D-0661-42D0-8053-27D9F49F5B94}"
-      DTS:ObjectName="SSIS log provider for SQL Server">
-      <DTS:ObjectData>
-        <InnerObject />
-      </DTS:ObjectData>
-    </DTS:LogProvider>
-  </DTS:LogProviders>
   <DTS:Variables>
     <DTS:Variable
       DTS:CreationName=""
@@ -5387,7 +5375,7 @@ where "refTable"."STE_CSWNITEMNO" = ?</property>
                   containsID="true"
                   dataType="System.String"
                   description="Specifies the list of lineage identifiers that map to the parameters that the SQL statement in the SQLCommand property uses. Entries in the list are separated by semicolons."
-                  name="ParameterMap">#{Package\DF - WPMaterial\607:invalid};</property>
+                  name="ParameterMap">#{Package\DF - WPMaterial\11602:invalid};</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -6838,7 +6826,7 @@ LEFT JOIN (
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-          SQLTask:SqlStatementSource="select ifnull(max(WPLABORID),1) as max_id from MAXIMO.WPLABOR"
+          SQLTask:SqlStatementSource="select coalesce(max(WPLABORID),1000) as max_id from MAXIMO.WPLABOR"
           SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
           <SQLTask:ResultBinding
             SQLTask:ResultName="0"
@@ -6860,7 +6848,7 @@ LEFT JOIN (
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-          SQLTask:SqlStatementSource="select ifnull(max(wpitemid),1) as max_id from wpitem"
+          SQLTask:SqlStatementSource="select ifnull(max(wpitemid),1) as max_id from MAXIMO.wpitem"
           SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
           <SQLTask:ResultBinding
             SQLTask:ResultName="0"
@@ -6882,7 +6870,7 @@ LEFT JOIN (
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-          SQLTask:SqlStatementSource="update maxsequence set maxreserved=&#xA;(select max(wplaborid)+1 from wplabor) &#xA;where tbname='WPLABOR' and name='WPLABORID';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:SqlStatementSource="update MAXIMO.maxsequence set maxreserved=&#xA;(select max(wplaborid)+1 from MAXIMO.wplabor) &#xA;where tbname='WPLABOR' and name='WPLABORID';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -6899,7 +6887,7 @@ LEFT JOIN (
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-          SQLTask:SqlStatementSource="update maxsequence set maxreserved=&#xA;(select max(wpitemid)+1 from wpitem) &#xA;where tbname='WPITEM' and name='WPITEMID';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:SqlStatementSource="update MAXIMO.maxsequence set maxreserved=&#xA;(select max(wpitemid)+1 from MAXIMO.wpitem) &#xA;where tbname='WPITEM' and name='WPITEMID';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -7054,7 +7042,7 @@ LEFT JOIN (
             DTS:LoggingMode="2" />
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
-              SQLTask:Connection="{D387A138-D817-49BD-937B-28F8E3CDFDA5}"
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
               SQLTask:SqlStatementSource="exec ste_0408_WO_WPLabor_pre ?" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
               <SQLTask:ParameterBinding
                 SQLTask:ParameterName="0"
@@ -7079,7 +7067,7 @@ LEFT JOIN (
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-              SQLTask:SqlStatementSource="delete from wplabor where STE_MIGRATIONID is not NULL" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="delete from MAXIMO.wplabor where STE_MIGRATIONID is not NULL" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
           </DTS:ObjectData>
         </DTS:Executable>
       </DTS:Executables>
@@ -7124,7 +7112,7 @@ LEFT JOIN (
             DTS:LoggingMode="2" />
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
-              SQLTask:Connection="{D387A138-D817-49BD-937B-28F8E3CDFDA5}"
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
               SQLTask:SqlStatementSource="exec ste_0408_WO_WPMaterial_pre ?" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
               <SQLTask:ParameterBinding
                 SQLTask:ParameterName="0"
@@ -7149,7 +7137,7 @@ LEFT JOIN (
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-              SQLTask:SqlStatementSource="delete from wpitem where STE_MIGRATIONID is not null and linetype='ITEM';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="delete from MAXIMO.wpitem where STE_MIGRATIONID is not null and linetype='ITEM';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
           </DTS:ObjectData>
         </DTS:Executable>
       </DTS:Executables>
@@ -8130,37 +8118,53 @@ LEFT JOIN (
       <GraphLayout
         Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
-          Size="138.4,41.6"
-          Id="Package\DF - WPMaterial\Log nomatch"
-          TopLeft="759.611111111111,266.75" />
+          Size="179.2,41.6"
+          Id="Package\DF - WPMaterial\Flat File Destination 1"
+          TopLeft="297.999995559454,463.399995812774" />
         <NodeLayout
-          Size="148.8,41.6"
-          Id="Package\DF - WPMaterial\Oracle Source"
-          TopLeft="63.5,5.5" />
+          Size="171.2,41.6"
+          Id="Package\DF - WPMaterial\OLE DB Destination"
+          TopLeft="63.9999990463257,463.599994724988" />
         <NodeLayout
           Size="167.2,41.6"
           Id="Package\DF - WPMaterial\Derived Column 1"
           TopLeft="314.5,11.5" />
         <NodeLayout
-          Size="132,41.6"
-          Id="Package\DF - WPMaterial\Multicast 1"
-          TopLeft="559.444444444444,101.444444444445" />
+          Size="155.2,41.6"
+          Id="Package\DF - WPMaterial\Lookup - WOID"
+          TopLeft="316.5,95.5" />
         <NodeLayout
           Size="176,41.6"
           Id="Package\DF - WPMaterial\Derived Column 1 1"
           TopLeft="736.111111111111,181" />
         <NodeLayout
-          Size="155.2,41.6"
-          Id="Package\DF - WPMaterial\Lookup - WOID"
-          TopLeft="316.5,95.5" />
+          Size="148.8,41.6"
+          Id="Package\DF - WPMaterial\Oracle Source"
+          TopLeft="63.5,5.5" />
+        <NodeLayout
+          Size="128,41.6"
+          Id="Package\DF - WPMaterial\Multicast 3"
+          TopLeft="319.833318342765,362.99999679625" />
+        <NodeLayout
+          Size="132,41.6"
+          Id="Package\DF - WPMaterial\Multicast 1"
+          TopLeft="559.444444444444,101.444444444445" />
+        <NodeLayout
+          Size="164,41.6"
+          Id="Package\DF - WPMaterial\Lookup - DEMANDER"
+          TopLeft="64.5,88.5" />
         <NodeLayout
           Size="158.4,41.6"
           Id="Package\DF - WPMaterial\Derived Column"
           TopLeft="68.4999999850988,170.5" />
         <NodeLayout
-          Size="164,41.6"
-          Id="Package\DF - WPMaterial\Lookup - DEMANDER"
-          TopLeft="64.5,88.5" />
+          Size="138.4,41.6"
+          Id="Package\DF - WPMaterial\Log nomatch"
+          TopLeft="759.611111111111,266.75" />
+        <NodeLayout
+          Size="146.4,41.6"
+          Id="Package\DF - WPMaterial\Lookup - ITEM"
+          TopLeft="77.9999988377094,361.966664062804" />
         <NodeLayout
           Size="176,41.6"
           Id="Package\DF - WPMaterial\Flat File Destination"
@@ -8169,10 +8173,50 @@ LEFT JOIN (
           Size="129.6,41.6"
           Id="Package\DF - WPMaterial\Aggregate"
           TopLeft="755.111111111111,94" />
-        <NodeLayout
-          Size="171.2,41.6"
-          Id="Package\DF - WPMaterial\OLE DB Destination"
-          TopLeft="63.9999990463257,463.599994724988" />
+        <EdgeLayout
+          Id="Package\DF - WPMaterial.Paths[Oracle Source Output]"
+          TopLeft="212.5,29.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="102,0"
+              Start="0,0"
+              End="94.5,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="94.5,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - WPMaterial.Paths[Multicast Output 21]"
+          TopLeft="385.716656951109,404.59999679625">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,58.7999990165241"
+              Start="0,0"
+              End="0,51.2999990165241">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,51.2999990165241" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - WPMaterial.Paths[Multicast Output 2]"
           TopLeft="691.444444444444,118.722222222223">
@@ -8230,6 +8274,30 @@ LEFT JOIN (
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
+          Id="Package\DF - WPMaterial.Paths[Lookup No Match Output1]"
+          TopLeft="224.399998837709,383.283330429527">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="95.4333195050555,0"
+              Start="0,0"
+              End="87.9333195050555,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="87.9333195050555,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-11.8397269662222,5,111.6127734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
           Id="Package\DF - WPMaterial.Paths[Lookup No Match Output]"
           TopLeft="471.5,119.472222222223">
           <EdgeLayout.Curve>
@@ -8250,6 +8318,30 @@ LEFT JOIN (
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
               BoundingBox="-15.584164496528,5,111.6127734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - WPMaterial.Paths[Lookup Match Output2]"
+          TopLeft="150.399998942018,403.566664062804">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60.033330662184"
+              Start="0,0"
+              End="0,52.533330662184">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.533330662184" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-48.19138671875,20.461977831092,96.3827734375,11.609375"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
@@ -8299,6 +8391,28 @@ LEFT JOIN (
             <mssgm:EdgeLabel
               BoundingBox="-88.44138671875,5,96.3827734375,11.609375"
               RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - WPMaterial.Paths[Derived Column Output2]"
+          TopLeft="149.449999411404,212.1">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,149.866664062804"
+              Start="0,0"
+              End="0,142.366664062804">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,142.366664062804" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -8367,153 +8481,9 @@ LEFT JOIN (
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - WPMaterial.Paths[Oracle Source Output]"
-          TopLeft="212.5,29.5">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="102,0"
-              Start="0,0"
-              End="94.5,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="94.5,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="146.4,41.6"
-          Id="Package\DF - WPMaterial\Lookup - ITEM"
-          TopLeft="77.9999988377094,361.966664062804" />
-        <NodeLayout
-          Size="128,41.6"
-          Id="Package\DF - WPMaterial\Multicast 3"
-          TopLeft="319.833318342765,362.99999679625" />
-        <EdgeLayout
-          Id="Package\DF - WPMaterial.Paths[Derived Column Output2]"
-          TopLeft="149.449999411404,212.1">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,149.866664062804"
-              Start="0,0"
-              End="0,142.366664062804">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,142.366664062804" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - WPMaterial.Paths[Lookup Match Output2]"
-          TopLeft="150.399998942018,403.566664062804">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,60.033330662184"
-              Start="0,0"
-              End="0,52.533330662184">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,52.533330662184" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-48.19138671875,20.461977831092,96.3827734375,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - WPMaterial.Paths[Lookup No Match Output1]"
-          TopLeft="224.399998837709,383.283330429527">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="95.4333195050555,0"
-              Start="0,0"
-              End="87.9333195050555,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="87.9333195050555,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-11.8397269662222,5,111.6127734375,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="179.2,41.6"
-          Id="Package\DF - WPMaterial\Flat File Destination 1"
-          TopLeft="297.999995559454,463.399995812774" />
-        <EdgeLayout
-          Id="Package\DF - WPMaterial.Paths[Multicast Output 21]"
-          TopLeft="385.716656951109,404.59999679625">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,58.7999990165241"
-              Start="0,0"
-              End="0,51.2999990165241">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,51.2999990165241" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
-  <PipelineComponentMetadata
-    design-time-name="Package\DF - WPMaterial\Lookup - DEMANDER">
-    <Properties>
-      <Property>
-        <Name>OverwriteParamsSQLProp</Name>
-        <Value
-          type="q2:string">false</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\DF - WPMaterial\Oracle Source">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
   <PipelineComponentMetadata
     design-time-name="Package\DF - WPMaterial\OLE DB Destination">
     <Properties>
@@ -8547,6 +8517,24 @@ LEFT JOIN (
       </Property>
       <Property>
         <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - WPMaterial\Oracle Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - WPMaterial\Lookup - DEMANDER">
+    <Properties>
+      <Property>
+        <Name>OverwriteParamsSQLProp</Name>
+        <Value
+          type="q2:string">false</Value>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
