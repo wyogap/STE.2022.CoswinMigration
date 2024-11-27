@@ -13,8 +13,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0004_Master_Person_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="396"
-  DTS:VersionGUID="{1ABDF6DE-F2BB-44B3-AFB5-DA75AF6B7904}"
+  DTS:VersionBuild="405"
+  DTS:VersionGUID="{623D2F32-E01E-4CD6-AD66-47BC3FD56545}"
   DTS:VersionMajor="8"
   DTS:VersionMinor="1">
   <DTS:Property
@@ -1390,6 +1390,22 @@
           </DTS:ObjectData>
         </DTS:Executable>
         <DTS:Executable
+          DTS:refId="Package\Build Lookup\Build Lookup 12 (FILE)"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{995bc7de-8dd9-436a-b4d2-ecbe0a721646}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Build Lookup 12 (FILE)"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT a.displayname, a.userid, 0 AS persistent, 1 AS status, a.id as STE_MIGRATIONID&#xA;FROM MIGRATION.SBST_USER_DISPLAYNAME_MAPPING a&#xA;left join MIGRATION.ste_migration_user_lookup b on b.display_name=a.displayname&#xA;where b.display_name is NULL AND TRIM(a.displayname)!='';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
           DTS:refId="Package\Build Lookup\Build Lookup 2"
           DTS:CreationName="Microsoft.ExecuteSQLTask"
           DTS:Description="Execute SQL Task"
@@ -1543,6 +1559,14 @@
           DTS:LogicalAnd="True"
           DTS:ObjectName="Constraint 10"
           DTS:To="Package\Build Lookup\Build Lookup 11" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Build Lookup.PrecedenceConstraints[Constraint 11]"
+          DTS:CreationName=""
+          DTS:DTSID="{705EFA2A-805D-4666-93C1-FB288DB0519B}"
+          DTS:From="Package\Build Lookup\Build Lookup 11"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 11"
+          DTS:To="Package\Build Lookup\Build Lookup 12 (FILE)" />
         <DTS:PrecedenceConstraint
           DTS:refId="Package\Build Lookup.PrecedenceConstraints[Constraint 2]"
           DTS:CreationName=""
@@ -11146,6 +11170,29 @@ ON upper(wu.USER_ID)  = re.re_brcd</property>
                       cachedLength="100"
                       cachedName="PERSONID"
                       lineageId="Package\PERSONANCESTOR\OLE DB Source.Outputs[OLE DB Source Output].Columns[PERSONID]" />
+                    <inputColumn
+                      refId="Package\PERSONANCESTOR\Derived Column.Inputs[Derived Column Input].Columns[STE_MIGRATIONID]"
+                      cachedDataType="i8"
+                      cachedName="STE_MIGRATIONID"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\PERSONANCESTOR\OLE DB Source.Outputs[OLE DB Source Output].Columns[STE_MIGRATIONID]"
+                      truncationRowDisposition="FailComponent"
+                      usageType="readWrite">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">[REPLACENULL](#{Package\PERSONANCESTOR\OLE DB Source.Outputs[OLE DB Source Output].Columns[STE_MIGRATIONID]},1)</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">REPLACENULL(STE_MIGRATIONID,1)</property>
+                      </properties>
+                    </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -32544,614 +32591,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           DTS:To="Package\Update Employee Type\EmployeeType 1" />
       </DTS:PrecedenceConstraints>
     </DTS:Executable>
-    <DTS:Executable
-      DTS:refId="Package\User Lookup"
-      DTS:CreationName="Microsoft.Pipeline"
-      DTS:Description="Data Flow Task"
-      DTS:Disabled="True"
-      DTS:DTSID="{C8B73260-E34A-4B06-A1DD-C85F8736CC5B}"
-      DTS:ExecutableType="Microsoft.Pipeline"
-      DTS:LocaleID="-1"
-      DTS:ObjectName="User Lookup"
-      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
-      <DTS:Variables />
-      <DTS:ObjectData>
-        <pipeline
-          version="1">
-          <components>
-            <component
-              refId="Package\User Lookup\ADO NET Destination"
-              componentClassID="Microsoft.ManagedComponentHost"
-              contactInfo="Loads data into an ADO.NET-compliant database that uses a database table or view. Load data into a new or existing table. For example, use an ADO.NET provider for ODBC to load data into an ODBC destination.;Microsoft Corporation; Microsoft SQL Server; © Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;2"
-              description="Loads data into an ADO.NET-compliant database that uses a database table or view. Load data into a new or existing table. For example, use an ADO.NET provider for ODBC to load data into an ODBC destination."
-              name="ADO NET Destination"
-              usesDispositions="true"
-              version="2">
-              <properties>
-                <property
-                  dataType="System.String"
-                  description="The Destination database table name."
-                  expressionType="Notify"
-                  name="TableOrViewName"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">MIGRATION.STE_MIGRATION_USER_LOOKUP</property>
-                <property
-                  dataType="System.Int32"
-                  description="Specify the number of rows per batch. The default is 0 which uses the same size as SSIS internal buffer. "
-                  expressionType="Notify"
-                  name="BatchSize">0</property>
-                <property
-                  dataType="System.Int32"
-                  description="The number of seconds before a command times out. A value of 0 indicates infinite time-out. "
-                  expressionType="Notify"
-                  name="CommandTimeout">30</property>
-                <property
-                  dataType="System.Boolean"
-                  description="Specifies whether to use the SqlBulkCopy interface to improve the performance of bulk insert operations. Only certain providers support this interface."
-                  expressionType="Notify"
-                  name="UseBulkInsertWhenPossible">true</property>
-                <property
-                  dataType="System.String"
-                  name="UserComponentTypeName">Microsoft.ADONETDestination</property>
-              </properties>
-              <connections>
-                <connection
-                  refId="Package\User Lookup\ADO NET Destination.Connections[IDbConnection]"
-                  connectionManagerID="{836E5005-E1A8-4129-9E1C-2B61C85CDC68}:invalid"
-                  connectionManagerRefId="{836E5005-E1A8-4129-9E1C-2B61C85CDC68}:invalid"
-                  description="Managed connection manager"
-                  name="IDbConnection" />
-              </connections>
-              <inputs>
-                <input
-                  refId="Package\User Lookup\ADO NET Destination.Inputs[ADO NET Destination Input]"
-                  errorRowDisposition="FailComponent"
-                  hasSideEffects="true"
-                  name="ADO NET Destination Input">
-                  <inputColumns>
-                    <inputColumn
-                      refId="Package\User Lookup\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[lk_displayname]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="100"
-                      cachedName="lk_displayname"
-                      externalMetadataColumnId="Package\User Lookup\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[DISPLAY_NAME]"
-                      lineageId="Package\User Lookup\Derived Column.Outputs[Derived Column Output].Columns[lk_displayname]" />
-                    <inputColumn
-                      refId="Package\User Lookup\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[v_status]"
-                      cachedDataType="i4"
-                      cachedName="v_status"
-                      externalMetadataColumnId="Package\User Lookup\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[STATUS]"
-                      lineageId="Package\User Lookup\Derived Column.Outputs[Derived Column Output].Columns[v_status]" />
-                    <inputColumn
-                      refId="Package\User Lookup\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[v_persistent]"
-                      cachedDataType="i4"
-                      cachedName="v_persistent"
-                      externalMetadataColumnId="Package\User Lookup\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[PERSISTENT]"
-                      lineageId="Package\User Lookup\Derived Column.Outputs[Derived Column Output].Columns[v_persistent]" />
-                    <inputColumn
-                      refId="Package\User Lookup\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[v_id]"
-                      cachedDataType="i4"
-                      cachedName="v_id"
-                      externalMetadataColumnId="Package\User Lookup\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[ID]"
-                      lineageId="Package\User Lookup\Derived Column.Outputs[Derived Column Output].Columns[v_id]" />
-                    <inputColumn
-                      refId="Package\User Lookup\ADO NET Destination.Inputs[ADO NET Destination Input].Columns[USER_ID]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="50"
-                      cachedName="USER_ID"
-                      externalMetadataColumnId="Package\User Lookup\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[PERSONID]"
-                      lineageId="Package\User Lookup\Flat File Source.Outputs[Flat File Source Output].Columns[USER_ID]" />
-                  </inputColumns>
-                  <externalMetadataColumns
-                    isUsed="True">
-                    <externalMetadataColumn
-                      refId="Package\User Lookup\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[ID]"
-                      dataType="i8"
-                      name="ID" />
-                    <externalMetadataColumn
-                      refId="Package\User Lookup\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[DISPLAY_NAME]"
-                      dataType="wstr"
-                      length="250"
-                      name="DISPLAY_NAME" />
-                    <externalMetadataColumn
-                      refId="Package\User Lookup\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[PERSONID]"
-                      dataType="wstr"
-                      length="50"
-                      name="PERSONID" />
-                    <externalMetadataColumn
-                      refId="Package\User Lookup\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[PERSISTENT]"
-                      dataType="i4"
-                      name="PERSISTENT" />
-                    <externalMetadataColumn
-                      refId="Package\User Lookup\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[STATUS]"
-                      dataType="i4"
-                      name="STATUS" />
-                    <externalMetadataColumn
-                      refId="Package\User Lookup\ADO NET Destination.Inputs[ADO NET Destination Input].ExternalColumns[ROWSTAMP]"
-                      dataType="i8"
-                      name="ROWSTAMP" />
-                  </externalMetadataColumns>
-                </input>
-              </inputs>
-              <outputs>
-                <output
-                  refId="Package\User Lookup\ADO NET Destination.Outputs[ADO NET Destination Error Output]"
-                  exclusionGroup="1"
-                  isErrorOut="true"
-                  name="ADO NET Destination Error Output"
-                  synchronousInputId="Package\User Lookup\ADO NET Destination.Inputs[ADO NET Destination Input]">
-                  <outputColumns>
-                    <outputColumn
-                      refId="Package\User Lookup\ADO NET Destination.Outputs[ADO NET Destination Error Output].Columns[ErrorCode]"
-                      dataType="i4"
-                      lineageId="Package\User Lookup\ADO NET Destination.Outputs[ADO NET Destination Error Output].Columns[ErrorCode]"
-                      name="ErrorCode"
-                      specialFlags="1" />
-                    <outputColumn
-                      refId="Package\User Lookup\ADO NET Destination.Outputs[ADO NET Destination Error Output].Columns[ErrorColumn]"
-                      dataType="i4"
-                      lineageId="Package\User Lookup\ADO NET Destination.Outputs[ADO NET Destination Error Output].Columns[ErrorColumn]"
-                      name="ErrorColumn"
-                      specialFlags="2" />
-                  </outputColumns>
-                  <externalMetadataColumns />
-                </output>
-              </outputs>
-            </component>
-            <component
-              refId="Package\User Lookup\Derived Column"
-              componentClassID="Microsoft.DerivedColumn"
-              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
-              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
-              name="Derived Column"
-              usesDispositions="true">
-              <inputs>
-                <input
-                  refId="Package\User Lookup\Derived Column.Inputs[Derived Column Input]"
-                  description="Input to the Derived Column Transformation"
-                  name="Derived Column Input">
-                  <inputColumns>
-                    <inputColumn
-                      refId="Package\User Lookup\Derived Column.Inputs[Derived Column Input].Columns[PR_REQ_BY]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="50"
-                      cachedName="PR_REQ_BY"
-                      lineageId="Package\User Lookup\Flat File Source.Outputs[Flat File Source Output].Columns[PR_REQ_BY]" />
-                  </inputColumns>
-                  <externalMetadataColumns />
-                </input>
-              </inputs>
-              <outputs>
-                <output
-                  refId="Package\User Lookup\Derived Column.Outputs[Derived Column Output]"
-                  description="Default Output of the Derived Column Transformation"
-                  exclusionGroup="1"
-                  name="Derived Column Output"
-                  synchronousInputId="Package\User Lookup\Derived Column.Inputs[Derived Column Input]">
-                  <outputColumns>
-                    <outputColumn
-                      refId="Package\User Lookup\Derived Column.Outputs[Derived Column Output].Columns[lk_displayname]"
-                      codePage="1252"
-                      dataType="str"
-                      errorOrTruncationOperation="Computation"
-                      errorRowDisposition="FailComponent"
-                      length="100"
-                      lineageId="Package\User Lookup\Derived Column.Outputs[Derived Column Output].Columns[lk_displayname]"
-                      name="lk_displayname"
-                      truncationRowDisposition="FailComponent">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.String"
-                          description="Derived Column Expression"
-                          name="Expression">(DT_STR,100,1252)[UPPER]([TRIM](#{Package\User Lookup\Flat File Source.Outputs[Flat File Source Output].Columns[PR_REQ_BY]}))</property>
-                        <property
-                          containsID="true"
-                          dataType="System.String"
-                          description="Derived Column Friendly Expression"
-                          expressionType="Notify"
-                          name="FriendlyExpression">(DT_STR,100,1252)UPPER(TRIM(PR_REQ_BY))</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\User Lookup\Derived Column.Outputs[Derived Column Output].Columns[v_persistent]"
-                      dataType="i4"
-                      errorOrTruncationOperation="Computation"
-                      errorRowDisposition="FailComponent"
-                      lineageId="Package\User Lookup\Derived Column.Outputs[Derived Column Output].Columns[v_persistent]"
-                      name="v_persistent"
-                      truncationRowDisposition="FailComponent">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.String"
-                          description="Derived Column Expression"
-                          name="Expression">0</property>
-                        <property
-                          containsID="true"
-                          dataType="System.String"
-                          description="Derived Column Friendly Expression"
-                          expressionType="Notify"
-                          name="FriendlyExpression">0</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\User Lookup\Derived Column.Outputs[Derived Column Output].Columns[v_status]"
-                      dataType="i4"
-                      errorOrTruncationOperation="Computation"
-                      errorRowDisposition="FailComponent"
-                      lineageId="Package\User Lookup\Derived Column.Outputs[Derived Column Output].Columns[v_status]"
-                      name="v_status"
-                      truncationRowDisposition="FailComponent">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.String"
-                          description="Derived Column Expression"
-                          name="Expression">1</property>
-                        <property
-                          containsID="true"
-                          dataType="System.String"
-                          description="Derived Column Friendly Expression"
-                          expressionType="Notify"
-                          name="FriendlyExpression">1</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\User Lookup\Derived Column.Outputs[Derived Column Output].Columns[v_id]"
-                      dataType="i4"
-                      errorOrTruncationOperation="Computation"
-                      errorRowDisposition="FailComponent"
-                      lineageId="Package\User Lookup\Derived Column.Outputs[Derived Column Output].Columns[v_id]"
-                      name="v_id"
-                      truncationRowDisposition="FailComponent">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.String"
-                          description="Derived Column Expression"
-                          name="Expression">0</property>
-                        <property
-                          containsID="true"
-                          dataType="System.String"
-                          description="Derived Column Friendly Expression"
-                          expressionType="Notify"
-                          name="FriendlyExpression">0</property>
-                      </properties>
-                    </outputColumn>
-                  </outputColumns>
-                  <externalMetadataColumns />
-                </output>
-                <output
-                  refId="Package\User Lookup\Derived Column.Outputs[Derived Column Error Output]"
-                  description="Error Output of the Derived Column Transformation"
-                  exclusionGroup="1"
-                  isErrorOut="true"
-                  name="Derived Column Error Output"
-                  synchronousInputId="Package\User Lookup\Derived Column.Inputs[Derived Column Input]">
-                  <outputColumns>
-                    <outputColumn
-                      refId="Package\User Lookup\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
-                      dataType="i4"
-                      lineageId="Package\User Lookup\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
-                      name="ErrorCode"
-                      specialFlags="1" />
-                    <outputColumn
-                      refId="Package\User Lookup\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
-                      dataType="i4"
-                      lineageId="Package\User Lookup\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
-                      name="ErrorColumn"
-                      specialFlags="2" />
-                  </outputColumns>
-                  <externalMetadataColumns />
-                </output>
-              </outputs>
-            </component>
-            <component
-              refId="Package\User Lookup\Flat File Source"
-              componentClassID="Microsoft.FlatFileSource"
-              contactInfo="Flat File Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
-              description="Flat File Source"
-              localeId="14345"
-              name="Flat File Source"
-              usesDispositions="true"
-              version="1">
-              <properties>
-                <property
-                  dataType="System.Boolean"
-                  description="Specifies whether zero-length columns are treated as null."
-                  name="RetainNulls">false</property>
-                <property
-                  dataType="System.String"
-                  description="Specifies the name of an output column containing the file name. If no name is specified, no output column containing the file name will be generated."
-                  name="FileNameColumnName"></property>
-              </properties>
-              <connections>
-                <connection
-                  refId="Package\User Lookup\Flat File Source.Connections[FlatFileConnection]"
-                  connectionManagerID="{FC5F3DD8-0C35-4C68-99AC-65E88417C8BA}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[user-lookup]"
-                  name="FlatFileConnection" />
-              </connections>
-              <outputs>
-                <output
-                  refId="Package\User Lookup\Flat File Source.Outputs[Flat File Source Output]"
-                  name="Flat File Source Output">
-                  <outputColumns>
-                    <outputColumn
-                      refId="Package\User Lookup\Flat File Source.Outputs[Flat File Source Output].Columns[PR_REQ_BY]"
-                      codePage="1252"
-                      dataType="str"
-                      errorOrTruncationOperation="Conversion"
-                      errorRowDisposition="FailComponent"
-                      externalMetadataColumnId="Package\User Lookup\Flat File Source.Outputs[Flat File Source Output].ExternalColumns[PR_REQ_BY]"
-                      length="50"
-                      lineageId="Package\User Lookup\Flat File Source.Outputs[Flat File Source Output].Columns[PR_REQ_BY]"
-                      name="PR_REQ_BY"
-                      truncationRowDisposition="FailComponent">
-                      <properties>
-                        <property
-                          dataType="System.Boolean"
-                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
-                          name="FastParse">false</property>
-                        <property
-                          dataType="System.Boolean"
-                          description="Indicates whether the data is in binary format."
-                          name="UseBinaryFormat">false</property>
-                      </properties>
-                    </outputColumn>
-                    <outputColumn
-                      refId="Package\User Lookup\Flat File Source.Outputs[Flat File Source Output].Columns[USER_ID]"
-                      codePage="1252"
-                      dataType="str"
-                      errorOrTruncationOperation="Conversion"
-                      errorRowDisposition="FailComponent"
-                      externalMetadataColumnId="Package\User Lookup\Flat File Source.Outputs[Flat File Source Output].ExternalColumns[USER_ID]"
-                      length="50"
-                      lineageId="Package\User Lookup\Flat File Source.Outputs[Flat File Source Output].Columns[USER_ID]"
-                      name="USER_ID"
-                      truncationRowDisposition="FailComponent">
-                      <properties>
-                        <property
-                          dataType="System.Boolean"
-                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
-                          name="FastParse">false</property>
-                        <property
-                          dataType="System.Boolean"
-                          description="Indicates whether the data is in binary format."
-                          name="UseBinaryFormat">false</property>
-                      </properties>
-                    </outputColumn>
-                  </outputColumns>
-                  <externalMetadataColumns
-                    isUsed="True">
-                    <externalMetadataColumn
-                      refId="Package\User Lookup\Flat File Source.Outputs[Flat File Source Output].ExternalColumns[PR_REQ_BY]"
-                      codePage="1252"
-                      dataType="str"
-                      length="50"
-                      name="PR_REQ_BY" />
-                    <externalMetadataColumn
-                      refId="Package\User Lookup\Flat File Source.Outputs[Flat File Source Output].ExternalColumns[USER_ID]"
-                      codePage="1252"
-                      dataType="str"
-                      length="50"
-                      name="USER_ID" />
-                  </externalMetadataColumns>
-                </output>
-                <output
-                  refId="Package\User Lookup\Flat File Source.Outputs[Flat File Source Error Output]"
-                  isErrorOut="true"
-                  name="Flat File Source Error Output">
-                  <outputColumns>
-                    <outputColumn
-                      refId="Package\User Lookup\Flat File Source.Outputs[Flat File Source Error Output].Columns[Flat File Source Error Output Column]"
-                      codePage="1252"
-                      dataType="text"
-                      description="Flat File Source Error Output Column"
-                      lineageId="Package\User Lookup\Flat File Source.Outputs[Flat File Source Error Output].Columns[Flat File Source Error Output Column]"
-                      name="Flat File Source Error Output Column" />
-                    <outputColumn
-                      refId="Package\User Lookup\Flat File Source.Outputs[Flat File Source Error Output].Columns[ErrorCode]"
-                      dataType="i4"
-                      lineageId="Package\User Lookup\Flat File Source.Outputs[Flat File Source Error Output].Columns[ErrorCode]"
-                      name="ErrorCode"
-                      specialFlags="1" />
-                    <outputColumn
-                      refId="Package\User Lookup\Flat File Source.Outputs[Flat File Source Error Output].Columns[ErrorColumn]"
-                      dataType="i4"
-                      lineageId="Package\User Lookup\Flat File Source.Outputs[Flat File Source Error Output].Columns[ErrorColumn]"
-                      name="ErrorColumn"
-                      specialFlags="2" />
-                  </outputColumns>
-                  <externalMetadataColumns />
-                </output>
-              </outputs>
-            </component>
-            <component
-              refId="Package\User Lookup\Lookup"
-              componentClassID="Microsoft.Lookup"
-              contactInfo="Lookup;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;6"
-              description="Joins additional columns to the data flow by looking up values in a table. For example, join to the 'employee id' column the employees table to get 'hire date' and 'employee name'. We recommend this transformation when the lookup table can fit into memory."
-              name="Lookup"
-              usesDispositions="true"
-              version="6">
-              <properties>
-                <property
-                  dataType="System.String"
-                  description="Specifies the SQL statement that generates the lookup table."
-                  expressionType="Notify"
-                  name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from MIGRATION.STE_MIGRATION_USER_LOOKUP</property>
-                <property
-                  dataType="System.String"
-                  description="Specifies a SQL statement that uses parameters to generate the lookup table."
-                  expressionType="Notify"
-                  name="SqlCommandParam"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (select * from MIGRATION.STE_MIGRATION_USER_LOOKUP) "refTable"
-where "refTable"."DISPLAY_NAME" = ?</property>
-                <property
-                  dataType="System.Int32"
-                  description="Specifies the type of connection used to access the reference dataset."
-                  name="ConnectionType"
-                  typeConverter="LookupConnectionType">0</property>
-                <property
-                  dataType="System.Int32"
-                  description="Specifies the cache type of the lookup table."
-                  name="CacheType"
-                  typeConverter="CacheType">0</property>
-                <property
-                  dataType="System.Int32"
-                  description="Specifies how the Lookup transformation handles rows without matching entries in the reference data set."
-                  name="NoMatchBehavior"
-                  typeConverter="LookupNoMatchBehavior">1</property>
-                <property
-                  dataType="System.Int32"
-                  description="Specifies the percentage of the cache that is allocated for rows with no matching entries in the reference dataset."
-                  name="NoMatchCachePercentage">0</property>
-                <property
-                  dataType="System.Int32"
-                  description="Maximum Memory Usage for Reference Cache on a 32 bit platform."
-                  name="MaxMemoryUsage">25</property>
-                <property
-                  dataType="System.Int64"
-                  description="Maximum Memory Usage for Reference Cache on a 64 bit platform."
-                  name="MaxMemoryUsage64">25</property>
-                <property
-                  dataType="System.String"
-                  description="Indicates whether to reference metadata in an XML format."
-                  name="ReferenceMetadataXml">&lt;referenceMetadata&gt;&lt;referenceColumns&gt;&lt;referenceColumn name="ID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="DISPLAY_NAME" dataType="DT_STR" length="250" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PERSONID" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PERSISTENT" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STATUS" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="ROWSTAMP" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;/referenceColumns&gt;&lt;/referenceMetadata&gt;</property>
-                <property
-                  containsID="true"
-                  dataType="System.String"
-                  description="Specifies the list of lineage identifiers that map to the parameters that the SQL statement in the SQLCommand property uses. Entries in the list are separated by semicolons."
-                  name="ParameterMap">#{Package\User Lookup\Derived Column.Outputs[Derived Column Output].Columns[lk_displayname]};</property>
-                <property
-                  dataType="System.Int32"
-                  description="Specifies the column code page to use when code page information is unavailable from the data source."
-                  name="DefaultCodePage">1252</property>
-                <property
-                  dataType="System.Boolean"
-                  description="Determines whether duplicate keys in the reference data should be treated as errors when full cache mode is used."
-                  name="TreatDuplicateKeysAsError">false</property>
-              </properties>
-              <connections>
-                <connection
-                  refId="Package\User Lookup\Lookup.Connections[OleDbConnection]"
-                  connectionManagerID="{329D3F58-DF79-4D78-80D9-E7ABD9303348}:invalid"
-                  connectionManagerRefId="{329D3F58-DF79-4D78-80D9-E7ABD9303348}:invalid"
-                  description="Connection manager used to access lookup data."
-                  name="OleDbConnection" />
-              </connections>
-              <inputs>
-                <input
-                  refId="Package\User Lookup\Lookup.Inputs[Lookup Input]"
-                  name="Lookup Input">
-                  <inputColumns>
-                    <inputColumn
-                      refId="Package\User Lookup\Lookup.Inputs[Lookup Input].Columns[lk_displayname]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="100"
-                      cachedName="lk_displayname"
-                      lineageId="Package\User Lookup\Derived Column.Outputs[Derived Column Output].Columns[lk_displayname]">
-                      <properties>
-                        <property
-                          dataType="System.String"
-                          description="Specifies the column in the reference table that a column joins."
-                          name="JoinToReferenceColumn">DISPLAY_NAME</property>
-                        <property
-                          dataType="System.Null"
-                          description="Specifies the column in the reference table from which a column is copied."
-                          name="CopyFromReferenceColumn" />
-                      </properties>
-                    </inputColumn>
-                  </inputColumns>
-                  <externalMetadataColumns />
-                </input>
-              </inputs>
-              <outputs>
-                <output
-                  refId="Package\User Lookup\Lookup.Outputs[Lookup Match Output]"
-                  errorOrTruncationOperation="Lookup"
-                  exclusionGroup="1"
-                  name="Lookup Match Output"
-                  synchronousInputId="Package\User Lookup\Lookup.Inputs[Lookup Input]">
-                  <outputColumns>
-                    <outputColumn
-                      refId="Package\User Lookup\Lookup.Outputs[Lookup Match Output].Columns[PERSONID]"
-                      codePage="1252"
-                      dataType="str"
-                      errorOrTruncationOperation="Copy Column"
-                      length="50"
-                      lineageId="Package\User Lookup\Lookup.Outputs[Lookup Match Output].Columns[PERSONID]"
-                      name="PERSONID"
-                      truncationRowDisposition="FailComponent">
-                      <properties>
-                        <property
-                          dataType="System.String"
-                          description="Specifies the column in the reference table from which a column is copied."
-                          name="CopyFromReferenceColumn">PERSONID</property>
-                      </properties>
-                    </outputColumn>
-                  </outputColumns>
-                  <externalMetadataColumns />
-                </output>
-                <output
-                  refId="Package\User Lookup\Lookup.Outputs[Lookup No Match Output]"
-                  description="The Lookup output that handles rows with no matching entries in the reference dataset. Use this output when the NoMatchBehavior property is set to &quot;Send rows with no matching entries to the no match output.&quot;"
-                  exclusionGroup="1"
-                  name="Lookup No Match Output"
-                  synchronousInputId="Package\User Lookup\Lookup.Inputs[Lookup Input]">
-                  <externalMetadataColumns />
-                </output>
-                <output
-                  refId="Package\User Lookup\Lookup.Outputs[Lookup Error Output]"
-                  exclusionGroup="1"
-                  isErrorOut="true"
-                  name="Lookup Error Output"
-                  synchronousInputId="Package\User Lookup\Lookup.Inputs[Lookup Input]">
-                  <outputColumns>
-                    <outputColumn
-                      refId="Package\User Lookup\Lookup.Outputs[Lookup Error Output].Columns[ErrorCode]"
-                      dataType="i4"
-                      lineageId="Package\User Lookup\Lookup.Outputs[Lookup Error Output].Columns[ErrorCode]"
-                      name="ErrorCode"
-                      specialFlags="1" />
-                    <outputColumn
-                      refId="Package\User Lookup\Lookup.Outputs[Lookup Error Output].Columns[ErrorColumn]"
-                      dataType="i4"
-                      lineageId="Package\User Lookup\Lookup.Outputs[Lookup Error Output].Columns[ErrorColumn]"
-                      name="ErrorColumn"
-                      specialFlags="2" />
-                  </outputColumns>
-                  <externalMetadataColumns />
-                </output>
-              </outputs>
-            </component>
-          </components>
-          <paths>
-            <path
-              refId="Package\User Lookup.Paths[Derived Column Output]"
-              endId="Package\User Lookup\Lookup.Inputs[Lookup Input]"
-              name="Derived Column Output"
-              startId="Package\User Lookup\Derived Column.Outputs[Derived Column Output]" />
-            <path
-              refId="Package\User Lookup.Paths[Flat File Source Output]"
-              endId="Package\User Lookup\Derived Column.Inputs[Derived Column Input]"
-              name="Flat File Source Output"
-              startId="Package\User Lookup\Flat File Source.Outputs[Flat File Source Output]" />
-            <path
-              refId="Package\User Lookup.Paths[Lookup No Match Output]"
-              endId="Package\User Lookup\ADO NET Destination.Inputs[ADO NET Destination Input]"
-              name="Lookup No Match Output"
-              startId="Package\User Lookup\Lookup.Outputs[Lookup No Match Output]" />
-          </paths>
-        </pipeline>
-      </DTS:ObjectData>
-    </DTS:Executable>
   </DTS:Executables>
   <DTS:PrecedenceConstraints>
     <DTS:PrecedenceConstraint
@@ -33203,14 +32642,6 @@ where "refTable"."DISPLAY_NAME" = ?</property>
       DTS:ObjectName="Constraint 13"
       DTS:To="Package\Build Lookup" />
     <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[Constraint 14]"
-      DTS:CreationName=""
-      DTS:DTSID="{F9BD9C38-80A6-4B86-BF2D-A9FAF7ABCD8A}"
-      DTS:From="Package\Build Lookup"
-      DTS:LogicalAnd="True"
-      DTS:ObjectName="Constraint 14"
-      DTS:To="Package\User Lookup" />
-    <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 15]"
       DTS:CreationName=""
       DTS:DTSID="{282927FE-06A9-4187-8259-42039EB4B9BD}"
@@ -33261,8 +32692,8 @@ where "refTable"."DISPLAY_NAME" = ?</property>
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
       DTS:CreationName=""
-      DTS:DTSID="{EC1F44AA-E039-485A-847F-F74B4F769FFF}"
-      DTS:From="Package\User Lookup"
+      DTS:DTSID="{D2676181-6138-4CF9-8A93-E3CE9555658E}"
+      DTS:From="Package\Build Lookup"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 3"
       DTS:To="Package\Update Employee Type" />
@@ -33350,7 +32781,11 @@ where "refTable"."DISPLAY_NAME" = ?</property>
         <NodeLayout
           Size="143.2,41.6"
           Id="Package\Build Lookup\Build Lookup 11"
-          TopLeft="58.333333424396,316.600004574259" />
+          TopLeft="60,328.733337823219" />
+        <NodeLayout
+          Size="184.8,41.6"
+          Id="Package\Build Lookup\Build Lookup 12 (FILE)"
+          TopLeft="43.3333342439597,424.066670493615" />
         <NodeLayout
           Size="147.2,41.6"
           Id="Package\Build Lookup\Build Lookup 2"
@@ -33433,30 +32868,42 @@ where "refTable"."DISPLAY_NAME" = ?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\Build Lookup.PrecedenceConstraints[Constraint 10]"
-          TopLeft="233.333323862818,348.466670457455">
+          TopLeft="233.333323862818,349.000004140337">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-31.7999904384222,-11.066665883196"
+              EndConnector="-30.133323862818,0"
               Start="0,0"
-              End="-24.2999904384222,-11.066665883196">
+              End="-22.633323862818,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="-11.8999952192111,0" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-11.8999952192111,0"
-                    Point2="-15.8999952192111,0"
-                    Point3="-15.8999952192111,-4" />
+                    End="-22.633323862818,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Build Lookup.PrecedenceConstraints[Constraint 11]"
+          TopLeft="133.66666712198,370.333337823219">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,53.7333326703962"
+              Start="0,0"
+              End="0,46.2333326703962">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
                   <mssgle:LineSegment
-                    End="-15.8999952192111,-7.06666588319604" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-15.8999952192111,-7.06666588319604"
-                    Point2="-15.8999952192111,-11.066665883196"
-                    Point3="-19.8999952192111,-11.066665883196" />
-                  <mssgle:LineSegment
-                    End="-24.2999904384222,-11.066665883196" />
+                    End="0,46.2333326703962" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -33662,7 +33109,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
         <ContainerLayout
           HeaderHeight="43"
           IsExpanded="False"
-          PanelSize="680,463.2"
+          PanelSize="680,525.6"
           Size="680,43.2"
           Id="Package\Build Lookup"
           TopLeft="228.333320857751,1035.06666393055" />
@@ -33824,7 +33271,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
         <NodeLayout
           Size="156,41.6"
           Id="Package\DF - WIN_USER"
-          TopLeft="737.13329504149,734.63334769495" />
+          TopLeft="694.633297363588,737.23334767687" />
         <NodeLayout
           Size="134.4,41.6"
           Id="Package\Get Max ID"
@@ -33832,7 +33279,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
         <NodeLayout
           Size="139.2,41.6"
           Id="Package\Get Max ID 1"
-          TopLeft="745.93329504149,633.033347694951" />
+          TopLeft="686.766631607547,634.766681016231" />
         <NodeLayout
           Size="148,41.6"
           Id="Package\Get Max ID 8 1"
@@ -34400,7 +33847,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           HeaderHeight="43.2"
           IsExpanded="False"
           PanelSize="460.8,833.6"
-          Size="460.8,43.2"
+          Size="196.8,43.2"
           Id="Package\Sequence Container"
           TopLeft="222.222210080536,854.599996582865" />
         <NodeLayout
@@ -34441,11 +33888,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           PanelSize="444.8,175.2"
           Size="211.2,43.2"
           Id="Package\Update Employee Type"
-          TopLeft="229.999987433354,1340.26666324351" />
-        <NodeLayout
-          Size="137.6,41.6"
-          Id="Package\User Lookup"
-          TopLeft="229.099989618859,1249.10000972709" />
+          TopLeft="229.999987433354,1341.99999656479" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
           TopLeft="825.083294017038,1448.33334439533">
@@ -34492,30 +33935,30 @@ where "refTable"."DISPLAY_NAME" = ?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 10]"
-          TopLeft="335.599987433354,1383.46666324351">
+          TopLeft="335.599987433354,1385.19999656479">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="102.799992168612,62.7333374977741"
+              EndConnector="102.799992168613,61.0000041764899"
               Start="0,0"
-              End="102.799992168612,55.2333374977741">
+              End="102.799992168613,53.5000041764899">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,33.3276373327004" />
+                    End="0,32.2962680452641" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,33.3276373327004"
-                    Point2="0,37.3276373327004"
-                    Point3="4,37.3276373327004" />
+                    Point1="0,32.2962680452641"
+                    Point2="0,36.2962680452641"
+                    Point3="4,36.2962680452641" />
                   <mssgle:LineSegment
-                    End="98.7999921686123,37.3276373327004" />
+                    End="98.7999921686127,36.2962680452641" />
                   <mssgle:CubicBezierSegment
-                    Point1="98.7999921686123,37.3276373327004"
-                    Point2="102.799992168612,37.3276373327004"
-                    Point3="102.799992168612,41.3276373327004" />
+                    Point1="98.7999921686127,36.2962680452641"
+                    Point2="102.799992168613,36.2962680452641"
+                    Point3="102.799992168613,40.2962680452641" />
                   <mssgle:LineSegment
-                    End="102.799992168612,55.2333374977741" />
+                    End="102.799992168613,53.5000041764899" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -34606,40 +34049,6 @@ where "refTable"."DISPLAY_NAME" = ?</property>
                     Point3="275.53333287802,29.59999985536" />
                   <mssgle:LineSegment
                     End="275.53333287802,43.69999971072" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 14]"
-          TopLeft="568.333320857751,1078.26666393055">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-270.433331238892,170.83334579654"
-              Start="0,0"
-              End="-270.433331238892,163.33334579654">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,81.41667289827" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,81.41667289827"
-                    Point2="0,85.41667289827"
-                    Point3="-4,85.41667289827" />
-                  <mssgle:LineSegment
-                    End="-266.433331238892,85.41667289827" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-266.433331238892,85.41667289827"
-                    Point2="-270.433331238892,85.41667289827"
-                    Point3="-270.433331238892,89.41667289827" />
-                  <mssgle:LineSegment
-                    End="-270.433331238892,163.33334579654" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -34818,30 +34227,30 @@ where "refTable"."DISPLAY_NAME" = ?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 3]"
-          TopLeft="297.899989618859,1290.70000972709">
+          TopLeft="568.333320857751,1078.26666393055">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="37.6999978144954,49.5666535164157"
+              EndConnector="-232.733333424397,263.73333263424"
               Start="0,0"
-              End="37.6999978144954,42.0666535164157">
+              End="-232.733333424397,256.23333263424">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,20.7833267582079" />
+                    End="0,127.86666631712" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,20.7833267582079"
-                    Point2="0,24.7833267582079"
-                    Point3="4,24.7833267582079" />
+                    Point1="0,127.86666631712"
+                    Point2="0,131.86666631712"
+                    Point3="-4,131.86666631712" />
                   <mssgle:LineSegment
-                    End="33.6999978144954,24.7833267582079" />
+                    End="-228.733333424397,131.86666631712" />
                   <mssgle:CubicBezierSegment
-                    Point1="33.6999978144954,24.7833267582079"
-                    Point2="37.6999978144954,24.7833267582079"
-                    Point3="37.6999978144954,28.7833267582079" />
+                    Point1="-228.733333424397,131.86666631712"
+                    Point2="-232.733333424397,131.86666631712"
+                    Point3="-232.733333424397,135.86666631712" />
                   <mssgle:LineSegment
-                    End="37.6999978144954,42.0666535164157" />
+                    End="-232.733333424397,256.23333263424" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -34934,26 +34343,26 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="209.566651960049,-61.1333195623338"
+              EndConnector="150.399988526106,-59.3999862410531"
               Start="0,0"
-              End="209.566651960049,-53.6333195623338">
+              End="150.399988526106,-51.8999862410531">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,-26.4061141154745" />
+                    End="0,-25.5439994594353" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,-26.4061141154745"
-                    Point2="0,-30.4061141154745"
-                    Point3="4,-30.4061141154745" />
+                    Point1="0,-25.5439994594353"
+                    Point2="0,-29.5439994594353"
+                    Point3="4,-29.5439994594353" />
                   <mssgle:LineSegment
-                    End="205.566651960049,-30.4061141154745" />
+                    End="146.399988526106,-29.5439994594353" />
                   <mssgle:CubicBezierSegment
-                    Point1="205.566651960049,-30.4061141154745"
-                    Point2="209.566651960049,-30.4061141154745"
-                    Point3="209.566651960049,-34.4061141154745" />
+                    Point1="146.399988526106,-29.5439994594353"
+                    Point2="150.399988526106,-29.5439994594353"
+                    Point3="150.399988526106,-33.5439994594353" />
                   <mssgle:LineSegment
-                    End="209.566651960049,-53.6333195623338" />
+                    End="150.399988526106,-51.8999862410531" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -34964,18 +34373,18 @@ where "refTable"."DISPLAY_NAME" = ?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 7]"
-          TopLeft="815.33329504149,674.633347694949">
+          TopLeft="775.433297818901,676.366681016231">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,60.0000000000005"
+              EndConnector="0,60.866666660639"
               Start="0,0"
-              End="0,52.5000000000005">
+              End="0,53.366666660639">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,52.5000000000005" />
+                    End="0,53.366666660639" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -34986,30 +34395,30 @@ where "refTable"."DISPLAY_NAME" = ?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 8]"
-          TopLeft="815.13329504149,776.23334769495">
+          TopLeft="772.633297363588,778.83334767687">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-362.511084960954,78.3666488879151"
+              EndConnector="-452.011087283052,75.766648905995"
               Start="0,0"
-              End="-362.511084960954,70.8666488879151">
+              End="-452.011087283052,68.266648905995">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,35.1833244439575" />
+                    End="0,33.8833244529975" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,35.1833244439575"
-                    Point2="0,39.1833244439575"
-                    Point3="-4,39.1833244439575" />
+                    Point1="0,33.8833244529975"
+                    Point2="0,37.8833244529975"
+                    Point3="-4,37.8833244529975" />
                   <mssgle:LineSegment
-                    End="-358.511084960954,39.1833244439575" />
+                    End="-448.011087283052,37.8833244529975" />
                   <mssgle:CubicBezierSegment
-                    Point1="-358.511084960954,39.1833244439575"
-                    Point2="-362.511084960954,39.1833244439575"
-                    Point3="-362.511084960954,43.1833244439575" />
+                    Point1="-448.011087283052,37.8833244529975"
+                    Point2="-452.011087283052,37.8833244529975"
+                    Point3="-452.011087283052,41.8833244529975" />
                   <mssgle:LineSegment
-                    End="-362.511084960954,70.8666488879151" />
+                    End="-452.011087283052,68.266648905995" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -35020,30 +34429,30 @@ where "refTable"."DISPLAY_NAME" = ?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 9]"
-          TopLeft="452.622210080536,897.799996582865">
+          TopLeft="320.622210080536,897.799996582865">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-159.822222100805,42.8666676369647"
+              EndConnector="-27.822222100805,42.866667636965"
               Start="0,0"
-              End="-159.822222100805,35.3666676369647">
+              End="-27.822222100805,35.366667636965">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,17.4333338184824" />
+                    End="0,17.4333338184825" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,17.4333338184824"
-                    Point2="0,21.4333338184824"
-                    Point3="-4,21.4333338184824" />
+                    Point1="0,17.4333338184825"
+                    Point2="0,21.4333338184825"
+                    Point3="-4,21.4333338184825" />
                   <mssgle:LineSegment
-                    End="-155.822222100805,21.4333338184824" />
+                    End="-23.822222100805,21.4333338184825" />
                   <mssgle:CubicBezierSegment
-                    Point1="-155.822222100805,21.4333338184824"
-                    Point2="-159.822222100805,21.4333338184824"
-                    Point3="-159.822222100805,25.4333338184824" />
+                    Point1="-23.822222100805,21.4333338184825"
+                    Point2="-27.822222100805,21.4333338184825"
+                    Point3="-27.822222100805,25.4333338184825" />
                   <mssgle:LineSegment
-                    End="-159.822222100805,35.3666676369647" />
+                    End="-27.822222100805,35.366667636965" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -35431,7 +34840,9 @@ where "refTable"."DISPLAY_NAME" = ?</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -35465,7 +34876,9 @@ where "refTable"."DISPLAY_NAME" = ?</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -35499,7 +34912,9 @@ where "refTable"."DISPLAY_NAME" = ?</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -35581,7 +34996,9 @@ where "refTable"."DISPLAY_NAME" = ?</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -35603,7 +35020,9 @@ where "refTable"."DISPLAY_NAME" = ?</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -35637,7 +35056,9 @@ where "refTable"."DISPLAY_NAME" = ?</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -35671,7 +35092,9 @@ where "refTable"."DISPLAY_NAME" = ?</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
@@ -35721,6 +35144,10 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           Id="Package\PERSONANCESTOR\OLE DB Source"
           TopLeft="150.833325092164,30.3333331223991" />
         <NodeLayout
+          Size="161.6,41.6"
+          Id="Package\PERSONANCESTOR\Running Number"
+          TopLeft="152.499993940195,213.400000888507" />
+        <NodeLayout
           Size="119.2,41.6"
           Id="Package\PERSONANCESTOR\Multicast"
           TopLeft="179.999997317791,397.999996870756" />
@@ -35728,54 +35155,6 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           Size="158.4,41.6"
           Id="Package\PERSONANCESTOR\Derived Column"
           TopLeft="154.499993940195,299.400000888507" />
-        <NodeLayout
-          Size="161.6,41.6"
-          Id="Package\PERSONANCESTOR\Running Number"
-          TopLeft="152.499993940195,213.400000888507" />
-        <EdgeLayout
-          Id="Package\PERSONANCESTOR.Paths[Output 0]"
-          TopLeft="233.499993940195,255.000000888507">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,44.3999999999999"
-              Start="0,0"
-              End="0,36.8999999999999">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,36.8999999999999" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\PERSONANCESTOR.Paths[Multicast Output 2]"
-          TopLeft="239.849995073925,439.599996870756">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,69.7999983193479"
-              Start="0,0"
-              End="0,62.2999983193479">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,62.2999983193479" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
         <EdgeLayout
           Id="Package\PERSONANCESTOR.Paths[Derived Column Output]"
           TopLeft="236.649995628993,341.000000888507">
@@ -35790,6 +35169,28 @@ where "refTable"."DISPLAY_NAME" = ?</property>
                   Capacity="5">
                   <mssgle:LineSegment
                     End="0,49.4999959822492" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\PERSONANCESTOR.Paths[Output 0]"
+          TopLeft="233.499993940195,255.000000888507">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,44.3999999999999"
+              Start="0,0"
+              End="0,36.8999999999999">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,36.8999999999999" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -35820,11 +35221,33 @@ where "refTable"."DISPLAY_NAME" = ?</property>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <EdgeLayout
+          Id="Package\PERSONANCESTOR.Paths[Multicast Output 2]"
+          TopLeft="239.849995073925,439.599996870756">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,69.7999983193479"
+              Start="0,0"
+              End="0,62.2999983193479">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,62.2999983193479" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\PERSONANCESTOR\OLE DB Destination">
+    design-time-name="Package\PERSONANCESTOR\OLE DB Source">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -35837,7 +35260,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
     </Properties>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
-    design-time-name="Package\PERSONANCESTOR\OLE DB Source">
+    design-time-name="Package\PERSONANCESTOR\OLE DB Destination">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -37709,144 +37132,5 @@ where "refTable"."DISPLAY_NAME" = ?</property>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
-  <TaskHost
-    design-time-name="Package\User Lookup">
-    <LayoutInfo>
-      <GraphLayout
-        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
-        <NodeLayout
-          Size="115.2,41.6"
-          Id="Package\User Lookup\Lookup"
-          TopLeft="291,121" />
-        <NodeLayout
-          Size="158.4,41.6"
-          Id="Package\User Lookup\Derived Column"
-          TopLeft="270,19" />
-        <NodeLayout
-          Size="179.2,41.6"
-          Id="Package\User Lookup\ADO NET Destination"
-          TopLeft="746.6666369968,196.733334896829" />
-        <NodeLayout
-          Size="156,41.6"
-          Id="Package\User Lookup\Flat File Source"
-          TopLeft="38,17" />
-        <EdgeLayout
-          Id="Package\User Lookup.Paths[Lookup No Match Output]"
-          TopLeft="348.6,162.6">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="487.6666369968,34.1333348968294"
-              Start="0,0"
-              End="487.6666369968,26.6333348968294">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,13.0666674484147" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,13.0666674484147"
-                    Point2="0,17.0666674484147"
-                    Point3="4,17.0666674484147" />
-                  <mssgle:LineSegment
-                    End="483.6666369968,17.0666674484147" />
-                  <mssgle:CubicBezierSegment
-                    Point1="483.6666369968,17.0666674484147"
-                    Point2="487.6666369968,17.0666674484147"
-                    Point3="487.6666369968,21.0666674484147" />
-                  <mssgle:LineSegment
-                    End="487.6666369968,26.6333348968294" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="188.02693177965,22.0666674484147,111.6127734375,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\User Lookup.Paths[Flat File Source Output]"
-          TopLeft="194,39">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="76,0"
-              Start="0,0"
-              End="68.5,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="68.5,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\User Lookup.Paths[Derived Column Output]"
-          TopLeft="348.75,61">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,60"
-              Start="0,0"
-              End="0,52.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,52.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-      </GraphLayout>
-    </LayoutInfo>
-  </TaskHost>
-  <PipelineComponentMetadata
-    design-time-name="Package\User Lookup\Lookup">
-    <Properties>
-      <Property>
-        <Name>OverwriteParamsSQLProp</Name>
-        <Value
-          type="q2:string">false</Value>
-      </Property>
-      <Property>
-        <Name>UsedTableName</Name>
-        <Value
-          type="q3:string">MIGRATION.STE_MIGRATION_USER_LOOKUP</Value>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q4:string">0</Value>
-      </Property>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\User Lookup\ADO NET Destination">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
 </Objects>]]></DTS:DesignTimeProperties>
 </DTS:Executable>
