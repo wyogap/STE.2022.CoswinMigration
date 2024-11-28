@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0511_Misc_JobPlan_JPAssetsPLink_JobTask_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="210"
-  DTS:VersionGUID="{F150CC75-56FF-4E60-B702-CE564F82CD79}"
+  DTS:VersionBuild="214"
+  DTS:VersionGUID="{44DADC0C-4BA4-4EB7-A3AF-0F05F38132DA}"
   DTS:VersionMajor="4"
   DTS:VersionMinor="1">
   <DTS:Property
@@ -10199,6 +10199,7 @@ where "refTable"."STE_CSWNJOBID" = ?</property>
 	, EJ_JA_31
 	, ej.PK_EQP_JOBS 
 	, ej.EJ_JOB_ID
+	, ej.PK_JOB_DIR
 	, DA_JA_32
 	, da.PK_DIR_ACTION 
 	, da.ACT_CODE 
@@ -10207,10 +10208,15 @@ where "refTable"."STE_CSWNJOBID" = ?</property>
 	, et.PK_EQP_TOPO 
 	, et.EQ_DESC 
 FROM COSWIN.JOB_ACTN ja
-LEFT JOIN COSWIN.EQP_JOBS ej ON ej.PK_EQP_JOBS = ja.EJ_JA_31
+JOIN (
+	SELECT jd.PK_JOB_DIR, ej.EJ_JOB_ID, ej.PK_EQP_JOBS
+		, ROW_NUMBER() OVER (PARTITION BY jd.PK_JOB_DIR ORDER BY ej.PK_EQP_JOBS desc) AS rn
+	FROM coswin.JOB_DIR jd 
+	LEFT JOIN coswin.EQP_JOBS ej ON jd.JD_JOB_ID=ej.EJ_JOB_ID 
+) ej ON ej.RN=1 AND ej.PK_EQP_JOBS = ja.EJ_JA_31
 LEFT JOIN COSWIN.DIR_ACTION da ON da.PK_DIR_ACTION = ja.DA_JA_32
 LEFT JOIN COSWIN.EQP_TOPO et ON et.EQ_EQCD = ja.JA_EQCD
-ORDER BY EJ_JA_31, JA_NO;</property>
+ORDER BY ej.PK_JOB_DIR, ej.PK_EQP_JOBS, JA_NO;</property>
                 <property
                   dataType="System.Int32"
                   description="Specify the number of rows fetched per batch."
@@ -10426,6 +10432,12 @@ ORDER BY EJ_JA_31, JA_NO;</property>
                       length="100"
                       lineageId="Package\DF - JobTask\Oracle Source.Outputs[Oracle Source Output].Columns[EQ_DESC]"
                       name="EQ_DESC" />
+                    <outputColumn
+                      refId="Package\DF - JobTask\Oracle Source.Outputs[Oracle Source Output].Columns[PK_JOB_DIR]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - JobTask\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_JOB_DIR]"
+                      lineageId="Package\DF - JobTask\Oracle Source.Outputs[Oracle Source Output].Columns[PK_JOB_DIR]"
+                      name="PK_JOB_DIR" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -10553,6 +10565,10 @@ ORDER BY EJ_JA_31, JA_NO;</property>
                       dataType="str"
                       length="100"
                       name="EQ_DESC" />
+                    <externalMetadataColumn
+                      refId="Package\DF - JobTask\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_JOB_DIR]"
+                      dataType="i4"
+                      name="PK_JOB_DIR" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -10734,6 +10750,12 @@ ORDER BY EJ_JA_31, JA_NO;</property>
                       length="100"
                       lineageId="Package\DF - JobTask\Oracle Source.Outputs[Oracle Source Error Output].Columns[EQ_DESC]"
                       name="EQ_DESC" />
+                    <outputColumn
+                      refId="Package\DF - JobTask\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_JOB_DIR]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - JobTask\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_JOB_DIR]"
+                      lineageId="Package\DF - JobTask\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_JOB_DIR]"
+                      name="PK_JOB_DIR" />
                     <outputColumn
                       refId="Package\DF - JobTask\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -12471,20 +12493,19 @@ where "refTable"."STE_CSWNJOBID" = ?</property>
                   expressionType="Notify"
                   name="SqlCommand"
                   UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT 
-	ej.PK_EQP_JOBS 
-	, JD_EJ_18
-	, jd.PK_JOB_DIR
+	jd.PK_JOB_DIR
 	, jd.JD_JOB_ID
 	, jd.JD_JOB_DS 
-	--, ej.EJ_JOB_ID 
-	, EQ_EJ_17
+	, ej.PK_EQP_JOBS 
+	, ej.EQ_EJ_17
+	, ej.JD_EJ_18
 	, et.PK_EQP_TOPO 
 	, et.EQ_EQCD 
 	, et.EQ_DESC 
-                , et.EQ_LEVL
-FROM COSWIN.EQP_JOBS ej
-LEFT JOIN COSWIN.JOB_DIR jd ON jd.PK_JOB_DIR = ej.JD_EJ_18 
-LEFT JOIN COSWIN.EQP_TOPO et ON et.PK_EQP_TOPO = ej.EQ_EJ_17
+	, et.EQ_LEVL
+FROM COSWIN.JOB_DIR jd
+JOIN COSWIN.EQP_JOBS ej ON jd.PK_JOB_DIR = ej.JD_EJ_18 
+JOIN COSWIN.EQP_TOPO et ON et.PK_EQP_TOPO = ej.EQ_EJ_17
 where et.EQ_LEVL &gt; 0;</property>
                 <property
                   dataType="System.Int32"
@@ -14191,6 +14212,10 @@ where et.EQ_LEVL &gt; 0;</property>
       <GraphLayout
         Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
+          Size="120,41.6"
+          Id="Package\DF - JobPlan (JOB_DIR)\Union All"
+          TopLeft="249.999986340603,313.733331585593" />
+        <NodeLayout
           Size="144.8,41.6"
           Id="Package\DF - JobPlan (JOB_DIR)\Oracle Source"
           TopLeft="18.9999997168779,13.9999997913838" />
@@ -14227,17 +14252,13 @@ where et.EQ_LEVL &gt; 0;</property>
           Id="Package\DF - JobPlan (JOB_DIR)\Derived Column 1"
           TopLeft="470.09998674045,249.733334261443" />
         <NodeLayout
-          Size="97.6,41.6"
-          Id="Package\DF - JobPlan (JOB_DIR)\Sort"
-          TopLeft="675.099975539745,250.399999927679" />
-        <NodeLayout
           Size="119.2,41.6"
           Id="Package\DF - JobPlan (JOB_DIR)\Multicast"
           TopLeft="249.999986340603,400.066664780312" />
         <NodeLayout
-          Size="120,41.6"
-          Id="Package\DF - JobPlan (JOB_DIR)\Union All"
-          TopLeft="249.999986340603,313.733331585593" />
+          Size="97.6,41.6"
+          Id="Package\DF - JobPlan (JOB_DIR)\Sort"
+          TopLeft="675.099975539745,250.399999927679" />
         <NodeLayout
           Size="126.4,41.6"
           Id="Package\DF - JobPlan (JOB_DIR)\Aggregate 1 1"
@@ -14278,6 +14299,40 @@ where et.EQ_LEVL &gt; 0;</property>
                   Capacity="5">
                   <mssgle:LineSegment
                     End="0,38.1000004339219" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - JobPlan (JOB_DIR).Paths[Oracle Source Output]"
+          TopLeft="91.3999997168779,55.5999997913838">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="211.238095430155,29.1142859229019"
+              Start="0,0"
+              End="211.238095430155,21.6142859229019">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,10.5571429614509" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,10.5571429614509"
+                    Point2="0,14.5571429614509"
+                    Point3="4,14.5571429614509" />
+                  <mssgle:LineSegment
+                    End="207.238095430155,14.5571429614509" />
+                  <mssgle:CubicBezierSegment
+                    Point1="207.238095430155,14.5571429614509"
+                    Point2="211.238095430155,14.5571429614509"
+                    Point3="211.238095430155,18.5571429614509" />
+                  <mssgle:LineSegment
+                    End="211.238095430155,21.6142859229019" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -14534,40 +14589,6 @@ where et.EQ_LEVL &gt; 0;</property>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - JobPlan (JOB_DIR).Paths[Oracle Source Output]"
-          TopLeft="91.3999997168779,55.5999997913838">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="211.238095430155,29.1142859229019"
-              Start="0,0"
-              End="211.238095430155,21.6142859229019">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,10.5571429614509" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,10.5571429614509"
-                    Point2="0,14.5571429614509"
-                    Point3="4,14.5571429614509" />
-                  <mssgle:LineSegment
-                    End="207.238095430155,14.5571429614509" />
-                  <mssgle:CubicBezierSegment
-                    Point1="207.238095430155,14.5571429614509"
-                    Point2="211.238095430155,14.5571429614509"
-                    Point3="211.238095430155,18.5571429614509" />
-                  <mssgle:LineSegment
-                    End="211.238095430155,21.6142859229019" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
@@ -14659,9 +14680,7 @@ where et.EQ_LEVL &gt; 0;</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -14683,9 +14702,7 @@ where et.EQ_LEVL &gt; 0;</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -14707,9 +14724,7 @@ where et.EQ_LEVL &gt; 0;</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -14752,6 +14767,37 @@ where et.EQ_LEVL &gt; 0;</property>
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
+    design-time-name="Package\DF - JobTask\Oracle Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - JobTask\Lookup (JobPlan)">
+    <Properties>
+      <Property>
+        <Name>OverwriteParamsSQLProp</Name>
+        <Value
+          type="q2:boolean">false</Value>
+      </Property>
+      <Property>
+        <Name>UsedTableName</Name>
+        <Value
+          type="q3:string"></Value>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q4:int">0</Value>
+      </Property>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
     design-time-name="Package\DF - JobTask\OLE DB Destination">
     <Properties>
       <Property>
@@ -14772,7 +14818,7 @@ where et.EQ_LEVL &gt; 0;</property>
         <NodeLayout
           Size="160,41.6"
           Id="Package\DF - JPAssetsPLink\Lookup (JobPlan)"
-          TopLeft="255,96" />
+          TopLeft="255,94.0000000298023" />
         <NodeLayout
           Size="152.8,41.6"
           Id="Package\DF - JPAssetsPLink\Derived Column"
@@ -14804,44 +14850,42 @@ where et.EQ_LEVL &gt; 0;</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - JPAssetsPLink.Paths[Lookup Match Output]"
-          TopLeft="335,137.6">
+          TopLeft="335,135.600000029802">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-12.733346264229,72.999998535514"
+              EndConnector="-12.733346264229,74.9999985057117"
               Start="0,0"
-              End="-12.733346264229,65.499998535514">
+              End="-12.733346264229,67.4999985057117">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,32.499999267757" />
+                    End="0,33.4999992528558" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,32.499999267757"
-                    Point2="0,36.499999267757"
-                    Point3="-4,36.499999267757" />
+                    Point1="0,33.4999992528558"
+                    Point2="0,37.4999992528558"
+                    Point3="-4,37.4999992528558" />
                   <mssgle:LineSegment
-                    End="-8.733346264229,36.499999267757" />
+                    End="-8.733346264229,37.4999992528558" />
                   <mssgle:CubicBezierSegment
-                    Point1="-8.733346264229,36.499999267757"
-                    Point2="-12.733346264229,36.499999267757"
-                    Point3="-12.733346264229,40.499999267757" />
+                    Point1="-8.733346264229,37.4999992528558"
+                    Point2="-12.733346264229,37.4999992528558"
+                    Point3="-12.733346264229,41.4999992528558" />
                   <mssgle:LineSegment
-                    End="-12.733346264229,65.499998535514" />
+                    End="-12.733346264229,67.4999985057117" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="-54.5580598508645,41.499999267757,96.3827734375,11.609375"
+              BoundingBox="-54.5580598508645,42.4999992528558,96.3827734375,11.609375"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
@@ -14851,38 +14895,67 @@ where et.EQ_LEVL &gt; 0;</property>
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="18.6,43.4"
+              EndConnector="18.6,41.4000000298023"
               Start="0,0"
-              End="18.6,35.9">
+              End="18.6,33.9000000298023">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,17.7" />
+                    End="0,16.7000000149012" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,17.7"
-                    Point2="0,21.7"
-                    Point3="4,21.7" />
+                    Point1="0,16.7000000149012"
+                    Point2="0,20.7000000149012"
+                    Point3="4,20.7000000149012" />
                   <mssgle:LineSegment
-                    End="14.6,21.7" />
+                    End="14.6,20.7000000149012" />
                   <mssgle:CubicBezierSegment
-                    Point1="14.6,21.7"
-                    Point2="18.6,21.7"
-                    Point3="18.6,25.7" />
+                    Point1="14.6,20.7000000149012"
+                    Point2="18.6,20.7000000149012"
+                    Point3="18.6,24.7000000149012" />
                   <mssgle:LineSegment
-                    End="18.6,35.9" />
+                    End="18.6,33.9000000298023" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - JPAssetsPLink\Lookup (JobPlan)">
+    <Properties>
+      <Property>
+        <Name>OverwriteParamsSQLProp</Name>
+        <Value
+          type="q2:boolean">false</Value>
+      </Property>
+      <Property>
+        <Name>UsedTableName</Name>
+        <Value
+          type="q3:string"></Value>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q4:int">0</Value>
+      </Property>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - JPAssetsPLink\Oracle Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
 </Objects>]]></DTS:DesignTimeProperties>
 </DTS:Executable>
