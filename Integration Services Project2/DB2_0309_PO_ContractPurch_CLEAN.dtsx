@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0309_PO_ContractPurch_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="104"
-  DTS:VersionGUID="{31C9F284-65FE-421B-8F22-CDB98DC9B147}"
+  DTS:VersionBuild="106"
+  DTS:VersionGUID="{A0A2DF8C-7695-48AB-A4D7-F894E97C1AEA}"
   DTS:VersionMinor="1">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -656,12 +656,6 @@
                       externalMetadataColumnId="Package\DF - BLANKET\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ORGID]"
                       lineageId="Package\DF - BLANKET\Derived Column.Outputs[Derived Column Output].Columns[v_orgid]" />
                     <inputColumn
-                      refId="Package\DF - BLANKET\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_revisionnum]"
-                      cachedDataType="i4"
-                      cachedName="v_revisionnum"
-                      externalMetadataColumnId="Package\DF - BLANKET\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[REVISIONNUM]"
-                      lineageId="Package\DF - BLANKET\Derived Column.Outputs[Derived Column Output].Columns[v_revisionnum]" />
-                    <inputColumn
                       refId="Package\DF - BLANKET\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_shippingloss]"
                       cachedDataType="i4"
                       cachedName="v_shippingloss"
@@ -701,6 +695,12 @@
                       cachedName="PO_VALUE"
                       externalMetadataColumnId="Package\DF - BLANKET\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[MAXVOL]"
                       lineageId="Package\DF - BLANKET\Oracle Source.Outputs[Oracle Source Output].Columns[PO_VALUE]" />
+                    <inputColumn
+                      refId="Package\DF - BLANKET\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PO_AMD_NO]"
+                      cachedDataType="r8"
+                      cachedName="PO_AMD_NO"
+                      externalMetadataColumnId="Package\DF - BLANKET\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[REVISIONNUM]"
+                      lineageId="Package\DF - BLANKET\Oracle Source.Outputs[Oracle Source Output].Columns[PO_AMD_NO]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -874,6 +874,7 @@
 	po.PK_PORDER_
 	, po.PO_REF as PO_BLKT_REF
 	, po.PO_VALUE
+	, coalesce(po.PO_AMD_NO, 0) as PO_AMD_NO
 FROM COSWIN.PORDER_ po
 LEFT JOIN COSWIN.SUPPLIER_ s ON s.PK_SUPPLIER_ = po.S_SUPL_PO 
 WHERE po.PO_TYPE = 49</property>
@@ -938,6 +939,12 @@ WHERE po.PO_TYPE = 49</property>
                       externalMetadataColumnId="Package\DF - BLANKET\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PO_VALUE]"
                       lineageId="Package\DF - BLANKET\Oracle Source.Outputs[Oracle Source Output].Columns[PO_VALUE]"
                       name="PO_VALUE" />
+                    <outputColumn
+                      refId="Package\DF - BLANKET\Oracle Source.Outputs[Oracle Source Output].Columns[PO_AMD_NO]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\DF - BLANKET\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PO_AMD_NO]"
+                      lineageId="Package\DF - BLANKET\Oracle Source.Outputs[Oracle Source Output].Columns[PO_AMD_NO]"
+                      name="PO_AMD_NO" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -955,6 +962,10 @@ WHERE po.PO_TYPE = 49</property>
                       refId="Package\DF - BLANKET\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PO_VALUE]"
                       dataType="r8"
                       name="PO_VALUE" />
+                    <externalMetadataColumn
+                      refId="Package\DF - BLANKET\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PO_AMD_NO]"
+                      dataType="r8"
+                      name="PO_AMD_NO" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -982,6 +993,12 @@ WHERE po.PO_TYPE = 49</property>
                       externalMetadataColumnId="Package\DF - BLANKET\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PO_VALUE]"
                       lineageId="Package\DF - BLANKET\Oracle Source.Outputs[Oracle Source Error Output].Columns[PO_VALUE]"
                       name="PO_VALUE" />
+                    <outputColumn
+                      refId="Package\DF - BLANKET\Oracle Source.Outputs[Oracle Source Error Output].Columns[PO_AMD_NO]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\DF - BLANKET\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PO_AMD_NO]"
+                      lineageId="Package\DF - BLANKET\Oracle Source.Outputs[Oracle Source Error Output].Columns[PO_AMD_NO]"
+                      name="PO_AMD_NO" />
                     <outputColumn
                       refId="Package\DF - BLANKET\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -2051,13 +2068,13 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">0</property>
+                          name="Expression">1</property>
                         <property
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
-                          name="FriendlyExpression">0</property>
+                          name="FriendlyExpression">1</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
@@ -2504,7 +2521,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       refId="Package\DF - PRICE\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_GLACCOUNT]"
                       codePage="1252"
                       dataType="str"
-                      length="33"
+                      length="110"
                       name="STE_GLACCOUNT" />
                     <externalMetadataColumn
                       refId="Package\DF - PRICE\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONDATE]"
@@ -2521,6 +2538,10 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       refId="Package\DF - PRICE\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONID]"
                       dataType="i8"
                       name="STE_MIGRATIONID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - PRICE\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONTS]"
+                      dataType="i4"
+                      name="STE_MIGRATIONTS" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -4039,21 +4060,21 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
       <GraphLayout
         Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
-          Size="167.2,41.6"
-          Id="Package\DF - BLANKET\Running Number"
-          TopLeft="226.5,14.5" />
-        <NodeLayout
           Size="171.2,41.6"
           Id="Package\DF - BLANKET\OLE DB Destination"
           TopLeft="19.5,182.6" />
         <NodeLayout
-          Size="148.8,41.6"
-          Id="Package\DF - BLANKET\Oracle Source"
-          TopLeft="20.333333287802,6.63333333936002" />
+          Size="167.2,41.6"
+          Id="Package\DF - BLANKET\Running Number"
+          TopLeft="226.5,14.5" />
         <NodeLayout
           Size="158.4,41.6"
           Id="Package\DF - BLANKET\Derived Column"
           TopLeft="181,81" />
+        <NodeLayout
+          Size="148.8,41.6"
+          Id="Package\DF - BLANKET\Oracle Source"
+          TopLeft="20.333333287802,6.63333333936002" />
         <EdgeLayout
           Id="Package\DF - BLANKET.Paths[Output 0]"
           TopLeft="310,56.5">
@@ -4172,21 +4193,21 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
     design-time-name="Package\DF - PRICE">
     <LayoutInfo>
       <GraphLayout
-        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
-          Size="167,42"
+          Size="167.2,41.6"
           Id="Package\DF - PRICE\Running Number"
           TopLeft="226.5,14.5" />
         <NodeLayout
-          Size="171,42"
+          Size="171.2,41.6"
           Id="Package\DF - PRICE\OLE DB Destination"
           TopLeft="214.666655238304,178.833332127995" />
         <NodeLayout
-          Size="158,42"
+          Size="158.4,41.6"
           Id="Package\DF - PRICE\Derived Column"
           TopLeft="181,81" />
         <NodeLayout
-          Size="149,42"
+          Size="148.8,41.6"
           Id="Package\DF - PRICE\Oracle Source"
           TopLeft="19.5,7.5" />
         <EdgeLayout
@@ -4208,9 +4229,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -4219,9 +4238,9 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="40.0666552383043,56.233332127995"
+              EndConnector="40.0666552383041,56.233332127995"
               Start="0,0"
-              End="40.0666552383043,48.733332127995">
+              End="40.0666552383041,48.733332127995">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
@@ -4232,57 +4251,53 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                     Point2="0,28.1166660639975"
                     Point3="4,28.1166660639975" />
                   <mssgle:LineSegment
-                    End="36.0666552383043,28.1166660639975" />
+                    End="36.0666552383041,28.1166660639975" />
                   <mssgle:CubicBezierSegment
-                    Point1="36.0666552383043,28.1166660639975"
-                    Point2="40.0666552383043,28.1166660639975"
-                    Point3="40.0666552383043,32.1166660639975" />
+                    Point1="36.0666552383041,28.1166660639975"
+                    Point2="40.0666552383041,28.1166660639975"
+                    Point3="40.0666552383041,32.1166660639975" />
                   <mssgle:LineSegment
-                    End="40.0666552383043,48.733332127995" />
+                    End="40.0666552383041,48.733332127995" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - PRICE.Paths[Output 0]"
-          TopLeft="310,56.5">
+          TopLeft="310.1,56.1">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-50,24.5"
+              EndConnector="-49.9000000000001,24.9"
               Start="0,0"
-              End="-50,17">
+              End="-49.9000000000001,17.4">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,8.25" />
+                    End="0,8.45" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,8.25"
-                    Point2="0,12.25"
-                    Point3="-4,12.25" />
+                    Point1="0,8.45"
+                    Point2="0,12.45"
+                    Point3="-4,12.45" />
                   <mssgle:LineSegment
-                    End="-46,12.25" />
+                    End="-45.9000000000001,12.45" />
                   <mssgle:CubicBezierSegment
-                    Point1="-46,12.25"
-                    Point2="-50,12.25"
-                    Point3="-50,16.25" />
+                    Point1="-45.9000000000001,12.45"
+                    Point2="-49.9000000000001,12.45"
+                    Point3="-49.9000000000001,16.45" />
                   <mssgle:LineSegment
-                    End="-50,17" />
+                    End="-49.9000000000001,17.4" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
