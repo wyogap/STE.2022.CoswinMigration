@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0307_PO_Invoice_InvoiceLine_InvoiceCost_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="334"
-  DTS:VersionGUID="{7406857F-CE40-4E31-932C-D4AB3713E3B8}"
+  DTS:VersionBuild="339"
+  DTS:VersionGUID="{16B33B7B-C779-4FEA-AFD0-87A45579A166}"
   DTS:VersionMajor="4"
   DTS:VersionMinor="3">
   <DTS:Property
@@ -2159,6 +2159,13 @@ WHERE c.GLACCOUNT IS NULL AND a.GLACCOUNT IS NOT NULL</property>
                       cachedDataType="i2"
                       cachedName="INV_STAT"
                       lineageId="Package\DF - Invoice\Oracle Source.Outputs[Oracle Source Output].Columns[INV_STAT]" />
+                    <inputColumn
+                      refId="Package\DF - Invoice\Derived Column.Inputs[Derived Column Input].Columns[PO_REQ_BY]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="16"
+                      cachedName="PO_REQ_BY"
+                      lineageId="Package\DF - Invoice\Oracle Source.Outputs[Oracle Source Output].Columns[PO_REQ_BY]" />
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -2892,6 +2899,30 @@ WHERE c.GLACCOUNT IS NULL AND a.GLACCOUNT IS NOT NULL</property>
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
                           name="FriendlyExpression">INV_STAT == 55 ? "invoice has been adjusted" : "invoice has not been adjusted"</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\DF - Invoice\Derived Column.Outputs[Derived Column Output].Columns[lk_reqby]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="50"
+                      lineageId="Package\DF - Invoice\Derived Column.Outputs[Derived Column Output].Columns[lk_reqby]"
+                      name="lk_reqby"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_STR,50,1252)[UPPER]([TRIM](#{Package\DF - Invoice\Oracle Source.Outputs[Oracle Source Output].Columns[PO_REQ_BY]}))</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_STR,50,1252)UPPER(TRIM(PO_REQ_BY))</property>
                       </properties>
                     </outputColumn>
                   </outputColumns>
@@ -5709,13 +5740,19 @@ LEFT JOIN COSWIN.NEG_INV ni ON i.S_NEG_INV = ni.PK_NEG_INV
                   description="Specifies the SQL statement that generates the lookup table."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from MIGRATION.STE_MIGRATION_USER_LOOKUP</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT DISTINCT 
+	UPPER(TRIM(DISPLAY_NAME)) AS display_name, 
+	PERSONID
+FROM     MIGRATION.STE_MIGRATION_USER_LOOKUP</property>
                 <property
                   dataType="System.String"
                   description="Specifies a SQL statement that uses parameters to generate the lookup table."
                   expressionType="Notify"
                   name="SqlCommandParam"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (select * from MIGRATION.STE_MIGRATION_USER_LOOKUP) "refTable"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (SELECT DISTINCT 
+	UPPER(TRIM(DISPLAY_NAME)) AS display_name, 
+	PERSONID
+FROM     MIGRATION.STE_MIGRATION_USER_LOOKUP) "refTable"
 where "refTable"."DISPLAY_NAME" = ?</property>
                 <property
                   dataType="System.Int32"
@@ -5747,12 +5784,12 @@ where "refTable"."DISPLAY_NAME" = ?</property>
                 <property
                   dataType="System.String"
                   description="Indicates whether to reference metadata in an XML format."
-                  name="ReferenceMetadataXml">&lt;referenceMetadata&gt;&lt;referenceColumns&gt;&lt;referenceColumn name="ID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="DISPLAY_NAME" dataType="DT_STR" length="250" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PERSONID" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PERSISTENT" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STATUS" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="ROWSTAMP" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;/referenceColumns&gt;&lt;/referenceMetadata&gt;</property>
+                  name="ReferenceMetadataXml">&lt;referenceMetadata&gt;&lt;referenceColumns&gt;&lt;referenceColumn name="DISPLAY_NAME" dataType="DT_STR" length="250" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PERSONID" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;/referenceColumns&gt;&lt;/referenceMetadata&gt;</property>
                 <property
                   containsID="true"
                   dataType="System.String"
                   description="Specifies the list of lineage identifiers that map to the parameters that the SQL statement in the SQLCommand property uses. Entries in the list are separated by semicolons."
-                  name="ParameterMap">#{Package\DF - Invoice\Oracle Source.Outputs[Oracle Source Output].Columns[PO_REQ_BY]};</property>
+                  name="ParameterMap">#{Package\DF - Invoice\Derived Column.Outputs[Derived Column Output].Columns[lk_reqby]};</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -5776,12 +5813,12 @@ where "refTable"."DISPLAY_NAME" = ?</property>
                   name="Lookup Input">
                   <inputColumns>
                     <inputColumn
-                      refId="Package\DF - Invoice\ReqBy - PersonID.Inputs[Lookup Input].Columns[PO_REQ_BY]"
+                      refId="Package\DF - Invoice\ReqBy - PersonID.Inputs[Lookup Input].Columns[lk_reqby]"
                       cachedCodepage="1252"
                       cachedDataType="str"
-                      cachedLength="16"
-                      cachedName="PO_REQ_BY"
-                      lineageId="Package\DF - Invoice\Oracle Source.Outputs[Oracle Source Output].Columns[PO_REQ_BY]">
+                      cachedLength="50"
+                      cachedName="lk_reqby"
+                      lineageId="Package\DF - Invoice\Derived Column.Outputs[Derived Column Output].Columns[lk_reqby]">
                       <properties>
                         <property
                           dataType="System.String"
@@ -23991,54 +24028,54 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               startId="Package\DF - InvoiceCost\Conditional Split.Outputs[Conditional Split Default Output]" />
             <path
               refId="Package\DF - InvoiceCost.Paths[Derived Column Output9]"
-              endId="Package\DF - InvoiceCost\Conditional Split 2.Inputs[Conditional Split Input]"
+              endId="Package\DF - InvoiceCost\Union All 3.Inputs[Union All Input 2]"
               name="Derived Column Output"
-              startId="Package\DF - InvoiceCost\Derived Column.Outputs[Derived Column Output]" />
+              startId="Package\DF - InvoiceCost\Replace Invalid CostCenter.Outputs[Derived Column Output]" />
             <path
               refId="Package\DF - InvoiceCost.Paths[Derived Column Output8]"
-              endId="Package\DF - InvoiceCost\CHARTOFACCOUNTS.Inputs[OLE DB Destination Input]"
-              name="Derived Column Output"
-              startId="Package\DF - InvoiceCost\Derived Column 3 1.Outputs[Derived Column Output]" />
-            <path
-              refId="Package\DF - InvoiceCost.Paths[Derived Column Output7]"
-              endId="Package\DF - InvoiceCost\Lookup - Invalid CC Replacement.Inputs[Lookup Input]"
-              name="Derived Column Output"
-              startId="Package\DF - InvoiceCost\Derived Column 1.Outputs[Derived Column Output]" />
-            <path
-              refId="Package\DF - InvoiceCost.Paths[Derived Column Output5]"
-              endId="Package\DF - InvoiceCost\Union All.Inputs[Union All Input 2]"
-              name="Derived Column Output"
-              startId="Package\DF - InvoiceCost\Derived Column 2 1.Outputs[Derived Column Output]" />
-            <path
-              refId="Package\DF - InvoiceCost.Paths[Derived Column Output6]"
-              endId="Package\DF - InvoiceCost\LOG (GLCODE-NOMATCH).Inputs[OLE DB Destination Input]"
-              name="Derived Column Output"
-              startId="Package\DF - InvoiceCost\Derived Column 4 1.Outputs[Derived Column Output]" />
-            <path
-              refId="Package\DF - InvoiceCost.Paths[Derived Column Output3]"
-              endId="Package\DF - InvoiceCost\Union All.Inputs[Union All Input 3]"
-              name="Derived Column Output"
-              startId="Package\DF - InvoiceCost\Derived Column 2 1 1.Outputs[Derived Column Output]" />
-            <path
-              refId="Package\DF - InvoiceCost.Paths[Derived Column Output2]"
-              endId="Package\DF - InvoiceCost\LOG (CC-NOMATCH).Inputs[OLE DB Destination Input]"
-              name="Derived Column Output"
-              startId="Package\DF - InvoiceCost\Derived Column 4 2.Outputs[Derived Column Output]" />
-            <path
-              refId="Package\DF - InvoiceCost.Paths[Derived Column Output1]"
-              endId="Package\DF - InvoiceCost\Union All 1.Inputs[Union All Input 2]"
-              name="Derived Column Output"
-              startId="Package\DF - InvoiceCost\Derived Column 3.Outputs[Derived Column Output]" />
-            <path
-              refId="Package\DF - InvoiceCost.Paths[Derived Column Output]"
               endId="Package\DF - InvoiceCost\OLE DB Destination 1 1.Inputs[OLE DB Destination Input]"
               name="Derived Column Output"
               startId="Package\DF - InvoiceCost\Derived Column 4.Outputs[Derived Column Output]" />
             <path
-              refId="Package\DF - InvoiceCost.Paths[Derived Column Output4]"
-              endId="Package\DF - InvoiceCost\Union All 3.Inputs[Union All Input 2]"
+              refId="Package\DF - InvoiceCost.Paths[Derived Column Output7]"
+              endId="Package\DF - InvoiceCost\Union All 1.Inputs[Union All Input 2]"
               name="Derived Column Output"
-              startId="Package\DF - InvoiceCost\Replace Invalid CostCenter.Outputs[Derived Column Output]" />
+              startId="Package\DF - InvoiceCost\Derived Column 3.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - InvoiceCost.Paths[Derived Column Output5]"
+              endId="Package\DF - InvoiceCost\Union All.Inputs[Union All Input 3]"
+              name="Derived Column Output"
+              startId="Package\DF - InvoiceCost\Derived Column 2 1 1.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - InvoiceCost.Paths[Derived Column Output6]"
+              endId="Package\DF - InvoiceCost\LOG (CC-NOMATCH).Inputs[OLE DB Destination Input]"
+              name="Derived Column Output"
+              startId="Package\DF - InvoiceCost\Derived Column 4 2.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - InvoiceCost.Paths[Derived Column Output3]"
+              endId="Package\DF - InvoiceCost\Union All.Inputs[Union All Input 2]"
+              name="Derived Column Output"
+              startId="Package\DF - InvoiceCost\Derived Column 2 1.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - InvoiceCost.Paths[Derived Column Output2]"
+              endId="Package\DF - InvoiceCost\Lookup - Invalid CC Replacement.Inputs[Lookup Input]"
+              name="Derived Column Output"
+              startId="Package\DF - InvoiceCost\Derived Column 1.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - InvoiceCost.Paths[Derived Column Output1]"
+              endId="Package\DF - InvoiceCost\CHARTOFACCOUNTS.Inputs[OLE DB Destination Input]"
+              name="Derived Column Output"
+              startId="Package\DF - InvoiceCost\Derived Column 3 1.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - InvoiceCost.Paths[Derived Column Output]"
+              endId="Package\DF - InvoiceCost\Conditional Split 2.Inputs[Conditional Split Input]"
+              name="Derived Column Output"
+              startId="Package\DF - InvoiceCost\Derived Column.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - InvoiceCost.Paths[Derived Column Output4]"
+              endId="Package\DF - InvoiceCost\LOG (GLCODE-NOMATCH).Inputs[OLE DB Destination Input]"
+              name="Derived Column Output"
+              startId="Package\DF - InvoiceCost\Derived Column 4 1.Outputs[Derived Column Output]" />
             <path
               refId="Package\DF - InvoiceCost.Paths[HAS COSTCENTER]"
               endId="Package\DF - InvoiceCost\Lookup - CC.Inputs[Lookup Input]"
@@ -24076,24 +24113,24 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               startId="Package\DF - InvoiceCost\Lookup - Invalid CC Replacement.Outputs[Lookup Match Output]" />
             <path
               refId="Package\DF - InvoiceCost.Paths[Lookup No Match Output3]"
-              endId="Package\DF - InvoiceCost\Multicast 1 1.Inputs[Multicast Input 1]"
+              endId="Package\DF - InvoiceCost\Union All 3.Inputs[Union All Input 1]"
               name="Lookup No Match Output"
-              startId="Package\DF - InvoiceCost\Lookup - SAPGL.Outputs[Lookup No Match Output]" />
+              startId="Package\DF - InvoiceCost\Lookup - Invalid CC Replacement.Outputs[Lookup No Match Output]" />
             <path
               refId="Package\DF - InvoiceCost.Paths[Lookup No Match Output2]"
-              endId="Package\DF - InvoiceCost\Multicast.Inputs[Multicast Input 1]"
-              name="Lookup No Match Output"
-              startId="Package\DF - InvoiceCost\Lookup - CC.Outputs[Lookup No Match Output]" />
-            <path
-              refId="Package\DF - InvoiceCost.Paths[Lookup No Match Output]"
               endId="Package\DF - InvoiceCost\Multicast 2.Inputs[Multicast Input 1]"
               name="Lookup No Match Output"
               startId="Package\DF - InvoiceCost\Lookup - COA.Outputs[Lookup No Match Output]" />
             <path
-              refId="Package\DF - InvoiceCost.Paths[Lookup No Match Output1]"
-              endId="Package\DF - InvoiceCost\Union All 3.Inputs[Union All Input 1]"
+              refId="Package\DF - InvoiceCost.Paths[Lookup No Match Output]"
+              endId="Package\DF - InvoiceCost\Multicast 1 1.Inputs[Multicast Input 1]"
               name="Lookup No Match Output"
-              startId="Package\DF - InvoiceCost\Lookup - Invalid CC Replacement.Outputs[Lookup No Match Output]" />
+              startId="Package\DF - InvoiceCost\Lookup - SAPGL.Outputs[Lookup No Match Output]" />
+            <path
+              refId="Package\DF - InvoiceCost.Paths[Lookup No Match Output1]"
+              endId="Package\DF - InvoiceCost\Multicast.Inputs[Multicast Input 1]"
+              name="Lookup No Match Output"
+              startId="Package\DF - InvoiceCost\Lookup - CC.Outputs[Lookup No Match Output]" />
             <path
               refId="Package\DF - InvoiceCost.Paths[Multicast Output 1]"
               endId="Package\DF - InvoiceCost\Aggregate 1.Inputs[Aggregate Input 1]"
@@ -24136,14 +24173,14 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               startId="Package\DF - InvoiceCost\Multicast 2.Outputs[Multicast Output 3]" />
             <path
               refId="Package\DF - InvoiceCost.Paths[Multicast Output 41]"
-              endId="Package\DF - InvoiceCost\Sort 1.Inputs[Sort Input]"
-              name="Multicast Output 4"
-              startId="Package\DF - InvoiceCost\Multicast.Outputs[Multicast Output 4]" />
-            <path
-              refId="Package\DF - InvoiceCost.Paths[Multicast Output 4]"
               endId="Package\DF - InvoiceCost\Sort 2.Inputs[Sort Input]"
               name="Multicast Output 4"
               startId="Package\DF - InvoiceCost\Multicast 1 1.Outputs[Multicast Output 4]" />
+            <path
+              refId="Package\DF - InvoiceCost.Paths[Multicast Output 4]"
+              endId="Package\DF - InvoiceCost\Sort 1.Inputs[Sort Input]"
+              name="Multicast Output 4"
+              startId="Package\DF - InvoiceCost\Multicast.Outputs[Multicast Output 4]" />
             <path
               refId="Package\DF - InvoiceCost.Paths[OLE DB Destination Error Output]"
               endId="Package\DF - InvoiceCost\OLE DB Destination.Inputs[OLE DB Destination Input]"
@@ -24161,34 +24198,34 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               startId="Package\DF - InvoiceCost\Running Number.Outputs[Output 0]" />
             <path
               refId="Package\DF - InvoiceCost.Paths[Sort Output2]"
-              endId="Package\DF - InvoiceCost\GLCODE-NOMATCH.Inputs[Flat File Destination Input]"
-              name="Sort Output"
-              startId="Package\DF - InvoiceCost\Sort 2.Outputs[Sort Output]" />
-            <path
-              refId="Package\DF - InvoiceCost.Paths[Sort Output]"
-              endId="Package\DF - InvoiceCost\COSTCENTER-NOMATCH.Inputs[Flat File Destination Input]"
-              name="Sort Output"
-              startId="Package\DF - InvoiceCost\Sort 1.Outputs[Sort Output]" />
-            <path
-              refId="Package\DF - InvoiceCost.Paths[Sort Output1]"
               endId="Package\DF - InvoiceCost\Running Number.Inputs[Input 0]"
               name="Sort Output"
               startId="Package\DF - InvoiceCost\Sort.Outputs[Sort Output]" />
             <path
-              refId="Package\DF - InvoiceCost.Paths[Union All Output 11]"
-              endId="Package\DF - InvoiceCost\Conditional Split 1.Inputs[Conditional Split Input]"
-              name="Union All Output 1"
-              startId="Package\DF - InvoiceCost\Union All.Outputs[Union All Output 1]" />
+              refId="Package\DF - InvoiceCost.Paths[Sort Output]"
+              endId="Package\DF - InvoiceCost\GLCODE-NOMATCH.Inputs[Flat File Destination Input]"
+              name="Sort Output"
+              startId="Package\DF - InvoiceCost\Sort 2.Outputs[Sort Output]" />
             <path
-              refId="Package\DF - InvoiceCost.Paths[Union All Output 12]"
+              refId="Package\DF - InvoiceCost.Paths[Sort Output1]"
+              endId="Package\DF - InvoiceCost\COSTCENTER-NOMATCH.Inputs[Flat File Destination Input]"
+              name="Sort Output"
+              startId="Package\DF - InvoiceCost\Sort 1.Outputs[Sort Output]" />
+            <path
+              refId="Package\DF - InvoiceCost.Paths[Union All Output 11]"
               endId="Package\DF - InvoiceCost\Conditional Split.Inputs[Conditional Split Input]"
               name="Union All Output 1"
               startId="Package\DF - InvoiceCost\Union All 3.Outputs[Union All Output 1]" />
             <path
-              refId="Package\DF - InvoiceCost.Paths[Union All Output 1]"
+              refId="Package\DF - InvoiceCost.Paths[Union All Output 12]"
               endId="Package\DF - InvoiceCost\Derived Column.Inputs[Derived Column Input]"
               name="Union All Output 1"
               startId="Package\DF - InvoiceCost\Union All 1.Outputs[Union All Output 1]" />
+            <path
+              refId="Package\DF - InvoiceCost.Paths[Union All Output 1]"
+              endId="Package\DF - InvoiceCost\Conditional Split 1.Inputs[Conditional Split Input]"
+              name="Union All Output 1"
+              startId="Package\DF - InvoiceCost\Union All.Outputs[Union All Output 1]" />
             <path
               refId="Package\DF - InvoiceCost.Paths[Union All Output 13]"
               endId="Package\DF - InvoiceCost\Multicast 1.Inputs[Multicast Input 1]"
@@ -24624,6 +24661,13 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       cachedLength="100"
                       cachedName="ITEM_DS"
                       lineageId="Package\DF - InvoiceLine\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_DS]" />
+                    <inputColumn
+                      refId="Package\DF - InvoiceLine\Derived Column.Inputs[Derived Column Input].Columns[PO_REQ_BY]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="16"
+                      cachedName="PO_REQ_BY"
+                      lineageId="Package\DF - InvoiceLine\Oracle Source.Outputs[Oracle Source Output].Columns[PO_REQ_BY]" />
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -25206,6 +25250,30 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
                           name="FriendlyExpression">(DT_STR,100,1252)LEFT(ITEM_DS,90)</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\DF - InvoiceLine\Derived Column.Outputs[Derived Column Output].Columns[lk_reqby]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="50"
+                      lineageId="Package\DF - InvoiceLine\Derived Column.Outputs[Derived Column Output].Columns[lk_reqby]"
+                      name="lk_reqby"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_STR,50,1252)[UPPER]([TRIM](#{Package\DF - InvoiceLine\Oracle Source.Outputs[Oracle Source Output].Columns[PO_REQ_BY]}))</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_STR,50,1252)UPPER(TRIM(PO_REQ_BY))</property>
                       </properties>
                     </outputColumn>
                   </outputColumns>
@@ -29362,13 +29430,19 @@ LEFT JOIN coswin.PORDER_ po ON po.PO_REF = ii.INV_PO_REF
                   description="Specifies the SQL statement that generates the lookup table."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from MIGRATION.STE_MIGRATION_USER_LOOKUP</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT DISTINCT 
+	UPPER(TRIM(DISPLAY_NAME)) AS display_name, 
+	PERSONID
+FROM     MIGRATION.STE_MIGRATION_USER_LOOKUP</property>
                 <property
                   dataType="System.String"
                   description="Specifies a SQL statement that uses parameters to generate the lookup table."
                   expressionType="Notify"
                   name="SqlCommandParam"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (select * from MIGRATION.STE_MIGRATION_USER_LOOKUP) "refTable"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (SELECT DISTINCT 
+	UPPER(TRIM(DISPLAY_NAME)) AS display_name, 
+	PERSONID
+FROM     MIGRATION.STE_MIGRATION_USER_LOOKUP) "refTable"
 where "refTable"."DISPLAY_NAME" = ?</property>
                 <property
                   dataType="System.Int32"
@@ -29400,12 +29474,12 @@ where "refTable"."DISPLAY_NAME" = ?</property>
                 <property
                   dataType="System.String"
                   description="Indicates whether to reference metadata in an XML format."
-                  name="ReferenceMetadataXml">&lt;referenceMetadata&gt;&lt;referenceColumns&gt;&lt;referenceColumn name="ID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="DISPLAY_NAME" dataType="DT_STR" length="250" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PERSONID" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PERSISTENT" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STATUS" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="ROWSTAMP" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;/referenceColumns&gt;&lt;/referenceMetadata&gt;</property>
+                  name="ReferenceMetadataXml">&lt;referenceMetadata&gt;&lt;referenceColumns&gt;&lt;referenceColumn name="DISPLAY_NAME" dataType="DT_STR" length="250" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PERSONID" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;/referenceColumns&gt;&lt;/referenceMetadata&gt;</property>
                 <property
                   containsID="true"
                   dataType="System.String"
                   description="Specifies the list of lineage identifiers that map to the parameters that the SQL statement in the SQLCommand property uses. Entries in the list are separated by semicolons."
-                  name="ParameterMap">#{Package\DF - InvoiceLine\Union All.Outputs[Union All Output 1].Columns[PO_REQ_BY]};</property>
+                  name="ParameterMap">#{Package\DF - InvoiceLine\Union All.Outputs[Union All Output 1].Columns[lk_reqby]};</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -29429,12 +29503,12 @@ where "refTable"."DISPLAY_NAME" = ?</property>
                   name="Lookup Input">
                   <inputColumns>
                     <inputColumn
-                      refId="Package\DF - InvoiceLine\ReqBy - PersonID.Inputs[Lookup Input].Columns[PO_REQ_BY]"
+                      refId="Package\DF - InvoiceLine\ReqBy - PersonID.Inputs[Lookup Input].Columns[lk_reqby]"
                       cachedCodepage="1252"
                       cachedDataType="str"
-                      cachedLength="16"
-                      cachedName="PO_REQ_BY"
-                      lineageId="Package\DF - InvoiceLine\Union All.Outputs[Union All Output 1].Columns[PO_REQ_BY]">
+                      cachedLength="50"
+                      cachedName="lk_reqby"
+                      lineageId="Package\DF - InvoiceLine\Union All.Outputs[Union All Output 1].Columns[lk_reqby]">
                       <properties>
                         <property
                           dataType="System.String"
@@ -30517,6 +30591,21 @@ where "refTable"."DISPLAY_NAME" = ?</property>
                           name="OutputColumnLineageID">#{Package\DF - InvoiceLine\Union All.Outputs[Union All Output 1].Columns[PK_INVOICE_]}</property>
                       </properties>
                     </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - InvoiceLine\Union All.Inputs[Union All Input 1].Columns[lk_reqby]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="lk_reqby"
+                      lineageId="Package\DF - InvoiceLine\Derived Column.Outputs[Derived Column Output].Columns[lk_reqby]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - InvoiceLine\Union All.Outputs[Union All Output 1].Columns[lk_reqby]}</property>
+                      </properties>
+                    </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -31254,6 +31343,21 @@ where "refTable"."DISPLAY_NAME" = ?</property>
                           name="OutputColumnLineageID">#{Package\DF - InvoiceLine\Union All.Outputs[Union All Output 1].Columns[PK_INVOICE_]}</property>
                       </properties>
                     </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - InvoiceLine\Union All.Inputs[Union All Input 2].Columns[lk_reqby]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="lk_reqby"
+                      lineageId="Package\DF - InvoiceLine\Derived Column.Outputs[Derived Column Output].Columns[lk_reqby]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - InvoiceLine\Union All.Outputs[Union All Output 1].Columns[lk_reqby]}</property>
+                      </properties>
+                    </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -31580,6 +31684,13 @@ where "refTable"."DISPLAY_NAME" = ?</property>
                       dataType="i4"
                       lineageId="Package\DF - InvoiceLine\Union All.Outputs[Union All Output 1].Columns[PK_INVOICE_]"
                       name="PK_INVOICE_" />
+                    <outputColumn
+                      refId="Package\DF - InvoiceLine\Union All.Outputs[Union All Output 1].Columns[lk_reqby]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      lineageId="Package\DF - InvoiceLine\Union All.Outputs[Union All Output 1].Columns[lk_reqby]"
+                      name="lk_reqby" />
                   </outputColumns>
                   <externalMetadataColumns />
                 </output>
@@ -33494,6 +33605,11 @@ where "refTable"."DISPLAY_NAME" = ?</property>
               name="Lookup Match Output"
               startId="Package\DF - InvoiceLine\Lookup - ITEM.Outputs[Lookup Match Output]" />
             <path
+              refId="Package\DF - InvoiceLine.Paths[Lookup No Match Output2]"
+              endId="Package\DF - InvoiceLine\Multicast 1.Inputs[Multicast Input 1]"
+              name="Lookup No Match Output"
+              startId="Package\DF - InvoiceLine\ReqBy - PersonID.Outputs[Lookup No Match Output]" />
+            <path
               refId="Package\DF - InvoiceLine.Paths[Lookup No Match Output]"
               endId="Package\DF - InvoiceLine\Default Value.Inputs[Derived Column Input]"
               name="Lookup No Match Output"
@@ -33504,32 +33620,27 @@ where "refTable"."DISPLAY_NAME" = ?</property>
               name="Lookup No Match Output"
               startId="Package\DF - InvoiceLine\Lookup - ITEM.Outputs[Lookup No Match Output]" />
             <path
-              refId="Package\DF - InvoiceLine.Paths[Lookup No Match Output2]"
-              endId="Package\DF - InvoiceLine\Multicast 1.Inputs[Multicast Input 1]"
-              name="Lookup No Match Output"
-              startId="Package\DF - InvoiceLine\ReqBy - PersonID.Outputs[Lookup No Match Output]" />
-            <path
-              refId="Package\DF - InvoiceLine.Paths[Multicast Output 12]"
+              refId="Package\DF - InvoiceLine.Paths[Multicast Output 1]"
               endId="Package\DF - InvoiceLine\ReqBy - Default.Inputs[Derived Column Input]"
               name="Multicast Output 1"
               startId="Package\DF - InvoiceLine\Multicast 1.Outputs[Multicast Output 1]" />
             <path
-              refId="Package\DF - InvoiceLine.Paths[Multicast Output 1]"
+              refId="Package\DF - InvoiceLine.Paths[Multicast Output 11]"
               endId="Package\DF - InvoiceLine\Aggregate 1.Inputs[Aggregate Input 1]"
               name="Multicast Output 1"
               startId="Package\DF - InvoiceLine\Multicast 3.Outputs[Multicast Output 1]" />
             <path
-              refId="Package\DF - InvoiceLine.Paths[Multicast Output 11]"
+              refId="Package\DF - InvoiceLine.Paths[Multicast Output 12]"
               endId="Package\DF - InvoiceLine\OLE DB Destination.Inputs[OLE DB Destination Input]"
               name="Multicast Output 1"
               startId="Package\DF - InvoiceLine\Multicast.Outputs[Multicast Output 1]" />
             <path
-              refId="Package\DF - InvoiceLine.Paths[Multicast Output 21]"
+              refId="Package\DF - InvoiceLine.Paths[Multicast Output 2]"
               endId="Package\DF - InvoiceLine\Flat File Destination.Inputs[Flat File Destination Input]"
               name="Multicast Output 2"
               startId="Package\DF - InvoiceLine\Multicast 3.Outputs[Multicast Output 2]" />
             <path
-              refId="Package\DF - InvoiceLine.Paths[Multicast Output 2]"
+              refId="Package\DF - InvoiceLine.Paths[Multicast Output 21]"
               endId="Package\DF - InvoiceLine\Aggregate.Inputs[Aggregate Input 1]"
               name="Multicast Output 2"
               startId="Package\DF - InvoiceLine\Multicast.Outputs[Multicast Output 2]" />
@@ -34860,75 +34971,99 @@ where "refTable"."DISPLAY_NAME" = ?</property>
       <GraphLayout
         Capacity="64" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
+          Size="161.6,41.6"
+          Id="Package\DF - Invoice\Derived Column 1"
+          TopLeft="240.238085638673,375.847620822911" />
+        <NodeLayout
           Size="120,41.6"
           Id="Package\DF - Invoice\Union All"
           TopLeft="505.9714010575,319.380951011172" />
         <NodeLayout
-          Size="171.2,41.6"
-          Id="Package\DF - Invoice\OLE DB Destination"
-          TopLeft="234.071416082836,547.347615863803" />
+          Size="170.4,41.6"
+          Id="Package\DF - Invoice\Derived Column 4 2 1"
+          TopLeft="1058.43169811533,136.927777403986" />
         <NodeLayout
           Size="119.2,41.6"
           Id="Package\DF - Invoice\Multicast"
           TopLeft="262.638081019313,469.314284025091" />
         <NodeLayout
-          Size="161.6,41.6"
-          Id="Package\DF - Invoice\Derived Column 1"
-          TopLeft="240.238085638673,375.847620822911" />
+          Size="158.4,41.6"
+          Id="Package\DF - Invoice\Derived Column"
+          TopLeft="180.166666712198,77.2666666787201" />
         <NodeLayout
-          Size="167.2,41.6"
-          Id="Package\DF - Invoice\ReqBy - PersonID"
-          TopLeft="443.690458542062,136.066667748027" />
+          Size="170.4,41.6"
+          Id="Package\DF - Invoice\Flat File Destination"
+          TopLeft="1033.55231711096,234.75714326006" />
         <NodeLayout
           Size="180,41.6"
           Id="Package\DF - Invoice\OLE DB Destination 1 1"
           TopLeft="611.904739809061,564.014283121076" />
         <NodeLayout
-          Size="161.6,41.6"
-          Id="Package\DF - Invoice\Derived Column 4"
-          TopLeft="629.038065037818,472.147617093249" />
+          Size="126.4,41.6"
+          Id="Package\DF - Invoice\Aggregate 1 1"
+          TopLeft="870.888842371053,135.725397175222" />
         <NodeLayout
-          Size="156,41.6"
-          Id="Package\DF - Invoice\ReqBy - Default"
-          TopLeft="688.214258319212,239.571428907202" />
+          Size="167.2,41.6"
+          Id="Package\DF - Invoice\ReqBy - PersonID"
+          TopLeft="443.690458542062,136.066667748027" />
         <NodeLayout
           Size="148.8,41.6"
           Id="Package\DF - Invoice\Oracle Source"
           TopLeft="19.5,5.5" />
         <NodeLayout
+          Size="161.6,41.6"
+          Id="Package\DF - Invoice\Derived Column 4"
+          TopLeft="629.038065037818,472.147617093249" />
+        <NodeLayout
+          Size="171.2,41.6"
+          Id="Package\DF - Invoice\OLE DB Destination"
+          TopLeft="234.071416082836,547.347615863803" />
+        <NodeLayout
+          Size="156,41.6"
+          Id="Package\DF - Invoice\ReqBy - Default"
+          TopLeft="688.214258319212,239.571428907202" />
+        <NodeLayout
+          Size="124.8,41.6"
+          Id="Package\DF - Invoice\LOG CNT 1"
+          TopLeft="1276.88406829217,136.784919495777" />
+        <NodeLayout
           Size="126.4,41.6"
           Id="Package\DF - Invoice\Aggregate"
           TopLeft="439.738072277299,472.214283464599" />
         <NodeLayout
-          Size="158.4,41.6"
-          Id="Package\DF - Invoice\Derived Column"
-          TopLeft="181,79" />
+          Size="128,41.6"
+          Id="Package\DF - Invoice\Multicast 1"
+          TopLeft="696.428533377394,137.333332902855" />
+        <NodeLayout
+          Size="97.6,41.6"
+          Id="Package\DF - Invoice\Sort"
+          TopLeft="892.118999941247,236.157144507585" />
         <EdgeLayout
-          Id="Package\DF - Invoice.Paths[Union All Output 1]"
-          TopLeft="505.9714010575,340.180951011172">
+          Id="Package\DF - Invoice.Paths[Oracle Source Output]"
+          TopLeft="93.9,47.1">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-104.133315418827,56.4666698117391"
+              EndConnector="165.466666712198,30.1666666787201"
               Start="0,0"
-              End="-96.633315418827,56.4666698117391">
+              End="165.466666712198,22.6666666787201">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="-48.0666577094133,0" />
+                    End="0,11.08333333936" />
                   <mssgle:CubicBezierSegment
-                    Point1="-48.0666577094133,0"
-                    Point2="-52.0666577094133,0"
-                    Point3="-52.0666577094133,4" />
+                    Point1="0,11.08333333936"
+                    Point2="0,15.08333333936"
+                    Point3="4,15.08333333936" />
                   <mssgle:LineSegment
-                    End="-52.0666577094133,52.4666698117391" />
+                    End="161.466666712198,15.08333333936" />
                   <mssgle:CubicBezierSegment
-                    Point1="-52.0666577094133,52.4666698117391"
-                    Point2="-52.0666577094133,56.4666698117391"
-                    Point3="-56.0666577094133,56.4666698117391" />
+                    Point1="161.466666712198,15.08333333936"
+                    Point2="165.466666712198,15.08333333936"
+                    Point3="165.466666712198,19.08333333936" />
                   <mssgle:LineSegment
-                    End="-96.633315418827,56.4666698117391" />
+                    End="165.466666712198,22.6666666787201" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -34938,31 +35073,53 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - Invoice.Paths[Oracle Source Output]"
-          TopLeft="94,47.5">
+          Id="Package\DF - Invoice.Paths[Multicast Output 3]"
+          TopLeft="824.428533377394,157.329365039039">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="166,31.5"
+              EndConnector="46.4603089936592,0"
               Start="0,0"
-              End="166,24">
+              End="38.9603089936592,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,11.75" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,11.75"
-                    Point2="0,15.75"
-                    Point3="4,15.75" />
+                    End="38.9603089936592,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - Invoice.Paths[Multicast Output 21]"
+          TopLeft="780.428533377394,178.933332902855">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="160.490466563853,57.2238116047297"
+              Start="0,0"
+              End="160.490466563853,49.7238116047297">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
                   <mssgle:LineSegment
-                    End="162,15.75" />
+                    End="0,19.3134047278528" />
                   <mssgle:CubicBezierSegment
-                    Point1="162,15.75"
-                    Point2="166,15.75"
-                    Point3="166,19.75" />
+                    Point1="0,19.3134047278528"
+                    Point2="0,23.3134047278528"
+                    Point3="4,23.3134047278528" />
                   <mssgle:LineSegment
-                    End="166,24" />
+                    End="156.490466563853,23.3134047278528" />
+                  <mssgle:CubicBezierSegment
+                    Point1="156.490466563853,23.3134047278528"
+                    Point2="160.490466563853,23.3134047278528"
+                    Point3="160.490466563853,27.3134047278528" />
+                  <mssgle:LineSegment
+                    End="160.490466563853,49.7238116047297" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -34994,6 +35151,28 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
+          Id="Package\DF - Invoice.Paths[Multicast Output 11]"
+          TopLeft="763.321395848303,178.933332902855">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60.6380960043464"
+              Start="0,0"
+              End="0,53.1380960043464">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,53.1380960043464" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
           Id="Package\DF - Invoice.Paths[Multicast Output 1]"
           TopLeft="320.954748551074,510.914284025091">
           <EdgeLayout.Curve>
@@ -35013,6 +35192,30 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - Invoice.Paths[Lookup No Match Output]"
+          TopLeft="610.890458542062,157.500000325441">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="85.5380748353316,0"
+              Start="0,0"
+              End="78.0380748353316,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="78.0380748353316,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-16.7873493010842,5,111.6127734375,11.609375"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -35049,6 +35252,28 @@ where "refTable"."DISPLAY_NAME" = ?</property>
             <mssgm:EdgeLabel
               BoundingBox="-38.1842487943644,88.9097729847566,96.3827734375,11.609375"
               RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - Invoice.Paths[Derived Column Output4]"
+          TopLeft="1228.83169811533,157.656348449881">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="48.052370176835,0"
+              Start="0,0"
+              End="40.552370176835,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="40.552370176835,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -35131,200 +35356,30 @@ where "refTable"."DISPLAY_NAME" = ?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - Invoice.Paths[Derived Column Output]"
-          TopLeft="339.4,99.8">
+          TopLeft="338.566666712198,98.0666666787201">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="104.290458542062,57.066667748027"
+              EndConnector="105.123791829864,58.8000010693069"
               Start="0,0"
-              End="96.7904585420624,57.066667748027">
+              End="97.6237918298639,58.8000010693069">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="48.1452292710312,0" />
+                    End="48.5618959149319,0" />
                   <mssgle:CubicBezierSegment
-                    Point1="48.1452292710312,0"
-                    Point2="52.1452292710312,0"
-                    Point3="52.1452292710312,4" />
+                    Point1="48.5618959149319,0"
+                    Point2="52.5618959149319,0"
+                    Point3="52.5618959149319,4" />
                   <mssgle:LineSegment
-                    End="52.1452292710312,53.066667748027" />
+                    End="52.5618959149319,54.8000010693069" />
                   <mssgle:CubicBezierSegment
-                    Point1="52.1452292710312,53.066667748027"
-                    Point2="52.1452292710312,57.066667748027"
-                    Point3="56.1452292710312,57.066667748027" />
+                    Point1="52.5618959149319,54.8000010693069"
+                    Point2="52.5618959149319,58.8000010693069"
+                    Point3="56.5618959149319,58.8000010693069" />
                   <mssgle:LineSegment
-                    End="96.7904585420624,57.066667748027" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - Invoice.Paths[Aggregate Output 1]"
-          TopLeft="566.138072277298,492.980950278924">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="62.8999927605199,0"
-              Start="0,0"
-              End="55.3999927605199,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="55.3999927605199,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="128,41.6"
-          Id="Package\DF - Invoice\Multicast 1"
-          TopLeft="696.428533377394,137.333332902855" />
-        <EdgeLayout
-          Id="Package\DF - Invoice.Paths[Lookup No Match Output]"
-          TopLeft="610.890458542062,157.500000325441">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="85.5380748353316,0"
-              Start="0,0"
-              End="78.0380748353316,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="78.0380748353316,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-16.7873493010842,5,111.6127734375,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - Invoice.Paths[Multicast Output 11]"
-          TopLeft="763.321395848303,178.933332902855">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,60.6380960043464"
-              Start="0,0"
-              End="0,53.1380960043464">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,53.1380960043464" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="97.6,41.6"
-          Id="Package\DF - Invoice\Sort"
-          TopLeft="892.118999941247,236.157144507585" />
-        <NodeLayout
-          Size="170.4,41.6"
-          Id="Package\DF - Invoice\Flat File Destination"
-          TopLeft="1033.55231711096,234.75714326006" />
-        <EdgeLayout
-          Id="Package\DF - Invoice.Paths[Sort Output]"
-          TopLeft="989.718999941247,256.257143883823">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="43.8333171697141,0"
-              Start="0,0"
-              End="36.3333171697141,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="36.3333171697141,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - Invoice.Paths[Multicast Output 21]"
-          TopLeft="780.428533377394,178.933332902855">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="160.490466563853,57.2238116047297"
-              Start="0,0"
-              End="160.490466563853,49.7238116047297">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,19.3134047278528" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,19.3134047278528"
-                    Point2="0,23.3134047278528"
-                    Point3="4,23.3134047278528" />
-                  <mssgle:LineSegment
-                    End="156.490466563853,23.3134047278528" />
-                  <mssgle:CubicBezierSegment
-                    Point1="156.490466563853,23.3134047278528"
-                    Point2="160.490466563853,23.3134047278528"
-                    Point3="160.490466563853,27.3134047278528" />
-                  <mssgle:LineSegment
-                    End="160.490466563853,49.7238116047297" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="170.4,41.6"
-          Id="Package\DF - Invoice\Derived Column 4 2 1"
-          TopLeft="1058.43169811533,136.927777403986" />
-        <NodeLayout
-          Size="124.8,41.6"
-          Id="Package\DF - Invoice\LOG CNT 1"
-          TopLeft="1276.88406829217,136.784919495777" />
-        <NodeLayout
-          Size="126.4,41.6"
-          Id="Package\DF - Invoice\Aggregate 1 1"
-          TopLeft="870.888842371053,135.725397175222" />
-        <EdgeLayout
-          Id="Package\DF - Invoice.Paths[Derived Column Output4]"
-          TopLeft="1228.83169811533,157.656348449881">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="48.052370176835,0"
-              Start="0,0"
-              End="40.552370176835,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="40.552370176835,0" />
+                    End="97.6237918298639,58.8000010693069" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -35356,19 +35411,75 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - Invoice.Paths[Multicast Output 3]"
-          TopLeft="824.428533377394,157.329365039039">
+          Id="Package\DF - Invoice.Paths[Aggregate Output 1]"
+          TopLeft="566.138072277298,492.980950278924">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="46.4603089936592,0"
+              EndConnector="62.8999927605199,0"
               Start="0,0"
-              End="38.9603089936592,0">
+              End="55.3999927605199,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="38.9603089936592,0" />
+                    End="55.3999927605199,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - Invoice.Paths[Union All Output 1]"
+          TopLeft="505.9714010575,340.180951011172">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-104.133315418827,56.4666698117391"
+              Start="0,0"
+              End="-96.633315418827,56.4666698117391">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="-48.0666577094133,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-48.0666577094133,0"
+                    Point2="-52.0666577094133,0"
+                    Point3="-52.0666577094133,4" />
+                  <mssgle:LineSegment
+                    End="-52.0666577094133,52.4666698117391" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-52.0666577094133,52.4666698117391"
+                    Point2="-52.0666577094133,56.4666698117391"
+                    Point3="-56.0666577094133,56.4666698117391" />
+                  <mssgle:LineSegment
+                    End="-96.633315418827,56.4666698117391" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - Invoice.Paths[Sort Output]"
+          TopLeft="989.718999941247,256.257143883823">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="43.8333171697141,0"
+              Start="0,0"
+              End="36.3333171697141,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="36.3333171697141,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -35381,7 +35492,30 @@ where "refTable"."DISPLAY_NAME" = ?</property>
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\DF - Invoice\OLE DB Destination">
+    design-time-name="Package\DF - Invoice\ReqBy - PersonID">
+    <Properties>
+      <Property>
+        <Name>OverwriteParamsSQLProp</Name>
+        <Value
+          type="q2:boolean">false</Value>
+      </Property>
+      <Property>
+        <Name>UsedTableName</Name>
+        <Value
+          type="q3:string"></Value>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q4:int">0</Value>
+      </Property>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - Invoice\Oracle Source">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -35394,30 +35528,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
     </Properties>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
-    design-time-name="Package\DF - Invoice\ReqBy - PersonID">
-    <Properties>
-      <Property>
-        <Name>OverwriteParamsSQLProp</Name>
-        <Value
-          type="q2:string">false</Value>
-      </Property>
-      <Property>
-        <Name>UsedTableName</Name>
-        <Value
-          type="q3:string">MIGRATION.STE_MIGRATION_USER_LOOKUP</Value>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q4:string">0</Value>
-      </Property>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\DF - Invoice\Oracle Source">
+    design-time-name="Package\DF - Invoice\OLE DB Destination">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -35865,7 +35976,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           Id="Package\DF - InvoiceCost\Replace Invalid CostCenter"
           TopLeft="356.938875768279,194.751581611692" />
         <EdgeLayout
-          Id="Package\DF - InvoiceCost.Paths[Multicast Output 41]"
+          Id="Package\DF - InvoiceCost.Paths[Multicast Output 4]"
           TopLeft="593.879363903473,418.085712309479">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -35899,7 +36010,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - InvoiceCost.Paths[Multicast Output 4]"
+          Id="Package\DF - InvoiceCost.Paths[Multicast Output 41]"
           TopLeft="604.750018275033,716.346022676113">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -36133,7 +36244,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - InvoiceCost.Paths[Lookup No Match Output3]"
+          Id="Package\DF - InvoiceCost.Paths[Lookup No Match Output]"
           TopLeft="463.178592886063,695.117451134719">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -36157,7 +36268,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - InvoiceCost.Paths[Lookup No Match Output2]"
+          Id="Package\DF - InvoiceCost.Paths[Lookup No Match Output1]"
           TopLeft="447.704757728061,395.719046082492">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -36181,7 +36292,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - InvoiceCost.Paths[Lookup No Match Output1]"
+          Id="Package\DF - InvoiceCost.Paths[Lookup No Match Output3]"
           TopLeft="145.388889086191,236.168248240692">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -36205,7 +36316,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - InvoiceCost.Paths[Lookup No Match Output]"
+          Id="Package\DF - InvoiceCost.Paths[Lookup No Match Output2]"
           TopLeft="490.499990756314,1055.72379824365">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -36421,7 +36532,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - InvoiceCost.Paths[Derived Column Output9]"
+          Id="Package\DF - InvoiceCost.Paths[Derived Column Output]"
           TopLeft="158.519049258057,988.761894612662">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -36455,7 +36566,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - InvoiceCost.Paths[Derived Column Output8]"
+          Id="Package\DF - InvoiceCost.Paths[Derived Column Output1]"
           TopLeft="1044.66784000998,1089.66664507277">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -36477,7 +36588,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - InvoiceCost.Paths[Derived Column Output7]"
+          Id="Package\DF - InvoiceCost.Paths[Derived Column Output2]"
           TopLeft="147.692063917002,135.885714885053">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -36499,7 +36610,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - InvoiceCost.Paths[Derived Column Output6]"
+          Id="Package\DF - InvoiceCost.Paths[Derived Column Output4]"
           TopLeft="1028.30001291434,718.046023220006">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -36533,7 +36644,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - InvoiceCost.Paths[Derived Column Output5]"
+          Id="Package\DF - InvoiceCost.Paths[Derived Column Output3]"
           TopLeft="581.223799376592,505.438093357572">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -36567,7 +36678,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - InvoiceCost.Paths[Derived Column Output4]"
+          Id="Package\DF - InvoiceCost.Paths[Derived Column Output9]"
           TopLeft="459.338875768279,236.351581611692">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -36601,7 +36712,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - InvoiceCost.Paths[Derived Column Output3]"
+          Id="Package\DF - InvoiceCost.Paths[Derived Column Output5]"
           TopLeft="146.000003278255,507.666668070886">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -36635,7 +36746,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - InvoiceCost.Paths[Derived Column Output2]"
+          Id="Package\DF - InvoiceCost.Paths[Derived Column Output6]"
           TopLeft="1045.08173830626,420.226987864563">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -36657,7 +36768,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - InvoiceCost.Paths[Derived Column Output1]"
+          Id="Package\DF - InvoiceCost.Paths[Derived Column Output7]"
           TopLeft="569.256368459293,813.495231018329">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -36691,7 +36802,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - InvoiceCost.Paths[Derived Column Output]"
+          Id="Package\DF - InvoiceCost.Paths[Derived Column Output8]"
           TopLeft="815.155549415725,1283.05713164043">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -36897,7 +37008,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - InvoiceCost.Paths[Union All Output 12]"
+          Id="Package\DF - InvoiceCost.Paths[Union All Output 11]"
           TopLeft="146.032535580069,315.488887633328">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -36919,7 +37030,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - InvoiceCost.Paths[Union All Output 11]"
+          Id="Package\DF - InvoiceCost.Paths[Union All Output 1]"
           TopLeft="370.033328867124,605.533327150014">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -36953,7 +37064,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - InvoiceCost.Paths[Union All Output 1]"
+          Id="Package\DF - InvoiceCost.Paths[Union All Output 12]"
           TopLeft="391.633328598903,907.533327120212">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -36987,7 +37098,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - InvoiceCost.Paths[Sort Output2]"
+          Id="Package\DF - InvoiceCost.Paths[Sort Output]"
           TopLeft="803.285304612454,808.822220363992">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -37009,7 +37120,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - InvoiceCost.Paths[Sort Output1]"
+          Id="Package\DF - InvoiceCost.Paths[Sort Output2]"
           TopLeft="776.433322847055,1007.9333308455">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -37043,7 +37154,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - InvoiceCost.Paths[Sort Output]"
+          Id="Package\DF - InvoiceCost.Paths[Sort Output1]"
           TopLeft="805.977736647815,503.48888799493">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -37279,219 +37390,109 @@ where "refTable"."DISPLAY_NAME" = ?</property>
       <GraphLayout
         Capacity="64" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
-          Size="123.2,41.6"
-          Id="Package\DF - InvoiceLine\Union All"
-          TopLeft="303,241" />
+          Size="180,41.6"
+          Id="Package\DF - InvoiceLine\OLE DB Destination 1 1"
+          TopLeft="837.666657905612,847.366660126968" />
         <NodeLayout
-          Size="167.2,41.6"
-          Id="Package\DF - InvoiceLine\Default Value"
-          TopLeft="403,159" />
-        <NodeLayout
-          Size="148.8,41.6"
-          Id="Package\DF - InvoiceLine\Oracle Source"
-          TopLeft="19.5,7.5" />
+          Size="115.2,41.6"
+          Id="Package\DF - InvoiceLine\Lookup - PO"
+          TopLeft="208,159" />
         <NodeLayout
           Size="161.6,41.6"
-          Id="Package\DF - InvoiceLine\Derived Column 4 1"
-          TopLeft="1084.51426542565,594.680951120522" />
-        <NodeLayout
-          Size="128.8,41.6"
-          Id="Package\DF - InvoiceLine\Union All 1"
-          TopLeft="644,476.399998748302" />
-        <NodeLayout
-          Size="152,41.6"
-          Id="Package\DF - InvoiceLine\ReqBy - Default"
-          TopLeft="795.5,390.59999833107" />
-        <NodeLayout
-          Size="146.4,41.6"
-          Id="Package\DF - InvoiceLine\Lookup - ITEM"
-          TopLeft="451.499993562699,598.799997018642" />
-        <NodeLayout
-          Size="161.6,41.6"
-          Id="Package\DF - InvoiceLine\Derived Column 1"
-          TopLeft="437,486.799998748302" />
+          Id="Package\DF - InvoiceLine\Derived Column 4"
+          TopLeft="854.79998313437,755.499994099139" />
         <NodeLayout
           Size="167.2,41.6"
           Id="Package\DF - InvoiceLine\ReqBy - PersonID"
           TopLeft="569.5,280.6" />
         <NodeLayout
-          Size="126.4,41.6"
-          Id="Package\DF - InvoiceLine\Aggregate 1"
-          TopLeft="895.214272665126,594.747617491872" />
+          Size="152,41.6"
+          Id="Package\DF - InvoiceLine\ReqBy - Default"
+          TopLeft="795.5,390.59999833107" />
         <NodeLayout
           Size="170.4,41.6"
           Id="Package\DF - InvoiceLine\Flat File Destination"
           TopLeft="674.999989941716,678.399992330869" />
         <NodeLayout
+          Size="161.6,41.6"
+          Id="Package\DF - InvoiceLine\Derived Column 1"
+          TopLeft="437,486.799998748302" />
+        <NodeLayout
+          Size="128.8,41.6"
+          Id="Package\DF - InvoiceLine\Union All 1"
+          TopLeft="644,476.399998748302" />
+        <NodeLayout
+          Size="146.4,41.6"
+          Id="Package\DF - InvoiceLine\Lookup - ITEM"
+          TopLeft="451.499993562699,598.799997018642" />
+        <NodeLayout
+          Size="123.2,41.6"
+          Id="Package\DF - InvoiceLine\Union All"
+          TopLeft="308.999999910593,277.999999448657" />
+        <NodeLayout
+          Size="167.2,41.6"
+          Id="Package\DF - InvoiceLine\Default Value"
+          TopLeft="403,159" />
+        <NodeLayout
+          Size="170.4,41.6"
+          Id="Package\DF - InvoiceLine\Derived Column 4 2 1"
+          TopLeft="1175.54284102193,288.002377457148" />
+        <NodeLayout
+          Size="148.8,41.6"
+          Id="Package\DF - InvoiceLine\Oracle Source"
+          TopLeft="19.5,7.5" />
+        <NodeLayout
           Size="171.2,41.6"
           Id="Package\DF - InvoiceLine\OLE DB Destination"
           TopLeft="429.499994128943,833.89999141693" />
         <NodeLayout
-          Size="115.2,41.6"
-          Id="Package\DF - InvoiceLine\Lookup - PO"
-          TopLeft="208,159" />
+          Size="158.4,41.6"
+          Id="Package\DF - InvoiceLine\Derived Column"
+          TopLeft="181,77.3333333581686" />
+        <NodeLayout
+          Size="126.4,41.6"
+          Id="Package\DF - InvoiceLine\Aggregate 1 1"
+          TopLeft="987.999985277653,286.799997228384" />
         <NodeLayout
           Size="128,41.6"
           Id="Package\DF - InvoiceLine\Multicast 3"
           TopLeft="703.333312918743,594.833329826593" />
         <NodeLayout
           Size="180,41.6"
-          Id="Package\DF - InvoiceLine\OLE DB Destination 1 1"
-          TopLeft="837.666657905612,847.366660126968" />
+          Id="Package\DF - InvoiceLine\OLE DB Destination 1 1 1"
+          TopLeft="1067.38094019689,686.54761714835" />
         <NodeLayout
-          Size="158.4,41.6"
-          Id="Package\DF - InvoiceLine\Derived Column"
-          TopLeft="181,77.3333333581686" />
+          Size="128,41.6"
+          Id="Package\DF - InvoiceLine\Multicast 1"
+          TopLeft="801.999988049269,284.399996691942" />
+        <NodeLayout
+          Size="124.8,41.6"
+          Id="Package\DF - InvoiceLine\LOG CNT 1"
+          TopLeft="1393.99521119877,287.859519548939" />
         <NodeLayout
           Size="119.2,41.6"
           Id="Package\DF - InvoiceLine\Multicast"
           TopLeft="455.99999320507,754.399989211559" />
         <NodeLayout
+          Size="126.4,41.6"
+          Id="Package\DF - InvoiceLine\Aggregate 1"
+          TopLeft="895.214272665126,594.747617491872" />
+        <NodeLayout
           Size="161.6,41.6"
-          Id="Package\DF - InvoiceLine\Derived Column 4"
-          TopLeft="854.79998313437,755.499994099139" />
+          Id="Package\DF - InvoiceLine\Derived Column 4 1"
+          TopLeft="1084.51426542565,594.680951120522" />
+        <NodeLayout
+          Size="97.6,41.6"
+          Id="Package\DF - InvoiceLine\Sort"
+          TopLeft="1017.49998512864,391.166669778748" />
+        <NodeLayout
+          Size="170.4,41.6"
+          Id="Package\DF - InvoiceLine\Flat File Destination 1"
+          TopLeft="1158.93330229836,389.766668531223" />
         <NodeLayout
           Size="126.4,41.6"
           Id="Package\DF - InvoiceLine\Aggregate"
           TopLeft="665.49999037385,755.566660470489" />
-        <NodeLayout
-          Size="180,41.6"
-          Id="Package\DF - InvoiceLine\OLE DB Destination 1 1 1"
-          TopLeft="1067.38094019689,686.54761714835" />
-        <EdgeLayout
-          Id="Package\DF - InvoiceLine.Paths[Derived Column Output1]"
-          TopLeft="486.5,201">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-102.833333333333,40"
-              Start="0,0"
-              End="-102.833333333333,32.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,19.6918138041733" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,19.6918138041733"
-                    Point2="0,23.6918138041733"
-                    Point3="-4,23.6918138041733" />
-                  <mssgle:LineSegment
-                    End="-98.8333333333334,23.6918138041733" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-98.8333333333334,23.6918138041733"
-                    Point2="-102.833333333333,23.6918138041733"
-                    Point3="-102.833333333333,27.6918138041733" />
-                  <mssgle:LineSegment
-                    End="-102.833333333333,32.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - InvoiceLine.Paths[Derived Column Output]"
-          TopLeft="262.9,118.933333358169">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,40.0666666418314"
-              Start="0,0"
-              End="0,32.5666666418314">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,32.5666666418314" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - InvoiceLine.Paths[Aggregate Output 11]"
-          TopLeft="791.89999037385,776.333327284814">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="62.8999927605199,0"
-              Start="0,0"
-              End="55.3999927605199,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="55.3999927605199,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - InvoiceLine.Paths[Aggregate Output 1]"
-          TopLeft="1021.61427266513,615.514284306197">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="62.8999927605199,0"
-              Start="0,0"
-              End="55.3999927605199,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="55.3999927605199,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - InvoiceLine.Paths[Union All Output 11]"
-          TopLeft="426.2,261.8">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="143.3,39.6000000000001"
-              Start="0,0"
-              End="135.8,39.6000000000001">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="67.65,0" />
-                  <mssgle:CubicBezierSegment
-                    Point1="67.65,0"
-                    Point2="71.65,0"
-                    Point3="71.65,4" />
-                  <mssgle:LineSegment
-                    End="71.65,35.6000000000001" />
-                  <mssgle:CubicBezierSegment
-                    Point1="71.65,35.6000000000001"
-                    Point2="71.65,39.6000000000001"
-                    Point3="75.65,39.6000000000001" />
-                  <mssgle:LineSegment
-                    End="135.8,39.6000000000001" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - InvoiceLine.Paths[Union All Output 1]"
           TopLeft="644,497.199998748302">
@@ -37518,6 +37519,28 @@ where "refTable"."DISPLAY_NAME" = ?</property>
                     Point3="-26.7,10.4" />
                   <mssgle:LineSegment
                     End="-37.9000000000001,10.4" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - InvoiceLine.Paths[Sort Output]"
+          TopLeft="1115.09998512864,411.266669154985">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="43.8333171697141,0"
+              Start="0,0"
+              End="36.3333171697141,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="36.3333171697141,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -37561,19 +37584,19 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - InvoiceLine.Paths[Multicast Output 21]"
-          TopLeft="763.766651430229,636.433329826593">
+          Id="Package\DF - InvoiceLine.Paths[Multicast Output 3]"
+          TopLeft="929.999988049269,306.399996960163">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,41.9666625042764"
+              EndConnector="57.999997228384,0"
               Start="0,0"
-              End="0,34.4666625042764">
+              End="50.499997228384,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,34.4666625042764" />
+                    End="50.499997228384,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -37583,7 +37606,41 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - InvoiceLine.Paths[Multicast Output 2]"
+          Id="Package\DF - InvoiceLine.Paths[Multicast Output 22]"
+          TopLeft="885.999988049269,325.999996691942">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="180.299997079372,65.1666730868057"
+              Start="0,0"
+              End="180.299997079372,57.6666730868057">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,22.5493853316616" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,22.5493853316616"
+                    Point2="0,26.5493853316616"
+                    Point3="4,26.5493853316616" />
+                  <mssgle:LineSegment
+                    End="176.299997079372,26.5493853316616" />
+                  <mssgle:CubicBezierSegment
+                    Point1="176.299997079372,26.5493853316616"
+                    Point2="180.299997079372,26.5493853316616"
+                    Point3="180.299997079372,30.5493853316616" />
+                  <mssgle:LineSegment
+                    End="180.299997079372,57.6666730868057" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - InvoiceLine.Paths[Multicast Output 21]"
           TopLeft="575.199993205071,775.783324841024">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -37605,7 +37662,29 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - InvoiceLine.Paths[Multicast Output 11]"
+          Id="Package\DF - InvoiceLine.Paths[Multicast Output 2]"
+          TopLeft="763.766651430229,636.433329826593">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,41.9666625042764"
+              Start="0,0"
+              End="0,34.4666625042764">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,34.4666625042764" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - InvoiceLine.Paths[Multicast Output 12]"
           TopLeft="515.349993667007,795.999989211559">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -37627,7 +37706,7 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - InvoiceLine.Paths[Multicast Output 1]"
+          Id="Package\DF - InvoiceLine.Paths[Multicast Output 11]"
           TopLeft="831.333312918743,615.590473659232">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -37646,6 +37725,52 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - InvoiceLine.Paths[Multicast Output 1]"
+          TopLeft="868.749994024634,325.999996691942">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,64.6000016391277"
+              Start="0,0"
+              End="0,57.1000016391277">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,57.1000016391277" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - InvoiceLine.Paths[Lookup No Match Output2]"
+          TopLeft="736.7,303.299998345971">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="65.2999880492687,0"
+              Start="0,0"
+              End="57.7999880492687,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="57.7999880492687,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-26.9063926941157,5,111.6127734375,11.609375"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -37770,38 +37895,60 @@ where "refTable"."DISPLAY_NAME" = ?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - InvoiceLine.Paths[Lookup Match Output]"
-          TopLeft="265.5,201">
+          TopLeft="265.6,200.6">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="79.8333333333333,40"
+              EndConnector="85.7999999105929,77.399999448657"
               Start="0,0"
-              End="79.8333333333333,32.5">
+              End="85.7999999105929,69.899999448657">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,19.6918138041734" />
+                    End="0,41.8446150580507" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,19.6918138041734"
-                    Point2="0,23.6918138041734"
-                    Point3="4,23.6918138041734" />
+                    Point1="0,41.8446150580507"
+                    Point2="0,45.8446150580507"
+                    Point3="4,45.8446150580507" />
                   <mssgle:LineSegment
-                    End="75.8333333333333,23.6918138041734" />
+                    End="81.7999999105929,45.8446150580507" />
                   <mssgle:CubicBezierSegment
-                    Point1="75.8333333333333,23.6918138041734"
-                    Point2="79.8333333333333,23.6918138041734"
-                    Point3="79.8333333333333,27.6918138041734" />
+                    Point1="81.7999999105929,45.8446150580507"
+                    Point2="85.7999999105929,45.8446150580507"
+                    Point3="85.7999999105929,49.8446150580507" />
                   <mssgle:LineSegment
-                    End="79.8333333333333,32.5" />
+                    End="85.7999999105929,69.899999448657" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="-40.5950716145834,28.6918138041734,96.3827734375,11.609375"
+              BoundingBox="-5.29138676345354,50.8446150580507,96.3827734375,11.609375"
               RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - InvoiceLine.Paths[Derived Column Output6]"
+          TopLeft="1345.94284102193,308.730948503043">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="48.052370176835,0"
+              Start="0,0"
+              End="40.552370176835,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="40.552370176835,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -37904,112 +38051,32 @@ where "refTable"."DISPLAY_NAME" = ?</property>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="128,41.6"
-          Id="Package\DF - InvoiceLine\Multicast 1"
-          TopLeft="801.999988049269,284.399996691942" />
         <EdgeLayout
-          Id="Package\DF - InvoiceLine.Paths[Lookup No Match Output2]"
-          TopLeft="736.7,303.299998345971">
+          Id="Package\DF - InvoiceLine.Paths[Derived Column Output1]"
+          TopLeft="486.6,200.6">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="65.2999880492687,0"
+              EndConnector="-96.800000089407,77.399999448657"
               Start="0,0"
-              End="57.7999880492687,0">
+              End="-96.800000089407,69.899999448657">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="57.7999880492687,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-26.9063926941157,5,111.6127734375,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - InvoiceLine.Paths[Multicast Output 12]"
-          TopLeft="868.749994024634,325.999996691942">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,64.6000016391277"
-              Start="0,0"
-              End="0,57.1000016391277">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,57.1000016391277" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="97.6,41.6"
-          Id="Package\DF - InvoiceLine\Sort"
-          TopLeft="1017.49998512864,391.166669778748" />
-        <NodeLayout
-          Size="170.4,41.6"
-          Id="Package\DF - InvoiceLine\Flat File Destination 1"
-          TopLeft="1158.93330229836,389.766668531223" />
-        <EdgeLayout
-          Id="Package\DF - InvoiceLine.Paths[Sort Output]"
-          TopLeft="1115.09998512864,411.266669154985">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="43.8333171697141,0"
-              Start="0,0"
-              End="36.3333171697141,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="36.3333171697141,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - InvoiceLine.Paths[Multicast Output 22]"
-          TopLeft="885.999988049269,325.999996691942">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="180.299997079372,65.1666730868057"
-              Start="0,0"
-              End="180.299997079372,57.6666730868057">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,22.5493853316616" />
+                    End="0,41.8446150580507" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,22.5493853316616"
-                    Point2="0,26.5493853316616"
-                    Point3="4,26.5493853316616" />
+                    Point1="0,41.8446150580507"
+                    Point2="0,45.8446150580507"
+                    Point3="-4,45.8446150580507" />
                   <mssgle:LineSegment
-                    End="176.299997079372,26.5493853316616" />
+                    End="-92.800000089407,45.8446150580507" />
                   <mssgle:CubicBezierSegment
-                    Point1="176.299997079372,26.5493853316616"
-                    Point2="180.299997079372,26.5493853316616"
-                    Point3="180.299997079372,30.5493853316616" />
+                    Point1="-92.800000089407,45.8446150580507"
+                    Point2="-96.800000089407,45.8446150580507"
+                    Point3="-96.800000089407,49.8446150580507" />
                   <mssgle:LineSegment
-                    End="180.299997079372,57.6666730868057" />
+                    End="-96.800000089407,69.899999448657" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -38018,32 +38085,20 @@ where "refTable"."DISPLAY_NAME" = ?</property>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="170.4,41.6"
-          Id="Package\DF - InvoiceLine\Derived Column 4 2 1"
-          TopLeft="1175.54284102193,288.002377457148" />
-        <NodeLayout
-          Size="124.8,41.6"
-          Id="Package\DF - InvoiceLine\LOG CNT 1"
-          TopLeft="1393.99521119877,287.859519548939" />
-        <NodeLayout
-          Size="126.4,41.6"
-          Id="Package\DF - InvoiceLine\Aggregate 1 1"
-          TopLeft="987.999985277653,286.799997228384" />
         <EdgeLayout
-          Id="Package\DF - InvoiceLine.Paths[Derived Column Output6]"
-          TopLeft="1345.94284102193,308.730948503043">
+          Id="Package\DF - InvoiceLine.Paths[Derived Column Output]"
+          TopLeft="262.9,118.933333358169">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="48.052370176835,0"
+              EndConnector="0,40.0666666418314"
               Start="0,0"
-              End="40.552370176835,0">
+              End="0,32.5666666418314">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="40.552370176835,0" />
+                    End="0,32.5666666418314" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -38075,19 +38130,63 @@ where "refTable"."DISPLAY_NAME" = ?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - InvoiceLine.Paths[Multicast Output 3]"
-          TopLeft="929.999988049269,306.399996960163">
+          Id="Package\DF - InvoiceLine.Paths[Aggregate Output 11]"
+          TopLeft="791.89999037385,776.333327284814">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="57.999997228384,0"
+              EndConnector="62.8999927605199,0"
               Start="0,0"
-              End="50.499997228384,0">
+              End="55.3999927605199,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="50.499997228384,0" />
+                    End="55.3999927605199,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - InvoiceLine.Paths[Aggregate Output 1]"
+          TopLeft="1021.61427266513,615.514284306197">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="62.8999927605199,0"
+              Start="0,0"
+              End="55.3999927605199,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="55.3999927605199,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - InvoiceLine.Paths[Union All Output 11]"
+          TopLeft="432.199999910593,300.099999724329">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="137.300000089407,0"
+              Start="0,0"
+              End="129.800000089407,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="129.800000089407,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -38099,60 +38198,6 @@ where "refTable"."DISPLAY_NAME" = ?</property>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
-  <PipelineComponentMetadata
-    design-time-name="Package\DF - InvoiceLine\Oracle Source">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\DF - InvoiceLine\Lookup - ITEM">
-    <Properties>
-      <Property>
-        <Name>OverwriteParamsSQLProp</Name>
-        <Value
-          type="q2:string">false</Value>
-      </Property>
-      <Property>
-        <Name>UsedTableName</Name>
-        <Value
-          type="q3:string"></Value>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q4:string">0</Value>
-      </Property>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\DF - InvoiceLine\ReqBy - PersonID">
-    <Properties>
-      <Property>
-        <Name>OverwriteParamsSQLProp</Name>
-        <Value
-          type="q2:string">false</Value>
-      </Property>
-      <Property>
-        <Name>UsedTableName</Name>
-        <Value
-          type="q3:string">MIGRATION.STE_MIGRATION_USER_LOOKUP</Value>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q4:string">0</Value>
-      </Property>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
   <PipelineComponentMetadata
     design-time-name="Package\DF - InvoiceLine\OLE DB Destination">
     <Properties>
@@ -38183,6 +38228,60 @@ where "refTable"."DISPLAY_NAME" = ?</property>
         <Name>TableInfoObjectType</Name>
         <Value
           type="q4:string">0</Value>
+      </Property>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - InvoiceLine\Lookup - ITEM">
+    <Properties>
+      <Property>
+        <Name>OverwriteParamsSQLProp</Name>
+        <Value
+          type="q2:string">false</Value>
+      </Property>
+      <Property>
+        <Name>UsedTableName</Name>
+        <Value
+          type="q3:string"></Value>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q4:string">0</Value>
+      </Property>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - InvoiceLine\Oracle Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - InvoiceLine\ReqBy - PersonID">
+    <Properties>
+      <Property>
+        <Name>OverwriteParamsSQLProp</Name>
+        <Value
+          type="q2:boolean">false</Value>
+      </Property>
+      <Property>
+        <Name>UsedTableName</Name>
+        <Value
+          type="q3:string"></Value>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q4:int">0</Value>
       </Property>
       <Property>
         <Name>DataSourceViewID</Name>
