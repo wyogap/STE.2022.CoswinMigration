@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0409_WO_MATUSETRANS_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="125"
-  DTS:VersionGUID="{A5CBFAD7-8D30-43F1-AA6C-70A813728E4D}"
+  DTS:VersionBuild="136"
+  DTS:VersionGUID="{1D417FDC-2ABE-4C9D-AB1F-44F583E35B1C}"
   DTS:VersionMajor="3"
   DTS:VersionMinor="1">
   <DTS:Property
@@ -1038,24 +1038,25 @@
                     </outputColumn>
                     <outputColumn
                       refId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[v_actualcost]"
-                      dataType="r8"
+                      dataType="decimal"
                       errorOrTruncationOperation="Computation"
                       errorRowDisposition="FailComponent"
                       lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[v_actualcost]"
                       name="v_actualcost"
+                      scale="5"
                       truncationRowDisposition="FailComponent">
                       <properties>
                         <property
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ISS_VAL]}</property>
+                          name="Expression">(DT_DECIMAL,5)((#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ISS_VAL]} &gt; 999999999) ? 999999999 : #{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ISS_VAL]})</property>
                         <property
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
-                          name="FriendlyExpression">ISS_VAL</property>
+                          name="FriendlyExpression">(DT_DECIMAL,5)((ISS_VAL &gt; 999999999) ? 999999999 : ISS_VAL)</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
@@ -2150,8 +2151,9 @@
                       lineageId="Package\Data Flow Task\Union All 1.Outputs[Union All Output 1].Columns[v_phycnt]" />
                     <inputColumn
                       refId="Package\Data Flow Task\Flat File Destination.Inputs[Flat File Destination Input].Columns[v_actualcost]"
-                      cachedDataType="r8"
+                      cachedDataType="decimal"
                       cachedName="v_actualcost"
+                      cachedScale="5"
                       externalMetadataColumnId="Package\Data Flow Task\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[v_actualcost]"
                       lineageId="Package\Data Flow Task\Union All 1.Outputs[Union All Output 1].Columns[v_actualcost]" />
                     <inputColumn
@@ -2982,12 +2984,6 @@ where "refTable"."STE_CSWNWOID" = ?</property>
                   name="OLE DB Destination Input">
                   <inputColumns>
                     <inputColumn
-                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_actualcost]"
-                      cachedDataType="r8"
-                      cachedName="v_actualcost"
-                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ACTUALCOST]"
-                      lineageId="Package\Data Flow Task\Union All 1.Outputs[Union All Output 1].Columns[v_actualcost]" />
-                    <inputColumn
                       refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_actualdate]"
                       cachedDataType="dbTimeStamp"
                       cachedName="v_actualdate"
@@ -3237,6 +3233,13 @@ where "refTable"."STE_CSWNWOID" = ?</property>
                       cachedPrecision="10"
                       externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONTS]"
                       lineageId="Package\Data Flow Task\Union All 1.Outputs[Union All Output 1].Columns[TIMESTAMP]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_actualcost]"
+                      cachedDataType="decimal"
+                      cachedName="v_actualcost"
+                      cachedScale="5"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ACTUALCOST]"
+                      lineageId="Package\Data Flow Task\Union All 1.Outputs[Union All Output 1].Columns[v_actualcost]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -5938,19 +5941,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       </properties>
                     </inputColumn>
                     <inputColumn
-                      refId="Package\Data Flow Task\Union All 1.Inputs[Union All Input 1].Columns[v_actualcost]"
-                      cachedDataType="r8"
-                      cachedName="v_actualcost"
-                      lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[v_actualcost]">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Output column lineage ID"
-                          name="OutputColumnLineageID">#{Package\Data Flow Task\Union All 1.Outputs[Union All Output 1].Columns[v_actualcost]}</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
                       refId="Package\Data Flow Task\Union All 1.Inputs[Union All Input 1].Columns[v_linecost]"
                       cachedDataType="r8"
                       cachedName="v_linecost"
@@ -6201,6 +6191,20 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           dataType="System.Int32"
                           description="Output column lineage ID"
                           name="OutputColumnLineageID">#{Package\Data Flow Task\Union All 1.Outputs[Union All Output 1].Columns[ISS_VAL]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\Data Flow Task\Union All 1.Inputs[Union All Input 1].Columns[v_actualcost]"
+                      cachedDataType="decimal"
+                      cachedName="v_actualcost"
+                      cachedScale="5"
+                      lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[v_actualcost]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\Data Flow Task\Union All 1.Outputs[Union All Output 1].Columns[v_actualcost]}</property>
                       </properties>
                     </inputColumn>
                   </inputColumns>
@@ -6588,19 +6592,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       </properties>
                     </inputColumn>
                     <inputColumn
-                      refId="Package\Data Flow Task\Union All 1.Inputs[Union All Input 2].Columns[v_actualcost]"
-                      cachedDataType="r8"
-                      cachedName="v_actualcost"
-                      lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[v_actualcost]">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Output column lineage ID"
-                          name="OutputColumnLineageID">#{Package\Data Flow Task\Union All 1.Outputs[Union All Output 1].Columns[v_actualcost]}</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
                       refId="Package\Data Flow Task\Union All 1.Inputs[Union All Input 2].Columns[v_linecost]"
                       cachedDataType="r8"
                       cachedName="v_linecost"
@@ -6853,6 +6844,20 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="OutputColumnLineageID">#{Package\Data Flow Task\Union All 1.Outputs[Union All Output 1].Columns[ISS_VAL]}</property>
                       </properties>
                     </inputColumn>
+                    <inputColumn
+                      refId="Package\Data Flow Task\Union All 1.Inputs[Union All Input 2].Columns[v_actualcost]"
+                      cachedDataType="decimal"
+                      cachedName="v_actualcost"
+                      cachedScale="5"
+                      lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[v_actualcost]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\Data Flow Task\Union All 1.Outputs[Union All Output 1].Columns[v_actualcost]}</property>
+                      </properties>
+                    </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -7030,11 +7035,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       lineageId="Package\Data Flow Task\Union All 1.Outputs[Union All Output 1].Columns[v_phycnt]"
                       name="v_phycnt" />
                     <outputColumn
-                      refId="Package\Data Flow Task\Union All 1.Outputs[Union All Output 1].Columns[v_actualcost]"
-                      dataType="r8"
-                      lineageId="Package\Data Flow Task\Union All 1.Outputs[Union All Output 1].Columns[v_actualcost]"
-                      name="v_actualcost" />
-                    <outputColumn
                       refId="Package\Data Flow Task\Union All 1.Outputs[Union All Output 1].Columns[v_linecost]"
                       dataType="r8"
                       lineageId="Package\Data Flow Task\Union All 1.Outputs[Union All Output 1].Columns[v_linecost]"
@@ -7143,6 +7143,12 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       dataType="r8"
                       lineageId="Package\Data Flow Task\Union All 1.Outputs[Union All Output 1].Columns[ISS_VAL]"
                       name="ISS_VAL" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Union All 1.Outputs[Union All Output 1].Columns[v_actualcost]"
+                      dataType="decimal"
+                      lineageId="Package\Data Flow Task\Union All 1.Outputs[Union All Output 1].Columns[v_actualcost]"
+                      name="v_actualcost"
+                      scale="5" />
                   </outputColumns>
                   <externalMetadataColumns />
                 </output>
@@ -7171,12 +7177,12 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               name="Derived Column Output"
               startId="Package\Data Flow Task\Derived Column 1.Outputs[Derived Column Output]" />
             <path
-              refId="Package\Data Flow Task.Paths[Derived Column Output3]"
+              refId="Package\Data Flow Task.Paths[Derived Column Output2]"
               endId="Package\Data Flow Task\OLE DB Destination 1 1 1 1.Inputs[OLE DB Destination Input]"
               name="Derived Column Output"
               startId="Package\Data Flow Task\Derived Column 4 1 1.Outputs[Derived Column Output]" />
             <path
-              refId="Package\Data Flow Task.Paths[Derived Column Output2]"
+              refId="Package\Data Flow Task.Paths[Derived Column Output3]"
               endId="Package\Data Flow Task\OLE DB Destination 1 1 1.Inputs[OLE DB Destination Input]"
               name="Derived Column Output"
               startId="Package\Data Flow Task\Derived Column 4 1.Outputs[Derived Column Output]" />
@@ -7698,105 +7704,77 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
       <GraphLayout
         Capacity="64" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
-          Size="171.2,41.6"
-          Id="Package\Data Flow Task\OLE DB Destination"
-          TopLeft="480.666651490662,733.066661727958" />
-        <NodeLayout
-          Size="128,41.6"
-          Id="Package\Data Flow Task\Multicast 3"
-          TopLeft="733.333304283519,479.499996938373" />
-        <NodeLayout
-          Size="148.8,41.6"
-          Id="Package\Data Flow Task\Oracle Source"
-          TopLeft="303.49999576807,11.9666666638189" />
+          Size="141.6,41.6"
+          Id="Package\Data Flow Task\Derived Column"
+          TopLeft="503.999995738268,134.199998182058" />
         <NodeLayout
           Size="146.4,41.6"
           Id="Package\Data Flow Task\Lookup - ITEM"
           TopLeft="488.166651627256,476.733330883648" />
         <NodeLayout
-          Size="167.2,41.6"
-          Id="Package\Data Flow Task\Derived Column 1"
-          TopLeft="288.999995842576,302.999998629093" />
-        <NodeLayout
-          Size="155.2,41.6"
-          Id="Package\Data Flow Task\Lookup - WOID"
-          TopLeft="666.333320115175,296.433332004613" />
-        <NodeLayout
-          Size="128.8,41.6"
-          Id="Package\Data Flow Task\Union All 1"
-          TopLeft="496.499983958901,384.399996857246" />
-        <NodeLayout
-          Size="144.8,41.6"
-          Id="Package\Data Flow Task\Running Number"
-          TopLeft="505.999992609024,19.7333385891387" />
+          Size="161.6,41.6"
+          Id="Package\Data Flow Task\Derived Column 4 1"
+          TopLeft="851.855462794175,646.216664946212" />
         <NodeLayout
           Size="159.2,41.6"
           Id="Package\Data Flow Task\Conditional Split"
           TopLeft="501.999995842576,214.999998629093" />
         <NodeLayout
-          Size="141.6,41.6"
-          Id="Package\Data Flow Task\Derived Column"
-          TopLeft="503.999995738268,134.199998182058" />
+          Size="167.2,41.6"
+          Id="Package\Data Flow Task\Derived Column 1"
+          TopLeft="288.999995842576,302.999998629093" />
+        <NodeLayout
+          Size="161.6,41.6"
+          Id="Package\Data Flow Task\Derived Column 4 1 1"
+          TopLeft="1113.52211516401,476.16666874302" />
+        <NodeLayout
+          Size="180,41.6"
+          Id="Package\Data Flow Task\OLE DB Destination 1 1 1 1"
+          TopLeft="1096.38878993525,568.033334770849" />
+        <NodeLayout
+          Size="144.8,41.6"
+          Id="Package\Data Flow Task\Running Number"
+          TopLeft="505.999992609024,19.7333385891387" />
+        <NodeLayout
+          Size="155.2,41.6"
+          Id="Package\Data Flow Task\Lookup - WOID"
+          TopLeft="666.333320115175,296.433332004613" />
+        <NodeLayout
+          Size="148.8,41.6"
+          Id="Package\Data Flow Task\Oracle Source"
+          TopLeft="303.49999576807,11.9666666638189" />
+        <NodeLayout
+          Size="129.6,41.6"
+          Id="Package\Data Flow Task\Aggregate 1 1 1"
+          TopLeft="933.999960601331,475.683333505251" />
+        <NodeLayout
+          Size="128,41.6"
+          Id="Package\Data Flow Task\Multicast 3"
+          TopLeft="733.333304283519,479.499996938373" />
         <NodeLayout
           Size="170.4,41.6"
           Id="Package\Data Flow Task\Flat File Destination"
           TopLeft="708.999972348413,567.333330214686" />
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Derived Column Output1]"
-          TopLeft="372.599995842576,344.599998629093">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="168.166654782991,39.7999982281526"
-              Start="0,0"
-              End="168.166654782991,32.2999982281526">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,19.5869928149665" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,19.5869928149665"
-                    Point2="0,23.5869928149665"
-                    Point3="4,23.5869928149665" />
-                  <mssgle:LineSegment
-                    End="164.166654782991,23.5869928149665" />
-                  <mssgle:CubicBezierSegment
-                    Point1="164.166654782991,23.5869928149665"
-                    Point2="168.166654782991,23.5869928149665"
-                    Point3="168.166654782991,27.5869928149665" />
-                  <mssgle:LineSegment
-                    End="168.166654782991,32.2999982281526" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Derived Column Output]"
-          TopLeft="578.199995790422,175.799998182058">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,39.2000004470349"
-              Start="0,0"
-              End="0,31.7000004470349">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,31.7000004470349" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
+        <NodeLayout
+          Size="119.2,41.6"
+          Id="Package\Data Flow Task\Multicast"
+          TopLeft="499.999972681206,646.666663171185" />
+        <NodeLayout
+          Size="171.2,41.6"
+          Id="Package\Data Flow Task\OLE DB Destination"
+          TopLeft="480.666651490662,733.066661727958" />
+        <NodeLayout
+          Size="180,41.6"
+          Id="Package\Data Flow Task\OLE DB Destination 1 1 1"
+          TopLeft="834.722137565417,738.083330974041" />
+        <NodeLayout
+          Size="143.2,41.6"
+          Id="Package\Data Flow Task\Aggregate 1 1"
+          TopLeft="672.3333082315,645.733329708444" />
+        <NodeLayout
+          Size="128.8,41.6"
+          Id="Package\Data Flow Task\Union All 1"
+          TopLeft="496.499983958901,384.399996857246" />
         <EdgeLayout
           Id="Package\Data Flow Task.Paths[WOREF_NULL]"
           TopLeft="556.333329175909,256.999998629093">
@@ -7936,6 +7914,72 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Multicast Output 21]"
+          TopLeft="861.333304283519,498.391665221812">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="72.6666563178122,0"
+              Start="0,0"
+              End="65.1666563178122,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="65.1666563178122,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Multicast Output 2]"
+          TopLeft="619.199972681206,666.999996439814">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="53.1333355502946,0"
+              Start="0,0"
+              End="45.6333355502946,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="45.6333355502946,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Multicast Output 11]"
+          TopLeft="562.933312085934,688.266663171185">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,44.7999985567731"
+              Start="0,0"
+              End="0,37.2999985567731">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,37.2999985567731" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
           Id="Package\Data Flow Task.Paths[Multicast Output 1]"
           TopLeft="795.766638315966,521.099996938373">
           <EdgeLayout.Curve>
@@ -7982,6 +8026,30 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Lookup Match Output1]"
+          TopLeft="560.483312154231,518.333330883648">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,128.333332287537"
+              Start="0,0"
+              End="0,120.833332287537">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,120.833332287537" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-48.19138671875,54.6119786437685,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
           Id="Package\Data Flow Task.Paths[Lookup Match Output]"
           TopLeft="743.933320115176,338.033332004613">
           <EdgeLayout.Curve>
@@ -8013,74 +8081,12 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="-138.510040473971,32.478649231683,96.3827734375,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="119.2,41.6"
-          Id="Package\Data Flow Task\Multicast"
-          TopLeft="499.999972681206,646.666663171185" />
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Lookup Match Output1]"
-          TopLeft="560.483312154231,518.333330883648">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,128.333332287537"
-              Start="0,0"
-              End="0,120.833332287537">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,120.833332287537" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-48.19138671875,54.6119786437687,96.3827734375,11.609375"
+              BoundingBox="-129.64138813022,32.478649231683,96.3827734375,11.609375"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Multicast Output 11]"
-          TopLeft="562.933312085934,688.266663171185">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,44.7999985567726"
-              Start="0,0"
-              End="0,37.2999985567726">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,37.2999985567726" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="143.2,41.6"
-          Id="Package\Data Flow Task\Aggregate 1 1"
-          TopLeft="672.3333082315,645.733329708444" />
-        <NodeLayout
-          Size="180,41.6"
-          Id="Package\Data Flow Task\OLE DB Destination 1 1 1"
-          TopLeft="834.722137565417,738.083330974041" />
-        <NodeLayout
-          Size="161.6,41.6"
-          Id="Package\Data Flow Task\Derived Column 4 1"
-          TopLeft="851.855462794175,646.216664946212" />
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Derived Column Output2]"
+          Id="Package\Data Flow Task.Paths[Derived Column Output3]"
           TopLeft="928.688800179797,687.816664946212">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -8102,63 +8108,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Aggregate Output 1]"
-          TopLeft="815.533308231501,666.774997327328">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="36.3221545626748,0"
-              Start="0,0"
-              End="28.8221545626748,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="28.8221545626748,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Multicast Output 2]"
-          TopLeft="619.199972681206,666.999996439814">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="53.1333355502946,0"
-              Start="0,0"
-              End="45.6333355502946,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="45.6333355502946,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="129.6,41.6"
-          Id="Package\Data Flow Task\Aggregate 1 1 1"
-          TopLeft="933.999960601331,475.683333505251" />
-        <NodeLayout
-          Size="180,41.6"
-          Id="Package\Data Flow Task\OLE DB Destination 1 1 1 1"
-          TopLeft="1096.38878993525,568.033334770849" />
-        <NodeLayout
-          Size="161.6,41.6"
-          Id="Package\Data Flow Task\Derived Column 4 1 1"
-          TopLeft="1113.52211516401,476.16666874302" />
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Derived Column Output3]"
+          Id="Package\Data Flow Task.Paths[Derived Column Output2]"
           TopLeft="1190.35545254963,517.76666874302">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -8171,6 +8121,62 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                   Capacity="5">
                   <mssgle:LineSegment
                     End="0,42.766666027829" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Derived Column Output1]"
+          TopLeft="372.599995842576,344.599998629093">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="168.166654782991,39.7999982281526"
+              Start="0,0"
+              End="168.166654782991,32.2999982281526">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,19.5869928149665" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,19.5869928149665"
+                    Point2="0,23.5869928149665"
+                    Point3="4,23.5869928149665" />
+                  <mssgle:LineSegment
+                    End="164.166654782991,23.5869928149665" />
+                  <mssgle:CubicBezierSegment
+                    Point1="164.166654782991,23.5869928149665"
+                    Point2="168.166654782991,23.5869928149665"
+                    Point3="168.166654782991,27.5869928149665" />
+                  <mssgle:LineSegment
+                    End="168.166654782991,32.2999982281526" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Derived Column Output]"
+          TopLeft="578.199995790422,175.799998182058">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,39.2000004470349"
+              Start="0,0"
+              End="0,31.7000004470349">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,31.7000004470349" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -8202,19 +8208,19 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Multicast Output 21]"
-          TopLeft="861.333304283519,498.391665221812">
+          Id="Package\Data Flow Task.Paths[Aggregate Output 1]"
+          TopLeft="815.533308231501,666.774997327328">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="72.6666563178122,0"
+              EndConnector="36.3221545626748,0"
               Start="0,0"
-              End="65.1666563178122,0">
+              End="28.8221545626748,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="65.1666563178122,0" />
+                    End="28.8221545626748,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -8226,32 +8232,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
-  <PipelineComponentMetadata
-    design-time-name="Package\Data Flow Task\OLE DB Destination">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\Data Flow Task\Oracle Source">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
   <PipelineComponentMetadata
     design-time-name="Package\Data Flow Task\Lookup - ITEM">
     <Properties>
@@ -8295,6 +8275,32 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
       </Property>
       <Property>
         <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Data Flow Task\Oracle Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Data Flow Task\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
