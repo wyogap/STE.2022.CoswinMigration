@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0019B_Master_ChartOfAccounts_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="135"
-  DTS:VersionGUID="{D20D5CEA-ED84-477D-B932-96E623B306B2}">
+  DTS:VersionBuild="138"
+  DTS:VersionGUID="{525F0AC6-98B3-4B84-9190-E93426818235}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -388,6 +388,91 @@
         <pipeline
           version="1">
           <components>
+            <component
+              refId="Package\DF - COA (AUTHORITY)\Aggregate"
+              componentClassID="Microsoft.Aggregate"
+              contactInfo="Aggregate;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;3"
+              description="Aggregates data with functions such as Average, Sum, Count, Max, and Min. For example, group data to compute the sum of sales per product or the average visits per day."
+              name="Aggregate"
+              version="3">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the approximate number of group by keys that the aggregation produces. Low indicates 500,000 key values, Medium indicates 5 million key values, and High indicates more than 25 million key values. Unspecified indicates no KeyScale value is used."
+                  name="KeyScale"
+                  typeConverter="KeyScaleType">0</property>
+                <property
+                  dataType="System.Null"
+                  description="Specifies the exact number of group by keys that the aggregation produces. If a KeyScale value is specified, the value in Keys takes precedence."
+                  name="Keys" />
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the approximate number of distinct values in a column that the aggregation counts distinctly. Low indicates 500,000 key values, Medium indicates 5 million key values, and High indicates more than 25 million key values. Unspecified indicates no CountDistinctScale value is used."
+                  name="CountDistinctScale"
+                  typeConverter="KeyScaleType">0</property>
+                <property
+                  dataType="System.Null"
+                  description="Specifies the exact number of distinct values in a column that the aggregation counts distinctly. If a CountDistinctScale value is specified, the value in CountDistinctKeys takes precedence."
+                  name="CountDistinctKeys" />
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the percentage by which memory can be extended during the aggregation. Valid values are between 1 and 100."
+                  name="AutoExtendFactor">25</property>
+              </properties>
+              <inputs>
+                <input
+                  refId="Package\DF - COA (AUTHORITY)\Aggregate.Inputs[Aggregate Input 1]"
+                  name="Aggregate Input 1">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - COA (AUTHORITY)\Aggregate.Outputs[Aggregate Output 1]"
+                  name="Aggregate Output 1">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the approximate number of group by keys that the aggregation produces. Low indicates 500,000 key values, Medium indicates 5 million key values, and High indicates more than 25 million key values. Unspecified indicates no KeyScale value is used."
+                      name="KeyScale"
+                      typeConverter="KeyScaleType">0</property>
+                    <property
+                      dataType="System.Null"
+                      description="Specifies the exact number of group by keys that the aggregation produces. If a KeyScale value is specified, the value in Keys takes precedence."
+                      name="Keys" />
+                  </properties>
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - COA (AUTHORITY)\Aggregate.Outputs[Aggregate Output 1].Columns[CNT]"
+                      dataType="ui8"
+                      lineageId="Package\DF - COA (AUTHORITY)\Aggregate.Outputs[Aggregate Output 1].Columns[CNT]"
+                      name="CNT">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the ID of the input column used in the aggregation."
+                          name="AggregationColumnId">#{Package\DF - COA (AUTHORITY)\0:invalid}</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the type of aggregation."
+                          name="AggregationType"
+                          typeConverter="AggregationType">2</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Indicates whether the column requires special handling because it may contain oversized data or it requires precision beyond a float data type."
+                          name="IsBig">1</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the string comparison options."
+                          name="AggregationComparisonFlags">0</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
             <component
               refId="Package\DF - COA (AUTHORITY)\CHARTOFACCOUNTS"
               componentClassID="Microsoft.OLEDBDestination"
@@ -1331,6 +1416,204 @@
                       refId="Package\DF - COA (AUTHORITY)\Derived Column 2.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
                       dataType="i4"
                       lineageId="Package\DF - COA (AUTHORITY)\Derived Column 2.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DF - COA (AUTHORITY)\Derived Column 4"
+              componentClassID="Microsoft.DerivedColumn"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="Derived Column 4"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\DF - COA (AUTHORITY)\Derived Column 4.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DF - COA (AUTHORITY)\Derived Column 4.Inputs[Derived Column Input].Columns[CNT]"
+                      cachedDataType="ui8"
+                      cachedName="CNT"
+                      lineageId="Package\DF - COA (AUTHORITY)\Aggregate.Outputs[Aggregate Output 1].Columns[CNT]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - COA (AUTHORITY)\Derived Column 4.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\DF - COA (AUTHORITY)\Derived Column 4.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - COA (AUTHORITY)\Derived Column 4.Outputs[Derived Column Output].Columns[v_pkgname]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="50"
+                      lineageId="Package\DF - COA (AUTHORITY)\Derived Column 4.Outputs[Derived Column Output].Columns[v_pkgname]"
+                      name="v_pkgname"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_STR,50,1252)@[System::PackageName]</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_STR,50,1252)@[System::PackageName]</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\DF - COA (AUTHORITY)\Derived Column 4.Outputs[Derived Column Output].Columns[v_logid]"
+                      dataType="i8"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\DF - COA (AUTHORITY)\Derived Column 4.Outputs[Derived Column Output].Columns[v_logid]"
+                      name="v_logid"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_I8)@[User::log_id]</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_I8)@[User::log_id]</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\DF - COA (AUTHORITY)\Derived Column 4.Outputs[Derived Column Output].Columns[v_event]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="25"
+                      lineageId="Package\DF - COA (AUTHORITY)\Derived Column 4.Outputs[Derived Column Output].Columns[v_event]"
+                      name="v_event"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_STR,25,1252)"AUTHORITY"</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_STR,25,1252)"AUTHORITY"</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\DF - COA (AUTHORITY)\Derived Column 4.Outputs[Derived Column Output].Columns[v_eventtype]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="25"
+                      lineageId="Package\DF - COA (AUTHORITY)\Derived Column 4.Outputs[Derived Column Output].Columns[v_eventtype]"
+                      name="v_eventtype"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_STR,25,1252)"MIGRATED"</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_STR,25,1252)"MIGRATED"</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\DF - COA (AUTHORITY)\Derived Column 4.Outputs[Derived Column Output].Columns[v_message]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="100"
+                      lineageId="Package\DF - COA (AUTHORITY)\Derived Column 4.Outputs[Derived Column Output].Columns[v_message]"
+                      name="v_message"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_STR,100,1252)("CNT=" + (DT_STR,10,1252)#{Package\DF - COA (AUTHORITY)\Aggregate.Outputs[Aggregate Output 1].Columns[CNT]})</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_STR,100,1252)("CNT=" + (DT_STR,10,1252)CNT)</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\DF - COA (AUTHORITY)\Derived Column 4.Outputs[Derived Column Output].Columns[v_timestamp]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\DF - COA (AUTHORITY)\Derived Column 4.Outputs[Derived Column Output].Columns[v_timestamp]"
+                      name="v_timestamp"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_DBTIMESTAMP)[GETDATE]()</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_DBTIMESTAMP)GETDATE()</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - COA (AUTHORITY)\Derived Column 4.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\DF - COA (AUTHORITY)\Derived Column 4.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - COA (AUTHORITY)\Derived Column 4.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF - COA (AUTHORITY)\Derived Column 4.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF - COA (AUTHORITY)\Derived Column 4.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF - COA (AUTHORITY)\Derived Column 4.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
                       name="ErrorColumn"
                       specialFlags="2" />
                   </outputColumns>
@@ -2300,6 +2583,228 @@ where "refTable"."COSWIN_CC" = ?</property>
                       refId="Package\DF - COA (AUTHORITY)\Lookup - Invalid CC Replacement.Outputs[Lookup Error Output].Columns[ErrorColumn]"
                       dataType="i4"
                       lineageId="Package\DF - COA (AUTHORITY)\Lookup - Invalid CC Replacement.Outputs[Lookup Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DF - COA (AUTHORITY)\Multicast"
+              componentClassID="Microsoft.Multicast"
+              contactInfo="Multicast;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Distributes every input row to every row in one or more outputs. For example, branch your data flow to make a copy of data so that some values can be masked before sharing with external partners."
+              name="Multicast">
+              <inputs>
+                <input
+                  refId="Package\DF - COA (AUTHORITY)\Multicast.Inputs[Multicast Input 1]"
+                  name="Multicast Input 1">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - COA (AUTHORITY)\Multicast.Outputs[Multicast Output 1]"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 1"
+                  synchronousInputId="Package\DF - COA (AUTHORITY)\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - COA (AUTHORITY)\Multicast.Outputs[Multicast Output 2]"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 2"
+                  synchronousInputId="Package\DF - COA (AUTHORITY)\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - COA (AUTHORITY)\Multicast.Outputs[Multicast Output 3]"
+                  dangling="true"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 3"
+                  synchronousInputId="Package\DF - COA (AUTHORITY)\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DF - COA (AUTHORITY)\OLE DB Destination 1 1"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="OLE DB Destination 1 1"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">"MIGRATION"."STE_MIGRATION_LOG_DETAILS"</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">0</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\DF - COA (AUTHORITY)\OLE DB Destination 1 1.Connections[OleDbConnection]"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[BLUDB]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\DF - COA (AUTHORITY)\OLE DB Destination 1 1.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DF - COA (AUTHORITY)\OLE DB Destination 1 1.Inputs[OLE DB Destination Input].Columns[v_pkgname]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="v_pkgname"
+                      externalMetadataColumnId="Package\DF - COA (AUTHORITY)\OLE DB Destination 1 1.Inputs[OLE DB Destination Input].ExternalColumns[PACKAGE_NAME]"
+                      lineageId="Package\DF - COA (AUTHORITY)\Derived Column 4.Outputs[Derived Column Output].Columns[v_pkgname]" />
+                    <inputColumn
+                      refId="Package\DF - COA (AUTHORITY)\OLE DB Destination 1 1.Inputs[OLE DB Destination Input].Columns[v_logid]"
+                      cachedDataType="i8"
+                      cachedName="v_logid"
+                      externalMetadataColumnId="Package\DF - COA (AUTHORITY)\OLE DB Destination 1 1.Inputs[OLE DB Destination Input].ExternalColumns[LOG_ID]"
+                      lineageId="Package\DF - COA (AUTHORITY)\Derived Column 4.Outputs[Derived Column Output].Columns[v_logid]" />
+                    <inputColumn
+                      refId="Package\DF - COA (AUTHORITY)\OLE DB Destination 1 1.Inputs[OLE DB Destination Input].Columns[v_event]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="25"
+                      cachedName="v_event"
+                      externalMetadataColumnId="Package\DF - COA (AUTHORITY)\OLE DB Destination 1 1.Inputs[OLE DB Destination Input].ExternalColumns[EVENT]"
+                      lineageId="Package\DF - COA (AUTHORITY)\Derived Column 4.Outputs[Derived Column Output].Columns[v_event]" />
+                    <inputColumn
+                      refId="Package\DF - COA (AUTHORITY)\OLE DB Destination 1 1.Inputs[OLE DB Destination Input].Columns[v_eventtype]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="25"
+                      cachedName="v_eventtype"
+                      externalMetadataColumnId="Package\DF - COA (AUTHORITY)\OLE DB Destination 1 1.Inputs[OLE DB Destination Input].ExternalColumns[EVENT_TYPE]"
+                      lineageId="Package\DF - COA (AUTHORITY)\Derived Column 4.Outputs[Derived Column Output].Columns[v_eventtype]" />
+                    <inputColumn
+                      refId="Package\DF - COA (AUTHORITY)\OLE DB Destination 1 1.Inputs[OLE DB Destination Input].Columns[v_message]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="v_message"
+                      externalMetadataColumnId="Package\DF - COA (AUTHORITY)\OLE DB Destination 1 1.Inputs[OLE DB Destination Input].ExternalColumns[EVENT_DESCRIPTION]"
+                      lineageId="Package\DF - COA (AUTHORITY)\Derived Column 4.Outputs[Derived Column Output].Columns[v_message]" />
+                    <inputColumn
+                      refId="Package\DF - COA (AUTHORITY)\OLE DB Destination 1 1.Inputs[OLE DB Destination Input].Columns[v_timestamp]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="v_timestamp"
+                      externalMetadataColumnId="Package\DF - COA (AUTHORITY)\OLE DB Destination 1 1.Inputs[OLE DB Destination Input].ExternalColumns[TIMESTAMP]"
+                      lineageId="Package\DF - COA (AUTHORITY)\Derived Column 4.Outputs[Derived Column Output].Columns[v_timestamp]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\DF - COA (AUTHORITY)\OLE DB Destination 1 1.Inputs[OLE DB Destination Input].ExternalColumns[ID]"
+                      dataType="i8"
+                      name="ID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - COA (AUTHORITY)\OLE DB Destination 1 1.Inputs[OLE DB Destination Input].ExternalColumns[PACKAGE_NAME]"
+                      codePage="1252"
+                      dataType="str"
+                      length="250"
+                      name="PACKAGE_NAME" />
+                    <externalMetadataColumn
+                      refId="Package\DF - COA (AUTHORITY)\OLE DB Destination 1 1.Inputs[OLE DB Destination Input].ExternalColumns[LOG_ID]"
+                      dataType="i8"
+                      name="LOG_ID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - COA (AUTHORITY)\OLE DB Destination 1 1.Inputs[OLE DB Destination Input].ExternalColumns[EVENT]"
+                      codePage="1252"
+                      dataType="str"
+                      length="250"
+                      name="EVENT" />
+                    <externalMetadataColumn
+                      refId="Package\DF - COA (AUTHORITY)\OLE DB Destination 1 1.Inputs[OLE DB Destination Input].ExternalColumns[EVENT_TYPE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="250"
+                      name="EVENT_TYPE" />
+                    <externalMetadataColumn
+                      refId="Package\DF - COA (AUTHORITY)\OLE DB Destination 1 1.Inputs[OLE DB Destination Input].ExternalColumns[EVENT_DESCRIPTION]"
+                      codePage="1252"
+                      dataType="str"
+                      length="2000"
+                      name="EVENT_DESCRIPTION" />
+                    <externalMetadataColumn
+                      refId="Package\DF - COA (AUTHORITY)\OLE DB Destination 1 1.Inputs[OLE DB Destination Input].ExternalColumns[TIMESTAMP]"
+                      dataType="dbTimeStamp2"
+                      name="TIMESTAMP"
+                      scale="7" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - COA (AUTHORITY)\OLE DB Destination 1 1.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\DF - COA (AUTHORITY)\OLE DB Destination 1 1.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - COA (AUTHORITY)\OLE DB Destination 1 1.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF - COA (AUTHORITY)\OLE DB Destination 1 1.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF - COA (AUTHORITY)\OLE DB Destination 1 1.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF - COA (AUTHORITY)\OLE DB Destination 1 1.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
                       name="ErrorColumn"
                       specialFlags="2" />
                   </outputColumns>
@@ -3786,6 +4291,11 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </components>
           <paths>
             <path
+              refId="Package\DF - COA (AUTHORITY).Paths[Aggregate Output 1]"
+              endId="Package\DF - COA (AUTHORITY)\Derived Column 4.Inputs[Derived Column Input]"
+              name="Aggregate Output 1"
+              startId="Package\DF - COA (AUTHORITY)\Aggregate.Outputs[Aggregate Output 1]" />
+            <path
               refId="Package\DF - COA (AUTHORITY).Paths[Derived Column Output]"
               endId="Package\DF - COA (AUTHORITY)\Lookup - Dept.Inputs[Lookup Input]"
               name="Derived Column Output"
@@ -3806,6 +4316,11 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               name="Derived Column Output"
               startId="Package\DF - COA (AUTHORITY)\Replace Invalid CostCenter.Outputs[Derived Column Output]" />
             <path
+              refId="Package\DF - COA (AUTHORITY).Paths[Derived Column Output4]"
+              endId="Package\DF - COA (AUTHORITY)\OLE DB Destination 1 1.Inputs[OLE DB Destination Input]"
+              name="Derived Column Output"
+              startId="Package\DF - COA (AUTHORITY)\Derived Column 4.Outputs[Derived Column Output]" />
+            <path
               refId="Package\DF - COA (AUTHORITY).Paths[Lookup Match Output]"
               endId="Package\DF - COA (AUTHORITY)\Derived Column 1.Inputs[Derived Column Input]"
               name="Lookup Match Output"
@@ -3822,14 +4337,24 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               startId="Package\DF - COA (AUTHORITY)\Lookup - Invalid CC Replacement.Outputs[Lookup Match Output]" />
             <path
               refId="Package\DF - COA (AUTHORITY).Paths[Lookup No Match Output]"
-              endId="Package\DF - COA (AUTHORITY)\CHARTOFACCOUNTS.Inputs[ADO NET Destination Input]"
-              name="Lookup No Match Output"
-              startId="Package\DF - COA (AUTHORITY)\Lookup - COA.Outputs[Lookup No Match Output]" />
-            <path
-              refId="Package\DF - COA (AUTHORITY).Paths[Lookup No Match Output1]"
               endId="Package\DF - COA (AUTHORITY)\Union All.Inputs[Union All Input 1]"
               name="Lookup No Match Output"
               startId="Package\DF - COA (AUTHORITY)\Lookup - Invalid CC Replacement.Outputs[Lookup No Match Output]" />
+            <path
+              refId="Package\DF - COA (AUTHORITY).Paths[Lookup No Match Output1]"
+              endId="Package\DF - COA (AUTHORITY)\Multicast.Inputs[Multicast Input 1]"
+              name="Lookup No Match Output"
+              startId="Package\DF - COA (AUTHORITY)\Lookup - COA.Outputs[Lookup No Match Output]" />
+            <path
+              refId="Package\DF - COA (AUTHORITY).Paths[Multicast Output 1]"
+              endId="Package\DF - COA (AUTHORITY)\CHARTOFACCOUNTS.Inputs[ADO NET Destination Input]"
+              name="Multicast Output 1"
+              startId="Package\DF - COA (AUTHORITY)\Multicast.Outputs[Multicast Output 1]" />
+            <path
+              refId="Package\DF - COA (AUTHORITY).Paths[Multicast Output 2]"
+              endId="Package\DF - COA (AUTHORITY)\Aggregate.Inputs[Aggregate Input 1]"
+              name="Multicast Output 2"
+              startId="Package\DF - COA (AUTHORITY)\Multicast.Outputs[Multicast Output 2]" />
             <path
               refId="Package\DF - COA (AUTHORITY).Paths[OLE DB Destination Error Output]"
               endId="Package\DF - COA (AUTHORITY)\Flat File Destination.Inputs[Flat File Destination Input]"
@@ -3855,20 +4380,20 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
-      DTS:refId="Package\MAXSEQ (CHARTOFACCOUNTS)"
+      DTS:refId="Package\MAXSEQ (COA)"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
       DTS:Description="Execute SQL Task"
       DTS:DTSID="{D2B3784D-9065-4929-ABE0-2192F0AAFEAD}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:LocaleID="-1"
-      DTS:ObjectName="MAXSEQ (CHARTOFACCOUNTS)"
+      DTS:ObjectName="MAXSEQ (COA)"
       DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
       DTS:ThreadHint="0">
       <DTS:Variables />
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
-          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-          SQLTask:SqlStatementSource="update maximo.maxsequence set maxreserved=&#xA;(select max(chartofaccountsid)+1 from maximo.chartofaccounts) &#xA;where tbname='CHARTOFACCOUNTS' and name='CHARTOFACCOUNTSID';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:Connection="{6B57807A-44F9-4805-A3A7-4F2B1CC68E82}"
+          SQLTask:SqlStatementSource="CALL MIGRATION.STE_UPDATE_SEQ('CHARTOFACCOUNTSSEQ', 'CHARTOFACCOUNTS', 'CHARTOFACCOUNTSID');" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -4066,7 +4591,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
       DTS:From="Package\DF - COA (AUTHORITY)"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint"
-      DTS:To="Package\MAXSEQ (CHARTOFACCOUNTS)" />
+      DTS:To="Package\MAXSEQ (COA)" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
       DTS:CreationName=""
@@ -4087,7 +4612,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
       DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
       DTS:CreationName=""
       DTS:DTSID="{C526B5D1-EF97-4B2A-9E30-9D7241698FB1}"
-      DTS:From="Package\MAXSEQ (CHARTOFACCOUNTS)"
+      DTS:From="Package\MAXSEQ (COA)"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 3"
       DTS:To="Package\POST-PKG" />
@@ -4109,9 +4634,9 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           Id="Package\DF - COA (AUTHORITY)"
           TopLeft="35.0666656194463,312.7" />
         <NodeLayout
-          Size="241.6,41.6"
-          Id="Package\MAXSEQ (CHARTOFACCOUNTS)"
-          TopLeft="11.1000000000001,414.3" />
+          Size="155.2,41.6"
+          Id="Package\MAXSEQ (COA)"
+          TopLeft="51.0999978144965,412.56666667872" />
         <NodeLayout
           Size="137.6,41.6"
           Id="Package\POST-PKG\FINISH LOG"
@@ -4201,18 +4726,18 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           TopLeft="38.8333315120804,5.50000000000003" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="131.883332809723,354.3">
+          TopLeft="130.283331716971,354.3">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,60"
+              EndConnector="0,58.2666666787201"
               Start="0,0"
-              End="0,52.5">
+              End="0,50.7666666787201">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,52.5" />
+                    End="0,50.7666666787201" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -4279,18 +4804,18 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 3]"
-          TopLeft="252.7,436.369576037653">
+          TopLeft="206.299997814496,435.502909377013">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="91.9428383124022,0"
+              EndConnector="138.342840497905,0"
               Start="0,0"
-              End="84.4428383124022,0">
+              End="130.842840497905,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="84.4428383124022,0" />
+                    End="130.842840497905,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -4306,106 +4831,62 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
     design-time-name="Package\DF - COA (AUTHORITY)">
     <LayoutInfo>
       <GraphLayout
-        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
-        <NodeLayout
-          Size="233.6,41.6"
-          Id="Package\DF - COA (AUTHORITY)\Lookup - Invalid CC Replacement"
-          TopLeft="178.33332358963,360.066665431195" />
+        Capacity="64" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="158.4,41.6"
           Id="Package\DF - COA (AUTHORITY)\Derived Column"
-          TopLeft="216,85.9904761835886" />
-        <NodeLayout
-          Size="144,41.6"
-          Id="Package\DF - COA (AUTHORITY)\Lookup - COA"
-          TopLeft="228.541654179701,741.983330604749" />
+          TopLeft="238.499998770654,85.9904761835886" />
         <NodeLayout
           Size="144.8,41.6"
           Id="Package\DF - COA (AUTHORITY)\Oracle Source"
-          TopLeft="4.99999972681205,5.93333344784049" />
-        <NodeLayout
-          Size="161.6,41.6"
-          Id="Package\DF - COA (AUTHORITY)\Derived Column 1"
-          TopLeft="218.303559500991,648.335710590276" />
+          TopLeft="27.4999984974663,5.93333344784049" />
         <NodeLayout
           Size="170.4,41.6"
           Id="Package\DF - COA (AUTHORITY)\Flat File Destination"
-          TopLeft="579.999968310199,847.399996365905" />
+          TopLeft="5.11590769747272E-13,978.066662719184" />
+        <NodeLayout
+          Size="161.6,41.6"
+          Id="Package\DF - COA (AUTHORITY)\Derived Column 1"
+          TopLeft="240.803558271645,648.335710590276" />
         <NodeLayout
           Size="161.6,41.6"
           Id="Package\DF - COA (AUTHORITY)\Running Number"
-          TopLeft="217.5,7.5" />
+          TopLeft="239.999998770654,7.5" />
         <NodeLayout
           Size="174.4,41.6"
           Id="Package\DF - COA (AUTHORITY)\Lookup - CostCenter"
-          TopLeft="209.695226725416,552.199996655186" />
+          TopLeft="232.19522549607,552.199996655186" />
         <NodeLayout
-          Size="120,41.6"
-          Id="Package\DF - COA (AUTHORITY)\Union All"
-          TopLeft="234.374987194315,457.749998124192" />
+          Size="144,41.6"
+          Id="Package\DF - COA (AUTHORITY)\Lookup - COA"
+          TopLeft="251.041652950355,741.983330604749" />
         <NodeLayout
           Size="161.6,41.6"
           Id="Package\DF - COA (AUTHORITY)\Derived Column 2"
-          TopLeft="211.66665510171,266.666665847037" />
+          TopLeft="234.166653872364,266.666665847037" />
         <NodeLayout
           Size="204.8,41.6"
           Id="Package\DF - COA (AUTHORITY)\Replace Invalid CostCenter"
-          TopLeft="489.58330658368,360.249998802195" />
+          TopLeft="512.083305354334,360.249998802195" />
         <NodeLayout
           Size="143.2,41.6"
           Id="Package\DF - COA (AUTHORITY)\Lookup - Dept"
-          TopLeft="218.266654828523,169.866665485435" />
+          TopLeft="240.766653599177,169.866665485435" />
+        <NodeLayout
+          Size="120,41.6"
+          Id="Package\DF - COA (AUTHORITY)\Union All"
+          TopLeft="256.874985964969,457.749998124192" />
+        <NodeLayout
+          Size="233.6,41.6"
+          Id="Package\DF - COA (AUTHORITY)\Lookup - Invalid CC Replacement"
+          TopLeft="200.833322360284,360.066665431195" />
         <NodeLayout
           Size="187.2,41.6"
           Id="Package\DF - COA (AUTHORITY)\CHARTOFACCOUNTS"
-          TopLeft="206.16070302159,849.218252307542" />
-        <EdgeLayout
-          Id="Package\DF - COA (AUTHORITY).Paths[Union All Output 1]"
-          TopLeft="295.635106959866,499.349998124192">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,52.849998530994"
-              Start="0,0"
-              End="0,45.349998530994">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,45.349998530994" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - COA (AUTHORITY).Paths[Output 0]"
-          TopLeft="296.75,49.1">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,36.8904761835886"
-              Start="0,0"
-              End="0,29.3904761835886">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,29.3904761835886" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
+          TopLeft="234.494034806858,978.151585339541" />
         <EdgeLayout
           Id="Package\DF - COA (AUTHORITY).Paths[Oracle Source Output]"
-          TopLeft="149.799999726812,27.5166667239202">
+          TopLeft="172.299998497466,27.5166667239202">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -4427,31 +4908,31 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - COA (AUTHORITY).Paths[OLE DB Destination Error Output]"
-          TopLeft="393.36070302159,869.109124336723">
+          TopLeft="234.494034806858,998.909124029362">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="186.63926528861,0"
+              EndConnector="-64.0940348068578,0"
               Start="0,0"
-              End="179.13926528861,0">
+              End="-56.5940348068578,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="179.13926528861,0" />
+                    End="-56.5940348068578,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="16.3607263943048,5,146.4178125,11.43359375"
+              BoundingBox="-101.505923653429,5,146.4178125,11.43359375"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - COA (AUTHORITY).Paths[Lookup No Match Output1]"
-          TopLeft="294.754155391973,401.666665431195">
+          Id="Package\DF - COA (AUTHORITY).Paths[Lookup No Match Output]"
+          TopLeft="317.254154162627,401.666665431195">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -4474,32 +4955,8 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - COA (AUTHORITY).Paths[Lookup No Match Output]"
-          TopLeft="300.151178600646,783.583330604749">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,65.6349217027937"
-              Start="0,0"
-              End="0,58.1349217027937">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,58.1349217027937" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-55.80638671875,23.2627733513968,111.6127734375,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
           Id="Package\DF - COA (AUTHORITY).Paths[Lookup Match Output2]"
-          TopLeft="411.93332358963,380.958332116695">
+          TopLeft="434.433322360284,380.958332116695">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -4523,7 +4980,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - COA (AUTHORITY).Paths[Lookup Match Output1]"
-          TopLeft="291.166654965117,211.466665485435">
+          TopLeft="313.666653735771,211.466665485435">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -4547,7 +5004,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - COA (AUTHORITY).Paths[Lookup Match Output]"
-          TopLeft="297.999393113203,593.799996655186">
+          TopLeft="320.499391883857,593.799996655186">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -4571,7 +5028,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - COA (AUTHORITY).Paths[Derived Column Output3]"
-          TopLeft="591.98330658368,401.849998802195">
+          TopLeft="614.483305354334,401.849998802195">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -4605,7 +5062,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - COA (AUTHORITY).Paths[Derived Column Output2]"
-          TopLeft="293.79998934567,308.266665847037">
+          TopLeft="316.299988116324,308.266665847037">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -4627,7 +5084,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - COA (AUTHORITY).Paths[Derived Column Output1]"
-          TopLeft="299.822606840346,689.935710590276">
+          TopLeft="322.322605611,689.935710590276">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -4649,7 +5106,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - COA (AUTHORITY).Paths[Derived Column Output]"
-          TopLeft="292.533327414262,127.590476183589">
+          TopLeft="315.033326184916,127.590476183589">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -4669,11 +5126,191 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - COA (AUTHORITY).Paths[Union All Output 1]"
+          TopLeft="318.13510573052,499.349998124192">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,52.849998530994"
+              Start="0,0"
+              End="0,45.349998530994">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,45.349998530994" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - COA (AUTHORITY).Paths[Output 0]"
+          TopLeft="319.249998770654,49.1">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,36.8904761835886"
+              Start="0,0"
+              End="0,29.3904761835886">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,29.3904761835886" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="119.2,41.6"
+          Id="Package\DF - COA (AUTHORITY)\Multicast"
+          TopLeft="269.166651960049,859.266665648156" />
+        <EdgeLayout
+          Id="Package\DF - COA (AUTHORITY).Paths[Lookup No Match Output1]"
+          TopLeft="325.904152455202,783.583330604749">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,75.6833350434067"
+              Start="0,0"
+              End="0,68.1833350434067">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,68.1833350434067" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-55.80638671875,28.2869800217034,111.6127734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - COA (AUTHORITY).Paths[Multicast Output 1]"
+          TopLeft="328.430343383454,900.866665648156">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,77.284919691385"
+              Start="0,0"
+              End="0,69.784919691385">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,69.784919691385" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="180,41.6"
+          Id="Package\DF - COA (AUTHORITY)\OLE DB Destination 1 1"
+          TopLeft="617.999976505838,952.351586225464" />
+        <NodeLayout
+          Size="161.6,41.6"
+          Id="Package\DF - COA (AUTHORITY)\Derived Column 4"
+          TopLeft="635.133301734596,860.484920197627" />
+        <NodeLayout
+          Size="126.4,41.6"
+          Id="Package\DF - COA (AUTHORITY)\Aggregate"
+          TopLeft="445.833308974075,860.551586568986" />
+        <EdgeLayout
+          Id="Package\DF - COA (AUTHORITY).Paths[Derived Column Output4]"
+          TopLeft="711.966639120218,902.084920197627">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,50.2666660278376"
+              Start="0,0"
+              End="0,42.7666660278376">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,42.7666660278376" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - COA (AUTHORITY).Paths[Aggregate Output 1]"
+          TopLeft="572.233308974075,881.318253383307">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="62.8999927605203,0"
+              Start="0,0"
+              End="55.3999927605203,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="55.3999927605203,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - COA (AUTHORITY).Paths[Multicast Output 2]"
+          TopLeft="388.366651960049,880.709126108571">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="57.4666570140265,0"
+              Start="0,0"
+              End="49.9666570140265,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="49.9666570140265,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\DF - COA (AUTHORITY)\Lookup - Invalid CC Replacement">
+    design-time-name="Package\DF - COA (AUTHORITY)\Oracle Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - COA (AUTHORITY)\Lookup - CostCenter">
     <Properties>
       <Property>
         <Name>OverwriteParamsSQLProp</Name>
@@ -4683,7 +5320,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
       <Property>
         <Name>UsedTableName</Name>
         <Value
-          type="q3:string">"MIGRATION"."SBST_COSTCENTER_INVALID_MAPPING"</Value>
+          type="q3:string"></Value>
       </Property>
       <Property>
         <Name>TableInfoObjectType</Name>
@@ -4719,15 +5356,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
     </Properties>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
-    design-time-name="Package\DF - COA (AUTHORITY)\Oracle Source">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\DF - COA (AUTHORITY)\Lookup - CostCenter">
+    design-time-name="Package\DF - COA (AUTHORITY)\Lookup - Dept">
     <Properties>
       <Property>
         <Name>OverwriteParamsSQLProp</Name>
@@ -4750,7 +5379,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
     </Properties>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
-    design-time-name="Package\DF - COA (AUTHORITY)\Lookup - Dept">
+    design-time-name="Package\DF - COA (AUTHORITY)\Lookup - Invalid CC Replacement">
     <Properties>
       <Property>
         <Name>OverwriteParamsSQLProp</Name>
@@ -4760,7 +5389,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
       <Property>
         <Name>UsedTableName</Name>
         <Value
-          type="q3:string"></Value>
+          type="q3:string">"MIGRATION"."SBST_COSTCENTER_INVALID_MAPPING"</Value>
       </Property>
       <Property>
         <Name>TableInfoObjectType</Name>
