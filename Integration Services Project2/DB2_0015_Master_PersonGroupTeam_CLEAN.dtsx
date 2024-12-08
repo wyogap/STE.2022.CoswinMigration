@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0015_Master_PersonGroupTeam_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="146"
-  DTS:VersionGUID="{FB49DA81-4266-4B04-8127-025AE244E35C}"
+  DTS:VersionBuild="150"
+  DTS:VersionGUID="{4CA5559E-3792-4A82-9FFF-044441682B01}"
   DTS:VersionMajor="3"
   DTS:VersionMinor="3">
   <DTS:Property
@@ -1465,21 +1465,22 @@ where "refTable"."COSWIN_ENTITY" = ?</property>
 	re.*
 	, ROW_NUMBER() OVER (PARTITION BY re.RE_AUTHORITY ORDER BY re.RE_EMNO) AS SEQNO
 FROM (
-	--SELECT CAST(re.RE_BRCD AS VARCHAR(16)) AS RE_BRCD, re.RE_AUTHORITY
-	SELECT CAST(re.RE_EMNO AS VARCHAR(16)) AS RE_EMNO, re.RE_AUTHORITY
-		, re.PK_RES_EMPL
-		, 'RES_EMPL (AUTH)' AS SOURCE
-	FROM COSWIN.RES_EMPL re
-	WHERE re.RE_AUTHORITY IS NOT NULL
-
-	UNION ALL 
-	
-	SELECT wu.USER_ID, wu.USR_AUTHORITY 
-		, wu.PK_WIN_USERS
+	SELECT upper(trim(wu.USER_ID)) AS RE_EMNO
+		, wu.USR_AUTHORITY AS RE_AUTHORITY
+		, wu.PK_WIN_USERS AS PK_RES_EMPL
 		, 'WIN_USERS (AUTH)' AS SOURCE
 	FROM COSWIN.WIN_USERS wu
 	LEFT JOIN COSWIN.RES_EMPL re ON UPPER(re.RE_BRCD) = upper(wu.USER_ID) AND re.RE_AUTHORITY = wu.USR_AUTHORITY
 	WHERE re.PK_RES_EMPL IS NULL AND wu.USR_AUTHORITY IS NOT NULL
+
+	UNION ALL 
+	
+	--SELECT CAST(re.RE_BRCD AS VARCHAR(16)) AS RE_BRCD, re.RE_AUTHORITY
+	SELECT CAST(upper(trim(re.RE_EMNO)) AS VARCHAR(16)) AS RE_EMNO, re.RE_AUTHORITY
+		, re.PK_RES_EMPL
+		, 'RES_EMPL (AUTH)' AS SOURCE
+	FROM COSWIN.RES_EMPL re
+	WHERE re.RE_AUTHORITY IS NOT NULL
 ) re 
 ;</property>
                 <property
@@ -3882,8 +3883,22 @@ where "refTable"."COSWIN_ENTITY" = ?</property>
 	re.*
 	, ROW_NUMBER() OVER (PARTITION BY re.GROUP_ID2 ORDER BY re.RE_EMNO) AS SEQNO
 FROM (
+	SELECT UPPER(TRIM(wu.USER_ID)) AS RE_EMNO
+		, gu."GROUP_ID"
+		, NULL AS RE_SSNO
+		, gu."GROUP_ID" as GROUP_ID2
+		, wu.PK_WIN_USERS AS PK_RES_EMPL
+		, 'WIN_USERS' AS SOURCE
+	FROM COSWIN.WIN_USERS wu
+	JOIN COSWIN.GROUP_USERS gu ON gu.PK_GROUP_USERS  = wu.WIN_GRP_USR 
+	LEFT JOIN COSWIN.RES_EMPL re ON UPPER(re.RE_BrCD) = upper(wu.USER_ID)
+	WHERE re.PK_RES_EMPL IS NULL
+	
+	UNION ALL 
+	
 	--SELECT CAST(re.RE_BRCD AS VARCHAR(16)) AS RE_BRCD, gu."GROUP_ID"
-	SELECT CAST(re.RE_EMNO AS VARCHAR(16)) AS RE_EMNO, gu."GROUP_ID"
+	SELECT CAST(UPPER(TRIM(re.RE_EMNO)) AS VARCHAR(16)) AS RE_EMNO
+		, gu."GROUP_ID"
 		, (CASE WHEN re.RE_SSNO='RaiResigned' THEN 'RailResigned' ELSE re.RE_SSNO END) AS RE_SSNO
 		, COALESCE(gu.GROUP_ID, (CASE WHEN re.RE_SSNO='RaiResigned' THEN 'RailResigned' ELSE re.RE_SSNO END)) AS GROUP_ID2
 		, re.PK_RES_EMPL
@@ -3892,18 +3907,6 @@ FROM (
 	LEFT JOIN COSWIN.WIN_USERS wu on upper(wu.USER_ID) = upper(re.RE_BRCD)
 	LEFT JOIN COSWIN.GROUP_USERS gu ON gu.PK_GROUP_USERS  = wu.WIN_GRP_USR 
 	WHERE gu.PK_GROUP_USERS IS NOT NULL OR re.RE_SSNO IS NOT NULL
-	
-	UNION ALL 
-	
-	SELECT wu.USER_ID, gu."GROUP_ID"
-		, NULL AS RE_SSNO
-		, gu."GROUP_ID" as GROUP_ID2
-		, wu.PK_WIN_USERS
-		, 'WIN_USERS' AS SOURCE
-	FROM COSWIN.WIN_USERS wu
-	JOIN COSWIN.GROUP_USERS gu ON gu.PK_GROUP_USERS  = wu.WIN_GRP_USR 
-	LEFT JOIN COSWIN.RES_EMPL re ON UPPER(re.RE_BrCD) = upper(wu.USER_ID)
-	WHERE re.PK_RES_EMPL IS NULL
 ) re 
 ;</property>
                 <property
@@ -3980,12 +3983,6 @@ FROM (
                       lineageId="Package\DF - GROUP\Oracle Source.Outputs[Oracle Source Output].Columns[GROUP_ID2]"
                       name="GROUP_ID2" />
                     <outputColumn
-                      refId="Package\DF - GROUP\Oracle Source.Outputs[Oracle Source Output].Columns[PK_RES_EMPL]"
-                      dataType="i4"
-                      externalMetadataColumnId="Package\DF - GROUP\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_RES_EMPL]"
-                      lineageId="Package\DF - GROUP\Oracle Source.Outputs[Oracle Source Output].Columns[PK_RES_EMPL]"
-                      name="PK_RES_EMPL" />
-                    <outputColumn
                       refId="Package\DF - GROUP\Oracle Source.Outputs[Oracle Source Output].Columns[SOURCE]"
                       codePage="1252"
                       dataType="str"
@@ -3999,6 +3996,12 @@ FROM (
                       externalMetadataColumnId="Package\DF - GROUP\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SEQNO]"
                       lineageId="Package\DF - GROUP\Oracle Source.Outputs[Oracle Source Output].Columns[SEQNO]"
                       name="SEQNO" />
+                    <outputColumn
+                      refId="Package\DF - GROUP\Oracle Source.Outputs[Oracle Source Output].Columns[PK_RES_EMPL]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - GROUP\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_RES_EMPL]"
+                      lineageId="Package\DF - GROUP\Oracle Source.Outputs[Oracle Source Output].Columns[PK_RES_EMPL]"
+                      name="PK_RES_EMPL" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -4027,10 +4030,6 @@ FROM (
                       length="16"
                       name="GROUP_ID2" />
                     <externalMetadataColumn
-                      refId="Package\DF - GROUP\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_RES_EMPL]"
-                      dataType="i4"
-                      name="PK_RES_EMPL" />
-                    <externalMetadataColumn
                       refId="Package\DF - GROUP\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SOURCE]"
                       codePage="1252"
                       dataType="str"
@@ -4040,6 +4039,10 @@ FROM (
                       refId="Package\DF - GROUP\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SEQNO]"
                       dataType="r8"
                       name="SEQNO" />
+                    <externalMetadataColumn
+                      refId="Package\DF - GROUP\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_RES_EMPL]"
+                      dataType="i4"
+                      name="PK_RES_EMPL" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -4080,12 +4083,6 @@ FROM (
                       lineageId="Package\DF - GROUP\Oracle Source.Outputs[Oracle Source Error Output].Columns[GROUP_ID2]"
                       name="GROUP_ID2" />
                     <outputColumn
-                      refId="Package\DF - GROUP\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_RES_EMPL]"
-                      dataType="i4"
-                      externalMetadataColumnId="Package\DF - GROUP\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_RES_EMPL]"
-                      lineageId="Package\DF - GROUP\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_RES_EMPL]"
-                      name="PK_RES_EMPL" />
-                    <outputColumn
                       refId="Package\DF - GROUP\Oracle Source.Outputs[Oracle Source Error Output].Columns[SOURCE]"
                       codePage="1252"
                       dataType="str"
@@ -4099,6 +4096,12 @@ FROM (
                       externalMetadataColumnId="Package\DF - GROUP\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SEQNO]"
                       lineageId="Package\DF - GROUP\Oracle Source.Outputs[Oracle Source Error Output].Columns[SEQNO]"
                       name="SEQNO" />
+                    <outputColumn
+                      refId="Package\DF - GROUP\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_RES_EMPL]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - GROUP\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_RES_EMPL]"
+                      lineageId="Package\DF - GROUP\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_RES_EMPL]"
+                      name="PK_RES_EMPL" />
                     <outputColumn
                       refId="Package\DF - GROUP\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -6363,7 +6366,8 @@ where "refTable"."COSWIN_ENTITY" = ?</property>
                   expressionType="Notify"
                   name="SqlCommand"
                   UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">--SELECT CAST(re.RE_BRCD AS VARCHAR(16)) AS RE_BRCD, rt.RT_TDCD 
-SELECT CAST(re.RE_EMNO AS VARCHAR(16)) AS RE_EMNO, rt.RT_TDCD 
+SELECT CAST(UPPER(TRIM(re.RE_EMNO)) AS VARCHAR(16)) AS RE_EMNO
+	, rt.RT_TDCD 
 	, re.PK_RES_EMPL
 	, ROW_NUMBER() OVER (PARTITION BY rt.RT_TDCD ORDER BY re.RE_EMNO) AS SEQNO
 	, 'RES_EMPL (TRADE)' AS SOURCE

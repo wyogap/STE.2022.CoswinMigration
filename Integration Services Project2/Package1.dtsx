@@ -11,8 +11,8 @@
   DTS:LocaleID="14345"
   DTS:ObjectName="Package1"
   DTS:PackageType="5"
-  DTS:VersionBuild="69"
-  DTS:VersionGUID="{D6FDFA5B-0C20-47C4-8CDE-C1AB70D26F9E}">
+  DTS:VersionBuild="86"
+  DTS:VersionGUID="{03921DEB-EBC4-472D-AA26-DDFB00F2FD09}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -300,6 +300,16 @@
               DTS:CreationName="" />
           </DTS:FlatFileColumns>
         </DTS:ConnectionManager>
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[updateseq.sql]"
+      DTS:CreationName="FILE"
+      DTS:DTSID="{A9E512C1-0164-4853-84F4-ACF5646F0441}"
+      DTS:ObjectName="updateseq.sql">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="C:\NEL1902\Data Migration\Working Folder\updateseq.sql" />
       </DTS:ObjectData>
     </DTS:ConnectionManager>
   </DTS:ConnectionManagers>
@@ -1037,6 +1047,7 @@
       DTS:refId="Package\Data Flow Task 1"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:Description="Data Flow Task"
+      DTS:Disabled="True"
       DTS:DTSID="{2D4C2094-B69F-4C0B-B4E0-5417904F2817}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="-1"
@@ -1251,7 +1262,7 @@ where "refTable"."COSWINEQPTCODE" = ?</property>
                   containsID="true"
                   dataType="System.String"
                   description="Specifies the list of lineage identifiers that map to the parameters that the SQL statement in the SQLCommand property uses. Entries in the list are separated by semicolons."
-                  name="ParameterMap">#{Package\Data Flow Task 1\766:invalid};</property>
+                  name="ParameterMap">#{Package\Data Flow Task 1\604:invalid};</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -6592,6 +6603,45 @@ FETCH FIRST 200 ROWS ONLY</property>
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
+      DTS:refId="Package\Execute SQL Task 1"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{DB20BB28-758F-411B-983E-7A2D8A80AECC}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Execute SQL Task 1"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{6B57807A-44F9-4805-A3A7-4F2B1CC68E82}"
+          SQLTask:SqlStatementSource="CALL MIGRATION.STE_UPDATE_SEQ('LOCATIONSSEQ', 'LOCATIONS', 'LOCATIONSID');" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Execute SQL Task 2"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{9B80D4E2-5CB1-4D20-BF69-30CD771ED8DE}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Execute SQL Task 2"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="select coalesce(max(locationsid),0) + 1 as maxid from maximo.LOCATIONS"
+          SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ResultBinding
+            SQLTask:ResultName="maxid"
+            SQLTask:DtsVariableName="User::v_max_id" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
       DTS:refId="Package\SEQ"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:Description="Data Flow Task"
@@ -6799,6 +6849,16 @@ FETCH FIRST 200 ROWS ONLY</property>
       </DTS:ObjectData>
     </DTS:Executable>
   </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{960FFB89-5F47-401B-A4FE-6A46CEDA0BE8}"
+      DTS:From="Package\Execute SQL Task 2"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Execute SQL Task 1" />
+  </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
 <!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
 <!--If you manually edit this section and make a mistake, you can delete it. -->
@@ -6810,7 +6870,7 @@ FETCH FIRST 200 ROWS ONLY</property>
     design-time-name="Package">
     <LayoutInfo>
       <GraphLayout
-        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph">
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
           Size="150.4,41.6"
           Id="Package\Data Flow Task"
@@ -6831,6 +6891,36 @@ FETCH FIRST 200 ROWS ONLY</property>
           Size="100,41.6"
           Id="Package\SEQ"
           TopLeft="271.666651823455,58.0666662628783" />
+        <NodeLayout
+          Size="173.6,41.6"
+          Id="Package\Execute SQL Task 1"
+          TopLeft="403.333311296173,233.133331712153" />
+        <NodeLayout
+          Size="173.6,41.6"
+          Id="Package\Execute SQL Task 2"
+          TopLeft="409.166644310787,159.466665557755" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="493.04997780348,201.066665557755">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,32.066666154398"
+              Start="0,0"
+              End="0,24.566666154398">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,24.566666154398" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </Package>
@@ -7056,6 +7146,10 @@ FETCH FIRST 200 ROWS ONLY</property>
           Id="Package\Data Flow Task 1\Oracle Source"
           TopLeft="136.666662477785,70.3999999276795" />
         <NodeLayout
+          Size="120,41.6"
+          Id="Package\Data Flow Task 1\Union All"
+          TopLeft="419.999977052213,169.866665485435" />
+        <NodeLayout
           Size="182.4,41.6"
           Id="Package\Data Flow Task 1\Lookup - Asset Master"
           TopLeft="378.35000293677,73.2872940218433" />
@@ -7063,6 +7157,34 @@ FETCH FIRST 200 ROWS ONLY</property>
           Size="161.6,41.6"
           Id="Package\Data Flow Task 1\Derived Column 1"
           TopLeft="646.983333219505,72.5539601762432" />
+        <NodeLayout
+          Size="171.2,41.6"
+          Id="Package\Data Flow Task 1\OLE DB Destination"
+          TopLeft="398.333311569361,279.066664726072" />
+        <EdgeLayout
+          Id="Package\Data Flow Task 1.Paths[Union All Output 1]"
+          TopLeft="481.966644310787,211.466665485435">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,67.5999992406369"
+              Start="0,0"
+              End="0,60.0999992406369">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,60.0999992406369" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
         <EdgeLayout
           Id="Package\Data Flow Task 1.Paths[Oracle Source Output]"
           TopLeft="281.466662477785,92.6436469747614">
@@ -7082,7 +7204,9 @@ FETCH FIRST 200 ROWS ONLY</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -7109,10 +7233,6 @@ FETCH FIRST 200 ROWS ONLY</property>
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="120,41.6"
-          Id="Package\Data Flow Task 1\Union All"
-          TopLeft="419.999977052213,169.866665485435" />
         <EdgeLayout
           Id="Package\Data Flow Task 1.Paths[Lookup Match Output]"
           TopLeft="469.55000293677,114.887294021843">
@@ -7180,77 +7300,44 @@ FETCH FIRST 200 ROWS ONLY</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="171.2,41.6"
-          Id="Package\Data Flow Task 1\OLE DB Destination"
-          TopLeft="398.333311569361,279.066664726072" />
-        <EdgeLayout
-          Id="Package\Data Flow Task 1.Paths[Union All Output 1]"
-          TopLeft="481.966644310787,211.466665485435">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,67.5999992406369"
-              Start="0,0"
-              End="0,60.0999992406369">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,60.0999992406369" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Data Flow Task 1\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
   <TaskHost
     design-time-name="Package\DF - SR (LD) - TRANSFER_REASON">
     <LayoutInfo>
       <GraphLayout
-        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="170.4,41.6"
           Id="Package\DF - SR (LD) - TRANSFER_REASON\Flat File Destination"
           TopLeft="265.833329140312,236.111108453738" />
         <NodeLayout
-          Size="144.8,41.6"
-          Id="Package\DF - SR (LD) - TRANSFER_REASON\Oracle Source"
-          TopLeft="36,40" />
-        <NodeLayout
           Size="168.8,41.6"
           Id="Package\DF - SR (LD) - TRANSFER_REASON\Convert RAWTEXT"
           TopLeft="263.666666575604,42.4888887188169" />
-        <EdgeLayout
-          Id="Package\DF - SR (LD) - TRANSFER_REASON.Paths[Oracle Source Output]"
-          TopLeft="180.8,62.0444443594085">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="82.866666575604,0"
-              Start="0,0"
-              End="75.366666575604,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="75.366666575604,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
+        <NodeLayout
+          Size="144.8,41.6"
+          Id="Package\DF - SR (LD) - TRANSFER_REASON\Oracle Source"
+          TopLeft="36,40" />
         <EdgeLayout
           Id="Package\DF - SR (LD) - TRANSFER_REASON.Paths[Output 0]"
           TopLeft="349.549997857958,84.0888887188169">
@@ -7270,7 +7357,33 @@ FETCH FIRST 200 ROWS ONLY</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - SR (LD) - TRANSFER_REASON.Paths[Oracle Source Output]"
+          TopLeft="180.8,62.0444443594085">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="82.866666575604,0"
+              Start="0,0"
+              End="75.366666575604,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="75.366666575604,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
@@ -7341,19 +7454,6 @@ FETCH FIRST 200 ROWS ONLY</property>
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\Data Flow Task 1\OLE DB Destination">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q2:string">Table</Value>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
