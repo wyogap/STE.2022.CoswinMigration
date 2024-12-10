@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0609_LD_Item_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="202"
-  DTS:VersionGUID="{FEA9BE64-1E0F-463C-A9D1-4DB0D11D40C2}"
+  DTS:VersionBuild="210"
+  DTS:VersionGUID="{4A00FEA1-C743-4F3C-9F9F-E1E9F92EB547}"
   DTS:VersionMinor="2">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -7888,14 +7888,18 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                   description="Specifies the SQL statement that generates the lookup table."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT ITEMID, ITEMNUM FROM MAXIMO.ITEM WHERE STE_MIGRATIONID IS NOT NULL</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT ITEMID, ITEMNUM, STE_CSWNITEMNO, STE_MIGRATIONID
+FROM     MAXIMO.ITEM
+WHERE  (STE_MIGRATIONID IS NOT NULL) AND STE_MIGRATIONSOURCE='ITEM_'</property>
                 <property
                   dataType="System.String"
                   description="Specifies a SQL statement that uses parameters to generate the lookup table."
                   expressionType="Notify"
                   name="SqlCommandParam"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (SELECT ITEMID, ITEMNUM FROM MAXIMO.ITEM WHERE STE_MIGRATIONID IS NOT NULL) "refTable"
-where "refTable"."ITEMNUM" = ?</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (SELECT ITEMID, ITEMNUM, STE_CSWNITEMNO, STE_MIGRATIONID
+FROM     MAXIMO.ITEM
+WHERE  (STE_MIGRATIONID IS NOT NULL) AND STE_MIGRATIONSOURCE='ITEM_') "refTable"
+where "refTable"."STE_MIGRATIONID" = ?</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the type of connection used to access the reference dataset."
@@ -7926,12 +7930,12 @@ where "refTable"."ITEMNUM" = ?</property>
                 <property
                   dataType="System.String"
                   description="Indicates whether to reference metadata in an XML format."
-                  name="ReferenceMetadataXml">&lt;referenceMetadata&gt;&lt;referenceColumns&gt;&lt;referenceColumn name="ITEMID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="ITEMNUM" dataType="DT_STR" length="30" precision="0" scale="0" codePage="1252"/&gt;&lt;/referenceColumns&gt;&lt;/referenceMetadata&gt;</property>
+                  name="ReferenceMetadataXml">&lt;referenceMetadata&gt;&lt;referenceColumns&gt;&lt;referenceColumn name="ITEMID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="ITEMNUM" dataType="DT_STR" length="30" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_CSWNITEMNO" dataType="DT_STR" length="30" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_MIGRATIONID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;/referenceColumns&gt;&lt;/referenceMetadata&gt;</property>
                 <property
                   containsID="true"
                   dataType="System.String"
                   description="Specifies the list of lineage identifiers that map to the parameters that the SQL statement in the SQLCommand property uses. Entries in the list are separated by semicolons."
-                  name="ParameterMap">#{Package\DF - ITEM (RMK)\LookupKey.Outputs[Derived Column Output].Columns[lk_itemnum]};</property>
+                  name="ParameterMap">#{Package\DF - ITEM (RMK)\LookupKey.Outputs[Derived Column Output].Columns[lk_migrationid]};</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -7955,17 +7959,15 @@ where "refTable"."ITEMNUM" = ?</property>
                   name="Lookup Input">
                   <inputColumns>
                     <inputColumn
-                      refId="Package\DF - ITEM (RMK)\Lookup.Inputs[Lookup Input].Columns[lk_itemnum]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="20"
-                      cachedName="lk_itemnum"
-                      lineageId="Package\DF - ITEM (RMK)\LookupKey.Outputs[Derived Column Output].Columns[lk_itemnum]">
+                      refId="Package\DF - ITEM (RMK)\Lookup.Inputs[Lookup Input].Columns[lk_migrationid]"
+                      cachedDataType="i8"
+                      cachedName="lk_migrationid"
+                      lineageId="Package\DF - ITEM (RMK)\LookupKey.Outputs[Derived Column Output].Columns[lk_migrationid]">
                       <properties>
                         <property
                           dataType="System.String"
                           description="Specifies the column in the reference table that a column joins."
-                          name="JoinToReferenceColumn">ITEMNUM</property>
+                          name="JoinToReferenceColumn">STE_MIGRATIONID</property>
                         <property
                           dataType="System.Null"
                           description="Specifies the column in the reference table from which a column is copied."
@@ -8053,6 +8055,11 @@ where "refTable"."ITEMNUM" = ?</property>
                       cachedLength="20"
                       cachedName="ITEM_CD"
                       lineageId="Package\DF - ITEM (RMK)\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_CD]" />
+                    <inputColumn
+                      refId="Package\DF - ITEM (RMK)\LookupKey.Inputs[Derived Column Input].Columns[PK_ITEM_]"
+                      cachedDataType="i4"
+                      cachedName="PK_ITEM_"
+                      lineageId="Package\DF - ITEM (RMK)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_ITEM_]" />
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -8087,6 +8094,28 @@ where "refTable"."ITEMNUM" = ?</property>
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
                           name="FriendlyExpression">(DT_STR,20,1252)ITEM_CD</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\DF - ITEM (RMK)\LookupKey.Outputs[Derived Column Output].Columns[lk_migrationid]"
+                      dataType="i8"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\DF - ITEM (RMK)\LookupKey.Outputs[Derived Column Output].Columns[lk_migrationid]"
+                      name="lk_migrationid"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_I8)#{Package\DF - ITEM (RMK)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_ITEM_]}</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_I8)PK_ITEM_</property>
                       </properties>
                     </outputColumn>
                   </outputColumns>
@@ -12640,14 +12669,18 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                   description="Specifies the SQL statement that generates the lookup table."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from "MAXIMO"."ITEM"</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT ITEMID, ITEMNUM, STE_CSWNITEMNO, STE_MIGRATIONID
+FROM     MAXIMO.ITEM
+WHERE  (STE_MIGRATIONID IS NOT NULL)</property>
                 <property
                   dataType="System.String"
                   description="Specifies a SQL statement that uses parameters to generate the lookup table."
                   expressionType="Notify"
                   name="SqlCommandParam"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (select * from "MAXIMO"."ITEM") "refTable"
-where "refTable"."ITEMNUM" = ?</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (SELECT ITEMID, ITEMNUM, STE_CSWNITEMNO, STE_MIGRATIONID
+FROM     MAXIMO.ITEM
+WHERE  (STE_MIGRATIONID IS NOT NULL)) "refTable"
+where "refTable"."STE_CSWNITEMNO" = ?</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the type of connection used to access the reference dataset."
@@ -12678,7 +12711,7 @@ where "refTable"."ITEMNUM" = ?</property>
                 <property
                   dataType="System.String"
                   description="Indicates whether to reference metadata in an XML format."
-                  name="ReferenceMetadataXml">&lt;referenceMetadata&gt;&lt;referenceColumns&gt;&lt;referenceColumn name="ITEMNUM" dataType="DT_STR" length="30" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="DESCRIPTION" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ROTATING" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="LOTTYPE" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="CAPITALIZED" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="MSDSNUM" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="OUTSIDE" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="IN19" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="IN20" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="IN21" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="IN22" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="IN23" dataType="DT_DECIMAL" length="0" precision="15" scale="2" codePage="0"/&gt;&lt;referenceColumn name="SPAREPARTAUTOADD" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="CLASSSTRUCTUREID" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="INSPECTIONREQUIRED" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="SOURCESYSID" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="OWNERSYSID" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="EXTERNALREFID" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="IN24" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="IN25" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="IN26" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="IN27" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="SENDERSYSID" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ITEMSETID" dataType="DT_STR" length="8" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ORDERUNIT" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ISSUEUNIT" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="CONDITIONENABLED" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="GROUPNAME" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="METERNAME" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="COMMODITYGROUP" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="COMMODITY" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ITEMTYPE" dataType="DT_STR" length="15" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PRORATE" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="ITEMID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="ISKIT" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="LANGCODE" dataType="DT_STR" length="4" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ATTACHONISSUE" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="HASLD" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="MAXISSUE" dataType="DT_DECIMAL" length="0" precision="15" scale="2" codePage="0"/&gt;&lt;referenceColumn name="STATUS" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STATUSDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="HARDRESISSUE" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="TAXEXEMPT" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="RECEIPTTOLERANCE" dataType="DT_DECIMAL" length="0" precision="15" scale="2" codePage="0"/&gt;&lt;referenceColumn name="PLUSCISINHOUSECAL" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="PLUSCISMTE" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="PLUSCISMTECLASS" dataType="DT_STR" length="80" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PLUSCSOLUTION" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="ISCREW" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="PLUSTCOMP" dataType="DT_STR" length="15" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PLUSTPOSREQ" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="PLUSTFLUIDIND" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="PLUSTISTIRE" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_COUNTITEM" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_CREATOR" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_FLEETSIZE" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_IPCREF" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_IS_CRITICAL" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_IS_OVERHAUL" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_IS_PROPRIETARY" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_IS_SAFETY_RELATED" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_ITEMPARTNO" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_ITEMTYPE" dataType="DT_STR" length="4" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_TOTALCOST" dataType="DT_DECIMAL" length="0" precision="13" scale="5" codePage="0"/&gt;&lt;referenceColumn name="STE_TOTALQTY" dataType="DT_DECIMAL" length="0" precision="15" scale="2" codePage="0"/&gt;&lt;referenceColumn name="STE_CSWNAUTHORITY" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_CSWNBARCODE" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_CSWNITEMCAT" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_OWNERDEPARTMENT" dataType="DT_STR" length="8" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_SEVERITY" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_CAPACITY" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_CUSHIONMATERIAL" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_FLEETSIZENUMOFTRAIN" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_GROSSWEIGHT" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_MAINTTYPE" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_MATERIAL" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_NETWEIGHT" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_NOSYSPERTRAIN" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_PRESERVEMATERIAL" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_QTYPERSYSTEM" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_SIZEDIMENSION" dataType="DT_STR" length="15" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_SPLHANDINSTRUCTION" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_STORAGECOND" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_TEMPCONDINDICATOR" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_VERSION" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_WARRANTYDETAILS" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_WRAPPINGMATERIAL" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_MIGRATIONID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_MIGRATIONSOURCE" dataType="DT_STR" length="200" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_MIGRATIONDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="STE_CSWNITEMDECIMAL" dataType="DT_STR" length="5" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_ITEMGROUP" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_CSWNMAINSTORE" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ROWSTAMP" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_TYPE" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_CSWNHAZARD" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_REMARKS" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;/referenceColumns&gt;&lt;/referenceMetadata&gt;</property>
+                  name="ReferenceMetadataXml">&lt;referenceMetadata&gt;&lt;referenceColumns&gt;&lt;referenceColumn name="ITEMID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="ITEMNUM" dataType="DT_STR" length="30" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_CSWNITEMNO" dataType="DT_STR" length="30" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_MIGRATIONID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;/referenceColumns&gt;&lt;/referenceMetadata&gt;</property>
                 <property
                   containsID="true"
                   dataType="System.String"
@@ -12717,7 +12750,7 @@ where "refTable"."ITEMNUM" = ?</property>
                         <property
                           dataType="System.String"
                           description="Specifies the column in the reference table that a column joins."
-                          name="JoinToReferenceColumn">ITEMNUM</property>
+                          name="JoinToReferenceColumn">STE_CSWNITEMNO</property>
                         <property
                           dataType="System.Null"
                           description="Specifies the column in the reference table from which a column is copied."
@@ -17391,14 +17424,18 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                   description="Specifies the SQL statement that generates the lookup table."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from maximo.item</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT ITEMID, ITEMNUM, STE_CSWNITEMNO, STE_MIGRATIONID
+FROM     MAXIMO.ITEM
+WHERE  (STE_MIGRATIONID IS NOT NULL)</property>
                 <property
                   dataType="System.String"
                   description="Specifies a SQL statement that uses parameters to generate the lookup table."
                   expressionType="Notify"
                   name="SqlCommandParam"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (select * from maximo.item) "refTable"
-where "refTable"."ITEMNUM" = ?</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (SELECT ITEMID, ITEMNUM, STE_CSWNITEMNO, STE_MIGRATIONID
+FROM     MAXIMO.ITEM
+WHERE  (STE_MIGRATIONID IS NOT NULL)) "refTable"
+where "refTable"."STE_CSWNITEMNO" = ?</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the type of connection used to access the reference dataset."
@@ -17429,7 +17466,7 @@ where "refTable"."ITEMNUM" = ?</property>
                 <property
                   dataType="System.String"
                   description="Indicates whether to reference metadata in an XML format."
-                  name="ReferenceMetadataXml">&lt;referenceMetadata&gt;&lt;referenceColumns&gt;&lt;referenceColumn name="ITEMNUM" dataType="DT_STR" length="30" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="DESCRIPTION" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ROTATING" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="LOTTYPE" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="CAPITALIZED" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="MSDSNUM" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="OUTSIDE" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="IN19" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="IN20" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="IN21" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="IN22" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="IN23" dataType="DT_DECIMAL" length="0" precision="15" scale="2" codePage="0"/&gt;&lt;referenceColumn name="SPAREPARTAUTOADD" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="CLASSSTRUCTUREID" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="INSPECTIONREQUIRED" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="SOURCESYSID" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="OWNERSYSID" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="EXTERNALREFID" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="IN24" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="IN25" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="IN26" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="IN27" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="SENDERSYSID" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ITEMSETID" dataType="DT_STR" length="8" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ORDERUNIT" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ISSUEUNIT" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="CONDITIONENABLED" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="GROUPNAME" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="METERNAME" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="COMMODITYGROUP" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="COMMODITY" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ITEMTYPE" dataType="DT_STR" length="15" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PRORATE" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="ITEMID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="ISKIT" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="LANGCODE" dataType="DT_STR" length="4" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ATTACHONISSUE" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="HASLD" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="MAXISSUE" dataType="DT_DECIMAL" length="0" precision="15" scale="2" codePage="0"/&gt;&lt;referenceColumn name="STATUS" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STATUSDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="HARDRESISSUE" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="TAXEXEMPT" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="RECEIPTTOLERANCE" dataType="DT_DECIMAL" length="0" precision="15" scale="2" codePage="0"/&gt;&lt;referenceColumn name="PLUSCISINHOUSECAL" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="PLUSCISMTE" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="PLUSCISMTECLASS" dataType="DT_STR" length="80" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PLUSCSOLUTION" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="ISCREW" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="PLUSTCOMP" dataType="DT_STR" length="15" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="PLUSTPOSREQ" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="PLUSTFLUIDIND" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="PLUSTISTIRE" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_COUNTITEM" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_CREATOR" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_FLEETSIZE" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_IPCREF" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_IS_CRITICAL" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_IS_OVERHAUL" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_IS_PROPRIETARY" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_IS_SAFETY_RELATED" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_ITEMPARTNO" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_ITEMTYPE" dataType="DT_STR" length="4" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_TOTALCOST" dataType="DT_DECIMAL" length="0" precision="13" scale="5" codePage="0"/&gt;&lt;referenceColumn name="STE_TOTALQTY" dataType="DT_DECIMAL" length="0" precision="15" scale="2" codePage="0"/&gt;&lt;referenceColumn name="STE_CSWNAUTHORITY" dataType="DT_STR" length="16" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_CSWNBARCODE" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_CSWNITEMCAT" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_OWNERDEPARTMENT" dataType="DT_STR" length="8" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_SEVERITY" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_CAPACITY" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_CUSHIONMATERIAL" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_FLEETSIZENUMOFTRAIN" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_GROSSWEIGHT" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_MAINTTYPE" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_MATERIAL" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_NETWEIGHT" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_NOSYSPERTRAIN" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_PRESERVEMATERIAL" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_QTYPERSYSTEM" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_SIZEDIMENSION" dataType="DT_STR" length="15" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_SPLHANDINSTRUCTION" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_STORAGECOND" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_TEMPCONDINDICATOR" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_VERSION" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_WARRANTYDETAILS" dataType="DT_STR" length="100" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_WRAPPINGMATERIAL" dataType="DT_STR" length="50" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_MIGRATIONID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_MIGRATIONSOURCE" dataType="DT_STR" length="200" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_MIGRATIONDATE" dataType="DT_DBTIMESTAMP2" length="0" precision="0" scale="7" codePage="0"/&gt;&lt;referenceColumn name="STE_CSWNITEMDECIMAL" dataType="DT_STR" length="5" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_ITEMGROUP" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_CSWNMAINSTORE" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="ROWSTAMP" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_TYPE" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_CSWNHAZARD" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="STE_REMARKS" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;/referenceColumns&gt;&lt;/referenceMetadata&gt;</property>
+                  name="ReferenceMetadataXml">&lt;referenceMetadata&gt;&lt;referenceColumns&gt;&lt;referenceColumn name="ITEMID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="ITEMNUM" dataType="DT_STR" length="30" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_CSWNITEMNO" dataType="DT_STR" length="30" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="STE_MIGRATIONID" dataType="DT_I8" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;/referenceColumns&gt;&lt;/referenceMetadata&gt;</property>
                 <property
                   containsID="true"
                   dataType="System.String"
@@ -17468,7 +17505,7 @@ where "refTable"."ITEMNUM" = ?</property>
                         <property
                           dataType="System.String"
                           description="Specifies the column in the reference table that a column joins."
-                          name="JoinToReferenceColumn">ITEMNUM</property>
+                          name="JoinToReferenceColumn">STE_CSWNITEMNO</property>
                         <property
                           dataType="System.Null"
                           description="Specifies the column in the reference table from which a column is copied."
@@ -19499,6 +19536,42 @@ where itemid=?</property>
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
+      DTS:refId="Package\INVENTORY (STE_REMARKS)"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{DDAA254A-7AE1-4A8B-9D41-3743EDB18D07}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="INVENTORY (STE_REMARKS)"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="INSERT INTO MAXIMO.LONGDESCRIPTION (&#xA;&#x9;LDKEY, LDTEXT, LANGCODE, LDOWNERTABLE, LDOWNERCOL, LONGDESCRIPTIONID, CONTENTUID&#xA;&#x9;, STE_MIGRATIONID, STE_MIGRATIONSOURCE, STE_MIGRATIONDATE&#xA;)&#xA;SELECT &#xA;&#x9;inv.INVENTORYID AS LDKEY&#xA;&#x9;-- , i.ITEMNUM&#xA;&#x9;, l.LDTEXT, l.LANGCODE&#xA;&#x9;, 'INVENTORY' AS LDOWNERTABLE, 'STE_REMARKS' AS LDOWNERCOL&#xA;&#x9;, x.MAXID + ROW_NUMBER() OVER (ORDER BY l.LONGDESCRIPTIONID) AS LONGDESCRIPTIONID&#xA;&#x9;, x.MAXID + ROW_NUMBER() OVER (ORDER BY l.LONGDESCRIPTIONID) AS CONTENTUID&#xA;&#x9;, l.STE_MIGRATIONID, l.STE_MIGRATIONSOURCE, current_timestamp as STE_MIGRATIONDATE&#xA;FROM MAXIMO.INVENTORY inv &#xA;JOIN MAXIMO.ITEM i ON i.ITEMNUM=inv.ITEMNUM&#xA;JOIN MAXIMO.LONGDESCRIPTION l ON l.LDOWNERTABLE='ITEM' AND l.LDOWNERCOL='STE_REMARKS' AND l.LDKEY=i.ITEMID&#xA;JOIN (&#xA;&#x9;SELECT COALESCE(MAX(LONGDESCRIPTIONID),0) + 1 AS MAXID FROM MAXIMO.LONGDESCRIPTION&#xA;) x ON 1=1&#xA;LEFT JOIN MAXIMO.LONGDESCRIPTION y ON y.LDOWNERTABLE='INVENTORY' AND y.LDOWNERCOL='STE_REMARKS' AND y.LDKEY=inv.INVENTORYID&#xA;WHERE y.LONGDESCRIPTIONID IS NULL " xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\MAXSEQ (LOCATIONS)"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{25350b7e-d33c-4e54-88cb-6bf724926a79}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="MAXSEQ (LOCATIONS)"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:LoggingOptions
+        DTS:FilterKind="0" />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{6B57807A-44F9-4805-A3A7-4F2B1CC68E82}"
+          SQLTask:SqlStatementSource="CALL MIGRATION.STE_UPDATE_SEQ('LONGDESCRIPTIONSEQ', 'LONGDESCRIPTION', 'LONGDESCRIPTIONID');" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
       DTS:refId="Package\POST-PKG"
       DTS:CreationName="STOCK:SEQUENCE"
       DTS:Description="Sequence Container"
@@ -19652,16 +19725,33 @@ where itemid=?</property>
         </DTS:Executable>
       </DTS:Executables>
     </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\RESET (INVENTORY-RMK)"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{cad197c9-33a4-43ee-bedd-2cb41e8f285f}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="RESET (INVENTORY-RMK)"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="delete from maximo.longdescription where STE_MIGRATIONID is not null and ldownertable='INVENTORY' and ldownercol='STE_REMARKS';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
   </DTS:Executables>
   <DTS:PrecedenceConstraints>
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint]"
       DTS:CreationName=""
-      DTS:DTSID="{8E75AAF3-E6B2-45A9-992D-B56743613262}"
+      DTS:DTSID="{34FEAA03-5F02-4EA7-AE04-579DA46A2BA2}"
       DTS:From="Package\Convert IMAGE To TEXT"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint"
-      DTS:To="Package\POST-PKG" />
+      DTS:To="Package\RESET (INVENTORY-RMK)" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
       DTS:CreationName=""
@@ -19695,6 +19785,14 @@ where itemid=?</property>
       DTS:ObjectName="Constraint 12"
       DTS:To="Package\Convert IMAGE To TEXT" />
     <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 13]"
+      DTS:CreationName=""
+      DTS:DTSID="{56B5AD2E-0880-4AFB-80E5-395F1986E0E2}"
+      DTS:From="Package\MAXSEQ (LOCATIONS)"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 13"
+      DTS:To="Package\POST-PKG" />
+    <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
       DTS:CreationName=""
       DTS:DTSID="{2CDEE373-0A89-4EC1-8D64-63B066C372CE}"
@@ -19711,6 +19809,14 @@ where itemid=?</property>
       DTS:ObjectName="Constraint 3"
       DTS:To="Package\Pre-Task" />
     <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 4]"
+      DTS:CreationName=""
+      DTS:DTSID="{968F9994-298F-4EE1-B271-795BAAF439E8}"
+      DTS:From="Package\INVENTORY (STE_REMARKS)"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 4"
+      DTS:To="Package\MAXSEQ (LOCATIONS)" />
+    <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 5]"
       DTS:CreationName=""
       DTS:DTSID="{12D3DC69-9E0A-4A9E-AA13-7373C9F8D75E}"
@@ -19718,6 +19824,14 @@ where itemid=?</property>
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 5"
       DTS:To="Package\DF - NSITEM (RMK)" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 6]"
+      DTS:CreationName=""
+      DTS:DTSID="{7C09A74F-A6A9-4977-A9C3-0D6548049FAB}"
+      DTS:From="Package\RESET (INVENTORY-RMK)"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 6"
+      DTS:To="Package\INVENTORY (STE_REMARKS)" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 7]"
       DTS:CreationName=""
@@ -19754,19 +19868,19 @@ where itemid=?</property>
     design-time-name="Package">
     <LayoutInfo>
       <GraphLayout
-        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        Capacity="64" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="203.2,41.6"
           Id="Package\Convert IMAGE To TEXT"
-          TopLeft="5.50000000000013,1023.9" />
+          TopLeft="554.666636661525,217.033338944183" />
         <NodeLayout
           Size="155.2,41.6"
           Id="Package\DF - ITEM (LD)"
-          TopLeft="29.5000000000001,922.299999999999" />
+          TopLeft="292.833318945435,519.100002675848" />
         <NodeLayout
           Size="155.2,41.6"
           Id="Package\DF - ITEM (RMK)"
-          TopLeft="29.5000000000001,719.099999999999" />
+          TopLeft="292.833318945435,315.900002675849" />
         <NodeLayout
           Size="155.2,41.6"
           Id="Package\DF - NSITEM (LD)"
@@ -19786,11 +19900,19 @@ where itemid=?</property>
         <NodeLayout
           Size="152,41.6"
           Id="Package\Get Max ID 1 1"
-          TopLeft="31.1000000000001,820.699999999999" />
+          TopLeft="294.433318945435,417.500002675849" />
         <NodeLayout
           Size="134.4,41.6"
           Id="Package\Get Max ID 2"
-          TopLeft="39.9000000000001,617.5" />
+          TopLeft="303.233318945435,214.300002675851" />
+        <NodeLayout
+          Size="226.4,41.6"
+          Id="Package\INVENTORY (STE_REMARKS)"
+          TopLeft="648.266632427111,417.666668830249" />
+        <NodeLayout
+          Size="192.8,41.6"
+          Id="Package\MAXSEQ (LOCATIONS)"
+          TopLeft="662.433298183151,522.694706610337" />
         <NodeLayout
           Size="137.6,41.6"
           Id="Package\POST-PKG\FINISH LOG"
@@ -19801,7 +19923,7 @@ where itemid=?</property>
           PanelSize="270.4,130.4"
           Size="156,43.2"
           Id="Package\POST-PKG"
-          TopLeft="303.074998121833,1017.49470245192" />
+          TopLeft="683.908310647352,622.294705200091" />
         <NodeLayout
           Size="135.2,41.6"
           Id="Package\PRE-PKG\GET LOGID"
@@ -19852,20 +19974,36 @@ where itemid=?</property>
           Size="176,145.6"
           Id="Package\Pre-Task"
           TopLeft="19.1,5.49999999999996" />
+        <NodeLayout
+          Size="210.4,41.6"
+          Id="Package\RESET (INVENTORY-RMK)"
+          TopLeft="647.499964622162,311.266669842733" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="208.7,1041.89735122596">
+          TopLeft="688.799969994858,258.633338944183">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="94.3749981218333,0"
+              EndConnector="63.8999946273036,52.6333308985498"
               Start="0,0"
-              End="86.8749981218333,0">
+              End="63.8999946273036,45.1333308985498">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="86.8749981218333,0" />
+                    End="0,17.3000510980069" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,17.3000510980069"
+                    Point2="0,21.3000510980069"
+                    Point3="4,21.3000510980069" />
+                  <mssgle:LineSegment
+                    End="59.8999946273036,21.3000510980069" />
+                  <mssgle:CubicBezierSegment
+                    Point1="59.8999946273036,21.3000510980069"
+                    Point2="63.8999946273036,21.3000510980069"
+                    Point3="63.8999946273036,25.3000510980069" />
+                  <mssgle:LineSegment
+                    End="63.8999946273036,45.1333308985498" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -19898,7 +20036,7 @@ where itemid=?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 10]"
-          TopLeft="107.1,760.699999999999">
+          TopLeft="370.433318945435,357.500002675849">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -19920,18 +20058,18 @@ where itemid=?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 11]"
-          TopLeft="107.1,862.299999999999">
+          TopLeft="370.433318945435,459.100002675849">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,59.9999999999999"
+              EndConnector="0,59.9999999999998"
               Start="0,0"
-              End="0,52.4999999999999">
+              End="0,52.4999999999998">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,52.4999999999999" />
+                    End="0,52.4999999999998" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -19942,18 +20080,52 @@ where itemid=?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 12]"
-          TopLeft="107.1,963.899999999999">
+          TopLeft="394.966652278768,519.100002675848">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,60.0000000000001"
+              EndConnector="228.766651049423,-260.466663731665"
               Start="0,0"
-              End="0,52.5000000000001">
+              End="228.766651049423,-252.966663731665">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,52.5000000000001" />
+                    End="0,-126.620961832097" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,-126.620961832097"
+                    Point2="0,-130.620961832097"
+                    Point3="4,-130.620961832097" />
+                  <mssgle:LineSegment
+                    End="224.766651049423,-130.620961832097" />
+                  <mssgle:CubicBezierSegment
+                    Point1="224.766651049423,-130.620961832097"
+                    Point2="228.766651049423,-130.620961832097"
+                    Point3="228.766651049423,-134.620961832097" />
+                  <mssgle:LineSegment
+                    End="228.766651049423,-252.966663731665" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 13]"
+          TopLeft="760.370804415251,564.294706610337">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,57.9999985897541"
+              Start="0,0"
+              End="0,50.4999985897541">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,50.4999985897541" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -20019,6 +20191,28 @@ where itemid=?</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 4]"
+          TopLeft="760.149965305131,459.266668830249">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,63.4280377800879"
+              Start="0,0"
+              End="0,55.9280377800879">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,55.9280377800879" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 5]"
           TopLeft="107.1,252.7">
           <EdgeLayout.Curve>
@@ -20032,6 +20226,40 @@ where itemid=?</property>
                   Capacity="5">
                   <mssgle:LineSegment
                     End="0,52.4999999999999" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 6]"
+          TopLeft="752.699964622162,352.866669842733">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="8.76666780494929,64.7999989875159"
+              Start="0,0"
+              End="8.76666780494929,57.2999989875159">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,28.3999994937579" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,28.3999994937579"
+                    Point2="0,32.3999994937579"
+                    Point3="4,32.3999994937579" />
+                  <mssgle:LineSegment
+                    End="4.76666780494929,32.3999994937579" />
+                  <mssgle:CubicBezierSegment
+                    Point1="4.76666780494929,32.3999994937579"
+                    Point2="8.76666780494929,32.3999994937579"
+                    Point3="8.76666780494929,36.3999994937579" />
+                  <mssgle:LineSegment
+                    End="8.76666780494929,57.2999989875159" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -20064,18 +20292,30 @@ where itemid=?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 8]"
-          TopLeft="107.1,556.63333333936">
+          TopLeft="131.633333333333,515.03333333936">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,60.8666666606399"
+              EndConnector="217.733318945435,-259.133330663509"
               Start="0,0"
-              End="0,53.3666666606399">
+              End="217.733318945435,-251.633330663509">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,53.3666666606399" />
+                    End="0,-125.315244809124" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,-125.315244809124"
+                    Point2="0,-129.315244809124"
+                    Point3="4,-129.315244809124" />
+                  <mssgle:LineSegment
+                    End="213.733318945435,-129.315244809124" />
+                  <mssgle:CubicBezierSegment
+                    Point1="213.733318945435,-129.315244809124"
+                    Point2="217.733318945435,-129.315244809124"
+                    Point3="217.733318945435,-133.315244809124" />
+                  <mssgle:LineSegment
+                    End="217.733318945435,-251.633330663509" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -20086,18 +20326,18 @@ where itemid=?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 9]"
-          TopLeft="107.1,659.1">
+          TopLeft="370.433318945435,255.900002675851">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,59.9999999999999"
+              EndConnector="0,59.9999999999998"
               Start="0,0"
-              End="0,52.4999999999999">
+              End="0,52.4999999999998">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,52.4999999999999" />
+                    End="0,52.4999999999998" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -21723,7 +21963,7 @@ where itemid=?</property>
       <Property>
         <Name>OverwriteParamsSQLProp</Name>
         <Value
-          type="q2:string">false</Value>
+          type="q2:boolean">false</Value>
       </Property>
       <Property>
         <Name>UsedTableName</Name>
@@ -21733,7 +21973,7 @@ where itemid=?</property>
       <Property>
         <Name>TableInfoObjectType</Name>
         <Value
-          type="q4:string">0</Value>
+          type="q4:int">0</Value>
       </Property>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -22549,17 +22789,17 @@ where itemid=?</property>
       <Property>
         <Name>OverwriteParamsSQLProp</Name>
         <Value
-          type="q2:string">false</Value>
+          type="q2:boolean">false</Value>
       </Property>
       <Property>
         <Name>UsedTableName</Name>
         <Value
-          type="q3:string">"MAXIMO"."ITEM"</Value>
+          type="q3:string"></Value>
       </Property>
       <Property>
         <Name>TableInfoObjectType</Name>
         <Value
-          type="q4:string">0</Value>
+          type="q4:int">0</Value>
       </Property>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -23363,7 +23603,7 @@ where itemid=?</property>
       <Property>
         <Name>OverwriteParamsSQLProp</Name>
         <Value
-          type="q2:string">false</Value>
+          type="q2:boolean">false</Value>
       </Property>
       <Property>
         <Name>UsedTableName</Name>
@@ -23373,7 +23613,7 @@ where itemid=?</property>
       <Property>
         <Name>TableInfoObjectType</Name>
         <Value
-          type="q4:string">0</Value>
+          type="q4:int">0</Value>
       </Property>
       <Property>
         <Name>DataSourceViewID</Name>

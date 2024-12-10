@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0201_Inventory_Inventory_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="128"
-  DTS:VersionGUID="{18F3FE05-5470-4AAD-9EC0-7CA28146A1BF}"
+  DTS:VersionBuild="132"
+  DTS:VersionGUID="{60A383A3-9D67-4CE8-922B-4B25C18A58AE}"
   DTS:VersionMajor="2"
   DTS:VersionMinor="2">
   <DTS:Property
@@ -803,6 +803,11 @@
                       cachedLength="20"
                       cachedName="ITEM_CD"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_CD]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\Derived Column.Inputs[Derived Column Input].Columns[MAX_LEAD_TIME]"
+                      cachedDataType="i4"
+                      cachedName="MAX_LEAD_TIME"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[MAX_LEAD_TIME]" />
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -1284,13 +1289,13 @@
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">[ISNULL](#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[DT_FIRST_PROC]}) ? NULL(DT_DBTIMESTAMP) : [DATEADD]("dd",(DT_I8)#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[DT_FIRST_PROC]},(DT_DBTIMESTAMP)"1899-12-31")</property>
+                          name="Expression">[REPLACENULL](#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[DT_FIRST_PROC]},0) == 0 ? NULL(DT_DBTIMESTAMP) : [DATEADD]("dd",(DT_I8)#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[DT_FIRST_PROC]},(DT_DBTIMESTAMP)"1899-12-31")</property>
                         <property
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
-                          name="FriendlyExpression">ISNULL(DT_FIRST_PROC) ? NULL(DT_DBTIMESTAMP) : DATEADD("dd",(DT_I8)DT_FIRST_PROC,(DT_DBTIMESTAMP)"1899-12-31")</property>
+                          name="FriendlyExpression">REPLACENULL(DT_FIRST_PROC,0) == 0 ? NULL(DT_DBTIMESTAMP) : DATEADD("dd",(DT_I8)DT_FIRST_PROC,(DT_DBTIMESTAMP)"1899-12-31")</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
@@ -1361,6 +1366,28 @@
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
                           name="FriendlyExpression">(DT_STR,30,1252)ITEM_CD</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[v_deliverytime]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[v_deliverytime]"
+                      name="v_deliverytime"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[MAX_LEAD_TIME]}</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">MAX_LEAD_TIME</property>
                       </properties>
                     </outputColumn>
                   </outputColumns>
@@ -2806,12 +2833,6 @@ where "refTable"."STE_CSWNITEMNO" = ?</property>
                       externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[COSTTYPE]"
                       lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[v_costtype]" />
                     <inputColumn
-                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[MAX_LEAD_TIME]"
-                      cachedDataType="i4"
-                      cachedName="MAX_LEAD_TIME"
-                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DELIVERYTIME]"
-                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[MAX_LEAD_TIME]" />
-                    <inputColumn
                       refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_ITEM_CC]"
                       cachedCodepage="1252"
                       cachedDataType="str"
@@ -3048,6 +3069,38 @@ where "refTable"."STE_CSWNITEMNO" = ?</property>
                       cachedName="ITEMNUM"
                       externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ITEMNUM]"
                       lineageId="Package\Data Flow Task\Lookup - ITEM.Outputs[Lookup Match Output].Columns[ITEMNUM]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[ITEM_MEMO]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="ITEM_MEMO"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_DRAWINGNO]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_MEMO]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_firstprocdate]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="v_firstprocdate"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_FIRSTPROCDATE]"
+                      lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[v_firstprocdate]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_deliverytime]"
+                      cachedDataType="i4"
+                      cachedName="v_deliverytime"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DELIVERYTIME]"
+                      lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[v_deliverytime]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[MAX_LEAD_TIME]"
+                      cachedDataType="i4"
+                      cachedName="MAX_LEAD_TIME"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MAXLEAD]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[MAX_LEAD_TIME]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[MIN_LEAD_TIME]"
+                      cachedDataType="i4"
+                      cachedName="MIN_LEAD_TIME"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MINLEAD]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[MIN_LEAD_TIME]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -3421,6 +3474,35 @@ where "refTable"."STE_CSWNITEMNO" = ?</property>
                       refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONTS]"
                       dataType="i4"
                       name="STE_MIGRATIONTS" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[HASLD]"
+                      dataType="i4"
+                      name="HASLD" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_DRAWINGNO]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="STE_DRAWINGNO" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_FIRSTPROCDATE]"
+                      dataType="dbTimeStamp2"
+                      name="STE_FIRSTPROCDATE"
+                      scale="7" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_REMARK]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="STE_REMARK" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MAXLEAD]"
+                      dataType="i4"
+                      name="STE_MAXLEAD" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MINLEAD]"
+                      dataType="i4"
+                      name="STE_MINLEAD" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -3856,8 +3938,9 @@ where "refTable"."STE_CSWNITEMNO" = ?</property>
 	, ii.MAX_QTY
 	, ii.MIN_QTY
 	, ii.VAL_METHOD
-	--, ii.AVG_LEAD_TIME
+	, ii.AVG_LEAD_TIME
 	, ii.MAX_LEAD_TIME
+	, ii.MIN_LEAD_TIME
 	, ii.Y_1_CON_QTY
 	, ii.Y_2_CON_QTY
 	, ii.I_FREE_QTY
@@ -3887,16 +3970,6 @@ LEFT JOIN COSWIN.ITEM_INFO ii ON ii.S_ITEM_INFO = i.PK_ITEM_
 LEFT JOIN COSWIN.ITEM_GROUP ig ON ig.PK_ITEM_GROUP = i.S_GRP_ITEM 
 LEFT JOIN COSWIN.SUPPLIER_ s2 ON s2.PK_SUPPLIER_ = i.S_PREF_SUPL 
 LEFT JOIN COSWIN.SUPL_ITEMS si2 ON si2.S_SUPL_ITEM = s2.PK_SUPPLIER_ AND si2.S_ITEM_SUPL = i.PK_ITEM_ 
---LEFT JOIN (
---	-- multiple entry in ITEM_PTD for the same STORES_ITEMS
---	SELECT
---		ip.S_STORES_ITEM_PTD
---		, ip.TD_ISS_AVG_COST
---		, ROW_NUMBER() OVER (PARTITION BY ip.S_STORES_ITEM_PTD ORDER BY ip.PK_ITEM_PTD DESC) RN
---	FROM COSWIN.ITEM_PTD ip 
---	WHERE ip.S_STORES_ITEM_PTD IS NOT NULL
---) ip ON ip.S_STORES_ITEM_PTD = si.PK_STORES_ITEMS AND ip.RN = 1
--- WHERE ii.MIN_QTY&gt;0
 order by si.PK_STORES_ITEMS</property>
                 <property
                   dataType="System.Int32"
@@ -4153,6 +4226,18 @@ order by si.PK_STORES_ITEMS</property>
                       length="100"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_MEMO]"
                       name="ITEM_MEMO" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[AVG_LEAD_TIME]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[AVG_LEAD_TIME]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[AVG_LEAD_TIME]"
+                      name="AVG_LEAD_TIME" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[MIN_LEAD_TIME]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[MIN_LEAD_TIME]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[MIN_LEAD_TIME]"
+                      name="MIN_LEAD_TIME" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -4306,6 +4391,14 @@ order by si.PK_STORES_ITEMS</property>
                       dataType="str"
                       length="100"
                       name="ITEM_MEMO" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[AVG_LEAD_TIME]"
+                      dataType="i4"
+                      name="AVG_LEAD_TIME" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[MIN_LEAD_TIME]"
+                      dataType="i4"
+                      name="MIN_LEAD_TIME" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -4527,6 +4620,18 @@ order by si.PK_STORES_ITEMS</property>
                       length="100"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[ITEM_MEMO]"
                       name="ITEM_MEMO" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[AVG_LEAD_TIME]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[AVG_LEAD_TIME]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[AVG_LEAD_TIME]"
+                      name="AVG_LEAD_TIME" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[MIN_LEAD_TIME]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[MIN_LEAD_TIME]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[MIN_LEAD_TIME]"
+                      name="MIN_LEAD_TIME" />
                     <outputColumn
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -5064,115 +5169,71 @@ order by si.PK_STORES_ITEMS</property>
       <GraphLayout
         Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
+          Size="161.6,41.6"
+          Id="Package\Data Flow Task\Derived Column 4 1"
+          TopLeft="798.919008136886,163.738095573007" />
+        <NodeLayout
+          Size="158.4,41.6"
+          Id="Package\Data Flow Task\Derived Column"
+          TopLeft="181,79" />
+        <NodeLayout
           Size="144.8,41.6"
           Id="Package\Data Flow Task\Oracle Source"
           TopLeft="19.5000000000001,5.5" />
-        <NodeLayout
-          Size="128,41.6"
-          Id="Package\Data Flow Task\Multicast 1"
-          TopLeft="198.333322496878,344.533331477112" />
-        <NodeLayout
-          Size="170.4,41.6"
-          Id="Package\Data Flow Task\Flat File Destination"
-          TopLeft="393.333311842548,258.533331730233" />
         <NodeLayout
           Size="146.4,41.6"
           Id="Package\Data Flow Task\Lookup - ITEM"
           TopLeft="187.833324136006,159.033332977759" />
         <NodeLayout
-          Size="171.2,42.4"
+          Size="171.2,41.6"
           Id="Package\Data Flow Task\OLE DB Destination"
           TopLeft="171.3333242726,428.233330410388" />
         <NodeLayout
-          Size="180,41.6"
-          Id="Package\Data Flow Task\OLE DB Destination 1 1"
-          TopLeft="568.33331361827,433.566664418711" />
+          Size="170.4,41.6"
+          Id="Package\Data Flow Task\Flat File Destination"
+          TopLeft="393.333311842548,258.533331730233" />
         <NodeLayout
-          Size="161.6,41.6"
-          Id="Package\Data Flow Task\Derived Column 4"
-          TopLeft="586.29997213483,341.699998390874" />
+          Size="128,41.6"
+          Id="Package\Data Flow Task\Multicast 1"
+          TopLeft="198.333322496878,344.533331477112" />
         <NodeLayout
           Size="126.4,41.6"
-          Id="Package\Data Flow Task\Aggregate"
-          TopLeft="396.166646086508,341.766664762232" />
+          Id="Package\Data Flow Task\Aggregate 1"
+          TopLeft="608.785682088564,163.804761944365" />
         <NodeLayout
           Size="119.2,41.6"
           Id="Package\Data Flow Task\Multicast"
           TopLeft="414.166644037599,161.96190383035" />
         <NodeLayout
-          Size="158.4,41.6"
-          Id="Package\Data Flow Task\Derived Column"
-          TopLeft="181,79" />
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Oracle Source Output]"
-          TopLeft="91.9000000000001,47.1">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="168.3,31.9"
-              Start="0,0"
-              End="168.3,24.4">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,11.95" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,11.95"
-                    Point2="0,15.95"
-                    Point3="4,15.95" />
-                  <mssgle:LineSegment
-                    End="164.3,15.95" />
-                  <mssgle:CubicBezierSegment
-                    Point1="164.3,15.95"
-                    Point2="168.3,15.95"
-                    Point3="168.3,19.95" />
-                  <mssgle:LineSegment
-                    End="168.3,24.4" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Multicast Output 2]"
-          TopLeft="326.333322496878,363.949998119672">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="69.8333235896302,0"
-              Start="0,0"
-              End="62.3333235896302,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="62.3333235896302,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
+          Size="161.6,41.6"
+          Id="Package\Data Flow Task\Derived Column 4"
+          TopLeft="586.29997213483,341.699998390874" />
+        <NodeLayout
+          Size="180,41.6"
+          Id="Package\Data Flow Task\OLE DB Destination 1 1"
+          TopLeft="568.33331361827,433.566664418711" />
+        <NodeLayout
+          Size="126.4,41.6"
+          Id="Package\Data Flow Task\Aggregate"
+          TopLeft="396.166646086508,341.766664762232" />
+        <NodeLayout
+          Size="180,41.6"
+          Id="Package\Data Flow Task\OLE DB Destination 1 1 1"
+          TopLeft="780.952349620326,255.604761600844" />
         <EdgeLayout
           Id="Package\Data Flow Task.Paths[Multicast Output 11]"
           TopLeft="259.633323384739,386.133331477112">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,42.0999989332759"
+              EndConnector="0,42.099998933276"
               Start="0,0"
-              End="0,34.5999989332759">
+              End="0,34.599998933276">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,34.5999989332759" />
+                    End="0,34.599998933276" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -5252,6 +5313,40 @@ order by si.PK_STORES_ITEMS</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Derived Column Output2]"
+          TopLeft="879.719008136886,205.338095573007">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-8.76665851655991,50.2666660278377"
+              Start="0,0"
+              End="-8.76665851655991,42.7666660278377">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,21.1333330139188" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,21.1333330139188"
+                    Point2="0,25.1333330139188"
+                    Point3="-4,25.1333330139188" />
+                  <mssgle:LineSegment
+                    End="-4.76665851655991,25.1333330139188" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-4.76665851655991,25.1333330139188"
+                    Point2="-8.76665851655991,25.1333330139188"
+                    Point3="-8.76665851655991,29.1333330139188" />
+                  <mssgle:LineSegment
+                    End="-8.76665851655991,42.7666660278377" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
           Id="Package\Data Flow Task.Paths[Derived Column Output1]"
           TopLeft="667.09997213483,383.299998390874">
           <EdgeLayout.Curve>
@@ -5308,74 +5403,6 @@ order by si.PK_STORES_ITEMS</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Aggregate Output 1]"
-          TopLeft="522.566646086508,362.533331576553">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="63.7333260483219,0"
-              Start="0,0"
-              End="56.2333260483219,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="56.2333260483219,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="180,41.6"
-          Id="Package\Data Flow Task\OLE DB Destination 1 1 1"
-          TopLeft="780.952349620326,255.604761600844" />
-        <NodeLayout
-          Size="161.6,41.6"
-          Id="Package\Data Flow Task\Derived Column 4 1"
-          TopLeft="798.919008136886,163.738095573007" />
-        <NodeLayout
-          Size="126.4,41.6"
-          Id="Package\Data Flow Task\Aggregate 1"
-          TopLeft="608.785682088564,163.804761944365" />
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Derived Column Output2]"
-          TopLeft="879.719008136886,205.338095573007">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-8.76665851655991,50.2666660278377"
-              Start="0,0"
-              End="-8.76665851655991,42.7666660278377">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,21.1333330139188" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,21.1333330139188"
-                    Point2="0,25.1333330139188"
-                    Point3="-4,25.1333330139188" />
-                  <mssgle:LineSegment
-                    End="-4.76665851655991,25.1333330139188" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-4.76665851655991,25.1333330139188"
-                    Point2="-8.76665851655991,25.1333330139188"
-                    Point3="-8.76665851655991,29.1333330139188" />
-                  <mssgle:LineSegment
-                    End="-8.76665851655991,42.7666660278377" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
           Id="Package\Data Flow Task.Paths[Aggregate Output 11]"
           TopLeft="735.185682088564,184.571428758686">
           <EdgeLayout.Curve>
@@ -5398,6 +5425,62 @@ order by si.PK_STORES_ITEMS</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Aggregate Output 1]"
+          TopLeft="522.566646086508,362.533331576553">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="63.7333260483219,0"
+              Start="0,0"
+              End="56.2333260483219,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="56.2333260483219,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Oracle Source Output]"
+          TopLeft="91.9000000000001,47.1">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="168.3,31.9"
+              Start="0,0"
+              End="168.3,24.4">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,11.95" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,11.95"
+                    Point2="0,15.95"
+                    Point3="4,15.95" />
+                  <mssgle:LineSegment
+                    End="164.3,15.95" />
+                  <mssgle:CubicBezierSegment
+                    Point1="164.3,15.95"
+                    Point2="168.3,15.95"
+                    Point3="168.3,19.95" />
+                  <mssgle:LineSegment
+                    End="168.3,24.4" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
           Id="Package\Data Flow Task.Paths[Multicast Output 21]"
           TopLeft="533.366644037599,183.683332887358">
           <EdgeLayout.Curve>
@@ -5411,6 +5494,28 @@ order by si.PK_STORES_ITEMS</property>
                   Capacity="5">
                   <mssgle:LineSegment
                     End="67.919038050965,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Multicast Output 2]"
+          TopLeft="326.333322496878,363.949998119672">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="69.8333235896302,0"
+              Start="0,0"
+              End="62.3333235896302,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="62.3333235896302,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
