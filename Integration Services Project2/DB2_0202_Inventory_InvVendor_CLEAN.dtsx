@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0202_Inventory_InvVendor_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="124"
-  DTS:VersionGUID="{23C4A0A2-6BAD-4CAE-B660-91B4A6B0E2D7}"
+  DTS:VersionBuild="128"
+  DTS:VersionGUID="{5D9F1151-07EC-4B5F-8659-3DC89567844E}"
   DTS:VersionMinor="1">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -1910,12 +1910,6 @@ where "refTable"."STE_CSWNITEMNO" = ?</property>
                       externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_CSWNLASTPO]"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[S_L_PO]" />
                     <inputColumn
-                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[MAX_LEAD_TIME]"
-                      cachedDataType="i4"
-                      cachedName="MAX_LEAD_TIME"
-                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PROMDELIVERYTIME]"
-                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[MAX_LEAD_TIME]" />
-                    <inputColumn
                       refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_taxcode1]"
                       cachedCodepage="1252"
                       cachedDataType="str"
@@ -1956,6 +1950,12 @@ where "refTable"."STE_CSWNITEMNO" = ?</property>
                       cachedName="MIN_LEAD_TIME"
                       externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MINLEAD]"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[MIN_LEAD_TIME]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[S_AVG_LEAD_DYS]"
+                      cachedDataType="i4"
+                      cachedName="S_AVG_LEAD_DYS"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PROMDELIVERYTIME]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[S_AVG_LEAD_DYS]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -2440,6 +2440,7 @@ where "refTable"."STE_CSWNITEMNO" = ?</property>
 	, si.TIMESTAMP
 	, si.S_ITEM_REF
 	, si.S_ITEM_UNIT
+	, si.S_AVG_LEAD_DYS
 	, CASE WHEN COALESCE(si.S_LAT_UNIT_RATE,0)=0 THEN it.BUY_PRICE 
 		ELSE si.S_LAT_UNIT_RATE
 	  END AS S_LAT_UNIT_RATE
@@ -2622,6 +2623,12 @@ order by si.PK_SUPL_ITEMS;</property>
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[TIMESTAMP]"
                       name="TIMESTAMP"
                       precision="10" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[S_AVG_LEAD_DYS]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_AVG_LEAD_DYS]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[S_AVG_LEAD_DYS]"
+                      name="S_AVG_LEAD_DYS" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -2707,6 +2714,10 @@ order by si.PK_SUPL_ITEMS;</property>
                       dataType="numeric"
                       name="TIMESTAMP"
                       precision="10" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_AVG_LEAD_DYS]"
+                      dataType="i4"
+                      name="S_AVG_LEAD_DYS" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -2831,6 +2842,12 @@ order by si.PK_SUPL_ITEMS;</property>
                       name="TIMESTAMP"
                       precision="10" />
                     <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[S_AVG_LEAD_DYS]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_AVG_LEAD_DYS]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[S_AVG_LEAD_DYS]"
+                      name="S_AVG_LEAD_DYS" />
+                    <outputColumn
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
@@ -2899,20 +2916,20 @@ order by si.PK_SUPL_ITEMS;</property>
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
-      DTS:refId="Package\Execute SQL Task"
+      DTS:refId="Package\MAXSEQ (INVVENDOR)"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
       DTS:Description="Execute SQL Task"
       DTS:DTSID="{7D02000A-3E2A-4C59-8992-9FDEE912B2FD}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:LocaleID="-1"
-      DTS:ObjectName="Execute SQL Task"
+      DTS:ObjectName="MAXSEQ (INVVENDOR)"
       DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
       DTS:ThreadHint="0">
       <DTS:Variables />
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
-          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-          SQLTask:SqlStatementSource="update maximo.maxsequence set maxreserved=&#xA;(select max(invvendorid)+1 from maximo.invvendor) &#xA;where tbname='INVVENDOR' and name='INVVENDORID';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:Connection="{6B57807A-44F9-4805-A3A7-4F2B1CC68E82}"
+          SQLTask:SqlStatementSource="CALL MIGRATION.STE_UPDATE_SEQ('INVVENDORSEQ', 'INVVENDOR', 'INVVENDORID');" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -3110,7 +3127,7 @@ order by si.PK_SUPL_ITEMS;</property>
       DTS:From="Package\Data Flow Task"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint"
-      DTS:To="Package\Execute SQL Task" />
+      DTS:To="Package\MAXSEQ (INVVENDOR)" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
       DTS:CreationName=""
@@ -3131,7 +3148,7 @@ order by si.PK_SUPL_ITEMS;</property>
       DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
       DTS:CreationName=""
       DTS:DTSID="{8DDDB224-7BD5-443F-B2E2-AB6741A70F50}"
-      DTS:From="Package\Execute SQL Task"
+      DTS:From="Package\MAXSEQ (INVVENDOR)"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 3"
       DTS:To="Package\POST-PKG" />
@@ -3153,8 +3170,8 @@ order by si.PK_SUPL_ITEMS;</property>
           Id="Package\Data Flow Task"
           TopLeft="60.6916642193581,327.8666665612" />
         <NodeLayout
-          Size="164.8,41.6"
-          Id="Package\Execute SQL Task"
+          Size="194.4,41.6"
+          Id="Package\MAXSEQ (INVVENDOR)"
           TopLeft="55.8916642193581,429.4666665612" />
         <NodeLayout
           Size="137.6,41.6"
@@ -3166,7 +3183,7 @@ order by si.PK_SUPL_ITEMS;</property>
           PanelSize="270.4,130.4"
           Size="270.4,43.2"
           Id="Package\POST-PKG"
-          TopLeft="274.83333151208,432.855817628542" />
+          TopLeft="298.999996858338,432.855817628542" />
         <NodeLayout
           Size="135.2,41.6"
           Id="Package\PRE-PKG\GET LOGID"
@@ -3249,14 +3266,26 @@ order by si.PK_SUPL_ITEMS;</property>
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,59.9999999999999"
+              EndConnector="14.8,59.9999999999999"
               Start="0,0"
-              End="0,52.4999999999999">
+              End="14.8,52.4999999999999">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,52.4999999999999" />
+                    End="0,26" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,26"
+                    Point2="0,30"
+                    Point3="4,30" />
+                  <mssgle:LineSegment
+                    End="10.8,30" />
+                  <mssgle:CubicBezierSegment
+                    Point1="10.8,30"
+                    Point2="14.8,30"
+                    Point3="14.8,34" />
+                  <mssgle:LineSegment
+                    End="14.8,52.4999999999999" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -3323,18 +3352,18 @@ order by si.PK_SUPL_ITEMS;</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 3]"
-          TopLeft="220.691664219358,452.361242094871">
+          TopLeft="250.291664219358,452.361242094871">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="54.1416672927222,0"
+              EndConnector="48.7083326389802,0"
               Start="0,0"
-              End="46.6416672927222,0">
+              End="41.2083326389802,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="46.6416672927222,0" />
+                    End="41.2083326389802,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
