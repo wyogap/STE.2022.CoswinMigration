@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0506_Misc_Attendance_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="130"
-  DTS:VersionGUID="{5C082B54-5E90-4D9D-9F66-095E816002D1}"
+  DTS:VersionBuild="131"
+  DTS:VersionGUID="{17983C36-9005-429E-813D-AA2AA815EAD0}"
   DTS:VersionMinor="1">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -1636,23 +1636,6 @@ LEFT JOIN RES_EMPL re ON re.RE_EMNO = ra.AT_EMPLOYEE</property>
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
-      DTS:refId="Package\Execute SQL Task"
-      DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:Description="Execute SQL Task"
-      DTS:DTSID="{1DB6EC65-8E03-4820-BF8F-346D56F3769B}"
-      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
-      DTS:LocaleID="-1"
-      DTS:ObjectName="Execute SQL Task"
-      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-      DTS:ThreadHint="0">
-      <DTS:Variables />
-      <DTS:ObjectData>
-        <SQLTask:SqlTaskData
-          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-          SQLTask:SqlStatementSource="update maximo.maxsequence set maxreserved=&#xA;(select max(attendanceid)+1 from maximo.attendance)&#xA; where tbname='ATTENDANCE' and name='ATTENDANCEID';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
-      </DTS:ObjectData>
-    </DTS:Executable>
-    <DTS:Executable
       DTS:refId="Package\Get Max ID"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
       DTS:Description="Execute SQL Task"
@@ -1672,6 +1655,23 @@ LEFT JOIN RES_EMPL re ON re.RE_EMNO = ra.AT_EMPLOYEE</property>
             SQLTask:ResultName="0"
             SQLTask:DtsVariableName="User::max_id" />
         </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\MAXSEQ (ATTENDANCE)"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{1DB6EC65-8E03-4820-BF8F-346D56F3769B}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="MAXSEQ (ATTENDANCE)"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{6B57807A-44F9-4805-A3A7-4F2B1CC68E82}"
+          SQLTask:SqlStatementSource="CALL MIGRATION.STE_UPDATE_SEQ('ATTENDANCESEQ', 'ATTENDANCE', 'ATTENDANCEID');" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -1837,7 +1837,7 @@ LEFT JOIN RES_EMPL re ON re.RE_EMNO = ra.AT_EMPLOYEE</property>
       DTS:From="Package\Data Flow Task"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint"
-      DTS:To="Package\Execute SQL Task" />
+      DTS:To="Package\MAXSEQ (ATTENDANCE)" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
       DTS:CreationName=""
@@ -1858,7 +1858,7 @@ LEFT JOIN RES_EMPL re ON re.RE_EMNO = ra.AT_EMPLOYEE</property>
       DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
       DTS:CreationName=""
       DTS:DTSID="{63DD7E59-376E-4C08-A57E-97D721F315D1}"
-      DTS:From="Package\Execute SQL Task"
+      DTS:From="Package\MAXSEQ (ATTENDANCE)"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 3"
       DTS:To="Package\POST-PKG" />
@@ -1888,8 +1888,8 @@ LEFT JOIN RES_EMPL re ON re.RE_EMNO = ra.AT_EMPLOYEE</property>
           Id="Package\Data Flow Task"
           TopLeft="35.0666659050518,468.899999620318" />
         <NodeLayout
-          Size="164.8,41.6"
-          Id="Package\Execute SQL Task"
+          Size="203.2,41.6"
+          Id="Package\MAXSEQ (ATTENDANCE)"
           TopLeft="30.8333321081268,576.933335922229" />
         <NodeLayout
           Size="134.4,41.6"
@@ -1905,7 +1905,7 @@ LEFT JOIN RES_EMPL re ON re.RE_EMNO = ra.AT_EMPLOYEE</property>
           PanelSize="270.4,130.4"
           Size="156,43.2"
           Id="Package\POST-PKG"
-          TopLeft="266.916665563567,575.250006314468" />
+          TopLeft="332.749995299926,576.983339635748" />
         <NodeLayout
           Size="135.2,41.6"
           Id="Package\PRE-PKG\GET LOGID"
@@ -1958,18 +1958,30 @@ LEFT JOIN RES_EMPL re ON re.RE_EMNO = ra.AT_EMPLOYEE</property>
           TopLeft="24.6666659050518,109.899999620319" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="112.949999006589,510.499999620318">
+          TopLeft="112.666665905052,510.499999620318">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,66.4333363019099"
+              EndConnector="19.766666203075,66.433336301911"
               Start="0,0"
-              End="0,58.9333363019099">
+              End="19.766666203075,58.933336301911">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,58.9333363019099" />
+                    End="0,29.2166681509555" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,29.2166681509555"
+                    Point2="0,33.2166681509555"
+                    Point3="4,33.2166681509555" />
+                  <mssgle:LineSegment
+                    End="15.766666203075,33.2166681509555" />
+                  <mssgle:CubicBezierSegment
+                    Point1="15.766666203075,33.2166681509555"
+                    Point2="19.766666203075,33.2166681509555"
+                    Point3="19.766666203075,37.2166681509555" />
+                  <mssgle:LineSegment
+                    End="19.766666203075,58.933336301911" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -2036,18 +2048,18 @@ LEFT JOIN RES_EMPL re ON re.RE_EMNO = ra.AT_EMPLOYEE</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 3]"
-          TopLeft="195.633332108127,597.291671118349">
+          TopLeft="234.033332108127,598.158337778989">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="71.2833334554402,0"
+              EndConnector="98.7166631917989,0"
               Start="0,0"
-              End="63.7833334554402,0">
+              End="91.2166631917989,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="63.7833334554402,0" />
+                    End="91.2166631917989,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>

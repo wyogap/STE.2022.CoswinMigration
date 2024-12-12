@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0603_LD_Contract_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="204"
-  DTS:VersionGUID="{3D81FA9C-C8B4-4460-8741-2287F09D1B57}"
+  DTS:VersionBuild="206"
+  DTS:VersionGUID="{65F51CE2-FBEB-4DFE-A880-EF1656D5A3D7}"
   DTS:VersionMinor="2">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -13778,23 +13778,6 @@ where contracttermid=?</property>
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
-      DTS:refId="Package\Execute SQL Task 1"
-      DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:Description="Execute SQL Task"
-      DTS:DTSID="{9b7a1108-4c2b-4df8-bb72-6b9445e22bf4}"
-      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
-      DTS:LocaleID="-1"
-      DTS:ObjectName="Execute SQL Task 1"
-      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-      DTS:ThreadHint="0">
-      <DTS:Variables />
-      <DTS:ObjectData>
-        <SQLTask:SqlTaskData
-          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-          SQLTask:SqlStatementSource="update MAXIMO.maxsequence set maxreserved=&#xA;(select max(contracttermid)+1 from MAXIMO.contractterm) &#xA;where tbname='CONTRACTTERM' and name='CONTRACTTERMID';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
-      </DTS:ObjectData>
-    </DTS:Executable>
-    <DTS:Executable
       DTS:refId="Package\Get Max ID"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
       DTS:Description="Execute SQL Task"
@@ -13858,6 +13841,42 @@ where contracttermid=?</property>
             SQLTask:ResultName="0"
             SQLTask:DtsVariableName="User::max_id" />
         </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\MAXSEQ (CONTRACTTERM)"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{9b7a1108-4c2b-4df8-bb72-6b9445e22bf4}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="MAXSEQ (CONTRACTTERM)"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{6B57807A-44F9-4805-A3A7-4F2B1CC68E82}"
+          SQLTask:SqlStatementSource="CALL MIGRATION.STE_UPDATE_SEQ('CONTRACTTERMSEQ', 'CONTRACTTERM', 'CONTRACTTERMID');" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\MAXSEQ (LD)"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{9d573aff-0fb6-423b-80df-cbfb347eb4da}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="MAXSEQ (LD)"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:LoggingOptions
+        DTS:FilterKind="0" />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{6B57807A-44F9-4805-A3A7-4F2B1CC68E82}"
+          SQLTask:SqlStatementSource="CALL MIGRATION.STE_UPDATE_SEQ('LONGDESCRIPTIONSEQ', 'LONGDESCRIPTION', 'LONGDESCRIPTIONID');" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -14105,13 +14124,21 @@ where contracttermid=?</property>
       DTS:ObjectName="Constraint 1 1"
       DTS:To="Package\Get Max ID 2" />
     <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 10]"
+      DTS:CreationName=""
+      DTS:DTSID="{55C528B4-B500-45BD-B4FE-0CC8AB45C7F7}"
+      DTS:From="Package\MAXSEQ (LD)"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 10"
+      DTS:To="Package\POST-PKG" />
+    <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
       DTS:CreationName=""
       DTS:DTSID="{25505EAA-5058-4302-AE83-801D3FBFF56C}"
       DTS:From="Package\DF - ContractTerm"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 2"
-      DTS:To="Package\Execute SQL Task 1" />
+      DTS:To="Package\MAXSEQ (CONTRACTTERM)" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
       DTS:CreationName=""
@@ -14124,7 +14151,7 @@ where contracttermid=?</property>
       DTS:refId="Package.PrecedenceConstraints[Constraint 4]"
       DTS:CreationName=""
       DTS:DTSID="{1C805566-D7D7-4988-968D-51A987E8F630}"
-      DTS:From="Package\Execute SQL Task 1"
+      DTS:From="Package\MAXSEQ (CONTRACTTERM)"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 4"
       DTS:To="Package\Pre-Task" />
@@ -14179,11 +14206,11 @@ where contracttermid=?</property>
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 9]"
       DTS:CreationName=""
-      DTS:DTSID="{1785EE2B-EAA5-43B9-A509-DD654FCC40A1}"
+      DTS:DTSID="{F0A07401-E057-467E-858B-1EA32FE823F3}"
       DTS:From="Package\Convert IMAGE To TEXT 1"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 9"
-      DTS:To="Package\POST-PKG" />
+      DTS:To="Package\MAXSEQ (LD)" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
 <!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
@@ -14204,7 +14231,7 @@ where contracttermid=?</property>
         <NodeLayout
           Size="204,41.6"
           Id="Package\Convert IMAGE To TEXT 1"
-          TopLeft="715.924959683047,597.08333362134" />
+          TopLeft="716.758292970849,597.08333362134" />
         <NodeLayout
           Size="239.2,41.6"
           Id="Package\DF - Contract BLANKET RMK (LD)"
@@ -14218,8 +14245,8 @@ where contracttermid=?</property>
           Id="Package\DF - ContractTerm (LD)"
           TopLeft="391.141646778791,513.316666457239" />
         <NodeLayout
-          Size="173.6,41.6"
-          Id="Package\Execute SQL Task 1"
+          Size="220,41.6"
+          Id="Package\MAXSEQ (CONTRACTTERM)"
           TopLeft="51.6666638437246,603.466665123833" />
         <NodeLayout
           Size="122.4,41.6"
@@ -14243,7 +14270,7 @@ where contracttermid=?</property>
           PanelSize="270.4,130.4"
           Size="156,43.2"
           Id="Package\POST-PKG"
-          TopLeft="67.7250129298612,705.289150280859" />
+          TopLeft="736.691650957325,791.755816796858" />
         <NodeLayout
           Size="135.2,41.6"
           Id="Package\PRE-PKG\GET LOGID"
@@ -14412,26 +14439,26 @@ where contracttermid=?</property>
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-41.5333323316443,42.7333335201599"
+              EndConnector="-26.0666656649776,42.7333335201599"
               Start="0,0"
-              End="-41.5333323316443,35.2333335201599">
+              End="-26.0666656649776,35.2333335201599">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,21.4058448599307" />
+                    End="0,21.454873757496" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,21.4058448599307"
-                    Point2="0,25.4058448599307"
-                    Point3="-4,25.4058448599307" />
+                    Point1="0,21.454873757496"
+                    Point2="0,25.454873757496"
+                    Point3="-4,25.454873757496" />
                   <mssgle:LineSegment
-                    End="-37.5333323316443,25.4058448599307" />
+                    End="-22.0666656649776,25.454873757496" />
                   <mssgle:CubicBezierSegment
-                    Point1="-37.5333323316443,25.4058448599307"
-                    Point2="-41.5333323316443,25.4058448599307"
-                    Point3="-41.5333323316443,29.4058448599307" />
+                    Point1="-22.0666656649776,25.454873757496"
+                    Point2="-26.0666656649776,25.454873757496"
+                    Point3="-26.0666656649776,29.454873757496" />
                   <mssgle:LineSegment
-                    End="-41.5333323316443,35.2333335201599" />
+                    End="-26.0666656649776,35.2333335201599" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -14464,30 +14491,30 @@ where contracttermid=?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 4]"
-          TopLeft="166.066663843725,603.466665123833">
+          TopLeft="196.999997177058,603.466665123833">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="262.81665069552,-252.16666635308"
+              EndConnector="231.883317362186,-252.16666635308"
               Start="0,0"
-              End="262.81665069552,-244.66666635308">
+              End="231.883317362186,-244.66666635308">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,-122.169443908118" />
+                    End="0,-121.869269792539" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,-122.169443908118"
-                    Point2="0,-126.169443908118"
-                    Point3="4,-126.169443908118" />
+                    Point1="0,-121.869269792539"
+                    Point2="0,-125.869269792539"
+                    Point3="4,-125.869269792539" />
                   <mssgle:LineSegment
-                    End="258.81665069552,-126.169443908118" />
+                    End="227.883317362186,-125.869269792539" />
                   <mssgle:CubicBezierSegment
-                    Point1="258.81665069552,-126.169443908118"
-                    Point2="262.81665069552,-126.169443908118"
-                    Point3="262.81665069552,-130.169443908118" />
+                    Point1="227.883317362186,-125.869269792539"
+                    Point2="231.883317362186,-125.869269792539"
+                    Point3="231.883317362186,-129.869269792539" />
                   <mssgle:LineSegment
-                    End="262.81665069552,-244.66666635308" />
+                    End="231.883317362186,-244.66666635308" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -14588,18 +14615,30 @@ where contracttermid=?</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 6 1]"
-          TopLeft="814.170794443891,553.800001599888">
+          TopLeft="810.416629204735,553.800001599888">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,43.2833320214521"
+              EndConnector="8.34166376611381,43.283332021452"
               Start="0,0"
-              End="0,35.7833320214521">
+              End="8.34166376611381,35.783332021452">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,35.7833320214521" />
+                    End="0,17.641666010726" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,17.641666010726"
+                    Point2="0,21.641666010726"
+                    Point3="4,21.641666010726" />
+                  <mssgle:LineSegment
+                    End="4.34166376611381,21.641666010726" />
+                  <mssgle:CubicBezierSegment
+                    Point1="4.34166376611381,21.641666010726"
+                    Point2="8.34166376611381,21.641666010726"
+                    Point3="8.34166376611381,25.641666010726" />
+                  <mssgle:LineSegment
+                    End="8.34166376611381,35.783332021452" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -14676,32 +14715,46 @@ where contracttermid=?</property>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <NodeLayout
+          Size="145.6,41.6"
+          Id="Package\MAXSEQ (LD)"
+          TopLeft="744.166626007195,689.866664472951" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 9]"
-          TopLeft="817.924959683047,638.68333362134">
+          TopLeft="817.862459489022,638.68333362134">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-672.199946753186,66.6058166595182"
+              EndConnector="0,51.1833308516108"
               Start="0,0"
-              End="-672.199946753186,59.1058166595182">
+              End="0,43.6833308516108">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,29.3029083297591" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,29.3029083297591"
-                    Point2="0,33.3029083297591"
-                    Point3="-4,33.3029083297591" />
+                    End="0,43.6833308516108" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 10]"
+          TopLeft="815.82913848226,731.466664472951">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60.2891523239076"
+              Start="0,0"
+              End="0,52.7891523239076">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
                   <mssgle:LineSegment
-                    End="-668.199946753186,33.3029083297591" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-668.199946753186,33.3029083297591"
-                    Point2="-672.199946753186,33.3029083297591"
-                    Point3="-672.199946753186,37.3029083297591" />
-                  <mssgle:LineSegment
-                    End="-672.199946753186,59.1058166595182" />
+                    End="0,52.7891523239076" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
