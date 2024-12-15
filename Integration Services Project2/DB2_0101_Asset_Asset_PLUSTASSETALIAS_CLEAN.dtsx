@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0101_Asset_Asset_PLUSTASSETALIAS_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="173"
-  DTS:VersionGUID="{C20612F7-6E75-441D-8DD4-04164156FC83}"
+  DTS:VersionBuild="180"
+  DTS:VersionGUID="{EEF72D5F-B71D-4A3E-BA02-EEFED368EF52}"
   DTS:VersionMajor="5"
   DTS:VersionMinor="5">
   <DTS:Property
@@ -1939,6 +1939,16 @@
                       cachedLength="20"
                       cachedName="EQ_ITEM"
                       lineageId="Package\DF - ASSET\Oracle Source.Outputs[Oracle Source Output].Columns[EQ_ITEM]" />
+                    <inputColumn
+                      refId="Package\DF - ASSET\Derived Column.Inputs[Derived Column Input].Columns[EM_DATE]"
+                      cachedDataType="r8"
+                      cachedName="EM_DATE"
+                      lineageId="Package\DF - ASSET\Oracle Source.Outputs[Oracle Source Output].Columns[EM_DATE]" />
+                    <inputColumn
+                      refId="Package\DF - ASSET\Derived Column.Inputs[Derived Column Input].Columns[EM_TIME]"
+                      cachedDataType="r8"
+                      cachedName="EM_TIME"
+                      lineageId="Package\DF - ASSET\Oracle Source.Outputs[Oracle Source Output].Columns[EM_TIME]" />
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -3349,6 +3359,28 @@
                           name="FriendlyExpression">PK_EQP_TOPO + REPLACENULL(@[User::max_id],0)</property>
                       </properties>
                     </outputColumn>
+                    <outputColumn
+                      refId="Package\DF - ASSET\Derived Column.Outputs[Derived Column Output].Columns[v_transdate]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\DF - ASSET\Derived Column.Outputs[Derived Column Output].Columns[v_transdate]"
+                      name="v_transdate"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">#{Package\DF - ASSET\Oracle Source.Outputs[Oracle Source Output].Columns[EM_DATE]} &gt; 0 ? [DATEADD]("ss",(DT_I8)#{Package\DF - ASSET\Oracle Source.Outputs[Oracle Source Output].Columns[EM_TIME]},[DATEADD]("dd",(DT_I8)#{Package\DF - ASSET\Oracle Source.Outputs[Oracle Source Output].Columns[EM_DATE]},(DT_DBTIMESTAMP)"1899-12-31")) : NULL(DT_DBTIMESTAMP)</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">EM_DATE &gt; 0 ? DATEADD("ss",(DT_I8)EM_TIME,DATEADD("dd",(DT_I8)EM_DATE,(DT_DBTIMESTAMP)"1899-12-31")) : NULL(DT_DBTIMESTAMP)</property>
+                      </properties>
+                    </outputColumn>
                   </outputColumns>
                   <externalMetadataColumns />
                 </output>
@@ -3370,6 +3402,85 @@
                       refId="Package\DF - ASSET\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
                       dataType="i4"
                       lineageId="Package\DF - ASSET\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DF - ASSET\Derived Column 1"
+              componentClassID="Microsoft.DerivedColumn"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="Derived Column 1"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\DF - ASSET\Derived Column 1.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DF - ASSET\Derived Column 1.Inputs[Derived Column Input].Columns[v_installdate]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="v_installdate"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\DF - ASSET\Derived Column.Outputs[Derived Column Output].Columns[v_installdate]"
+                      truncationRowDisposition="FailComponent"
+                      usageType="readWrite">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">![ISNULL](#{Package\DF - ASSET\Derived Column.Outputs[Derived Column Output].Columns[v_transdate]}) ? #{Package\DF - ASSET\Derived Column.Outputs[Derived Column Output].Columns[v_transdate]} : #{Package\DF - ASSET\Derived Column.Outputs[Derived Column Output].Columns[v_installdate]}</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">!ISNULL(v_transdate) ? v_transdate : v_installdate</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - ASSET\Derived Column 1.Inputs[Derived Column Input].Columns[v_transdate]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="v_transdate"
+                      lineageId="Package\DF - ASSET\Derived Column.Outputs[Derived Column Output].Columns[v_transdate]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - ASSET\Derived Column 1.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\DF - ASSET\Derived Column 1.Inputs[Derived Column Input]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - ASSET\Derived Column 1.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\DF - ASSET\Derived Column 1.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - ASSET\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF - ASSET\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF - ASSET\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF - ASSET\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
                       name="ErrorColumn"
                       specialFlags="2" />
                   </outputColumns>
@@ -6708,7 +6819,7 @@ where "refTable"."COSWIN_ENTITY" = ?</property>
                       refId="Package\DF - ASSET\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[DESCRIPTION]"
                       codePage="1252"
                       dataType="str"
-                      length="100"
+                      length="200"
                       name="DESCRIPTION" />
                     <externalMetadataColumn
                       refId="Package\DF - ASSET\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[VENDOR]"
@@ -7458,7 +7569,7 @@ where "refTable"."COSWIN_ENTITY" = ?</property>
                       refId="Package\DF - ASSET\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[PLUSTALIASDESC]"
                       codePage="1252"
                       dataType="str"
-                      length="100"
+                      length="200"
                       name="PLUSTALIASDESC" />
                     <externalMetadataColumn
                       refId="Package\DF - ASSET\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[PLUSTLTRES]"
@@ -8417,6 +8528,9 @@ SELECT
 	-- children
 	,coalesce(ch.CNT,0) AS TOT_CHILDREN
 	,concat(et.EQ_AUTHORITY, concat('-', et.EQ_COSC)) AS GLCODE
+	-- installdate
+	,coalesce(em.EM_DATE,0) AS EM_DATE
+	,coalesce(em.EM_TIME,0) AS EM_TIME
 FROM COSWIN.EQP_TOPO et
 LEFT JOIN COSWIN.JOB_ACTV ja ON ja.EQ_JA_24 = et.PK_EQP_TOPO 
 LEFT JOIN (
@@ -8461,6 +8575,18 @@ LEFT JOIN (
 	WHERE et.EQ_PRCD != et.EQ_EQCD 
 	GROUP BY et.EQ_PRCD 
 ) ch ON ch.EQ_PRCD = et.EQ_EQCD 
+-- installdate
+LEFT JOIN (
+	SELECT 
+		et.PK_EQP_TOPO 
+		,em.PK_EQP_MOVE
+		,em.EM_DATE, em.EM_TIME
+		,row_number() over (partition by em.eq_em_01 order by em.EM_DATE, em.EM_TIME  asc) RN 
+	FROM COSWIN.EQP_MOVE em
+	JOIN COSWIN.EQP_TOPO et ON et.PK_EQP_TOPO = em.EQ_EM_01
+	WHERE et.EQ_LEVL!=0
+	-- ORDER BY et.PK_EQP_TOPO, em.PK_EQP_MOVE
+) em ON em.RN=1 AND em.PK_EQP_TOPO=et.PK_EQP_TOPO
 WHERE et.EQ_LEVL != 0
 ORDER BY et.PK_EQP_TOPO
 --FETCH FIRST 10000 Rows ONLY 
@@ -8933,6 +9059,18 @@ ORDER BY et.PK_EQP_TOPO
                       lineageId="Package\DF - ASSET\Oracle Source.Outputs[Oracle Source Output].Columns[TIMESTAMP]"
                       name="TIMESTAMP"
                       precision="10" />
+                    <outputColumn
+                      refId="Package\DF - ASSET\Oracle Source.Outputs[Oracle Source Output].Columns[EM_DATE]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\DF - ASSET\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EM_DATE]"
+                      lineageId="Package\DF - ASSET\Oracle Source.Outputs[Oracle Source Output].Columns[EM_DATE]"
+                      name="EM_DATE" />
+                    <outputColumn
+                      refId="Package\DF - ASSET\Oracle Source.Outputs[Oracle Source Output].Columns[EM_TIME]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\DF - ASSET\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EM_TIME]"
+                      lineageId="Package\DF - ASSET\Oracle Source.Outputs[Oracle Source Output].Columns[EM_TIME]"
+                      name="EM_TIME" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -9243,6 +9381,14 @@ ORDER BY et.PK_EQP_TOPO
                       dataType="numeric"
                       name="TIMESTAMP"
                       precision="10" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ASSET\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EM_DATE]"
+                      dataType="r8"
+                      name="EM_DATE" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ASSET\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EM_TIME]"
+                      dataType="r8"
+                      name="EM_TIME" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -9677,6 +9823,18 @@ ORDER BY et.PK_EQP_TOPO
                       lineageId="Package\DF - ASSET\Oracle Source.Outputs[Oracle Source Error Output].Columns[TIMESTAMP]"
                       name="TIMESTAMP"
                       precision="10" />
+                    <outputColumn
+                      refId="Package\DF - ASSET\Oracle Source.Outputs[Oracle Source Error Output].Columns[EM_DATE]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\DF - ASSET\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EM_DATE]"
+                      lineageId="Package\DF - ASSET\Oracle Source.Outputs[Oracle Source Error Output].Columns[EM_DATE]"
+                      name="EM_DATE" />
+                    <outputColumn
+                      refId="Package\DF - ASSET\Oracle Source.Outputs[Oracle Source Error Output].Columns[EM_TIME]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\DF - ASSET\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EM_TIME]"
+                      lineageId="Package\DF - ASSET\Oracle Source.Outputs[Oracle Source Error Output].Columns[EM_TIME]"
+                      name="EM_TIME" />
                     <outputColumn
                       refId="Package\DF - ASSET\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -31899,54 +32057,59 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               startId="Package\DF - ASSET\Conditional Split 2.Outputs[Conditional Split Default Output]" />
             <path
               refId="Package\DF - ASSET.Paths[Derived Column Output9]"
-              endId="Package\DF - ASSET\Lookup - MAINT ENTITY.Inputs[Lookup Input]"
+              endId="Package\DF - ASSET\Derived Column 1.Inputs[Derived Column Input]"
               name="Derived Column Output"
               startId="Package\DF - ASSET\Derived Column.Outputs[Derived Column Output]" />
             <path
               refId="Package\DF - ASSET.Paths[Derived Column Output8]"
-              endId="Package\DF - ASSET\Union All 1.Inputs[Union All Input 1]"
+              endId="Package\DF - ASSET\CHARTOFACCOUNTS.Inputs[OLE DB Destination Input]"
               name="Derived Column Output"
-              startId="Package\DF - ASSET\Derived Column 2 1 1.Outputs[Derived Column Output]" />
+              startId="Package\DF - ASSET\Derived Column 3 1.Outputs[Derived Column Output]" />
             <path
               refId="Package\DF - ASSET.Paths[Derived Column Output7]"
-              endId="Package\DF - ASSET\LOG CNT 1.Inputs[OLE DB Destination Input]"
-              name="Derived Column Output"
-              startId="Package\DF - ASSET\Derived Column 4 1.Outputs[Derived Column Output]" />
-            <path
-              refId="Package\DF - ASSET.Paths[Derived Column Output5]"
-              endId="Package\DF - ASSET\Conditional Split 2.Inputs[Conditional Split Input]"
-              name="Derived Column Output"
-              startId="Package\DF - ASSET\Derived Column 2.Outputs[Derived Column Output]" />
-            <path
-              refId="Package\DF - ASSET.Paths[Derived Column Output6]"
-              endId="Package\DF - ASSET\OLE DB Destination 2.Inputs[OLE DB Destination Input]"
-              name="Derived Column Output"
-              startId="Package\DF - ASSET\Derived Column 4 2.Outputs[Derived Column Output]" />
-            <path
-              refId="Package\DF - ASSET.Paths[Derived Column Output3]"
-              endId="Package\DF - ASSET\Union All 1.Inputs[Union All Input 2]"
-              name="Derived Column Output"
-              startId="Package\DF - ASSET\Derived Column 2 1.Outputs[Derived Column Output]" />
-            <path
-              refId="Package\DF - ASSET.Paths[Derived Column Output2]"
-              endId="Package\DF - ASSET\OLE DB Destination 1 1.Inputs[OLE DB Destination Input]"
-              name="Derived Column Output"
-              startId="Package\DF - ASSET\Derived Column 4.Outputs[Derived Column Output]" />
-            <path
-              refId="Package\DF - ASSET.Paths[Derived Column Output1]"
-              endId="Package\DF - ASSET\Union All 3.Inputs[Union All Input 2]"
-              name="Derived Column Output"
-              startId="Package\DF - ASSET\Derived Column 1 1.Outputs[Derived Column Output]" />
-            <path
-              refId="Package\DF - ASSET.Paths[Derived Column Output]"
               endId="Package\DF - ASSET\Union All.Inputs[Union All Input 2]"
               name="Derived Column Output"
               startId="Package\DF - ASSET\Replace Invalid CostCenter.Outputs[Derived Column Output]" />
             <path
-              refId="Package\DF - ASSET.Paths[Derived Column Output4]"
-              endId="Package\DF - ASSET\CHARTOFACCOUNTS.Inputs[OLE DB Destination Input]"
+              refId="Package\DF - ASSET.Paths[Derived Column Output6]"
+              endId="Package\DF - ASSET\Union All 3.Inputs[Union All Input 2]"
               name="Derived Column Output"
-              startId="Package\DF - ASSET\Derived Column 3 1.Outputs[Derived Column Output]" />
+              startId="Package\DF - ASSET\Derived Column 1 1.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - ASSET.Paths[Derived Column Output5]"
+              endId="Package\DF - ASSET\OLE DB Destination 1 1.Inputs[OLE DB Destination Input]"
+              name="Derived Column Output"
+              startId="Package\DF - ASSET\Derived Column 4.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - ASSET.Paths[Derived Column Output10]"
+              endId="Package\DF - ASSET\Lookup - MAINT ENTITY.Inputs[Lookup Input]"
+              name="Derived Column Output"
+              startId="Package\DF - ASSET\Derived Column 1.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - ASSET.Paths[Derived Column Output3]"
+              endId="Package\DF - ASSET\OLE DB Destination 2.Inputs[OLE DB Destination Input]"
+              name="Derived Column Output"
+              startId="Package\DF - ASSET\Derived Column 4 2.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - ASSET.Paths[Derived Column Output2]"
+              endId="Package\DF - ASSET\Conditional Split 2.Inputs[Conditional Split Input]"
+              name="Derived Column Output"
+              startId="Package\DF - ASSET\Derived Column 2.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - ASSET.Paths[Derived Column Output1]"
+              endId="Package\DF - ASSET\LOG CNT 1.Inputs[OLE DB Destination Input]"
+              name="Derived Column Output"
+              startId="Package\DF - ASSET\Derived Column 4 1.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - ASSET.Paths[Derived Column Output4]"
+              endId="Package\DF - ASSET\Union All 1.Inputs[Union All Input 2]"
+              name="Derived Column Output"
+              startId="Package\DF - ASSET\Derived Column 2 1.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - ASSET.Paths[Derived Column Output]"
+              endId="Package\DF - ASSET\Union All 1.Inputs[Union All Input 1]"
+              name="Derived Column Output"
+              startId="Package\DF - ASSET\Derived Column 2 1 1.Outputs[Derived Column Output]" />
             <path
               refId="Package\DF - ASSET.Paths[HAS COSTCENTER]"
               endId="Package\DF - ASSET\Lookup - CC.Inputs[Lookup Input]"
@@ -31979,24 +32142,24 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               startId="Package\DF - ASSET\Lookup - Invalid CC Replacement.Outputs[Lookup Match Output]" />
             <path
               refId="Package\DF - ASSET.Paths[Lookup No Match Output3]"
-              endId="Package\DF - ASSET\Multicast 2.Inputs[Multicast Input 1]"
+              endId="Package\DF - ASSET\Multicast 1 1.Inputs[Multicast Input 1]"
               name="Lookup No Match Output"
-              startId="Package\DF - ASSET\Lookup - COA.Outputs[Lookup No Match Output]" />
+              startId="Package\DF - ASSET\Lookup - MAINT ENTITY.Outputs[Lookup No Match Output]" />
             <path
               refId="Package\DF - ASSET.Paths[Lookup No Match Output2]"
-              endId="Package\DF - ASSET\Multicast 1.Inputs[Multicast Input 1]"
-              name="Lookup No Match Output"
-              startId="Package\DF - ASSET\Lookup - CC.Outputs[Lookup No Match Output]" />
-            <path
-              refId="Package\DF - ASSET.Paths[Lookup No Match Output]"
               endId="Package\DF - ASSET\Union All.Inputs[Union All Input 1]"
               name="Lookup No Match Output"
               startId="Package\DF - ASSET\Lookup - Invalid CC Replacement.Outputs[Lookup No Match Output]" />
             <path
               refId="Package\DF - ASSET.Paths[Lookup No Match Output1]"
-              endId="Package\DF - ASSET\Multicast 1 1.Inputs[Multicast Input 1]"
+              endId="Package\DF - ASSET\Multicast 1.Inputs[Multicast Input 1]"
               name="Lookup No Match Output"
-              startId="Package\DF - ASSET\Lookup - MAINT ENTITY.Outputs[Lookup No Match Output]" />
+              startId="Package\DF - ASSET\Lookup - CC.Outputs[Lookup No Match Output]" />
+            <path
+              refId="Package\DF - ASSET.Paths[Lookup No Match Output]"
+              endId="Package\DF - ASSET\Multicast 2.Inputs[Multicast Input 1]"
+              name="Lookup No Match Output"
+              startId="Package\DF - ASSET\Lookup - COA.Outputs[Lookup No Match Output]" />
             <path
               refId="Package\DF - ASSET.Paths[Multicast Output 1]"
               endId="Package\DF - ASSET\Aggregate 1.Inputs[Aggregate Input 1]"
@@ -32008,42 +32171,42 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               name="Multicast Output 1"
               startId="Package\DF - ASSET\Multicast 1 1.Outputs[Multicast Output 1]" />
             <path
-              refId="Package\DF - ASSET.Paths[Multicast Output 2]"
-              endId="Package\DF - ASSET\Sort 2 1.Inputs[Sort Input]"
+              refId="Package\DF - ASSET.Paths[Multicast Output 23]"
+              endId="Package\DF - ASSET\Remove Duplicates 3.Inputs[Sort Input]"
               name="Multicast Output 2"
-              startId="Package\DF - ASSET\Multicast 1 1.Outputs[Multicast Output 2]" />
+              startId="Package\DF - ASSET\Multicast 2.Outputs[Multicast Output 2]" />
             <path
               refId="Package\DF - ASSET.Paths[Multicast Output 21]"
               endId="Package\DF - ASSET\OLE DB Destination.Inputs[ADO NET Destination Input]"
               name="Multicast Output 2"
               startId="Package\DF - ASSET\Multicast.Outputs[Multicast Output 2]" />
             <path
+              refId="Package\DF - ASSET.Paths[Multicast Output 2]"
+              endId="Package\DF - ASSET\Sort 2 1.Inputs[Sort Input]"
+              name="Multicast Output 2"
+              startId="Package\DF - ASSET\Multicast 1 1.Outputs[Multicast Output 2]" />
+            <path
               refId="Package\DF - ASSET.Paths[Multicast Output 22]"
               endId="Package\DF - ASSET\Derived Column 2 1.Inputs[Derived Column Input]"
               name="Multicast Output 2"
               startId="Package\DF - ASSET\Multicast 1.Outputs[Multicast Output 2]" />
             <path
-              refId="Package\DF - ASSET.Paths[Multicast Output 23]"
-              endId="Package\DF - ASSET\Remove Duplicates 3.Inputs[Sort Input]"
-              name="Multicast Output 2"
-              startId="Package\DF - ASSET\Multicast 2.Outputs[Multicast Output 2]" />
-            <path
-              refId="Package\DF - ASSET.Paths[Multicast Output 31]"
+              refId="Package\DF - ASSET.Paths[Multicast Output 3]"
               endId="Package\DF - ASSET\Aggregate 1 1.Inputs[Aggregate Input 1]"
               name="Multicast Output 3"
               startId="Package\DF - ASSET\Multicast 1 1.Outputs[Multicast Output 3]" />
             <path
-              refId="Package\DF - ASSET.Paths[Multicast Output 3]"
+              refId="Package\DF - ASSET.Paths[Multicast Output 31]"
               endId="Package\DF - ASSET\Aggregate.Inputs[Aggregate Input 1]"
               name="Multicast Output 3"
               startId="Package\DF - ASSET\Multicast.Outputs[Multicast Output 3]" />
             <path
-              refId="Package\DF - ASSET.Paths[Multicast Output 41]"
+              refId="Package\DF - ASSET.Paths[Multicast Output 4]"
               endId="Package\DF - ASSET\Union All 2.Inputs[Union All Input 3]"
               name="Multicast Output 4"
               startId="Package\DF - ASSET\Multicast 2.Outputs[Multicast Output 4]" />
             <path
-              refId="Package\DF - ASSET.Paths[Multicast Output 4]"
+              refId="Package\DF - ASSET.Paths[Multicast Output 41]"
               endId="Package\DF - ASSET\Remove Duplicates.Inputs[Sort Input]"
               name="Multicast Output 4"
               startId="Package\DF - ASSET\Multicast 1.Outputs[Multicast Output 4]" />
@@ -32073,17 +32236,17 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               name="Sort Output"
               startId="Package\DF - ASSET\Sort 2 1.Outputs[Sort Output]" />
             <path
-              refId="Package\DF - ASSET.Paths[Union All Output 11]"
+              refId="Package\DF - ASSET.Paths[Union All Output 1]"
               endId="Package\DF - ASSET\Conditional Split.Inputs[Conditional Split Input]"
               name="Union All Output 1"
               startId="Package\DF - ASSET\Union All.Outputs[Union All Output 1]" />
             <path
-              refId="Package\DF - ASSET.Paths[Union All Output 12]"
+              refId="Package\DF - ASSET.Paths[Union All Output 11]"
               endId="Package\DF - ASSET\Derived Column 2.Inputs[Derived Column Input]"
               name="Union All Output 1"
               startId="Package\DF - ASSET\Union All 1.Outputs[Union All Output 1]" />
             <path
-              refId="Package\DF - ASSET.Paths[Union All Output 1]"
+              refId="Package\DF - ASSET.Paths[Union All Output 12]"
               endId="Package\DF - ASSET\Lookup - Invalid CC Replacement.Inputs[Lookup Input]"
               name="Union All Output 1"
               startId="Package\DF - ASSET\Union All 3.Outputs[Union All Output 1]" />
@@ -32231,6 +32394,23 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
+      DTS:refId="Package\MAXSEQ (PLUSTASSETSTHIST)"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{8c8c8168-9690-47f8-8e7e-cc5cb4b2c0f4}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="MAXSEQ (PLUSTASSETSTHIST)"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{6B57807A-44F9-4805-A3A7-4F2B1CC68E82}"
+          SQLTask:SqlStatementSource="CALL MIGRATION.STE_UPDATE_SEQ('PLUSTASSETSTHISTSEQ', 'PLUSTASSETSTHIST', 'PLUSTASSETSTHISTID');&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
       DTS:refId="Package\PLUSTASSETALIAS"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
       DTS:Description="Execute SQL Task"
@@ -32245,6 +32425,23 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
           SQLTask:SqlStatementSource="INSERT INTO maximo.PLUSTASSETALIAS (&#xA;PLUSTASSETALIASID, ALIAS, ISDEFAULT, ISACTIVE, ASSETNUM, ORGID, SITEID, ISASSETNUM, DESCRIPTION, LANGCODE, HASLD, STE_MIGRATIONID, STE_MIGRATIONDATE)&#xA;SELECT &#xA;&#x9;a.ste_migrationid+b.max_id AS PLUSTASSETALIASID&#xA;&#x9;, a.assetnum, '0', '1', a.assetnum, a.orgid, a.siteid, '1', 'Maximo Asset Number', a.langcode, a.hasld, a.ste_migrationid, CURRENT timestamp&#xA;FROM maximo.asset a&#xA;JOIN (&#xA;&#x9;SELECT isnull(max(PLUSTASSETALIASID),0) AS max_id FROM maximo.PLUSTASSETALIAS&#xA;) b ON 1=1&#xA;WHERE a.ste_migrationid IS NOT NULL&#xA;ORDER BY a.ste_migrationid" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\PLUSTASSETSTHIST"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{D61FDC3E-B18A-4B4A-97A8-294B547E0CEA}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="PLUSTASSETSTHIST"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="INSERT INTO maximo.PLUSTASSETSTHIST (&#xA;&#x9;PLUSTASSETSTHISTID, STATUS, CHANGEDATE, CHANGEBY, INHERITED, ORGID, SITEID, ASSETID&#xA;)&#xA;SELECT &#xA;&#x9;a.ste_migrationid+b.max_id AS PLUSTASSETSTHISTID&#xA;&#x9;, a.status, a.changedate, a.changeby, '1' AS inherited&#xA;&#x9;, a.orgid, a.siteid, a.assetid&#xA;FROM maximo.asset a&#xA;JOIN (&#xA;&#x9;SELECT isnull(max(PLUSTASSETSTHISTID),0) AS max_id FROM maximo.PLUSTASSETSTHIST&#xA;) b ON 1=1&#xA;LEFT JOIN maximo.PLUSTASSETSTHIST x ON x.assetid=a.assetid AND x.status=a.status&#xA;WHERE x.PLUSTASSETSTHISTID IS null&#xA;ORDER BY a.assetid" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -32399,34 +32596,24 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               SQLTask:SqlStatementSource="delete from maximo.ASSET where STE_MIGRATIONID is not NULL" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
           </DTS:ObjectData>
         </DTS:Executable>
-        <DTS:Executable
-          DTS:refId="Package\Pre-Task\Execute SQL Task 1"
-          DTS:CreationName="Microsoft.ExecuteSQLTask"
-          DTS:Description="Execute SQL Task"
-          DTS:DTSID="{3E232C70-2A47-4708-8FEA-26C6E476ACC9}"
-          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
-          DTS:LocaleID="-1"
-          DTS:ObjectName="Execute SQL Task 1"
-          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-          DTS:ThreadHint="0">
-          <DTS:Variables />
-          <DTS:ObjectData>
-            <SQLTask:SqlTaskData
-              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-              SQLTask:SqlStatementSource="delete from maximo.PLUSTASSETALIAS WHERE STE_MIGRATIONID is not NULL" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
-          </DTS:ObjectData>
-        </DTS:Executable>
       </DTS:Executables>
-      <DTS:PrecedenceConstraints>
-        <DTS:PrecedenceConstraint
-          DTS:refId="Package\Pre-Task.PrecedenceConstraints[Constraint]"
-          DTS:CreationName=""
-          DTS:DTSID="{7946E7AA-4F3C-41E0-8B3F-CBAE2235B7F5}"
-          DTS:From="Package\Pre-Task\Execute SQL Task"
-          DTS:LogicalAnd="True"
-          DTS:ObjectName="Constraint"
-          DTS:To="Package\Pre-Task\Execute SQL Task 1" />
-      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\RESET (PLUSTASSETALIAS)"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{3398649e-984d-4687-81f2-d30d991921a2}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="RESET (PLUSTASSETALIAS)"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="delete from maximo.PLUSTASSETALIAS WHERE STE_MIGRATIONID is not NULL" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
       DTS:refId="Package\UPDATE USING ASSET MASTER LIST"
@@ -32474,11 +32661,11 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 11]"
       DTS:CreationName=""
-      DTS:DTSID="{FBA004E4-1392-49DE-942B-5C9B5D5111A7}"
+      DTS:DTSID="{990DAB11-3A9E-44F7-9480-6312BA3741AC}"
       DTS:From="Package\UPDATE USING ASSET MASTER LIST"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 11"
-      DTS:To="Package\PLUSTASSETALIAS" />
+      DTS:To="Package\RESET (PLUSTASSETALIAS)" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 12]"
       DTS:CreationName=""
@@ -32487,6 +32674,30 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 12"
       DTS:To="Package\UPDATE USING ASSET MASTER LIST" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 13]"
+      DTS:CreationName=""
+      DTS:DTSID="{029CFF72-95AE-4196-B3B2-392283E41626}"
+      DTS:From="Package\RESET (PLUSTASSETALIAS)"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 13"
+      DTS:To="Package\PLUSTASSETALIAS" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 14]"
+      DTS:CreationName=""
+      DTS:DTSID="{DA1E6E03-A86A-4C5D-A7B7-4B6EB5B0B6F6}"
+      DTS:From="Package\PLUSTASSETSTHIST"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 14"
+      DTS:To="Package\MAXSEQ (PLUSTASSETSTHIST)" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 15]"
+      DTS:CreationName=""
+      DTS:DTSID="{87DA34CA-6D77-438F-A23A-F3CB3B368F3E}"
+      DTS:From="Package\MAXSEQ (PLUSTASSETSTHIST)"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 15"
+      DTS:To="Package\POST-PKG" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
       DTS:CreationName=""
@@ -32522,11 +32733,11 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 6]"
       DTS:CreationName=""
-      DTS:DTSID="{C79CBD18-A8EC-4527-9A6F-9A549770A0E1}"
+      DTS:DTSID="{EA39DC7B-F607-4D74-8696-C97E9FCF4046}"
       DTS:From="Package\MAXSEQ (PLUSTASSETALIAS)"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 6"
-      DTS:To="Package\POST-PKG" />
+      DTS:To="Package\PLUSTASSETSTHIST" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 7]"
       DTS:CreationName=""
@@ -32567,43 +32778,43 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         <NodeLayout
           Size="195.2,41.6"
           Id="Package\AUTOKEY (ASSETNUM)"
-          TopLeft="270.033360196814,583.462960495371" />
+          TopLeft="128.366701270472,650.06296004337" />
         <NodeLayout
           Size="135.2,41.6"
           Id="Package\DF - ASSET"
-          TopLeft="302.09998934567,496.699999059837" />
+          TopLeft="160.433330419328,563.299998607836" />
         <NodeLayout
           Size="176.8,41.6"
           Id="Package\Get Max ID (AssetID)"
-          TopLeft="277.533359787032,339.100003688336" />
+          TopLeft="135.86670086069,325.966670457456" />
         <NodeLayout
           Size="184,41.6"
           Id="Package\Get Max ID (AssetUID)"
-          TopLeft="281.666651277079,415.333332019515" />
+          TopLeft="132.499992760519,481.933331567513" />
         <NodeLayout
           Size="163.2,41.6"
           Id="Package\Get Max ID (COA)"
-          TopLeft="52.4999971315265,407.199999855359" />
+          TopLeft="139.166659062935,407.933333194719" />
         <NodeLayout
           Size="220,41.6"
           Id="Package\MAXSEQ (ASSET - ASSETID)"
-          TopLeft="262.299991257986,738.033332127995" />
+          TopLeft="120.633332331644,804.633331675994" />
         <NodeLayout
           Size="228,41.6"
           Id="Package\MAXSEQ (ASSET - ASSETUID)"
-          TopLeft="256.466658243372,664.166665268474" />
+          TopLeft="114.79999931703,730.766664816473" />
         <NodeLayout
           Size="155.2,41.6"
           Id="Package\MAXSEQ (COA)"
-          TopLeft="294.999983881911,816.100000705119" />
+          TopLeft="153.333324955569,882.700000253118" />
         <NodeLayout
           Size="229.6,41.6"
           Id="Package\MAXSEQ (PLUSTASSETALIAS)"
-          TopLeft="290.499985955656,1061.09999830047" />
+          TopLeft="428.555533968189,758.211111528961" />
         <NodeLayout
           Size="175.2,41.6"
           Id="Package\PLUSTASSETALIAS"
-          TopLeft="283.733323179848,965.633331585593" />
+          TopLeft="432.899981696408,662.166667040324" />
         <NodeLayout
           Size="137.6,41.6"
           Id="Package\POST-PKG\FINISH LOG"
@@ -32612,9 +32823,9 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           HeaderHeight="43.2"
           IsExpanded="False"
           PanelSize="270.4,130.4"
-          Size="270.4,43.2"
+          Size="156,43.2"
           Id="Package\POST-PKG"
-          TopLeft="619.26665048235,772.929624787521" />
+          TopLeft="801.211084985789,965.196290128316" />
         <NodeLayout
           Size="135.2,41.6"
           Id="Package\PRE-PKG\GET LOGID"
@@ -32653,51 +32864,25 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           PanelSize="268,229.6"
           Size="268,43.2"
           Id="Package\PRE-PKG"
-          TopLeft="586.766652258072,25.4333331947194" />
+          TopLeft="88.4333461524703,0.30000003616005" />
         <NodeLayout
           Size="164.8,41.6"
           Id="Package\Pre-Task\Execute SQL Task"
           TopLeft="48.2333312388923,38.433333104319" />
-        <NodeLayout
-          Size="173.6,41.6"
-          Id="Package\Pre-Task\Execute SQL Task 1"
-          TopLeft="43.8333312388924,140.033333104319" />
-        <EdgeLayout
-          Id="Package\Pre-Task.PrecedenceConstraints[Constraint]"
-          TopLeft="130.633331238892,80.0333331043191">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,59.9999999999999"
-              Start="0,0"
-              End="0,52.4999999999999">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,52.4999999999999" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
         <ContainerLayout
           HeaderHeight="43"
           IsExpanded="True"
-          PanelSize="261.6,236.8"
-          Size="261.6,280"
+          PanelSize="261.6,153.6"
+          Size="261.6,196.8"
           Id="Package\Pre-Task"
-          TopLeft="238.366695260338,25.4333331947194" />
+          TopLeft="96.7000363339964,92.0333327427175" />
         <NodeLayout
           Size="264,41.6"
           Id="Package\UPDATE USING ASSET MASTER LIST"
-          TopLeft="239.899987023573,892.199998824795" />
+          TopLeft="98.2333280972314,958.799998372794" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="368.666674771242,538.299999059837">
+          TopLeft="227.0000158449,604.899998607836">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -32719,18 +32904,18 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 1]"
-          TopLeft="367.550027523685,305.433333194719">
+          TopLeft="225.883368597343,288.833332742717">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,33.6666704936167"
+              EndConnector="0,37.1333377147389"
               Start="0,0"
-              End="0,26.1666704936167">
+              End="0,29.6333377147389">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,26.1666704936167" />
+                    End="0,29.6333377147389" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -32741,52 +32926,18 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 10]"
-          TopLeft="215.699997131526,427.999999855359">
+          TopLeft="222.633325911727,449.533333194719">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="65.9666541455526,8.13333216415572"
+              EndConnector="0,32.3999983727939"
               Start="0,0"
-              End="58.4666541455526,8.13333216415572">
+              End="0,24.8999983727939">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="28.9833270727763,0" />
-                  <mssgle:CubicBezierSegment
-                    Point1="28.9833270727763,0"
-                    Point2="32.9833270727763,0"
-                    Point3="32.9833270727763,4" />
-                  <mssgle:LineSegment
-                    End="32.9833270727763,4.13333216415572" />
-                  <mssgle:CubicBezierSegment
-                    Point1="32.9833270727763,4.13333216415572"
-                    Point2="32.9833270727763,8.13333216415572"
-                    Point3="36.9833270727763,8.13333216415572" />
-                  <mssgle:LineSegment
-                    End="58.4666541455526,8.13333216415572" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 11]"
-          TopLeft="371.61665510171,933.799998824795">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,31.8333327607982"
-              Start="0,0"
-              End="0,24.3333327607982">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,24.3333327607982" />
+                    End="0,24.8999983727939" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -32797,7 +32948,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 12]"
-          TopLeft="372.249985452742,857.700000705119">
+          TopLeft="230.5833265264,924.300000253118">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -32819,7 +32970,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 2]"
-          TopLeft="371.383324750679,705.766665268474">
+          TopLeft="229.716665824337,772.366664816473">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -32841,7 +32992,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 3]"
-          TopLeft="372.449987569949,779.633332127995">
+          TopLeft="230.783328643607,846.233331675994">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -32863,18 +33014,30 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 4]"
-          TopLeft="369.849987901085,1007.23333158559">
+          TopLeft="520.499981696408,703.766667040324">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,53.8666667148763"
+              EndConnector="22.855552271781,54.4444444886365"
               Start="0,0"
-              End="0,46.3666667148763">
+              End="22.855552271781,46.9444444886365">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,46.3666667148763" />
+                    End="0,23.2222222443182" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,23.2222222443182"
+                    Point2="0,27.2222222443182"
+                    Point3="4,27.2222222443182" />
+                  <mssgle:LineSegment
+                    End="18.855552271781,27.2222222443182" />
+                  <mssgle:CubicBezierSegment
+                    Point1="18.855552271781,27.2222222443182"
+                    Point2="22.855552271781,27.2222222443182"
+                    Point3="22.855552271781,31.2222222443182" />
+                  <mssgle:LineSegment
+                    End="22.855552271781,46.9444444886365" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -32885,64 +33048,18 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 5]"
-          TopLeft="586.766652258072,47.0333331947194">
+          TopLeft="224.966691243233,43.50000003616">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-86.7999569977339,118.4"
+              EndConnector="0,48.5333327065574"
               Start="0,0"
-              End="-79.2999569977339,118.4">
+              End="0,41.0333327065574">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="-39.3999784988669,0" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-39.3999784988669,0"
-                    Point2="-43.3999784988669,0"
-                    Point3="-43.3999784988669,4" />
-                  <mssgle:LineSegment
-                    End="-43.3999784988669,114.4" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-43.3999784988669,114.4"
-                    Point2="-43.3999784988669,118.4"
-                    Point3="-47.3999784988669,118.4" />
-                  <mssgle:LineSegment
-                    End="-79.2999569977339,118.4" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 6]"
-          TopLeft="442.233319288989,1061.09999830047">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="312.233331193361,-244.970373512948"
-              Start="0,0"
-              End="312.233331193361,-237.470373512948">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,-95.0053274266865" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,-95.0053274266865"
-                    Point2="0,-99.0053274266865"
-                    Point3="4,-99.0053274266865" />
-                  <mssgle:LineSegment
-                    End="308.233331193361,-99.0053274266865" />
-                  <mssgle:CubicBezierSegment
-                    Point1="308.233331193361,-99.0053274266865"
-                    Point2="312.233331193361,-99.0053274266865"
-                    Point3="312.233331193361,-103.005327426686" />
-                  <mssgle:LineSegment
-                    End="312.233331193361,-237.470373512948" />
+                    End="0,41.0333327065574" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -32953,7 +33070,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 7]"
-          TopLeft="369.050009220093,625.062960495371">
+          TopLeft="227.383350293751,691.66296004337">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -32975,30 +33092,18 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 8]"
-          TopLeft="365.933359787032,380.700003688336">
+          TopLeft="222.516679961813,367.566670457456">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-231.833362655506,26.4999961670232"
+              EndConnector="0,40.3666627372627"
               Start="0,0"
-              End="-231.833362655506,18.9999961670232">
+              End="0,32.8666627372627">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,9.2499980835116" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,9.2499980835116"
-                    Point2="0,13.2499980835116"
-                    Point3="-4,13.2499980835116" />
-                  <mssgle:LineSegment
-                    End="-227.833362655506,13.2499980835116" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-227.833362655506,13.2499980835116"
-                    Point2="-231.833362655506,13.2499980835116"
-                    Point3="-231.833362655506,17.2499980835116" />
-                  <mssgle:LineSegment
-                    End="-231.833362655506,18.9999961670232" />
+                    End="0,32.8666627372627" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -33009,18 +33114,176 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 9]"
-          TopLeft="371.683320311375,456.933332019515">
+          TopLeft="226.266661589924,523.533331567513">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,39.7666670403219"
+              EndConnector="0,39.766667040322"
               Start="0,0"
-              End="0,32.2666670403219">
+              End="0,32.266667040322">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,32.2666670403219" />
+                    End="0,32.266667040322" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="220,41.6"
+          Id="Package\RESET (PLUSTASSETALIAS)"
+          TopLeft="378.333312662112,575.255557952168" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 11]"
+          TopLeft="272.899994763898,958.799998372794">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="180.099984564881,-341.944440420626"
+              Start="0,0"
+              End="180.099984564881,-334.444440420626">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,-166.717418093755" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,-166.717418093755"
+                    Point2="0,-170.717418093755"
+                    Point3="4,-170.717418093755" />
+                  <mssgle:LineSegment
+                    End="176.099984564881,-170.717418093755" />
+                  <mssgle:CubicBezierSegment
+                    Point1="176.099984564881,-170.717418093755"
+                    Point2="180.099984564881,-170.717418093755"
+                    Point3="180.099984564881,-174.717418093755" />
+                  <mssgle:LineSegment
+                    End="180.099984564881,-334.444440420626" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 13]"
+          TopLeft="522.083313845927,616.855557952168">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,45.3111090881559"
+              Start="0,0"
+              End="0,37.8111090881559">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,37.8111090881559" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="183.2,41.6"
+          Id="Package\PLUSTASSETSTHIST"
+          TopLeft="715.277738696725,660.999997498923" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 6]"
+          TopLeft="580.288867301522,758.211111528961">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="226.588871395203,-55.6111140300379"
+              Start="0,0"
+              End="226.588871395203,-48.1111140300379">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,-18.4753568121399" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,-18.4753568121399"
+                    Point2="0,-22.4753568121399"
+                    Point3="4,-22.4753568121399" />
+                  <mssgle:LineSegment
+                    End="222.588871395203,-22.4753568121399" />
+                  <mssgle:CubicBezierSegment
+                    Point1="222.588871395203,-22.4753568121399"
+                    Point2="226.588871395203,-22.4753568121399"
+                    Point3="226.588871395203,-26.4753568121399" />
+                  <mssgle:LineSegment
+                    End="226.588871395203,-48.1111140300379" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="236.8,41.6"
+          Id="Package\MAXSEQ (PLUSTASSETSTHIST)"
+          TopLeft="762.499958338839,762.888886096522" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 14]"
+          TopLeft="836.077738696725,702.599997498923">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="44.8222196421139,60.288888597599"
+              Start="0,0"
+              End="44.8222196421139,52.788888597599">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,20.4287444707155" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,20.4287444707155"
+                    Point2="0,24.4287444707155"
+                    Point3="4,24.4287444707155" />
+                  <mssgle:LineSegment
+                    End="40.8222196421139,24.4287444707155" />
+                  <mssgle:CubicBezierSegment
+                    Point1="40.8222196421139,24.4287444707155"
+                    Point2="44.8222196421139,24.4287444707155"
+                    Point3="44.8222196421139,28.4287444707155" />
+                  <mssgle:LineSegment
+                    End="44.8222196421139,52.788888597599" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 15]"
+          TopLeft="880.055521662314,804.488886096522">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,160.707404031795"
+              Start="0,0"
+              End="0,153.207404031795">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,153.207404031795" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -33228,7 +33491,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         <NodeLayout
           Size="158.4,41.6"
           Id="Package\DF - ASSET\Derived Column"
-          TopLeft="303.499994300305,165.133333391017" />
+          TopLeft="300.166661149097,75.0000006844596" />
         <NodeLayout
           Size="161.6,41.6"
           Id="Package\DF - ASSET\Running Number"
@@ -33260,7 +33523,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         <NodeLayout
           Size="144.8,41.6"
           Id="Package\DF - ASSET\Oracle Source"
-          TopLeft="95.083328438716,160.246051105725" />
+          TopLeft="91.749995287508,70.1127183991676" />
         <NodeLayout
           Size="120,41.6"
           Id="Package\DF - ASSET\Union All"
@@ -33340,7 +33603,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         <NodeLayout
           Size="171.2,41.6"
           Id="Package\DF - ASSET\OLE DB Destination"
-          TopLeft="476.749974252036,1518.7222177695" />
+          TopLeft="461.7499750716,1518.7222177695" />
         <NodeLayout
           Size="161.6,41.6"
           Id="Package\DF - ASSET\Derived Column 1 1"
@@ -33376,7 +33639,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - ASSET.Paths[Union All Output 1]"
+          Id="Package\DF - ASSET.Paths[Union All Output 12]"
           TopLeft="375.641651242931,450.133331549433">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -33398,7 +33661,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - ASSET.Paths[Union All Output 12]"
+          Id="Package\DF - ASSET.Paths[Union All Output 11]"
           TopLeft="499.67775399525,894.488886638924">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -33432,7 +33695,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - ASSET.Paths[Union All Output 11]"
+          Id="Package\DF - ASSET.Paths[Union All Output 1]"
           TopLeft="502.222198060266,625.711109293059">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -33579,7 +33842,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - ASSET.Paths[Oracle Source Output]"
-          TopLeft="239.883328438716,183.489692248371">
+          TopLeft="236.549995287508,93.3563595418136">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -33601,40 +33864,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - ASSET.Paths[Multicast Output 41]"
-          TopLeft="735.313473339375,1081.33650754894">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-155.713499838605,44.8857127849201"
-              Start="0,0"
-              End="-155.713499838605,37.3857127849201">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,25.3168347195624" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,25.3168347195624"
-                    Point2="0,29.3168347195624"
-                    Point3="-4,29.3168347195624" />
-                  <mssgle:LineSegment
-                    End="-151.713499838605,29.3168347195624" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-151.713499838605,29.3168347195624"
-                    Point2="-155.713499838605,29.3168347195624"
-                    Point3="-155.713499838605,33.3168347195624" />
-                  <mssgle:LineSegment
-                    End="-155.713499838605,37.3857127849201" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - ASSET.Paths[Multicast Output 4]"
           TopLeft="717.383311954996,719.847614658739">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -33668,19 +33897,31 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - ASSET.Paths[Multicast Output 31]"
-          TopLeft="709.74996851509,259.088893587695">
+          Id="Package\DF - ASSET.Paths[Multicast Output 4]"
+          TopLeft="735.313473339375,1081.33650754894">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="76.1666555114922,0"
+              EndConnector="-155.713499838605,44.8857127849201"
               Start="0,0"
-              End="68.6666555114922,0">
+              End="-155.713499838605,37.3857127849201">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="68.6666555114922,0" />
+                    End="0,25.3168347195624" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,25.3168347195624"
+                    Point2="0,29.3168347195624"
+                    Point3="-4,29.3168347195624" />
+                  <mssgle:LineSegment
+                    End="-151.713499838605,29.3168347195624" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-151.713499838605,29.3168347195624"
+                    Point2="-155.713499838605,29.3168347195624"
+                    Point3="-155.713499838605,33.3168347195624" />
+                  <mssgle:LineSegment
+                    End="-155.713499838605,37.3857127849201" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -33690,7 +33931,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - ASSET.Paths[Multicast Output 3]"
+          Id="Package\DF - ASSET.Paths[Multicast Output 31]"
           TopLeft="603.911091927246,1431.67777344358">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -33703,6 +33944,28 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                   Capacity="5">
                   <mssgle:LineSegment
                     End="62.0055382460644,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - ASSET.Paths[Multicast Output 3]"
+          TopLeft="709.74996851509,259.088893587695">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="76.1666555114922,0"
+              Start="0,0"
+              End="68.6666555114922,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="68.6666555114922,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -33781,30 +34044,18 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - ASSET.Paths[Multicast Output 21]"
-          TopLeft="544.311091927246,1450.9666612999">
+          TopLeft="545.830533499423,1450.9666612999">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="18.0388823247899,67.7555564695999"
+              EndConnector="0,67.7555564696002"
               Start="0,0"
-              End="18.0388823247899,60.2555564695999">
+              End="0,60.2555564696002">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,29.8777782348" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,29.8777782348"
-                    Point2="0,33.8777782348"
-                    Point3="4,33.8777782348" />
-                  <mssgle:LineSegment
-                    End="14.0388823247899,33.8777782348" />
-                  <mssgle:CubicBezierSegment
-                    Point1="14.0388823247899,33.8777782348"
-                    Point2="18.0388823247899,33.8777782348"
-                    Point3="18.0388823247899,37.8777782348" />
-                  <mssgle:LineSegment
-                    End="18.0388823247899,60.2555564695999" />
+                    End="0,60.2555564696002" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -33892,55 +34143,31 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - ASSET.Paths[Lookup No Match Output2]"
-          TopLeft="568.769862886574,699.023806821598">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="70.4801157350894,0"
-              Start="0,0"
-              End="62.9801157350894,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="62.9801157350894,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-24.3163288512053,5,111.6127734375,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
           Id="Package\DF - ASSET.Paths[Lookup No Match Output3]"
-          TopLeft="620.988079354463,1058.20714227502">
+          TopLeft="482.016651208782,260.938893366214">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="50.3253939849119,0"
+              EndConnector="99.7333173063068,0"
               Start="0,0"
-              End="42.8253939849119,0">
+              End="92.2333173063068,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="42.8253939849119,0" />
+                    End="92.2333173063068,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="-34.393689726294,5,111.6127734375,11.609375"
+              BoundingBox="-9.6897280655966,5,111.6127734375,11.609375"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - ASSET.Paths[Lookup No Match Output]"
+          Id="Package\DF - ASSET.Paths[Lookup No Match Output2]"
           TopLeft="378.549985999118,547.100002576411">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -33977,25 +34204,49 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - ASSET.Paths[Lookup No Match Output1]"
-          TopLeft="482.016651208782,260.938893366214">
+          TopLeft="568.769862886574,699.023806821598">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="99.7333173063068,0"
+              EndConnector="70.4801157350894,0"
               Start="0,0"
-              End="92.2333173063068,0">
+              End="62.9801157350894,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="92.2333173063068,0" />
+                    End="62.9801157350894,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="-9.6897280655966,5,111.6127734375,11.609375"
+              BoundingBox="-24.3163288512053,5,111.6127734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - ASSET.Paths[Lookup No Match Output]"
+          TopLeft="620.988079354463,1058.20714227502">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="50.3253939849119,0"
+              Start="0,0"
+              End="42.8253939849119,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="42.8253939849119,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-34.393689726294,5,111.6127734375,11.609375"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
@@ -34157,30 +34408,18 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - ASSET.Paths[Derived Column Output8]"
-          TopLeft="296.783322291987,812.131740765592">
+          TopLeft="1173.76703979513,1091.26506826463">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="172.694431703263,40.7571458733315"
+              EndConnector="0,54.68571285095"
               Start="0,0"
-              End="172.694431703263,33.2571458733315">
+              End="0,47.18571285095">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,22.6202859456648" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,22.6202859456648"
-                    Point2="0,26.6202859456648"
-                    Point3="4,26.6202859456648" />
-                  <mssgle:LineSegment
-                    End="168.694431703263,26.6202859456648" />
-                  <mssgle:CubicBezierSegment
-                    Point1="168.694431703263,26.6202859456648"
-                    Point2="172.694431703263,26.6202859456648"
-                    Point3="172.694431703263,30.6202859456648" />
-                  <mssgle:LineSegment
-                    End="172.694431703263,33.2571458733315" />
+                    End="0,47.18571285095" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -34191,94 +34430,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - ASSET.Paths[Derived Column Output7]"
-          TopLeft="1088.25590780611,282.3555642188">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,43.5785701593111"
-              Start="0,0"
-              End="0,36.0785701593111">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,36.0785701593111" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - ASSET.Paths[Derived Column Output6]"
-          TopLeft="1168.38568635779,721.988890213822">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,44.5111098279554"
-              Start="0,0"
-              End="0,37.0111098279554">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,37.0111098279554" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - ASSET.Paths[Derived Column Output9]"
-          TopLeft="383.958322754543,206.733333391017">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,36.2222266222773"
-              Start="0,0"
-              End="0,28.7222266222773">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,28.7222266222773" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - ASSET.Paths[Derived Column Output5]"
-          TopLeft="308.680543265892,997.35555104558">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,41.6666707997075"
-              Start="0,0"
-              End="0,34.1666707997075">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,34.1666707997075" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - ASSET.Paths[Derived Column Output]"
           TopLeft="692.066634749209,547.283335947411">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -34312,7 +34463,63 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - ASSET.Paths[Derived Column Output3]"
+          Id="Package\DF - ASSET.Paths[Derived Column Output6]"
+          TopLeft="630.049970290812,366.655560510496">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-237.183320470735,41.877771038937"
+              Start="0,0"
+              End="-237.183320470735,34.377771038937">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,20.8183600144866" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,20.8183600144866"
+                    Point2="0,24.8183600144866"
+                    Point3="-4,24.8183600144866" />
+                  <mssgle:LineSegment
+                    End="-233.183320470735,24.8183600144866" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-233.183320470735,24.8183600144866"
+                    Point2="-237.183320470735,24.8183600144866"
+                    Point3="-237.183320470735,28.8183600144866" />
+                  <mssgle:LineSegment
+                    End="-237.183320470735,34.377771038937" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - ASSET.Paths[Derived Column Output5]"
+          TopLeft="939.549960319451,1453.92221921591">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,50.2666660278296"
+              Start="0,0"
+              End="0,42.7666660278296">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,42.7666660278296" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - ASSET.Paths[Derived Column Output4]"
           TopLeft="704.727747428115,807.199995706831">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -34346,19 +34553,19 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - ASSET.Paths[Derived Column Output4]"
-          TopLeft="1173.76703979513,1091.26506826463">
+          Id="Package\DF - ASSET.Paths[Derived Column Output3]"
+          TopLeft="1168.38568635779,721.988890213822">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,54.68571285095"
+              EndConnector="0,44.5111098279554"
               Start="0,0"
-              End="0,47.18571285095">
+              End="0,37.0111098279554">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,47.18571285095" />
+                    End="0,37.0111098279554" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -34369,18 +34576,18 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - ASSET.Paths[Derived Column Output2]"
-          TopLeft="939.549960319451,1453.92221921591">
+          TopLeft="308.680543265892,997.35555104558">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,50.2666660278296"
+              EndConnector="0,41.6666707997075"
               Start="0,0"
-              End="0,42.7666660278296">
+              End="0,34.1666707997075">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,42.7666660278296" />
+                    End="0,34.1666707997075" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -34391,30 +34598,52 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - ASSET.Paths[Derived Column Output1]"
-          TopLeft="630.049970290812,366.655560510496">
+          TopLeft="1088.25590780611,282.3555642188">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-237.183320470735,41.877771038937"
+              EndConnector="0,43.5785701593111"
               Start="0,0"
-              End="-237.183320470735,34.377771038937">
+              End="0,36.0785701593111">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,20.8183600144866" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,20.8183600144866"
-                    Point2="0,24.8183600144866"
-                    Point3="-4,24.8183600144866" />
+                    End="0,36.0785701593111" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - ASSET.Paths[Derived Column Output]"
+          TopLeft="296.783322291987,812.131740765592">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="172.694431703263,40.7571458733315"
+              Start="0,0"
+              End="172.694431703263,33.2571458733315">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
                   <mssgle:LineSegment
-                    End="-233.183320470735,24.8183600144866" />
+                    End="0,22.6202859456648" />
                   <mssgle:CubicBezierSegment
-                    Point1="-233.183320470735,24.8183600144866"
-                    Point2="-237.183320470735,24.8183600144866"
-                    Point3="-237.183320470735,28.8183600144866" />
+                    Point1="0,22.6202859456648"
+                    Point2="0,26.6202859456648"
+                    Point3="4,26.6202859456648" />
                   <mssgle:LineSegment
-                    End="-237.183320470735,34.377771038937" />
+                    End="168.694431703263,26.6202859456648" />
+                  <mssgle:CubicBezierSegment
+                    Point1="168.694431703263,26.6202859456648"
+                    Point2="172.694431703263,26.6202859456648"
+                    Point3="172.694431703263,30.6202859456648" />
+                  <mssgle:LineSegment
+                    End="172.694431703263,33.2571458733315" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -34455,7 +34684,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="34.8721976633681,34.783366152778,141.2278125,11.658203125"
+              BoundingBox="34.872197663368,34.783366152778,141.2278125,11.658203125"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
@@ -34541,6 +34770,54 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                   Capacity="5">
                   <mssgle:LineSegment
                     End="98.722218448917,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="161.6,41.6"
+          Id="Package\DF - ASSET\Derived Column 1"
+          TopLeft="296.666650457515,154.266665593916" />
+        <EdgeLayout
+          Id="Package\DF - ASSET.Paths[Derived Column Output9]"
+          TopLeft="378.416655803306,116.60000068446">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,37.666664909456"
+              Start="0,0"
+              End="0,30.166664909456">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,30.166664909456" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - ASSET.Paths[Derived Column Output10]"
+          TopLeft="381.341650833149,195.866665593916">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,47.0888944193784"
+              Start="0,0"
+              End="0,39.5888944193784">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,39.5888944193784" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
