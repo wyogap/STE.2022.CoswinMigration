@@ -13,8 +13,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0051_Master_Person_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="484"
-  DTS:VersionGUID="{1E0CE058-5C2F-4933-A592-CE87BF2EEF23}"
+  DTS:VersionBuild="488"
+  DTS:VersionGUID="{09773430-63F2-484D-B783-0362A07ABE2E}"
   DTS:VersionMajor="8"
   DTS:VersionMinor="1">
   <DTS:Property
@@ -910,7 +910,7 @@
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-              SQLTask:SqlStatementSource="-- active user (PERSONID/EMPNO)&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;select UPPER(a.personid) as display_name, a.personid as personid, 0 as persistent&#xA;&#x9;, 1 as status, 0 as id&#xA;from maximo.person a&#xA;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(a.personid)&#xA;where b.ID IS NULL and a.status='ACTIVE'&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="-- active user (PERSONID/EMPNO)&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;select UPPER(a.personid) as display_name, a.personid as personid, 0 as persistent&#xA;&#x9;, 1 as status, 0 as id&#xA;from maximo.person a&#xA;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(a.personid)&#xA;where b.pkey IS NULL and a.status='ACTIVE'&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
           </DTS:ObjectData>
         </DTS:Executable>
         <DTS:Executable
@@ -926,7 +926,7 @@
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-              SQLTask:SqlStatementSource="-- inactive user (lastname/cleaned-up re_name)&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT display_name, personid, persistent, status, id &#xA;FROM (&#xA;&#x9;select UPPER(a.lastname) as display_name, a.personid as personid, 0 as persistent&#xA;&#x9;&#x9;, 1 as status, 0 as id&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY UPPER(a.lastname) ORDER BY a.personid) RN&#xA;&#x9;from maximo.person a&#xA;&#x9;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(a.lastname)&#xA;&#x9;where b.ID IS NULL and a.status!='ACTIVE' AND a.lastname IS NOT NULL&#xA;) a &#xA;WHERE a.RN=1&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="-- inactive user (lastname/cleaned-up re_name)&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT display_name, personid, persistent, status, id &#xA;FROM (&#xA;&#x9;select UPPER(a.lastname) as display_name, a.personid as personid, 0 as persistent&#xA;&#x9;&#x9;, 1 as status, 0 as id&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY UPPER(a.lastname) ORDER BY a.personid) RN&#xA;&#x9;from maximo.person a&#xA;&#x9;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(a.lastname)&#xA;&#x9;where b.pkey IS NULL and a.status!='ACTIVE' AND a.lastname IS NOT NULL&#xA;) a &#xA;WHERE a.RN=1&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
           </DTS:ObjectData>
         </DTS:Executable>
         <DTS:Executable
@@ -942,7 +942,7 @@
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-              SQLTask:SqlStatementSource="-- lookup file&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT display_name, userid, persistent, status, id &#xA;FROM (&#xA;&#x9;SELECT UPPER(TRIM(a.displayname)) AS display_name, a.userid, 0 AS persistent, 1 AS status, a.id&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY UPPER(TRIM(a.displayname)) ORDER BY a.ID) RN&#xA;&#x9;FROM MIGRATION.SBST_USER_DISPLAYNAME_MAPPING a&#xA;&#x9;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(TRIM(a.displayname))&#xA;&#x9;where b.ID is NULL AND TRIM(a.displayname)!=''&#xA;) a &#xA;WHERE a.RN=1;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="-- lookup file&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT display_name, userid, persistent, status, id &#xA;FROM (&#xA;&#x9;SELECT UPPER(TRIM(a.displayname)) AS display_name, a.userid, 0 AS persistent, 1 AS status, a.id&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY UPPER(TRIM(a.displayname)) ORDER BY a.ID) RN&#xA;&#x9;FROM MIGRATION.SBST_USER_DISPLAYNAME_MAPPING a&#xA;&#x9;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(TRIM(a.displayname))&#xA;&#x9;where b.pkey is NULL AND TRIM(a.displayname)!=''&#xA;) a &#xA;WHERE a.RN=1;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
           </DTS:ObjectData>
         </DTS:Executable>
         <DTS:Executable
@@ -958,7 +958,7 @@
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-              SQLTask:SqlStatementSource="-- active user (LANID/re_brcd/usr_id)&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT display_name, personid, persistent, status, id &#xA;FROM (&#xA;&#x9;select UPPER(a.ste_lanid) as display_name, a.personid as personid, 0 as persistent&#xA;&#x9;&#x9;, 1 as status, 0 as id&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY UPPER(a.ste_lanid) ORDER BY a.personid) RN&#xA;&#x9;from maximo.person a&#xA;&#x9;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(a.ste_lanid)&#xA;&#x9;where b.ID IS NULL and a.status='ACTIVE' AND a.ste_lanid IS NOT NULL &#xA;) a &#xA;WHERE a.RN=1&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="-- active user (LANID/re_brcd/usr_id)&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT display_name, personid, persistent, status, id &#xA;FROM (&#xA;&#x9;select UPPER(a.ste_lanid) as display_name, a.personid as personid, 0 as persistent&#xA;&#x9;&#x9;, 1 as status, 0 as id&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY UPPER(a.ste_lanid) ORDER BY a.personid) RN&#xA;&#x9;from maximo.person a&#xA;&#x9;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(a.ste_lanid)&#xA;&#x9;where b.pkey IS NULL and a.status='ACTIVE' AND a.ste_lanid IS NOT NULL &#xA;) a &#xA;WHERE a.RN=1&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
           </DTS:ObjectData>
         </DTS:Executable>
         <DTS:Executable
@@ -974,7 +974,7 @@
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-              SQLTask:SqlStatementSource="-- active user (firstname/usr_signature)&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT display_name, personid, persistent, status, id &#xA;FROM (&#xA;&#x9;select UPPER(a.firstname) as display_name, a.personid as personid, 0 as persistent&#xA;&#x9;&#x9;, 1 as status, 0 as id&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY UPPER(a.firstname) ORDER BY a.personid) RN&#xA;&#x9;from maximo.person a&#xA;&#x9;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(a.firstname)&#xA;&#x9;where b.ID IS NULL and a.status='ACTIVE' AND a.firstname IS NOT NULL&#xA;) a &#xA;WHERE a.RN=1&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="-- active user (firstname/usr_signature)&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT display_name, personid, persistent, status, id &#xA;FROM (&#xA;&#x9;select UPPER(a.firstname) as display_name, a.personid as personid, 0 as persistent&#xA;&#x9;&#x9;, 1 as status, 0 as id&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY UPPER(a.firstname) ORDER BY a.personid) RN&#xA;&#x9;from maximo.person a&#xA;&#x9;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(a.firstname)&#xA;&#x9;where b.pkey IS NULL and a.status='ACTIVE' AND a.firstname IS NOT NULL&#xA;) a &#xA;WHERE a.RN=1&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
           </DTS:ObjectData>
         </DTS:Executable>
         <DTS:Executable
@@ -990,7 +990,7 @@
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-              SQLTask:SqlStatementSource="-- active user (displayname/re_name)&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT display_name, personid, persistent, status, id &#xA;FROM (&#xA;&#x9;select UPPER(a.displayname) as display_name, a.personid as personid, 0 as persistent&#xA;&#x9;&#x9;, 1 as status, 0 as id&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY UPPER(a.displayname) ORDER BY a.personid) RN&#xA;&#x9;from maximo.person a&#xA;&#x9;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(a.displayname)&#xA;&#x9;where b.ID IS NULL and a.status='ACTIVE' AND a.displayname IS NOT NULL&#xA;) a &#xA;WHERE a.RN=1&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="-- active user (displayname/re_name)&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT display_name, personid, persistent, status, id &#xA;FROM (&#xA;&#x9;select UPPER(a.displayname) as display_name, a.personid as personid, 0 as persistent&#xA;&#x9;&#x9;, 1 as status, 0 as id&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY UPPER(a.displayname) ORDER BY a.personid) RN&#xA;&#x9;from maximo.person a&#xA;&#x9;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(a.displayname)&#xA;&#x9;where b.pkey IS NULL and a.status='ACTIVE' AND a.displayname IS NOT NULL&#xA;) a &#xA;WHERE a.RN=1&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
           </DTS:ObjectData>
         </DTS:Executable>
         <DTS:Executable
@@ -1006,7 +1006,7 @@
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-              SQLTask:SqlStatementSource="-- active user (lastname/cleaned-up re_name)&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT display_name, personid, persistent, status, id &#xA;FROM (&#xA;&#x9;select UPPER(a.lastname) as display_name, a.personid as personid, 0 as persistent&#xA;&#x9;&#x9;, 1 as status, 0 as id&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY UPPER(a.lastname) ORDER BY a.personid) RN&#xA;&#x9;from maximo.person a&#xA;&#x9;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(a.lastname)&#xA;&#x9;where b.ID IS NULL and a.status='ACTIVE' AND a.lastname IS NOT NULL&#xA;) a &#xA;WHERE a.RN=1&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="-- active user (lastname/cleaned-up re_name)&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT display_name, personid, persistent, status, id &#xA;FROM (&#xA;&#x9;select UPPER(a.lastname) as display_name, a.personid as personid, 0 as persistent&#xA;&#x9;&#x9;, 1 as status, 0 as id&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY UPPER(a.lastname) ORDER BY a.personid) RN&#xA;&#x9;from maximo.person a&#xA;&#x9;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(a.lastname)&#xA;&#x9;where b.pkey IS NULL and a.status='ACTIVE' AND a.lastname IS NOT NULL&#xA;) a &#xA;WHERE a.RN=1&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
           </DTS:ObjectData>
         </DTS:Executable>
         <DTS:Executable
@@ -1022,7 +1022,7 @@
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-              SQLTask:SqlStatementSource="-- inactive user (PERSONID/EMPNO)&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;select UPPER(a.personid) as display_name, a.personid as personid, 0 as persistent&#xA;&#x9;, 1 as status, 0 as id&#xA;from maximo.person a&#xA;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(a.personid)&#xA;where b.ID IS NULL and a.status!='ACTIVE'&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="-- inactive user (PERSONID/EMPNO)&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;select UPPER(a.personid) as display_name, a.personid as personid, 0 as persistent&#xA;&#x9;, 1 as status, 0 as id&#xA;from maximo.person a&#xA;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(a.personid)&#xA;where b.pkey IS NULL and a.status!='ACTIVE'&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
           </DTS:ObjectData>
         </DTS:Executable>
         <DTS:Executable
@@ -1038,7 +1038,7 @@
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-              SQLTask:SqlStatementSource="-- inactive user (LANID/re_brcd/usr_id)&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT display_name, personid, persistent, status, id &#xA;FROM (&#xA;&#x9;select UPPER(a.ste_lanid) as display_name, a.personid as personid, 0 as persistent&#xA;&#x9;&#x9;, 1 as status, 0 as id&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY UPPER(a.ste_lanid) ORDER BY a.personid) RN&#xA;&#x9;from maximo.person a&#xA;&#x9;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(a.ste_lanid)&#xA;&#x9;where b.ID IS NULL and a.status!='ACTIVE' AND a.ste_lanid IS NOT NULL &#xA;) a &#xA;WHERE a.RN=1&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="-- inactive user (LANID/re_brcd/usr_id)&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT display_name, personid, persistent, status, id &#xA;FROM (&#xA;&#x9;select UPPER(a.ste_lanid) as display_name, a.personid as personid, 0 as persistent&#xA;&#x9;&#x9;, 1 as status, 0 as id&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY UPPER(a.ste_lanid) ORDER BY a.personid) RN&#xA;&#x9;from maximo.person a&#xA;&#x9;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(a.ste_lanid)&#xA;&#x9;where b.pkey IS NULL and a.status!='ACTIVE' AND a.ste_lanid IS NOT NULL &#xA;) a &#xA;WHERE a.RN=1&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
           </DTS:ObjectData>
         </DTS:Executable>
         <DTS:Executable
@@ -1054,7 +1054,7 @@
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-              SQLTask:SqlStatementSource="-- inactive user (firstname/usr_signature)&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT display_name, personid, persistent, status, id &#xA;FROM (&#xA;&#x9;select UPPER(a.firstname) as display_name, a.personid as personid, 0 as persistent&#xA;&#x9;&#x9;, 1 as status, 0 as id&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY UPPER(a.firstname) ORDER BY a.personid) RN&#xA;&#x9;from maximo.person a&#xA;&#x9;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(a.firstname)&#xA;&#x9;where b.ID IS NULL and a.status!='ACTIVE' AND a.firstname IS NOT NULL&#xA;) a &#xA;WHERE a.RN=1&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="-- inactive user (firstname/usr_signature)&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT display_name, personid, persistent, status, id &#xA;FROM (&#xA;&#x9;select UPPER(a.firstname) as display_name, a.personid as personid, 0 as persistent&#xA;&#x9;&#x9;, 1 as status, 0 as id&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY UPPER(a.firstname) ORDER BY a.personid) RN&#xA;&#x9;from maximo.person a&#xA;&#x9;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(a.firstname)&#xA;&#x9;where b.pkey IS NULL and a.status!='ACTIVE' AND a.firstname IS NOT NULL&#xA;) a &#xA;WHERE a.RN=1&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
           </DTS:ObjectData>
         </DTS:Executable>
         <DTS:Executable
@@ -1070,7 +1070,7 @@
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-              SQLTask:SqlStatementSource="-- inactive user (displayname/re_name)&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT display_name, personid, persistent, status, id &#xA;FROM (&#xA;&#x9;select UPPER(a.displayname) as display_name, a.personid as personid, 0 as persistent&#xA;&#x9;&#x9;, 1 as status, 0 as id&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY UPPER(a.displayname) ORDER BY a.personid) RN&#xA;&#x9;from maximo.person a&#xA;&#x9;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(a.displayname)&#xA;&#x9;where b.ID IS NULL and a.status!='ACTIVE' AND a.displayname IS NOT NULL&#xA;) a &#xA;WHERE a.RN=1&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="-- inactive user (displayname/re_name)&#xA;insert into MIGRATION.ste_migration_user_lookup (display_name, personid, persistent, status, STE_MIGRATIONID)&#xA;SELECT display_name, personid, persistent, status, id &#xA;FROM (&#xA;&#x9;select UPPER(a.displayname) as display_name, a.personid as personid, 0 as persistent&#xA;&#x9;&#x9;, 1 as status, 0 as id&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY UPPER(a.displayname) ORDER BY a.personid) RN&#xA;&#x9;from maximo.person a&#xA;&#x9;left join MIGRATION.ste_migration_user_lookup b on b.display_name=UPPER(a.displayname)&#xA;&#x9;where b.pkey IS NULL and a.status!='ACTIVE' AND a.displayname IS NOT NULL&#xA;) a &#xA;WHERE a.RN=1&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
           </DTS:ObjectData>
         </DTS:Executable>
         <DTS:Executable
@@ -13735,7 +13735,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         <NodeLayout
           Size="159.2,41.6"
           Id="Package\Build Lookup\RESET LOOKUP"
-          TopLeft="60,60" />
+          TopLeft="50.0000005463759,60" />
         <NodeLayout
           Size="147.2,41.6"
           Id="Package\Build Lookup\Build Lookup 1"
@@ -13782,30 +13782,18 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           TopLeft="423.333313481676,325.733336431053" />
         <EdgeLayout
           Id="Package\Build Lookup.PrecedenceConstraints[Constraint]"
-          TopLeft="139.6,101.6">
+          TopLeft="209.200000546376,80.4666670222415">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="172.33332358963,-0.66666595551709"
+              EndConnector="29.1333230432541,0"
               Start="0,0"
-              End="172.33332358963,6.83333404448291">
+              End="21.6333230432541,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,18.5" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,18.5"
-                    Point2="0,22.5"
-                    Point3="4,22.5" />
-                  <mssgle:LineSegment
-                    End="168.33332358963,22.5" />
-                  <mssgle:CubicBezierSegment
-                    Point1="168.33332358963,22.5"
-                    Point2="172.33332358963,22.5"
-                    Point3="172.33332358963,18.5" />
-                  <mssgle:LineSegment
-                    End="172.33332358963,6.83333404448291" />
+                    End="21.6333230432541,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -14861,7 +14849,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="-81.15173828125,14.7453117929897,162.3034765625,11.609375"
+              BoundingBox="-55.80638671875,14.7453117929897,111.6127734375,11.609375"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
@@ -14885,7 +14873,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="-81.15173828125,17.7453120931983,162.3034765625,11.609375"
+              BoundingBox="-55.80638671875,17.7453120931983,111.6127734375,11.609375"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
@@ -14908,9 +14896,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-20.9087109375,12.1820633109079,41.817421875,9.6025390625"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -14932,9 +14918,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-15.10447265625,16.6601884826688,30.2089453125,9.4462890625"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -14956,9 +14940,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="12.5955237240099,5,30.2089453125,9.4462890625"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -14980,9 +14962,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="43.8579529745214,5,41.817421875,9.6025390625"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -15004,9 +14984,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-1.84205564828315,5,41.817421875,9.6025390625"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -15028,9 +15006,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-20.9087109375,18.4153964615198,41.817421875,9.6025390625"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
@@ -15164,7 +15140,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="-81.15173828125,20.845310980082,162.3034765625,11.609375"
+              BoundingBox="-55.80638671875,20.845310980082,111.6127734375,11.609375"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
@@ -15188,7 +15164,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="-81.15173828125,14.0453125894067,162.3034765625,11.609375"
+              BoundingBox="-55.80638671875,14.0453125894067,111.6127734375,11.609375"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
@@ -15211,9 +15187,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-20.8501171875,14.5487292915585,41.700234375,9.6025390625"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -15235,9 +15209,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-15.10447265625,16.6601884826688,30.2089453125,9.4462890625"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -15259,9 +15231,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="12.5955237240099,5,30.2089453125,9.4462890625"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -15283,9 +15253,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="7.49988260388389,5,41.700234375,9.6025390625"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -15307,9 +15275,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-3.200118394494,5,41.700234375,9.6025390625"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -15331,9 +15297,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-20.8501171875,21.148729716241,41.700234375,9.6025390625"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
@@ -15453,9 +15417,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-25.0951171875,23.6633772820235,50.190234375,9.5732421875"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -15477,9 +15439,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-15.10447265625,16.6601884826688,30.2089453125,9.4462890625"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -15502,7 +15462,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="-61.2692578125,20.145311792195,122.538515625,11.609375"
+              BoundingBox="-31.369453125,21.173143823445,62.73890625,9.5537109375"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
@@ -15525,9 +15485,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="12.5955237240099,5,30.2089453125,9.4462890625"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -15549,9 +15507,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-25.0951171875,18.0967121471629,50.190234375,9.5732421875"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -15573,9 +15529,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="9.6548813670874,5,50.190234375,9.5732421875"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -15597,9 +15551,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-25.0951171875,21.1633783325552,50.190234375,9.5732421875"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -15622,7 +15574,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="-85.39673828125,37.84531352818,170.7934765625,11.609375"
+              BoundingBox="-55.80638671875,37.84531352818,111.6127734375,11.609375"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
