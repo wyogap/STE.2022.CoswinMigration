@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0405_WO_SR_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="375"
-  DTS:VersionGUID="{FAE8CA11-22D9-46E3-812E-267E5B233636}"
+  DTS:VersionBuild="380"
+  DTS:VersionGUID="{B58C8864-D3D5-41B2-9F2B-43942BD2A886}"
   DTS:VersionMajor="5">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -1940,17 +1940,10 @@
                       cachedName="JR_SANC_NOTE2"
                       lineageId="Package\DF - SR\Oracle Source.Outputs[Oracle Source Output].Columns[JR_SANC_NOTE2]" />
                     <inputColumn
-                      refId="Package\DF - SR\Derived Column 1.Inputs[Derived Column Input].Columns[FAILURECLASS]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="10"
-                      cachedName="FAILURECLASS"
-                      lineageId="Package\DF - SR\Oracle Source.Outputs[Oracle Source Output].Columns[FAILURECLASS]" />
-                    <inputColumn
                       refId="Package\DF - SR\Derived Column 1.Inputs[Derived Column Input].Columns[PROBLEMCODE]"
                       cachedCodepage="1252"
                       cachedDataType="str"
-                      cachedLength="10"
+                      cachedLength="21"
                       cachedName="PROBLEMCODE"
                       lineageId="Package\DF - SR\Oracle Source.Outputs[Oracle Source Output].Columns[PROBLEMCODE]" />
                     <inputColumn
@@ -2286,13 +2279,13 @@
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">(DT_STR,10,1252)#{Package\DF - SR\Oracle Source.Outputs[Oracle Source Output].Columns[FAILURECLASS]}</property>
+                          name="Expression">(DT_STR,10,1252)"CSWNFL_CLS"</property>
                         <property
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
-                          name="FriendlyExpression">(DT_STR,10,1252)FAILURECLASS</property>
+                          name="FriendlyExpression">(DT_STR,10,1252)"CSWNFL_CLS"</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
@@ -6901,6 +6894,22 @@ where "refTable"."COSWIN_ENTITY" = ?</property>
                       cachedName="DEPT"
                       externalMetadataColumnId="Package\DF - SR\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MAINTDEPT]"
                       lineageId="Package\DF - SR\Union All 4.Outputs[Union All Output 1].Columns[DEPT]" />
+                    <inputColumn
+                      refId="Package\DF - SR\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_failurecode]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="v_failurecode"
+                      externalMetadataColumnId="Package\DF - SR\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[FAILURECODE]"
+                      lineageId="Package\DF - SR\Union All 4.Outputs[Union All Output 1].Columns[v_failurecode]" />
+                    <inputColumn
+                      refId="Package\DF - SR\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_problemcode]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="v_problemcode"
+                      externalMetadataColumnId="Package\DF - SR\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PROBLEMCODE]"
+                      lineageId="Package\DF - SR\Union All 4.Outputs[Union All Output 1].Columns[v_problemcode]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -7465,6 +7474,18 @@ where "refTable"."COSWIN_ENTITY" = ?</property>
                       refId="Package\DF - SR\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONTS]"
                       dataType="i4"
                       name="STE_MIGRATIONTS" />
+                    <externalMetadataColumn
+                      refId="Package\DF - SR\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_CSWNACTIONAUTH]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="STE_CSWNACTIONAUTH" />
+                    <externalMetadataColumn
+                      refId="Package\DF - SR\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_CSWNREQUESTAUTH]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="STE_CSWNREQUESTAUTH" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -7966,8 +7987,10 @@ LEFT JOIN (
 	-- one WO can have multiple defects
 	SELECT 
 		ed.DR_WOID
-		, (COALESCE(DR_SYCD,COALESCE(DR_DFCD,COALESCE(DR_CACD,'S1')))) AS FAILURECLASS
-		, COALESCE(DR_DFCD,COALESCE(DR_CACD,'S1')) AS PROBLEMCODE
+		, 'CSWNFL_CLS' AS FAILURECLASS
+		, CONCAT(CONCAT(COALESCE(DR_SYCD,'EMPTYS'),'-'),COALESCE(DR_DFCD,'EMPTYD')) AS PROBLEMCODE
+		, COALESCE(DR_CACD, 'EMPTYC') AS CAUSECODE 
+		, DR_ACCD AS REMEDYCODE
 		, ed.DR_REP_DT
 		, ed.DR_TOT_COST
 		, ROW_NUMBER() OVER (PARTITION BY ed.DR_WOID ORDER BY DR_REP_DT) RN
@@ -8367,14 +8390,6 @@ LEFT JOIN (
                       lineageId="Package\DF - SR\Oracle Source.Outputs[Oracle Source Output].Columns[FAILURECLASS]"
                       name="FAILURECLASS" />
                     <outputColumn
-                      refId="Package\DF - SR\Oracle Source.Outputs[Oracle Source Output].Columns[PROBLEMCODE]"
-                      codePage="1252"
-                      dataType="str"
-                      externalMetadataColumnId="Package\DF - SR\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PROBLEMCODE]"
-                      length="10"
-                      lineageId="Package\DF - SR\Oracle Source.Outputs[Oracle Source Output].Columns[PROBLEMCODE]"
-                      name="PROBLEMCODE" />
-                    <outputColumn
                       refId="Package\DF - SR\Oracle Source.Outputs[Oracle Source Output].Columns[DR_REP_DT]"
                       dataType="numeric"
                       externalMetadataColumnId="Package\DF - SR\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DR_REP_DT]"
@@ -8394,6 +8409,14 @@ LEFT JOIN (
                       lineageId="Package\DF - SR\Oracle Source.Outputs[Oracle Source Output].Columns[TIMESTAMP]"
                       name="TIMESTAMP"
                       precision="10" />
+                    <outputColumn
+                      refId="Package\DF - SR\Oracle Source.Outputs[Oracle Source Output].Columns[PROBLEMCODE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\DF - SR\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PROBLEMCODE]"
+                      length="21"
+                      lineageId="Package\DF - SR\Oracle Source.Outputs[Oracle Source Output].Columns[PROBLEMCODE]"
+                      name="PROBLEMCODE" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -8647,7 +8670,7 @@ LEFT JOIN (
                       refId="Package\DF - SR\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PROBLEMCODE]"
                       codePage="1252"
                       dataType="str"
-                      length="10"
+                      length="21"
                       name="PROBLEMCODE" />
                     <externalMetadataColumn
                       refId="Package\DF - SR\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DR_REP_DT]"
@@ -9011,14 +9034,6 @@ LEFT JOIN (
                       lineageId="Package\DF - SR\Oracle Source.Outputs[Oracle Source Error Output].Columns[FAILURECLASS]"
                       name="FAILURECLASS" />
                     <outputColumn
-                      refId="Package\DF - SR\Oracle Source.Outputs[Oracle Source Error Output].Columns[PROBLEMCODE]"
-                      codePage="1252"
-                      dataType="str"
-                      externalMetadataColumnId="Package\DF - SR\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PROBLEMCODE]"
-                      length="10"
-                      lineageId="Package\DF - SR\Oracle Source.Outputs[Oracle Source Error Output].Columns[PROBLEMCODE]"
-                      name="PROBLEMCODE" />
-                    <outputColumn
                       refId="Package\DF - SR\Oracle Source.Outputs[Oracle Source Error Output].Columns[DR_REP_DT]"
                       dataType="numeric"
                       externalMetadataColumnId="Package\DF - SR\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DR_REP_DT]"
@@ -9050,6 +9065,13 @@ LEFT JOIN (
                       lineageId="Package\DF - SR\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorColumn]"
                       name="ErrorColumn"
                       specialFlags="2" />
+                    <outputColumn
+                      refId="Package\DF - SR\Oracle Source.Outputs[Oracle Source Error Output].Columns[PROBLEMCODE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="21"
+                      lineageId="Package\DF - SR\Oracle Source.Outputs[Oracle Source Error Output].Columns[PROBLEMCODE]"
+                      name="PROBLEMCODE" />
                   </outputColumns>
                   <externalMetadataColumns />
                 </output>
@@ -11978,21 +12000,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       </properties>
                     </inputColumn>
                     <inputColumn
-                      refId="Package\DF - SR\Union All.Inputs[Union All Input 1].Columns[PROBLEMCODE]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="10"
-                      cachedName="PROBLEMCODE"
-                      lineageId="Package\DF - SR\Oracle Source.Outputs[Oracle Source Output].Columns[PROBLEMCODE]">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Output column lineage ID"
-                          name="OutputColumnLineageID">#{Package\DF - SR\Union All.Outputs[Union All Output 1].Columns[PROBLEMCODE]}</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
                       refId="Package\DF - SR\Union All.Inputs[Union All Input 1].Columns[DR_REP_DT]"
                       cachedDataType="numeric"
                       cachedName="DR_REP_DT"
@@ -12712,6 +12719,21 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="OutputColumnLineageID">#{Package\DF - SR\Union All.Outputs[Union All Output 1].Columns[lk_worefid]}</property>
                       </properties>
                     </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - SR\Union All.Inputs[Union All Input 1].Columns[PROBLEMCODE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="21"
+                      cachedName="PROBLEMCODE"
+                      lineageId="Package\DF - SR\Oracle Source.Outputs[Oracle Source Output].Columns[PROBLEMCODE]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - SR\Union All.Outputs[Union All Output 1].Columns[PROBLEMCODE]}</property>
+                      </properties>
+                    </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -13387,21 +13409,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           dataType="System.Int32"
                           description="Output column lineage ID"
                           name="OutputColumnLineageID">#{Package\DF - SR\Union All.Outputs[Union All Output 1].Columns[FAILURECLASS]}</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - SR\Union All.Inputs[Union All Input 2].Columns[PROBLEMCODE]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="10"
-                      cachedName="PROBLEMCODE"
-                      lineageId="Package\DF - SR\Oracle Source.Outputs[Oracle Source Output].Columns[PROBLEMCODE]">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Output column lineage ID"
-                          name="OutputColumnLineageID">#{Package\DF - SR\Union All.Outputs[Union All Output 1].Columns[PROBLEMCODE]}</property>
                       </properties>
                     </inputColumn>
                     <inputColumn
@@ -14124,6 +14131,21 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="OutputColumnLineageID">#{Package\DF - SR\Union All.Outputs[Union All Output 1].Columns[lk_worefid]}</property>
                       </properties>
                     </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - SR\Union All.Inputs[Union All Input 2].Columns[PROBLEMCODE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="21"
+                      cachedName="PROBLEMCODE"
+                      lineageId="Package\DF - SR\Oracle Source.Outputs[Oracle Source Output].Columns[PROBLEMCODE]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - SR\Union All.Outputs[Union All Output 1].Columns[PROBLEMCODE]}</property>
+                      </properties>
+                    </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -14434,13 +14456,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       lineageId="Package\DF - SR\Union All.Outputs[Union All Output 1].Columns[FAILURECLASS]"
                       name="FAILURECLASS" />
                     <outputColumn
-                      refId="Package\DF - SR\Union All.Outputs[Union All Output 1].Columns[PROBLEMCODE]"
-                      codePage="1252"
-                      dataType="str"
-                      length="10"
-                      lineageId="Package\DF - SR\Union All.Outputs[Union All Output 1].Columns[PROBLEMCODE]"
-                      name="PROBLEMCODE" />
-                    <outputColumn
                       refId="Package\DF - SR\Union All.Outputs[Union All Output 1].Columns[DR_REP_DT]"
                       dataType="numeric"
                       lineageId="Package\DF - SR\Union All.Outputs[Union All Output 1].Columns[DR_REP_DT]"
@@ -14744,6 +14759,13 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       length="10"
                       lineageId="Package\DF - SR\Union All.Outputs[Union All Output 1].Columns[lk_worefid]"
                       name="lk_worefid" />
+                    <outputColumn
+                      refId="Package\DF - SR\Union All.Outputs[Union All Output 1].Columns[PROBLEMCODE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="21"
+                      lineageId="Package\DF - SR\Union All.Outputs[Union All Output 1].Columns[PROBLEMCODE]"
+                      name="PROBLEMCODE" />
                   </outputColumns>
                   <externalMetadataColumns />
                 </output>
@@ -15428,21 +15450,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           dataType="System.Int32"
                           description="Output column lineage ID"
                           name="OutputColumnLineageID">#{Package\DF - SR\Union All 1.Outputs[Union All Output 1].Columns[FAILURECLASS]}</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - SR\Union All 1.Inputs[Union All Input 1].Columns[PROBLEMCODE]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="10"
-                      cachedName="PROBLEMCODE"
-                      lineageId="Package\DF - SR\Union All.Outputs[Union All Output 1].Columns[PROBLEMCODE]">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Output column lineage ID"
-                          name="OutputColumnLineageID">#{Package\DF - SR\Union All 1.Outputs[Union All Output 1].Columns[PROBLEMCODE]}</property>
                       </properties>
                     </inputColumn>
                     <inputColumn
@@ -16150,6 +16157,21 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="OutputColumnLineageID">#{Package\DF - SR\Union All 1.Outputs[Union All Output 1].Columns[TIMESTAMP]}</property>
                       </properties>
                     </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - SR\Union All 1.Inputs[Union All Input 1].Columns[PROBLEMCODE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="21"
+                      cachedName="PROBLEMCODE"
+                      lineageId="Package\DF - SR\Union All.Outputs[Union All Output 1].Columns[PROBLEMCODE]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - SR\Union All 1.Outputs[Union All Output 1].Columns[PROBLEMCODE]}</property>
+                      </properties>
+                    </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -16825,21 +16847,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           dataType="System.Int32"
                           description="Output column lineage ID"
                           name="OutputColumnLineageID">#{Package\DF - SR\Union All 1.Outputs[Union All Output 1].Columns[FAILURECLASS]}</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - SR\Union All 1.Inputs[Union All Input 2].Columns[PROBLEMCODE]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="10"
-                      cachedName="PROBLEMCODE"
-                      lineageId="Package\DF - SR\Union All.Outputs[Union All Output 1].Columns[PROBLEMCODE]">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Output column lineage ID"
-                          name="OutputColumnLineageID">#{Package\DF - SR\Union All 1.Outputs[Union All Output 1].Columns[PROBLEMCODE]}</property>
                       </properties>
                     </inputColumn>
                     <inputColumn
@@ -17547,6 +17554,21 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="OutputColumnLineageID">#{Package\DF - SR\Union All 1.Outputs[Union All Output 1].Columns[TIMESTAMP]}</property>
                       </properties>
                     </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - SR\Union All 1.Inputs[Union All Input 2].Columns[PROBLEMCODE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="21"
+                      cachedName="PROBLEMCODE"
+                      lineageId="Package\DF - SR\Union All.Outputs[Union All Output 1].Columns[PROBLEMCODE]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - SR\Union All 1.Outputs[Union All Output 1].Columns[PROBLEMCODE]}</property>
+                      </properties>
+                    </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -18222,21 +18244,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           dataType="System.Int32"
                           description="Output column lineage ID"
                           name="OutputColumnLineageID">#{Package\DF - SR\Union All 1.Outputs[Union All Output 1].Columns[FAILURECLASS]}</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - SR\Union All 1.Inputs[Union All Input 3].Columns[PROBLEMCODE]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="10"
-                      cachedName="PROBLEMCODE"
-                      lineageId="Package\DF - SR\Union All.Outputs[Union All Output 1].Columns[PROBLEMCODE]">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Output column lineage ID"
-                          name="OutputColumnLineageID">#{Package\DF - SR\Union All 1.Outputs[Union All Output 1].Columns[PROBLEMCODE]}</property>
                       </properties>
                     </inputColumn>
                     <inputColumn
@@ -18944,6 +18951,21 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="OutputColumnLineageID">#{Package\DF - SR\Union All 1.Outputs[Union All Output 1].Columns[TIMESTAMP]}</property>
                       </properties>
                     </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - SR\Union All 1.Inputs[Union All Input 3].Columns[PROBLEMCODE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="21"
+                      cachedName="PROBLEMCODE"
+                      lineageId="Package\DF - SR\Union All.Outputs[Union All Output 1].Columns[PROBLEMCODE]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - SR\Union All 1.Outputs[Union All Output 1].Columns[PROBLEMCODE]}</property>
+                      </properties>
+                    </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -19619,21 +19641,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           dataType="System.Int32"
                           description="Output column lineage ID"
                           name="OutputColumnLineageID">#{Package\DF - SR\Union All 1.Outputs[Union All Output 1].Columns[FAILURECLASS]}</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - SR\Union All 1.Inputs[Union All Input 5].Columns[PROBLEMCODE]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="10"
-                      cachedName="PROBLEMCODE"
-                      lineageId="Package\DF - SR\Union All.Outputs[Union All Output 1].Columns[PROBLEMCODE]">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Output column lineage ID"
-                          name="OutputColumnLineageID">#{Package\DF - SR\Union All 1.Outputs[Union All Output 1].Columns[PROBLEMCODE]}</property>
                       </properties>
                     </inputColumn>
                     <inputColumn
@@ -20326,6 +20333,21 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="OutputColumnLineageID">#{Package\DF - SR\Union All 1.Outputs[Union All Output 1].Columns[TIMESTAMP]}</property>
                       </properties>
                     </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - SR\Union All 1.Inputs[Union All Input 5].Columns[PROBLEMCODE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="21"
+                      cachedName="PROBLEMCODE"
+                      lineageId="Package\DF - SR\Union All.Outputs[Union All Output 1].Columns[PROBLEMCODE]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - SR\Union All 1.Outputs[Union All Output 1].Columns[PROBLEMCODE]}</property>
+                      </properties>
+                    </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -20636,13 +20658,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       lineageId="Package\DF - SR\Union All 1.Outputs[Union All Output 1].Columns[FAILURECLASS]"
                       name="FAILURECLASS" />
                     <outputColumn
-                      refId="Package\DF - SR\Union All 1.Outputs[Union All Output 1].Columns[PROBLEMCODE]"
-                      codePage="1252"
-                      dataType="str"
-                      length="10"
-                      lineageId="Package\DF - SR\Union All 1.Outputs[Union All Output 1].Columns[PROBLEMCODE]"
-                      name="PROBLEMCODE" />
-                    <outputColumn
                       refId="Package\DF - SR\Union All 1.Outputs[Union All Output 1].Columns[DR_REP_DT]"
                       dataType="numeric"
                       lineageId="Package\DF - SR\Union All 1.Outputs[Union All Output 1].Columns[DR_REP_DT]"
@@ -20939,6 +20954,13 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       lineageId="Package\DF - SR\Union All 1.Outputs[Union All Output 1].Columns[TIMESTAMP]"
                       name="TIMESTAMP"
                       precision="10" />
+                    <outputColumn
+                      refId="Package\DF - SR\Union All 1.Outputs[Union All Output 1].Columns[PROBLEMCODE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="21"
+                      lineageId="Package\DF - SR\Union All 1.Outputs[Union All Output 1].Columns[PROBLEMCODE]"
+                      name="PROBLEMCODE" />
                   </outputColumns>
                   <externalMetadataColumns />
                 </output>
@@ -21623,21 +21645,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           dataType="System.Int32"
                           description="Output column lineage ID"
                           name="OutputColumnLineageID">#{Package\DF - SR\Union All 2.Outputs[Union All Output 1].Columns[FAILURECLASS]}</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - SR\Union All 2.Inputs[Union All Input 1].Columns[PROBLEMCODE]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="10"
-                      cachedName="PROBLEMCODE"
-                      lineageId="Package\DF - SR\Union All 5.Outputs[Union All Output 1].Columns[PROBLEMCODE]">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Output column lineage ID"
-                          name="OutputColumnLineageID">#{Package\DF - SR\Union All 2.Outputs[Union All Output 1].Columns[PROBLEMCODE]}</property>
                       </properties>
                     </inputColumn>
                     <inputColumn
@@ -22388,6 +22395,21 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="OutputColumnLineageID">#{Package\DF - SR\Union All 2.Outputs[Union All Output 1].Columns[TIMESTAMP]}</property>
                       </properties>
                     </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - SR\Union All 2.Inputs[Union All Input 1].Columns[PROBLEMCODE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="21"
+                      cachedName="PROBLEMCODE"
+                      lineageId="Package\DF - SR\Union All 5.Outputs[Union All Output 1].Columns[PROBLEMCODE]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - SR\Union All 2.Outputs[Union All Output 1].Columns[PROBLEMCODE]}</property>
+                      </properties>
+                    </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -23063,21 +23085,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           dataType="System.Int32"
                           description="Output column lineage ID"
                           name="OutputColumnLineageID">#{Package\DF - SR\Union All 2.Outputs[Union All Output 1].Columns[FAILURECLASS]}</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - SR\Union All 2.Inputs[Union All Input 2].Columns[PROBLEMCODE]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="10"
-                      cachedName="PROBLEMCODE"
-                      lineageId="Package\DF - SR\Union All 5.Outputs[Union All Output 1].Columns[PROBLEMCODE]">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Output column lineage ID"
-                          name="OutputColumnLineageID">#{Package\DF - SR\Union All 2.Outputs[Union All Output 1].Columns[PROBLEMCODE]}</property>
                       </properties>
                     </inputColumn>
                     <inputColumn
@@ -23828,6 +23835,21 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="OutputColumnLineageID">#{Package\DF - SR\Union All 2.Outputs[Union All Output 1].Columns[TIMESTAMP]}</property>
                       </properties>
                     </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - SR\Union All 2.Inputs[Union All Input 2].Columns[PROBLEMCODE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="21"
+                      cachedName="PROBLEMCODE"
+                      lineageId="Package\DF - SR\Union All 5.Outputs[Union All Output 1].Columns[PROBLEMCODE]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - SR\Union All 2.Outputs[Union All Output 1].Columns[PROBLEMCODE]}</property>
+                      </properties>
+                    </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -24503,21 +24525,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           dataType="System.Int32"
                           description="Output column lineage ID"
                           name="OutputColumnLineageID">#{Package\DF - SR\Union All 2.Outputs[Union All Output 1].Columns[FAILURECLASS]}</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - SR\Union All 2.Inputs[Union All Input 3].Columns[PROBLEMCODE]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="10"
-                      cachedName="PROBLEMCODE"
-                      lineageId="Package\DF - SR\Union All 5.Outputs[Union All Output 1].Columns[PROBLEMCODE]">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Output column lineage ID"
-                          name="OutputColumnLineageID">#{Package\DF - SR\Union All 2.Outputs[Union All Output 1].Columns[PROBLEMCODE]}</property>
                       </properties>
                     </inputColumn>
                     <inputColumn
@@ -25268,6 +25275,21 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="OutputColumnLineageID">#{Package\DF - SR\Union All 2.Outputs[Union All Output 1].Columns[TIMESTAMP]}</property>
                       </properties>
                     </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - SR\Union All 2.Inputs[Union All Input 3].Columns[PROBLEMCODE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="21"
+                      cachedName="PROBLEMCODE"
+                      lineageId="Package\DF - SR\Union All 5.Outputs[Union All Output 1].Columns[PROBLEMCODE]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - SR\Union All 2.Outputs[Union All Output 1].Columns[PROBLEMCODE]}</property>
+                      </properties>
+                    </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -25577,13 +25599,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       length="10"
                       lineageId="Package\DF - SR\Union All 2.Outputs[Union All Output 1].Columns[FAILURECLASS]"
                       name="FAILURECLASS" />
-                    <outputColumn
-                      refId="Package\DF - SR\Union All 2.Outputs[Union All Output 1].Columns[PROBLEMCODE]"
-                      codePage="1252"
-                      dataType="str"
-                      length="10"
-                      lineageId="Package\DF - SR\Union All 2.Outputs[Union All Output 1].Columns[PROBLEMCODE]"
-                      name="PROBLEMCODE" />
                     <outputColumn
                       refId="Package\DF - SR\Union All 2.Outputs[Union All Output 1].Columns[DR_REP_DT]"
                       dataType="numeric"
@@ -25900,6 +25915,13 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       lineageId="Package\DF - SR\Union All 2.Outputs[Union All Output 1].Columns[TIMESTAMP]"
                       name="TIMESTAMP"
                       precision="10" />
+                    <outputColumn
+                      refId="Package\DF - SR\Union All 2.Outputs[Union All Output 1].Columns[PROBLEMCODE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="21"
+                      lineageId="Package\DF - SR\Union All 2.Outputs[Union All Output 1].Columns[PROBLEMCODE]"
+                      name="PROBLEMCODE" />
                   </outputColumns>
                   <externalMetadataColumns />
                 </output>
@@ -26584,21 +26606,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           dataType="System.Int32"
                           description="Output column lineage ID"
                           name="OutputColumnLineageID">#{Package\DF - SR\Union All 4.Outputs[Union All Output 1].Columns[FAILURECLASS]}</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - SR\Union All 4.Inputs[Union All Input 1].Columns[PROBLEMCODE]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="10"
-                      cachedName="PROBLEMCODE"
-                      lineageId="Package\DF - SR\Union All 2.Outputs[Union All Output 1].Columns[PROBLEMCODE]">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Output column lineage ID"
-                          name="OutputColumnLineageID">#{Package\DF - SR\Union All 4.Outputs[Union All Output 1].Columns[PROBLEMCODE]}</property>
                       </properties>
                     </inputColumn>
                     <inputColumn
@@ -27405,6 +27412,21 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="OutputColumnLineageID">#{Package\DF - SR\Union All 4.Outputs[Union All Output 1].Columns[TIMESTAMP]}</property>
                       </properties>
                     </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - SR\Union All 4.Inputs[Union All Input 1].Columns[PROBLEMCODE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="21"
+                      cachedName="PROBLEMCODE"
+                      lineageId="Package\DF - SR\Union All 2.Outputs[Union All Output 1].Columns[PROBLEMCODE]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - SR\Union All 4.Outputs[Union All Output 1].Columns[PROBLEMCODE]}</property>
+                      </properties>
+                    </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -28080,21 +28102,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           dataType="System.Int32"
                           description="Output column lineage ID"
                           name="OutputColumnLineageID">#{Package\DF - SR\Union All 4.Outputs[Union All Output 1].Columns[FAILURECLASS]}</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - SR\Union All 4.Inputs[Union All Input 2].Columns[PROBLEMCODE]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="10"
-                      cachedName="PROBLEMCODE"
-                      lineageId="Package\DF - SR\Union All 2.Outputs[Union All Output 1].Columns[PROBLEMCODE]">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Output column lineage ID"
-                          name="OutputColumnLineageID">#{Package\DF - SR\Union All 4.Outputs[Union All Output 1].Columns[PROBLEMCODE]}</property>
                       </properties>
                     </inputColumn>
                     <inputColumn
@@ -28901,6 +28908,21 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="OutputColumnLineageID">#{Package\DF - SR\Union All 4.Outputs[Union All Output 1].Columns[TIMESTAMP]}</property>
                       </properties>
                     </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - SR\Union All 4.Inputs[Union All Input 2].Columns[PROBLEMCODE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="21"
+                      cachedName="PROBLEMCODE"
+                      lineageId="Package\DF - SR\Union All 2.Outputs[Union All Output 1].Columns[PROBLEMCODE]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - SR\Union All 4.Outputs[Union All Output 1].Columns[PROBLEMCODE]}</property>
+                      </properties>
+                    </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -29576,21 +29598,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           dataType="System.Int32"
                           description="Output column lineage ID"
                           name="OutputColumnLineageID">#{Package\DF - SR\Union All 4.Outputs[Union All Output 1].Columns[FAILURECLASS]}</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - SR\Union All 4.Inputs[Union All Input 3].Columns[PROBLEMCODE]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="10"
-                      cachedName="PROBLEMCODE"
-                      lineageId="Package\DF - SR\Union All 2.Outputs[Union All Output 1].Columns[PROBLEMCODE]">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Output column lineage ID"
-                          name="OutputColumnLineageID">#{Package\DF - SR\Union All 4.Outputs[Union All Output 1].Columns[PROBLEMCODE]}</property>
                       </properties>
                     </inputColumn>
                     <inputColumn
@@ -30397,6 +30404,21 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="OutputColumnLineageID">#{Package\DF - SR\Union All 4.Outputs[Union All Output 1].Columns[TIMESTAMP]}</property>
                       </properties>
                     </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - SR\Union All 4.Inputs[Union All Input 3].Columns[PROBLEMCODE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="21"
+                      cachedName="PROBLEMCODE"
+                      lineageId="Package\DF - SR\Union All 2.Outputs[Union All Output 1].Columns[PROBLEMCODE]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - SR\Union All 4.Outputs[Union All Output 1].Columns[PROBLEMCODE]}</property>
+                      </properties>
+                    </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -30706,13 +30728,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       length="10"
                       lineageId="Package\DF - SR\Union All 4.Outputs[Union All Output 1].Columns[FAILURECLASS]"
                       name="FAILURECLASS" />
-                    <outputColumn
-                      refId="Package\DF - SR\Union All 4.Outputs[Union All Output 1].Columns[PROBLEMCODE]"
-                      codePage="1252"
-                      dataType="str"
-                      length="10"
-                      lineageId="Package\DF - SR\Union All 4.Outputs[Union All Output 1].Columns[PROBLEMCODE]"
-                      name="PROBLEMCODE" />
                     <outputColumn
                       refId="Package\DF - SR\Union All 4.Outputs[Union All Output 1].Columns[DR_REP_DT]"
                       dataType="numeric"
@@ -31053,6 +31068,13 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       lineageId="Package\DF - SR\Union All 4.Outputs[Union All Output 1].Columns[TIMESTAMP]"
                       name="TIMESTAMP"
                       precision="10" />
+                    <outputColumn
+                      refId="Package\DF - SR\Union All 4.Outputs[Union All Output 1].Columns[PROBLEMCODE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="21"
+                      lineageId="Package\DF - SR\Union All 4.Outputs[Union All Output 1].Columns[PROBLEMCODE]"
+                      name="PROBLEMCODE" />
                   </outputColumns>
                   <externalMetadataColumns />
                 </output>
@@ -31737,21 +31759,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           dataType="System.Int32"
                           description="Output column lineage ID"
                           name="OutputColumnLineageID">#{Package\DF - SR\Union All 5.Outputs[Union All Output 1].Columns[FAILURECLASS]}</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - SR\Union All 5.Inputs[Union All Input 1].Columns[PROBLEMCODE]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="10"
-                      cachedName="PROBLEMCODE"
-                      lineageId="Package\DF - SR\Union All 1.Outputs[Union All Output 1].Columns[PROBLEMCODE]">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Output column lineage ID"
-                          name="OutputColumnLineageID">#{Package\DF - SR\Union All 5.Outputs[Union All Output 1].Columns[PROBLEMCODE]}</property>
                       </properties>
                     </inputColumn>
                     <inputColumn
@@ -32459,6 +32466,21 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="OutputColumnLineageID">#{Package\DF - SR\Union All 5.Outputs[Union All Output 1].Columns[TIMESTAMP]}</property>
                       </properties>
                     </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - SR\Union All 5.Inputs[Union All Input 1].Columns[PROBLEMCODE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="21"
+                      cachedName="PROBLEMCODE"
+                      lineageId="Package\DF - SR\Union All 1.Outputs[Union All Output 1].Columns[PROBLEMCODE]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - SR\Union All 5.Outputs[Union All Output 1].Columns[PROBLEMCODE]}</property>
+                      </properties>
+                    </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -33134,21 +33156,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           dataType="System.Int32"
                           description="Output column lineage ID"
                           name="OutputColumnLineageID">#{Package\DF - SR\Union All 5.Outputs[Union All Output 1].Columns[FAILURECLASS]}</property>
-                      </properties>
-                    </inputColumn>
-                    <inputColumn
-                      refId="Package\DF - SR\Union All 5.Inputs[Union All Input 2].Columns[PROBLEMCODE]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="10"
-                      cachedName="PROBLEMCODE"
-                      lineageId="Package\DF - SR\Union All 1.Outputs[Union All Output 1].Columns[PROBLEMCODE]">
-                      <properties>
-                        <property
-                          containsID="true"
-                          dataType="System.Int32"
-                          description="Output column lineage ID"
-                          name="OutputColumnLineageID">#{Package\DF - SR\Union All 5.Outputs[Union All Output 1].Columns[PROBLEMCODE]}</property>
                       </properties>
                     </inputColumn>
                     <inputColumn
@@ -33856,6 +33863,21 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="OutputColumnLineageID">#{Package\DF - SR\Union All 5.Outputs[Union All Output 1].Columns[TIMESTAMP]}</property>
                       </properties>
                     </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - SR\Union All 5.Inputs[Union All Input 2].Columns[PROBLEMCODE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="21"
+                      cachedName="PROBLEMCODE"
+                      lineageId="Package\DF - SR\Union All 1.Outputs[Union All Output 1].Columns[PROBLEMCODE]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - SR\Union All 5.Outputs[Union All Output 1].Columns[PROBLEMCODE]}</property>
+                      </properties>
+                    </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -34166,13 +34188,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       lineageId="Package\DF - SR\Union All 5.Outputs[Union All Output 1].Columns[FAILURECLASS]"
                       name="FAILURECLASS" />
                     <outputColumn
-                      refId="Package\DF - SR\Union All 5.Outputs[Union All Output 1].Columns[PROBLEMCODE]"
-                      codePage="1252"
-                      dataType="str"
-                      length="10"
-                      lineageId="Package\DF - SR\Union All 5.Outputs[Union All Output 1].Columns[PROBLEMCODE]"
-                      name="PROBLEMCODE" />
-                    <outputColumn
                       refId="Package\DF - SR\Union All 5.Outputs[Union All Output 1].Columns[DR_REP_DT]"
                       dataType="numeric"
                       lineageId="Package\DF - SR\Union All 5.Outputs[Union All Output 1].Columns[DR_REP_DT]"
@@ -34469,6 +34484,13 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       lineageId="Package\DF - SR\Union All 5.Outputs[Union All Output 1].Columns[TIMESTAMP]"
                       name="TIMESTAMP"
                       precision="10" />
+                    <outputColumn
+                      refId="Package\DF - SR\Union All 5.Outputs[Union All Output 1].Columns[PROBLEMCODE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="21"
+                      lineageId="Package\DF - SR\Union All 5.Outputs[Union All Output 1].Columns[PROBLEMCODE]"
+                      name="PROBLEMCODE" />
                   </outputColumns>
                   <externalMetadataColumns />
                 </output>
@@ -37172,7 +37194,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         <NodeLayout
           Size="167.2,41.6"
           Id="Package\DF - SR\Derived Column 1"
-          TopLeft="419.308721612935,27.2015878571908" />
+          TopLeft="419.308721612934,27.2015878571908" />
         <NodeLayout
           Size="172,41.6"
           Id="Package\DF - SR\Remove Duplicate 1"
@@ -37286,7 +37308,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           Id="Package\DF - SR\Derived Column 2 1"
           TopLeft="688.116651891751,857.227775402806" />
         <NodeLayout
-          Size="148.8,41.6"
+          Size="144.8,41.6"
           Id="Package\DF - SR\Oracle Source"
           TopLeft="181.961116036083,24.2777776471994" />
         <NodeLayout
@@ -37471,18 +37493,18 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - SR.Paths[Union All Output 13]"
-          TopLeft="600.722211173289,600.440480989874">
+          TopLeft="600.722211173289,600.440480989875">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="62.6245955567779,0"
+              EndConnector="62.6245955567776,0"
               Start="0,0"
-              End="55.1245955567779,0">
+              End="55.1245955567776,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="55.1245955567779,0" />
+                    End="55.1245955567776,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -37497,14 +37519,14 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,41.1635009786181"
+              EndConnector="0,41.163500978618"
               Start="0,0"
-              End="0,33.6635009786181">
+              End="0,33.663500978618">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,33.6635009786181" />
+                    End="0,33.663500978618" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -37693,18 +37715,18 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - SR.Paths[Oracle Source Output]"
-          TopLeft="330.761116036084,46.5396827521951">
+          TopLeft="326.761116036083,46.5396827521951">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="88.5476055768516,0"
+              EndConnector="92.5476055768519,0"
               Start="0,0"
-              End="81.0476055768516,0">
+              End="85.0476055768519,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="81.0476055768516,0" />
+                    End="85.0476055768519,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -38245,57 +38267,57 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,144.527778041398"
+              EndConnector="0,144.527778041401"
               Start="0,0"
-              End="0,137.027778041398">
+              End="0,137.027778041401">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,137.027778041398" />
+                    End="0,137.027778041401" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="-48.19138671875,62.709201520699,96.3827734375,11.609375"
+              BoundingBox="-48.19138671875,62.7092015207006,96.3827734375,11.609375"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - SR.Paths[Lookup Match Output4]"
-          TopLeft="321.234926291646,509.430158691704">
+          TopLeft="321.234926291645,509.430158691704">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="194.95395154831,68.0698433332636"
+              EndConnector="194.95395154831,68.0698433332608"
               Start="0,0"
-              End="194.95395154831,60.5698433332636">
+              End="194.95395154831,60.5698433332608">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,29.9093244196504" />
+                    End="0,29.909324419649" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,29.9093244196504"
-                    Point2="0,33.9093244196504"
-                    Point3="4,33.9093244196504" />
+                    Point1="0,29.909324419649"
+                    Point2="0,33.909324419649"
+                    Point3="4,33.909324419649" />
                   <mssgle:LineSegment
-                    End="190.95395154831,33.9093244196504" />
+                    End="190.95395154831,33.909324419649" />
                   <mssgle:CubicBezierSegment
-                    Point1="190.95395154831,33.9093244196504"
-                    Point2="194.95395154831,33.9093244196504"
-                    Point3="194.95395154831,37.9093244196504" />
+                    Point1="190.95395154831,33.909324419649"
+                    Point2="194.95395154831,33.909324419649"
+                    Point3="194.95395154831,37.909324419649" />
                   <mssgle:LineSegment
-                    End="194.95395154831,60.5698433332636" />
+                    End="194.95395154831,60.5698433332608" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="49.285589055405,38.9093244196504,96.3827734375,11.609375"
+              BoundingBox="49.2855890554051,38.909324419649,96.3827734375,11.609375"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
@@ -38319,7 +38341,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="3.21416402566249,5,96.3827734375,11.609375"
+              BoundingBox="3.21416402566258,5,96.3827734375,11.609375"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
@@ -38401,33 +38423,33 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="24.9158827769227,166.90317813711"
+              EndConnector="24.9158827769228,166.903178137108"
               Start="0,0"
-              End="24.9158827769227,159.40317813711">
+              End="24.9158827769228,159.403178137108">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,79.2481734415501" />
+                    End="0,79.248173441549" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,79.2481734415501"
-                    Point2="0,83.2481734415501"
-                    Point3="4,83.2481734415501" />
+                    Point1="0,79.248173441549"
+                    Point2="0,83.248173441549"
+                    Point3="4,83.248173441549" />
                   <mssgle:LineSegment
-                    End="20.9158827769227,83.2481734415501" />
+                    End="20.9158827769228,83.248173441549" />
                   <mssgle:CubicBezierSegment
-                    Point1="20.9158827769227,83.2481734415501"
-                    Point2="24.9158827769227,83.2481734415501"
-                    Point3="24.9158827769227,87.2481734415501" />
+                    Point1="20.9158827769228,83.248173441549"
+                    Point2="24.9158827769228,83.248173441549"
+                    Point3="24.9158827769228,87.248173441549" />
                   <mssgle:LineSegment
-                    End="24.9158827769227,159.40317813711" />
+                    End="24.9158827769228,159.403178137108" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="-81.0606718927886,88.2481734415501,187.0372265625,11.3359375"
+              BoundingBox="-81.0606718927886,88.248173441549,187.0372265625,11.3359375"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
@@ -38605,30 +38627,30 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - SR.Paths[Derived Column Output8]"
-          TopLeft="768.916651891752,898.827775402806">
+          TopLeft="768.916651891751,898.827775402806">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="191.299975413086,50.4611117061988"
+              EndConnector="191.299975413086,50.4611117062003"
               Start="0,0"
-              End="191.299975413086,42.9611117061988">
+              End="191.299975413086,42.9611117062003">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,28.9583731630753" />
+                    End="0,28.958373163076" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,28.9583731630753"
-                    Point2="0,32.9583731630753"
-                    Point3="4,32.9583731630753" />
+                    Point1="0,28.958373163076"
+                    Point2="0,32.958373163076"
+                    Point3="4,32.958373163076" />
                   <mssgle:LineSegment
-                    End="187.299975413086,32.9583731630753" />
+                    End="187.299975413086,32.958373163076" />
                   <mssgle:CubicBezierSegment
-                    Point1="187.299975413086,32.9583731630753"
-                    Point2="191.299975413086,32.9583731630753"
-                    Point3="191.299975413086,36.9583731630753" />
+                    Point1="187.299975413086,32.958373163076"
+                    Point2="191.299975413086,32.958373163076"
+                    Point3="191.299975413086,36.958373163076" />
                   <mssgle:LineSegment
-                    End="191.299975413086,42.9611117061988" />
+                    End="191.299975413086,42.9611117062003" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -38749,30 +38771,30 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - SR.Paths[Derived Column Output2]"
-          TopLeft="498.044425852487,719.144444777915">
+          TopLeft="473.377759185821,719.144444777915">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="38.2777853208014,-100.044442752953"
+              EndConnector="62.9444519874681,-100.04444275295"
               Start="0,0"
-              End="38.2777853208014,-92.544442752953">
+              End="62.9444519874681,-92.5444427529502">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,-36.6271848742956" />
+                    End="0,-46.0222213764751" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,-36.6271848742956"
-                    Point2="0,-40.6271848742956"
-                    Point3="4,-40.6271848742956" />
+                    Point1="0,-46.0222213764751"
+                    Point2="0,-50.0222213764751"
+                    Point3="4,-50.0222213764751" />
                   <mssgle:LineSegment
-                    End="34.2777853208014,-40.6271848742956" />
+                    End="58.9444519874681,-50.0222213764751" />
                   <mssgle:CubicBezierSegment
-                    Point1="34.2777853208014,-40.6271848742956"
-                    Point2="38.2777853208014,-40.6271848742956"
-                    Point3="38.2777853208014,-44.6271848742956" />
+                    Point1="58.9444519874681,-50.0222213764751"
+                    Point2="62.9444519874681,-50.0222213764751"
+                    Point3="62.9444519874681,-54.0222213764751" />
                   <mssgle:LineSegment
-                    End="38.2777853208014,-92.544442752953" />
+                    End="62.9444519874681,-92.5444427529502" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -38783,30 +38805,30 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - SR.Paths[Derived Column Output1]"
-          TopLeft="1194.99997795372,895.894445004045">
+          TopLeft="1194.99997795372,895.894445004046">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-184.450017315561,53.394442104963"
+              EndConnector="-174.383350648887,53.3944421049604"
               Start="0,0"
-              End="-184.450017315561,45.894442104963">
+              End="-174.383350648887,45.8944421049604">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,27.6435773456408" />
+                    End="0,30.8742603606435" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,27.6435773456408"
-                    Point2="0,31.6435773456408"
-                    Point3="-4,31.6435773456408" />
+                    Point1="0,30.8742603606435"
+                    Point2="0,34.8742603606435"
+                    Point3="-4,34.8742603606435" />
                   <mssgle:LineSegment
-                    End="-180.450017315561,31.6435773456408" />
+                    End="-170.383350648887,34.8742603606435" />
                   <mssgle:CubicBezierSegment
-                    Point1="-180.450017315561,31.6435773456408"
-                    Point2="-184.450017315561,31.6435773456408"
-                    Point3="-184.450017315561,35.6435773456408" />
+                    Point1="-170.383350648887,34.8742603606435"
+                    Point2="-174.383350648887,34.8742603606435"
+                    Point3="-174.383350648887,38.8742603606435" />
                   <mssgle:LineSegment
-                    End="-184.450017315561,45.894442104963" />
+                    End="-174.383350648887,45.8944421049604" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -38817,18 +38839,18 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - SR.Paths[Derived Column Output]"
-          TopLeft="502.330150096553,68.8015878571908">
+          TopLeft="502.330150096552,68.8015878571908">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,41.0381014399953"
+              EndConnector="0,41.0381014399952"
               Start="0,0"
-              End="0,33.5381014399953">
+              End="0,33.5381014399952">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,33.5381014399953" />
+                    End="0,33.5381014399952" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
