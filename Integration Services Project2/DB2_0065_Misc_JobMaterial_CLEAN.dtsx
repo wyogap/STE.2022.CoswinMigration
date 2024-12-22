@@ -12,10 +12,10 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0065_Misc_JobMaterial_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="139"
-  DTS:VersionGUID="{461050FA-BCD1-4279-B111-742DF8A1C262}"
+  DTS:VersionBuild="141"
+  DTS:VersionGUID="{68D7339F-2462-4C7C-B192-6EA1D53AF7AF}"
   DTS:VersionMajor="2"
-  DTS:VersionMinor="4">
+  DTS:VersionMinor="5">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -4614,7 +4614,7 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
 	, EJ_JS_20
 	, ej.PK_EQP_JOBS 
 	, ej.EJ_JOB_ID 
-	, ej.PK_JOB_DIR
+	, jd.PK_JOB_DIR
 	, S_JA_JS_67
 	, ja.PK_JOB_ACTN 
 	, ja.JA_NO 
@@ -4624,12 +4624,8 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
 	, ds.SL_ITCD 
 	, ds.SL_ITDS 
 FROM COSWIN.JOB_STOKR js
-JOIN (
-	SELECT jd.PK_JOB_DIR, ej.EJ_JOB_ID, ej.PK_EQP_JOBS
-		, ROW_NUMBER() OVER (PARTITION BY jd.PK_JOB_DIR ORDER BY ej.PK_EQP_JOBS desc) AS rn
-	FROM coswin.JOB_DIR jd 
-	LEFT JOIN coswin.EQP_JOBS ej ON jd.JD_JOB_ID=ej.EJ_JOB_ID 
-) ej ON ej.RN=1 AND ej.PK_EQP_JOBS = js.EJ_JS_20
+JOIN coswin.EQP_JOBS ej ON ej.PK_EQP_JOBS = js.EJ_JS_20
+JOIN coswin.JOB_DIR jd ON jd.JD_JOB_ID=ej.EJ_JOB_ID 
 LEFT JOIN COSWIN.JOB_ACTN ja ON ja.PK_JOB_ACTN = js.S_JA_JS_67 
 LEFT JOIN COSWIN.DIR_STOCK ds ON ds.PK_DIR_STOCK = js.SL_JS_22 
 ;</property>
@@ -7068,12 +7064,12 @@ LEFT JOIN COSWIN.DIR_STOCK ds ON ds.PK_DIR_STOCK = js.SL_JS_22
               name="Aggregate Output 1"
               startId="Package\Data Flow Task\Aggregate 1 1.Outputs[Aggregate Output 1]" />
             <path
-              refId="Package\Data Flow Task.Paths[Aggregate Output 12]"
+              refId="Package\Data Flow Task.Paths[Aggregate Output 11]"
               endId="Package\Data Flow Task\Derived Column 4.Inputs[Derived Column Input]"
               name="Aggregate Output 1"
               startId="Package\Data Flow Task\Aggregate 1.Outputs[Aggregate Output 1]" />
             <path
-              refId="Package\Data Flow Task.Paths[Aggregate Output 11]"
+              refId="Package\Data Flow Task.Paths[Aggregate Output 12]"
               endId="Package\Data Flow Task\Derived Column 4 1 1.Inputs[Derived Column Input]"
               name="Aggregate Output 1"
               startId="Package\Data Flow Task\Aggregate.Outputs[Aggregate Output 1]" />
@@ -7088,17 +7084,17 @@ LEFT JOIN COSWIN.DIR_STOCK ds ON ds.PK_DIR_STOCK = js.SL_JS_22
               name="Derived Column Output"
               startId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output]" />
             <path
-              refId="Package\Data Flow Task.Paths[Derived Column Output3]"
+              refId="Package\Data Flow Task.Paths[Derived Column Output1]"
               endId="Package\Data Flow Task\OLE DB Destination 4.Inputs[OLE DB Destination Input]"
               name="Derived Column Output"
               startId="Package\Data Flow Task\Derived Column 4.Outputs[Derived Column Output]" />
             <path
-              refId="Package\Data Flow Task.Paths[Derived Column Output1]"
+              refId="Package\Data Flow Task.Paths[Derived Column Output2]"
               endId="Package\Data Flow Task\OLE DB Destination 1 1 1.Inputs[OLE DB Destination Input]"
               name="Derived Column Output"
               startId="Package\Data Flow Task\Derived Column 4 1.Outputs[Derived Column Output]" />
             <path
-              refId="Package\Data Flow Task.Paths[Derived Column Output2]"
+              refId="Package\Data Flow Task.Paths[Derived Column Output3]"
               endId="Package\Data Flow Task\OLE DB Destination 1 1 1 1.Inputs[OLE DB Destination Input]"
               name="Derived Column Output"
               startId="Package\Data Flow Task\Derived Column 4 1 1.Outputs[Derived Column Output]" />
@@ -7148,7 +7144,7 @@ LEFT JOIN COSWIN.DIR_STOCK ds ON ds.PK_DIR_STOCK = js.SL_JS_22
               name="Multicast Output 2"
               startId="Package\Data Flow Task\Multicast 1 1.Outputs[Multicast Output 2]" />
             <path
-              refId="Package\Data Flow Task.Paths[Multicast Output 32]"
+              refId="Package\Data Flow Task.Paths[Multicast Output 3]"
               endId="Package\Data Flow Task\Aggregate 1 1.Inputs[Aggregate Input 1]"
               name="Multicast Output 3"
               startId="Package\Data Flow Task\Multicast.Outputs[Multicast Output 3]" />
@@ -7158,7 +7154,7 @@ LEFT JOIN COSWIN.DIR_STOCK ds ON ds.PK_DIR_STOCK = js.SL_JS_22
               name="Multicast Output 3"
               startId="Package\Data Flow Task\Multicast 1 1.Outputs[Multicast Output 3]" />
             <path
-              refId="Package\Data Flow Task.Paths[Multicast Output 3]"
+              refId="Package\Data Flow Task.Paths[Multicast Output 32]"
               endId="Package\Data Flow Task\Flat File Destination.Inputs[Flat File Destination Input]"
               name="Multicast Output 3"
               startId="Package\Data Flow Task\Multicast 1.Outputs[Multicast Output 3]" />
@@ -7427,7 +7423,7 @@ LEFT JOIN COSWIN.DIR_STOCK ds ON ds.PK_DIR_STOCK = js.SL_JS_22
       <GraphLayout
         Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
-          Size="155.2,41.6"
+          Size="150.4,41.6"
           Id="Package\Data Flow Task"
           TopLeft="117.985709407358,480.109523542628" />
         <NodeLayout
@@ -7523,18 +7519,30 @@ LEFT JOIN COSWIN.DIR_STOCK ds ON ds.PK_DIR_STOCK = js.SL_JS_22
           TopLeft="94.7857094073582,71.3095235426274" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="199.335708910652,521.709523542628">
+          TopLeft="193.185709407358,521.709523542628">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,62.0333365911901"
+              EndConnector="9.89999900658901,62.0333365911901"
               Start="0,0"
-              End="0,54.5333365911901">
+              End="9.89999900658901,54.5333365911901">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,54.5333365911901" />
+                    End="0,27.016668295595" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,27.016668295595"
+                    Point2="0,31.016668295595"
+                    Point3="4,31.016668295595" />
+                  <mssgle:LineSegment
+                    End="5.89999900658901,31.016668295595" />
+                  <mssgle:CubicBezierSegment
+                    Point1="5.89999900658901,31.016668295595"
+                    Point2="9.89999900658901,31.016668295595"
+                    Point3="9.89999900658901,35.016668295595" />
+                  <mssgle:LineSegment
+                    End="9.89999900658901,54.5333365911901" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -7545,7 +7553,7 @@ LEFT JOIN COSWIN.DIR_STOCK ds ON ds.PK_DIR_STOCK = js.SL_JS_22
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 1]"
-          TopLeft="195.585709407358,420.109523542627">
+          TopLeft="194.385709407358,420.109523542627">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -7630,9 +7638,9 @@ LEFT JOIN COSWIN.DIR_STOCK ds ON ds.PK_DIR_STOCK = js.SL_JS_22
       <GraphLayout
         Capacity="64" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
-          Size="176,41.6"
-          Id="Package\Data Flow Task\Flat File Destination"
-          TopLeft="909.99999344349,223.000000542402" />
+          Size="120,41.6"
+          Id="Package\Data Flow Task\Union All"
+          TopLeft="687.499962436658,315.933331892954" />
         <NodeLayout
           Size="148.8,41.6"
           Id="Package\Data Flow Task\Oracle Source"
@@ -7642,17 +7650,9 @@ LEFT JOIN COSWIN.DIR_STOCK ds ON ds.PK_DIR_STOCK = js.SL_JS_22
           Id="Package\Data Flow Task\Aggregate 1 1"
           TopLeft="888.111070815891,502.466665214232" />
         <NodeLayout
-          Size="119.2,41.6"
-          Id="Package\Data Flow Task\Multicast"
-          TopLeft="703.566636661526,503.199998119672" />
-        <NodeLayout
-          Size="120,41.6"
-          Id="Package\Data Flow Task\Union All"
-          TopLeft="687.499962436658,315.933331892954" />
-        <NodeLayout
-          Size="129.6,41.6"
-          Id="Package\Data Flow Task\Aggregate 1"
-          TopLeft="273.611104144819,394.799998680155" />
+          Size="161.6,41.6"
+          Id="Package\Data Flow Task\Derived Column 4 1"
+          TopLeft="1067.63322537857,502.950000452001" />
         <NodeLayout
           Size="131.2,41.6"
           Id="Package\Data Flow Task\Lookup JP"
@@ -7662,13 +7662,29 @@ LEFT JOIN COSWIN.DIR_STOCK ds ON ds.PK_DIR_STOCK = js.SL_JS_22
           Id="Package\Data Flow Task\OLE DB Destination 1 1 1"
           TopLeft="1050.49990014981,594.816666479829" />
         <NodeLayout
-          Size="161.6,41.6"
-          Id="Package\Data Flow Task\Derived Column 4 1"
-          TopLeft="1067.63322537857,502.950000452001" />
+          Size="171.2,41.6"
+          Id="Package\Data Flow Task\OLE DB Destination"
+          TopLeft="682.733304466475,587.199997251827" />
         <NodeLayout
           Size="158.4,41.6"
           Id="Package\Data Flow Task\Derived Column"
           TopLeft="669.833326867886,56.9666666425599" />
+        <NodeLayout
+          Size="119.2,41.6"
+          Id="Package\Data Flow Task\Multicast"
+          TopLeft="703.566636661526,503.199998119672" />
+        <NodeLayout
+          Size="180,41.6"
+          Id="Package\Data Flow Task\OLE DB Destination 1 1 1 1"
+          TopLeft="1318.81105620033,226.683336412954" />
+        <NodeLayout
+          Size="129.6,41.6"
+          Id="Package\Data Flow Task\Lookup JT"
+          TopLeft="474.6666712198,313.266665955517" />
+        <NodeLayout
+          Size="129.6,41.6"
+          Id="Package\Data Flow Task\Aggregate 1"
+          TopLeft="273.611104144819,394.799998680155" />
         <NodeLayout
           Size="132,43.2"
           Id="Package\Data Flow Task\Multicast 1 1"
@@ -7678,21 +7694,33 @@ LEFT JOIN COSWIN.DIR_STOCK ds ON ds.PK_DIR_STOCK = js.SL_JS_22
           Id="Package\Data Flow Task\Flat File Destination 1"
           TopLeft="256.833338205186,490.333332308796" />
         <NodeLayout
-          Size="129.6,41.6"
-          Id="Package\Data Flow Task\Lookup JT"
-          TopLeft="474.6666712198,313.266665955517" />
+          Size="180,41.6"
+          Id="Package\Data Flow Task\OLE DB Destination 4"
+          TopLeft="28.9666926650529,489.533330446539" />
         <NodeLayout
           Size="132,41.6"
           Id="Package\Data Flow Task\Multicast 1"
           TopLeft="938.944437478152,129.177777856125" />
         <NodeLayout
+          Size="153.6,41.6"
+          Id="Package\Data Flow Task\Conditional Split"
+          TopLeft="456.666641715501,221.199998662074" />
+        <NodeLayout
+          Size="161.6,41.6"
+          Id="Package\Data Flow Task\Derived Column 4 1 1"
+          TopLeft="1335.94438142909,134.816670385125" />
+        <NodeLayout
+          Size="176,41.6"
+          Id="Package\Data Flow Task\Flat File Destination"
+          TopLeft="909.99999344349,223.000000542402" />
+        <NodeLayout
+          Size="161.6,41.6"
+          Id="Package\Data Flow Task\Derived Column 4"
+          TopLeft="31.9333520011769,395.933331097431" />
+        <NodeLayout
           Size="129.6,41.6"
           Id="Package\Data Flow Task\Aggregate"
           TopLeft="1133.77777085702,133" />
-        <NodeLayout
-          Size="171.2,41.6"
-          Id="Package\Data Flow Task\OLE DB Destination"
-          TopLeft="682.733304466475,587.199997251827" />
         <EdgeLayout
           Id="Package\Data Flow Task.Paths[Union All Output 1]"
           TopLeft="764.666632882425,357.533331892954">
@@ -7739,18 +7767,18 @@ LEFT JOIN COSWIN.DIR_STOCK ds ON ds.PK_DIR_STOCK = js.SL_JS_22
         </EdgeLayout>
         <EdgeLayout
           Id="Package\Data Flow Task.Paths[Multicast Output 32]"
-          TopLeft="822.766636661526,523.633331666952">
+          TopLeft="1001.47221546082,170.777777856125">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="65.3444341543648,0"
+              EndConnector="0,52.2222226862773"
               Start="0,0"
-              End="57.8444341543648,0">
+              End="0,44.7222226862773">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="57.8444341543648,0" />
+                    End="0,44.7222226862773" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -7795,18 +7823,18 @@ LEFT JOIN COSWIN.DIR_STOCK ds ON ds.PK_DIR_STOCK = js.SL_JS_22
         </EdgeLayout>
         <EdgeLayout
           Id="Package\Data Flow Task.Paths[Multicast Output 3]"
-          TopLeft="1001.47221546082,170.777777856125">
+          TopLeft="822.766636661526,523.633331666952">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,52.2222226862773"
+              EndConnector="65.3444341543648,0"
               Start="0,0"
-              End="0,44.7222226862773">
+              End="57.8444341543648,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,44.7222226862773" />
+                    End="57.8444341543648,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -7988,180 +8016,6 @@ LEFT JOIN COSWIN.DIR_STOCK ds ON ds.PK_DIR_STOCK = js.SL_JS_22
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Derived Column Output1]"
-          TopLeft="1144.46656276418,544.550000452001">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,50.2666660278289"
-              Start="0,0"
-              End="0,42.7666660278289">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,42.7666660278289" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Derived Column Output]"
-          TopLeft="745.566660360579,98.5666666425599">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,31.5666666968001"
-              Start="0,0"
-              End="0,24.0666666968001">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,24.0666666968001" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Aggregate Output 1]"
-          TopLeft="1017.71107081589,523.508332833116">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="49.9221545626752,0"
-              Start="0,0"
-              End="42.4221545626752,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="42.4221545626752,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="161.6,41.6"
-          Id="Package\Data Flow Task\Derived Column 4 1 1"
-          TopLeft="1335.94438142909,134.816670385125" />
-        <NodeLayout
-          Size="180,41.6"
-          Id="Package\Data Flow Task\OLE DB Destination 1 1 1 1"
-          TopLeft="1318.81105620033,226.683336412954" />
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Aggregate Output 11]"
-          TopLeft="1263.37777085702,154.708335192563">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="72.5666105720741,0"
-              Start="0,0"
-              End="65.0666105720741,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="65.0666105720741,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Derived Column Output2]"
-          TopLeft="1412.77771881471,176.416670385125">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,50.2666660278287"
-              Start="0,0"
-              End="0,42.7666660278287">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,42.7666660278287" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="161.6,41.6"
-          Id="Package\Data Flow Task\Derived Column 4"
-          TopLeft="31.9333520011769,395.933331097431" />
-        <NodeLayout
-          Size="180,41.6"
-          Id="Package\Data Flow Task\OLE DB Destination 4"
-          TopLeft="28.9666926650529,489.533330446539" />
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Derived Column Output3]"
-          TopLeft="115.850022333115,437.533331097431">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,51.9999993491086"
-              Start="0,0"
-              End="0,44.4999993491086">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,44.4999993491086" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Aggregate Output 12]"
-          TopLeft="273.611104144819,416.166664888793">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-80.0777521436419,0"
-              Start="0,0"
-              End="-72.5777521436419,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="-72.5777521436419,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="153.6,41.6"
-          Id="Package\Data Flow Task\Conditional Split"
-          TopLeft="456.666641715501,221.199998662074" />
-        <EdgeLayout
           Id="Package\Data Flow Task.Paths[Lookup Match Output1]"
           TopLeft="742.099993853272,171.73333333936">
           <EdgeLayout.Curve>
@@ -8222,6 +8076,94 @@ LEFT JOIN COSWIN.DIR_STOCK ds ON ds.PK_DIR_STOCK = js.SL_JS_22
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Derived Column Output3]"
+          TopLeft="1412.77771881471,176.416670385125">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,50.2666660278287"
+              Start="0,0"
+              End="0,42.7666660278287">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,42.7666660278287" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Derived Column Output2]"
+          TopLeft="1144.46656276418,544.550000452001">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,50.2666660278289"
+              Start="0,0"
+              End="0,42.7666660278289">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,42.7666660278289" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Derived Column Output1]"
+          TopLeft="115.850022333115,437.533331097431">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,51.9999993491086"
+              Start="0,0"
+              End="0,44.4999993491086">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,44.4999993491086" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Derived Column Output]"
+          TopLeft="745.566660360579,98.5666666425599">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,31.5666666968001"
+              Start="0,0"
+              End="0,24.0666666968001">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,24.0666666968001" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
           Id="Package\Data Flow Task.Paths[Conditional Split Default Output]"
           TopLeft="557.733308382168,262.799998662074">
           <EdgeLayout.Curve>
@@ -8255,6 +8197,72 @@ LEFT JOIN COSWIN.DIR_STOCK ds ON ds.PK_DIR_STOCK = js.SL_JS_22
             <mssgm:EdgeLabel
               BoundingBox="24.2694207772451,26.5819930855325,141.2278125,11.658203125"
               RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Aggregate Output 12]"
+          TopLeft="1263.37777085702,154.708335192563">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="72.5666105720741,0"
+              Start="0,0"
+              End="65.0666105720741,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="65.0666105720741,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Aggregate Output 11]"
+          TopLeft="273.611104144819,416.166664888793">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-80.0777521436419,0"
+              Start="0,0"
+              End="-72.5777521436419,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="-72.5777521436419,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Aggregate Output 1]"
+          TopLeft="1017.71107081589,523.508332833116">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="49.9221545626752,0"
+              Start="0,0"
+              End="42.4221545626752,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="42.4221545626752,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
@@ -8292,29 +8300,6 @@ LEFT JOIN COSWIN.DIR_STOCK ds ON ds.PK_DIR_STOCK = js.SL_JS_22
     </Properties>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
-    design-time-name="Package\Data Flow Task\Lookup JT">
-    <Properties>
-      <Property>
-        <Name>OverwriteParamsSQLProp</Name>
-        <Value
-          type="q2:boolean">false</Value>
-      </Property>
-      <Property>
-        <Name>UsedTableName</Name>
-        <Value
-          type="q3:string"></Value>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q4:int">0</Value>
-      </Property>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
     design-time-name="Package\Data Flow Task\OLE DB Destination">
     <Properties>
       <Property>
@@ -8324,6 +8309,29 @@ LEFT JOIN COSWIN.DIR_STOCK ds ON ds.PK_DIR_STOCK = js.SL_JS_22
         <Name>TableInfoObjectType</Name>
         <Value
           type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Data Flow Task\Lookup JT">
+    <Properties>
+      <Property>
+        <Name>OverwriteParamsSQLProp</Name>
+        <Value
+          type="q2:string">false</Value>
+      </Property>
+      <Property>
+        <Name>UsedTableName</Name>
+        <Value
+          type="q3:string"></Value>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q4:string">0</Value>
+      </Property>
+      <Property>
+        <Name>DataSourceViewID</Name>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
