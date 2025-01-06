@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0301_PO_Contract_ContractLine_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="141"
-  DTS:VersionGUID="{A4B8821E-151E-40D4-A92E-ED7C6745A6D3}"
+  DTS:VersionBuild="142"
+  DTS:VersionGUID="{B276BFCB-31B7-411A-B3CF-09477C36C742}"
   DTS:VersionMajor="6">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -359,6 +359,892 @@
     DTS:FilterKind="0"
     DTS:LoggingMode="2" />
   <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\AUTOKEY (CONTRACT)"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{f9b20ec6-3383-40ea-bc39-67887c362de4}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="AUTOKEY (CONTRACT)"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\AUTOKEY (CONTRACT)\Aggregate"
+              componentClassID="Microsoft.Aggregate"
+              contactInfo="Aggregate;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;3"
+              description="Aggregates data with functions such as Average, Sum, Count, Max, and Min. For example, group data to compute the sum of sales per product or the average visits per day."
+              name="Aggregate"
+              version="3">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the approximate number of group by keys that the aggregation produces. Low indicates 500,000 key values, Medium indicates 5 million key values, and High indicates more than 25 million key values. Unspecified indicates no KeyScale value is used."
+                  name="KeyScale"
+                  typeConverter="KeyScaleType">0</property>
+                <property
+                  dataType="System.Null"
+                  description="Specifies the exact number of group by keys that the aggregation produces. If a KeyScale value is specified, the value in Keys takes precedence."
+                  name="Keys" />
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the approximate number of distinct values in a column that the aggregation counts distinctly. Low indicates 500,000 key values, Medium indicates 5 million key values, and High indicates more than 25 million key values. Unspecified indicates no CountDistinctScale value is used."
+                  name="CountDistinctScale"
+                  typeConverter="KeyScaleType">0</property>
+                <property
+                  dataType="System.Null"
+                  description="Specifies the exact number of distinct values in a column that the aggregation counts distinctly. If a CountDistinctScale value is specified, the value in CountDistinctKeys takes precedence."
+                  name="CountDistinctKeys" />
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the percentage by which memory can be extended during the aggregation. Valid values are between 1 and 100."
+                  name="AutoExtendFactor">25</property>
+              </properties>
+              <inputs>
+                <input
+                  refId="Package\AUTOKEY (CONTRACT)\Aggregate.Inputs[Aggregate Input 1]"
+                  name="Aggregate Input 1">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\AUTOKEY (CONTRACT)\Aggregate.Inputs[Aggregate Input 1].Columns[v_ticketid]"
+                      cachedDataType="i8"
+                      cachedName="v_ticketid"
+                      lineageId="Package\AUTOKEY (CONTRACT)\Derived Column.Outputs[Derived Column Output].Columns[v_ticketid]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\AUTOKEY (CONTRACT)\Aggregate.Outputs[Aggregate Output 1]"
+                  name="Aggregate Output 1">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the approximate number of group by keys that the aggregation produces. Low indicates 500,000 key values, Medium indicates 5 million key values, and High indicates more than 25 million key values. Unspecified indicates no KeyScale value is used."
+                      name="KeyScale"
+                      typeConverter="KeyScaleType">0</property>
+                    <property
+                      dataType="System.Null"
+                      description="Specifies the exact number of group by keys that the aggregation produces. If a KeyScale value is specified, the value in Keys takes precedence."
+                      name="Keys" />
+                  </properties>
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTOKEY (CONTRACT)\Aggregate.Outputs[Aggregate Output 1].Columns[v_ticketid]"
+                      dataType="i8"
+                      lineageId="Package\AUTOKEY (CONTRACT)\Aggregate.Outputs[Aggregate Output 1].Columns[v_ticketid]"
+                      name="v_ticketid">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the ID of the input column used in the aggregation."
+                          name="AggregationColumnId">#{Package\AUTOKEY (CONTRACT)\Derived Column.Outputs[Derived Column Output].Columns[v_ticketid]}</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the type of aggregation."
+                          name="AggregationType"
+                          typeConverter="AggregationType">7</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Indicates whether the column requires special handling because it may contain oversized data or it requires precision beyond a float data type."
+                          name="IsBig">1</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the string comparison options."
+                          name="AggregationComparisonFlags">0</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\AUTOKEY (CONTRACT)\Conditional Split"
+              componentClassID="Microsoft.ConditionalSplit"
+              contactInfo="Conditional Split;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Routes data rows to different outputs depending on the content of the data. Use conditions (SSIS expressions) to specify which rows are routed. For example, separate records that need to be cleaned from those that are ready to be loaded or route only a subset of records."
+              name="Conditional Split"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\AUTOKEY (CONTRACT)\Conditional Split.Inputs[Conditional Split Input]"
+                  description="Input to the Conditional Split Transformation"
+                  name="Conditional Split Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\AUTOKEY (CONTRACT)\Conditional Split.Inputs[Conditional Split Input].Columns[v_ticketid]"
+                      cachedDataType="i8"
+                      cachedName="v_ticketid"
+                      lineageId="Package\AUTOKEY (CONTRACT)\Aggregate.Outputs[Aggregate Output 1].Columns[v_ticketid]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\AUTOKEY (CONTRACT)\Conditional Split.Outputs[ISNULL]"
+                  description="Output 1 of the Conditional Split Transformation"
+                  errorOrTruncationOperation="Computation"
+                  errorRowDisposition="FailComponent"
+                  exclusionGroup="1"
+                  name="ISNULL"
+                  synchronousInputId="Package\AUTOKEY (CONTRACT)\Conditional Split.Inputs[Conditional Split Input]"
+                  truncationRowDisposition="FailComponent">
+                  <properties>
+                    <property
+                      containsID="true"
+                      dataType="System.String"
+                      description="Specifies the expression. This expression version uses lineage identifiers instead of column names."
+                      name="Expression">[REPLACENULL](#{Package\AUTOKEY (CONTRACT)\Aggregate.Outputs[Aggregate Output 1].Columns[v_ticketid]},0) &lt; 10000000</property>
+                    <property
+                      containsID="true"
+                      dataType="System.String"
+                      description="Specifies the friendly version of the expression. This expression version uses column names."
+                      expressionType="Notify"
+                      name="FriendlyExpression">REPLACENULL(v_ticketid,0) &lt; 10000000</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the position of the condition in the list of conditions that the transformation evaluates. The evaluation order is from the lowest to the highest value."
+                      name="EvaluationOrder">0</property>
+                  </properties>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\AUTOKEY (CONTRACT)\Conditional Split.Outputs[Conditional Split Default Output]"
+                  description="Default Output of the Conditional Split Transformation"
+                  exclusionGroup="1"
+                  name="Conditional Split Default Output"
+                  synchronousInputId="Package\AUTOKEY (CONTRACT)\Conditional Split.Inputs[Conditional Split Input]">
+                  <properties>
+                    <property
+                      dataType="System.Boolean"
+                      name="IsDefaultOut">true</property>
+                  </properties>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\AUTOKEY (CONTRACT)\Conditional Split.Outputs[Conditional Split Error Output]"
+                  description="Error Output of the Conditional Split Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Conditional Split Error Output"
+                  synchronousInputId="Package\AUTOKEY (CONTRACT)\Conditional Split.Inputs[Conditional Split Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTOKEY (CONTRACT)\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\AUTOKEY (CONTRACT)\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\AUTOKEY (CONTRACT)\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\AUTOKEY (CONTRACT)\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\AUTOKEY (CONTRACT)\Default 10m"
+              componentClassID="Microsoft.DerivedColumn"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="Default 10m"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\AUTOKEY (CONTRACT)\Default 10m.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\AUTOKEY (CONTRACT)\Default 10m.Inputs[Derived Column Input].Columns[v_ticketid]"
+                      cachedDataType="i8"
+                      cachedName="v_ticketid"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\AUTOKEY (CONTRACT)\Aggregate.Outputs[Aggregate Output 1].Columns[v_ticketid]"
+                      truncationRowDisposition="FailComponent"
+                      usageType="readWrite">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">10000000</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">10000000</property>
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\AUTOKEY (CONTRACT)\Default 10m.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\AUTOKEY (CONTRACT)\Default 10m.Inputs[Derived Column Input]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\AUTOKEY (CONTRACT)\Default 10m.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\AUTOKEY (CONTRACT)\Default 10m.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTOKEY (CONTRACT)\Default 10m.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\AUTOKEY (CONTRACT)\Default 10m.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\AUTOKEY (CONTRACT)\Default 10m.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\AUTOKEY (CONTRACT)\Default 10m.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\AUTOKEY (CONTRACT)\Derived Column"
+              componentClassID="Microsoft.DerivedColumn"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="Derived Column"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\AUTOKEY (CONTRACT)\Derived Column.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\AUTOKEY (CONTRACT)\Derived Column.Inputs[Derived Column Input].Columns[CONTRACTNUM]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="CONTRACTNUM"
+                      lineageId="Package\AUTOKEY (CONTRACT)\OLE DB Source.Outputs[OLE DB Source Output].Columns[CONTRACTNUM]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\AUTOKEY (CONTRACT)\Derived Column.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\AUTOKEY (CONTRACT)\Derived Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTOKEY (CONTRACT)\Derived Column.Outputs[Derived Column Output].Columns[v_ticketid]"
+                      dataType="i8"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="IgnoreFailure"
+                      lineageId="Package\AUTOKEY (CONTRACT)\Derived Column.Outputs[Derived Column Output].Columns[v_ticketid]"
+                      name="v_ticketid"
+                      truncationRowDisposition="IgnoreFailure">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_I8)#{Package\AUTOKEY (CONTRACT)\OLE DB Source.Outputs[OLE DB Source Output].Columns[CONTRACTNUM]}</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_I8)CONTRACTNUM</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\AUTOKEY (CONTRACT)\Derived Column.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\AUTOKEY (CONTRACT)\Derived Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTOKEY (CONTRACT)\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\AUTOKEY (CONTRACT)\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\AUTOKEY (CONTRACT)\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\AUTOKEY (CONTRACT)\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\AUTOKEY (CONTRACT)\Derived Column 1"
+              componentClassID="Microsoft.DerivedColumn"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="Derived Column 1"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\AUTOKEY (CONTRACT)\Derived Column 1.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\AUTOKEY (CONTRACT)\Derived Column 1.Inputs[Derived Column Input].Columns[v_ticketid]"
+                      cachedDataType="i8"
+                      cachedName="v_ticketid"
+                      lineageId="Package\AUTOKEY (CONTRACT)\Union All.Outputs[Union All Output 1].Columns[v_ticketid]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\AUTOKEY (CONTRACT)\Derived Column 1.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\AUTOKEY (CONTRACT)\Derived Column 1.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTOKEY (CONTRACT)\Derived Column 1.Outputs[Derived Column Output].Columns[v_autokey]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="16"
+                      lineageId="Package\AUTOKEY (CONTRACT)\Derived Column 1.Outputs[Derived Column Output].Columns[v_autokey]"
+                      name="v_autokey"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_STR,16,1252)"CONTRACTNUM"</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_STR,16,1252)"CONTRACTNUM"</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\AUTOKEY (CONTRACT)\Derived Column 1.Outputs[Derived Column Output].Columns[v_orgid]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="8"
+                      lineageId="Package\AUTOKEY (CONTRACT)\Derived Column 1.Outputs[Derived Column Output].Columns[v_orgid]"
+                      name="v_orgid"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_STR,8,1252)"SBST"</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_STR,8,1252)"SBST"</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\AUTOKEY (CONTRACT)\Derived Column 1.Outputs[Derived Column Output].Columns[v_seed]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="16"
+                      lineageId="Package\AUTOKEY (CONTRACT)\Derived Column 1.Outputs[Derived Column Output].Columns[v_seed]"
+                      name="v_seed"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_STR,16,1252)(#{Package\AUTOKEY (CONTRACT)\Union All.Outputs[Union All Output 1].Columns[v_ticketid]} + 1)</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_STR,16,1252)(v_ticketid + 1)</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\AUTOKEY (CONTRACT)\Derived Column 1.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\AUTOKEY (CONTRACT)\Derived Column 1.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTOKEY (CONTRACT)\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\AUTOKEY (CONTRACT)\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\AUTOKEY (CONTRACT)\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\AUTOKEY (CONTRACT)\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\AUTOKEY (CONTRACT)\Multicast"
+              componentClassID="Microsoft.Multicast"
+              contactInfo="Multicast;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Distributes every input row to every row in one or more outputs. For example, branch your data flow to make a copy of data so that some values can be masked before sharing with external partners."
+              name="Multicast">
+              <inputs>
+                <input
+                  refId="Package\AUTOKEY (CONTRACT)\Multicast.Inputs[Multicast Input 1]"
+                  name="Multicast Input 1">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\AUTOKEY (CONTRACT)\Multicast.Outputs[Multicast Output 1]"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 1"
+                  synchronousInputId="Package\AUTOKEY (CONTRACT)\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\AUTOKEY (CONTRACT)\Multicast.Outputs[Multicast Output 2]"
+                  dangling="true"
+                  deleteOutputOnPathDetached="true"
+                  name="Multicast Output 2"
+                  synchronousInputId="Package\AUTOKEY (CONTRACT)\Multicast.Inputs[Multicast Input 1]">
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\AUTOKEY (CONTRACT)\OLE DB Source"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="OLE DB Source"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT CONTRACTNUM FROM maximo.CONTRACT w;</property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">2</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\AUTOKEY (CONTRACT)\OLE DB Source.Connections[OleDbConnection]"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[BLUDB]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\AUTOKEY (CONTRACT)\OLE DB Source.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTOKEY (CONTRACT)\OLE DB Source.Outputs[OLE DB Source Output].Columns[CONTRACTNUM]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\AUTOKEY (CONTRACT)\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[CONTRACTNUM]"
+                      length="10"
+                      lineageId="Package\AUTOKEY (CONTRACT)\OLE DB Source.Outputs[OLE DB Source Output].Columns[CONTRACTNUM]"
+                      name="CONTRACTNUM"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\AUTOKEY (CONTRACT)\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[CONTRACTNUM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="CONTRACTNUM" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\AUTOKEY (CONTRACT)\OLE DB Source.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTOKEY (CONTRACT)\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[CONTRACTNUM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      lineageId="Package\AUTOKEY (CONTRACT)\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[CONTRACTNUM]"
+                      name="CONTRACTNUM" />
+                    <outputColumn
+                      refId="Package\AUTOKEY (CONTRACT)\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\AUTOKEY (CONTRACT)\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\AUTOKEY (CONTRACT)\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\AUTOKEY (CONTRACT)\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\AUTOKEY (CONTRACT)\Union All"
+              componentClassID="Microsoft.UnionAll"
+              contactInfo="Union All;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
+              description="Combines rows from multiple data flows without sorting. For example, add rows back to a data flow after correction of errors. If sorting is important, we recommend using the Merge transformation."
+              name="Union All"
+              version="1">
+              <inputs>
+                <input
+                  refId="Package\AUTOKEY (CONTRACT)\Union All.Inputs[Union All Input 1]"
+                  name="Union All Input 1">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\AUTOKEY (CONTRACT)\Union All.Inputs[Union All Input 1].Columns[v_ticketid]"
+                      cachedDataType="i8"
+                      cachedName="v_ticketid"
+                      lineageId="Package\AUTOKEY (CONTRACT)\Aggregate.Outputs[Aggregate Output 1].Columns[v_ticketid]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\AUTOKEY (CONTRACT)\Union All.Outputs[Union All Output 1].Columns[v_ticketid]}</property>
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+                <input
+                  refId="Package\AUTOKEY (CONTRACT)\Union All.Inputs[Union All Input 2]"
+                  hasSideEffects="true"
+                  name="Union All Input 2">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\AUTOKEY (CONTRACT)\Union All.Inputs[Union All Input 2].Columns[v_ticketid]"
+                      cachedDataType="i8"
+                      cachedName="v_ticketid"
+                      lineageId="Package\AUTOKEY (CONTRACT)\Aggregate.Outputs[Aggregate Output 1].Columns[v_ticketid]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\AUTOKEY (CONTRACT)\Union All.Outputs[Union All Output 1].Columns[v_ticketid]}</property>
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+                <input
+                  refId="Package\AUTOKEY (CONTRACT)\Union All.Inputs[Union All Input 3]"
+                  dangling="true"
+                  hasSideEffects="true"
+                  name="Union All Input 3">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\AUTOKEY (CONTRACT)\Union All.Outputs[Union All Output 1]"
+                  name="Union All Output 1">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTOKEY (CONTRACT)\Union All.Outputs[Union All Output 1].Columns[v_ticketid]"
+                      dataType="i8"
+                      lineageId="Package\AUTOKEY (CONTRACT)\Union All.Outputs[Union All Output 1].Columns[v_ticketid]"
+                      name="v_ticketid" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\AUTOKEY (CONTRACT)\UPDATE AUTOKEY"
+              componentClassID="Microsoft.OLEDBCommand"
+              contactInfo="OLE DB Command;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;2"
+              description="Runs an SQL statement for each row in a data flow. For example, call a 'new employee setup' stored procedure for each row in the 'new employees' table. Note: running an SQL statement for each row of a large data flow may take a long time."
+              name="UPDATE AUTOKEY"
+              usesDispositions="true"
+              version="2">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">update maximo.autokey set seed=? where autokeyname=? and orgid=?;</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\AUTOKEY (CONTRACT)\UPDATE AUTOKEY.Connections[OleDbConnection]"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[BLUDB]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\AUTOKEY (CONTRACT)\UPDATE AUTOKEY.Inputs[OLE DB Command Input]"
+                  errorOrTruncationOperation="Command Execution"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Command Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\AUTOKEY (CONTRACT)\UPDATE AUTOKEY.Inputs[OLE DB Command Input].Columns[v_seed]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="16"
+                      cachedName="v_seed"
+                      externalMetadataColumnId="Package\AUTOKEY (CONTRACT)\UPDATE AUTOKEY.Inputs[OLE DB Command Input].ExternalColumns[Param_0]"
+                      lineageId="Package\AUTOKEY (CONTRACT)\Derived Column 1.Outputs[Derived Column Output].Columns[v_seed]" />
+                    <inputColumn
+                      refId="Package\AUTOKEY (CONTRACT)\UPDATE AUTOKEY.Inputs[OLE DB Command Input].Columns[v_autokey]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="16"
+                      cachedName="v_autokey"
+                      externalMetadataColumnId="Package\AUTOKEY (CONTRACT)\UPDATE AUTOKEY.Inputs[OLE DB Command Input].ExternalColumns[Param_1]"
+                      lineageId="Package\AUTOKEY (CONTRACT)\Derived Column 1.Outputs[Derived Column Output].Columns[v_autokey]" />
+                    <inputColumn
+                      refId="Package\AUTOKEY (CONTRACT)\UPDATE AUTOKEY.Inputs[OLE DB Command Input].Columns[v_orgid]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8"
+                      cachedName="v_orgid"
+                      externalMetadataColumnId="Package\AUTOKEY (CONTRACT)\UPDATE AUTOKEY.Inputs[OLE DB Command Input].ExternalColumns[Param_2]"
+                      lineageId="Package\AUTOKEY (CONTRACT)\Derived Column 1.Outputs[Derived Column Output].Columns[v_orgid]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\AUTOKEY (CONTRACT)\UPDATE AUTOKEY.Inputs[OLE DB Command Input].ExternalColumns[Param_0]"
+                      dataType="i8"
+                      name="Param_0">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Parameter information.  Matches OLE DB's DBPARAMFLAGSENUM values."
+                          name="DBParamInfoFlags">64</property>
+                      </properties>
+                    </externalMetadataColumn>
+                    <externalMetadataColumn
+                      refId="Package\AUTOKEY (CONTRACT)\UPDATE AUTOKEY.Inputs[OLE DB Command Input].ExternalColumns[Param_1]"
+                      codePage="1252"
+                      dataType="str"
+                      length="40"
+                      name="Param_1">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Parameter information.  Matches OLE DB's DBPARAMFLAGSENUM values."
+                          name="DBParamInfoFlags">64</property>
+                      </properties>
+                    </externalMetadataColumn>
+                    <externalMetadataColumn
+                      refId="Package\AUTOKEY (CONTRACT)\UPDATE AUTOKEY.Inputs[OLE DB Command Input].ExternalColumns[Param_2]"
+                      codePage="1252"
+                      dataType="str"
+                      length="8"
+                      name="Param_2">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Parameter information.  Matches OLE DB's DBPARAMFLAGSENUM values."
+                          name="DBParamInfoFlags">64</property>
+                      </properties>
+                    </externalMetadataColumn>
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\AUTOKEY (CONTRACT)\UPDATE AUTOKEY.Outputs[OLE DB Command Output]"
+                  exclusionGroup="1"
+                  name="OLE DB Command Output"
+                  synchronousInputId="Package\AUTOKEY (CONTRACT)\UPDATE AUTOKEY.Inputs[OLE DB Command Input]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\AUTOKEY (CONTRACT)\UPDATE AUTOKEY.Outputs[OLE DB Command Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Command Error Output"
+                  synchronousInputId="Package\AUTOKEY (CONTRACT)\UPDATE AUTOKEY.Inputs[OLE DB Command Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTOKEY (CONTRACT)\UPDATE AUTOKEY.Outputs[OLE DB Command Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\AUTOKEY (CONTRACT)\UPDATE AUTOKEY.Outputs[OLE DB Command Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\AUTOKEY (CONTRACT)\UPDATE AUTOKEY.Outputs[OLE DB Command Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\AUTOKEY (CONTRACT)\UPDATE AUTOKEY.Outputs[OLE DB Command Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\AUTOKEY (CONTRACT).Paths[Aggregate Output 1]"
+              endId="Package\AUTOKEY (CONTRACT)\Conditional Split.Inputs[Conditional Split Input]"
+              name="Aggregate Output 1"
+              startId="Package\AUTOKEY (CONTRACT)\Aggregate.Outputs[Aggregate Output 1]" />
+            <path
+              refId="Package\AUTOKEY (CONTRACT).Paths[Conditional Split Default Output]"
+              endId="Package\AUTOKEY (CONTRACT)\Union All.Inputs[Union All Input 1]"
+              name="Conditional Split Default Output"
+              startId="Package\AUTOKEY (CONTRACT)\Conditional Split.Outputs[Conditional Split Default Output]" />
+            <path
+              refId="Package\AUTOKEY (CONTRACT).Paths[Derived Column Output]"
+              endId="Package\AUTOKEY (CONTRACT)\Aggregate.Inputs[Aggregate Input 1]"
+              name="Derived Column Output"
+              startId="Package\AUTOKEY (CONTRACT)\Derived Column.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\AUTOKEY (CONTRACT).Paths[Derived Column Output1]"
+              endId="Package\AUTOKEY (CONTRACT)\Multicast.Inputs[Multicast Input 1]"
+              name="Derived Column Output"
+              startId="Package\AUTOKEY (CONTRACT)\Derived Column 1.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\AUTOKEY (CONTRACT).Paths[Derived Column Output2]"
+              endId="Package\AUTOKEY (CONTRACT)\Union All.Inputs[Union All Input 2]"
+              name="Derived Column Output"
+              startId="Package\AUTOKEY (CONTRACT)\Default 10m.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\AUTOKEY (CONTRACT).Paths[ISNULL]"
+              endId="Package\AUTOKEY (CONTRACT)\Default 10m.Inputs[Derived Column Input]"
+              name="ISNULL"
+              startId="Package\AUTOKEY (CONTRACT)\Conditional Split.Outputs[ISNULL]" />
+            <path
+              refId="Package\AUTOKEY (CONTRACT).Paths[Multicast Output 1]"
+              endId="Package\AUTOKEY (CONTRACT)\UPDATE AUTOKEY.Inputs[OLE DB Command Input]"
+              name="Multicast Output 1"
+              startId="Package\AUTOKEY (CONTRACT)\Multicast.Outputs[Multicast Output 1]" />
+            <path
+              refId="Package\AUTOKEY (CONTRACT).Paths[OLE DB Source Output]"
+              endId="Package\AUTOKEY (CONTRACT)\Derived Column.Inputs[Derived Column Input]"
+              name="OLE DB Source Output"
+              startId="Package\AUTOKEY (CONTRACT)\OLE DB Source.Outputs[OLE DB Source Output]" />
+            <path
+              refId="Package\AUTOKEY (CONTRACT).Paths[Union All Output 1]"
+              endId="Package\AUTOKEY (CONTRACT)\Derived Column 1.Inputs[Derived Column Input]"
+              name="Union All Output 1"
+              startId="Package\AUTOKEY (CONTRACT)\Union All.Outputs[Union All Output 1]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
     <DTS:Executable
       DTS:refId="Package\DF - Contract"
       DTS:CreationName="Microsoft.Pipeline"
@@ -7052,7 +7938,7 @@ where "refTable"."STE_CSWNITEMNO" = ?</property>
                   containsID="true"
                   dataType="System.String"
                   description="Specifies the list of lineage identifiers that map to the parameters that the SQL statement in the SQLCommand property uses. Entries in the list are separated by semicolons."
-                  name="ParameterMap">#{Package\DF - ContractLine\10327:invalid};</property>
+                  name="ParameterMap">#{Package\DF - ContractLine\9853:invalid};</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -8939,11 +9825,11 @@ LEFT JOIN (
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint]"
       DTS:CreationName=""
-      DTS:DTSID="{F0E9CB3B-FC62-401A-A204-78883109A885}"
+      DTS:DTSID="{C5567C6C-30BE-483B-BDCE-380F3D1769AA}"
       DTS:From="Package\DF - Contract"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint"
-      DTS:To="Package\MAXSEQ (CONTRACT)" />
+      DTS:To="Package\AUTOKEY (CONTRACT)" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
       DTS:CreationName=""
@@ -8952,6 +9838,14 @@ LEFT JOIN (
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 1"
       DTS:To="Package\DF - Contract" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 10]"
+      DTS:CreationName=""
+      DTS:DTSID="{16D44D30-CBC9-4C68-8BA0-DE90815F610F}"
+      DTS:From="Package\AUTOKEY (CONTRACT)"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 10"
+      DTS:To="Package\MAXSEQ (CONTRACT)" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
       DTS:CreationName=""
@@ -9044,7 +9938,7 @@ LEFT JOIN (
         <NodeLayout
           Size="190.4,41.6"
           Id="Package\MAXSEQ (CONTRACT)"
-          TopLeft="120.266660702063,498.100002260008" />
+          TopLeft="115.266660975251,593.433334930405" />
         <NodeLayout
           Size="218.4,41.6"
           Id="Package\MAXSEQ (CONTRACTAUTH)"
@@ -9063,7 +9957,7 @@ LEFT JOIN (
           PanelSize="270.4,130.4"
           Size="156,43.2"
           Id="Package\POST-PKG"
-          TopLeft="141.04165896049,606.972483046176" />
+          TopLeft="759.374958509581,611.172483172737" />
         <NodeLayout
           Size="135.2,41.6"
           Id="Package\PRE-PKG\GET LOGID"
@@ -9215,28 +10109,6 @@ LEFT JOIN (
           Id="Package\Pre-Task 1 1"
           TopLeft="742.999959704779,81.6333399024271" />
         <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="212.816660497172,436.633332760797">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,61.4666694992106"
-              Start="0,0"
-              End="0,53.9666694992106">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,53.9666694992106" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 1]"
           TopLeft="210.166660292281,335.033332760797">
           <EdgeLayout.Curve>
@@ -9260,30 +10132,30 @@ LEFT JOIN (
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 2]"
-          TopLeft="245.866660702063,498.100002260008">
+          TopLeft="240.866660975251,593.433334930405">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="236.299983198942,-161.599999999999"
+              EndConnector="241.299982925754,-256.933332670396"
               Start="0,0"
-              End="236.299983198942,-154.099999999999">
+              End="241.299982925754,-249.433332670396">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,-76.7320437342299" />
+                    End="0,-124.358620358465" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,-76.7320437342299"
-                    Point2="0,-80.7320437342299"
-                    Point3="4,-80.7320437342299" />
+                    Point1="0,-124.358620358465"
+                    Point2="0,-128.358620358465"
+                    Point3="4,-128.358620358465" />
                   <mssgle:LineSegment
-                    End="232.299983198942,-80.7320437342299" />
+                    End="237.299982925754,-128.358620358465" />
                   <mssgle:CubicBezierSegment
-                    Point1="232.299983198942,-80.7320437342299"
-                    Point2="236.299983198942,-80.7320437342299"
-                    Point3="236.299983198942,-84.7320437342299" />
+                    Point1="237.299982925754,-128.358620358465"
+                    Point2="241.299982925754,-128.358620358465"
+                    Point3="241.299982925754,-132.358620358465" />
                   <mssgle:LineSegment
-                    End="236.299983198942,-154.099999999999" />
+                    End="241.299982925754,-249.433332670396" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -9490,26 +10362,86 @@ LEFT JOIN (
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-639.59163403209,74.93914314375"
+              EndConnector="-21.258334482999,79.1391432703106"
               Start="0,0"
-              End="-639.59163403209,67.43914314375">
+              End="-21.258334482999,71.6391432703106">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,33.469571571875" />
+                    End="0,35.5695716351553" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,33.469571571875"
-                    Point2="0,37.469571571875"
-                    Point3="-4,37.469571571875" />
+                    Point1="0,35.5695716351553"
+                    Point2="0,39.5695716351553"
+                    Point3="-4,39.5695716351553" />
                   <mssgle:LineSegment
-                    End="-635.59163403209,37.469571571875" />
+                    End="-17.258334482999,39.5695716351553" />
                   <mssgle:CubicBezierSegment
-                    Point1="-635.59163403209,37.469571571875"
-                    Point2="-639.59163403209,37.469571571875"
-                    Point3="-639.59163403209,41.469571571875" />
+                    Point1="-17.258334482999,39.5695716351553"
+                    Point2="-21.258334482999,39.5695716351553"
+                    Point3="-21.258334482999,43.5695716351553" />
                   <mssgle:LineSegment
-                    End="-639.59163403209,67.43914314375" />
+                    End="-21.258334482999,71.6391432703106" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="195.2,41.6"
+          Id="Package\AUTOKEY (CONTRACT)"
+          TopLeft="113.333327141073,488.172484745703" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="210.549993716677,436.633332760797">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,51.5391519849061"
+              Start="0,0"
+              End="0,44.0391519849061">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,44.0391519849061" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 10]"
+          TopLeft="210.933327141073,529.772484745703">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-30.866666165822,63.660850184702"
+              Start="0,0"
+              End="-30.866666165822,56.160850184702">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,33.8782058598977" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,33.8782058598977"
+                    Point2="0,37.8782058598977"
+                    Point3="-4,37.8782058598977" />
+                  <mssgle:LineSegment
+                    End="-26.866666165822,37.8782058598977" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-26.866666165822,37.8782058598977"
+                    Point2="-30.866666165822,37.8782058598977"
+                    Point3="-30.866666165822,41.8782058598977" />
+                  <mssgle:LineSegment
+                    End="-30.866666165822,56.160850184702" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -10329,5 +11261,289 @@ LEFT JOIN (
       </Property>
     </Properties>
   </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\AUTOKEY (CONTRACT)">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        <NodeLayout
+          Size="172.8,41.6"
+          Id="Package\AUTOKEY (CONTRACT)\UPDATE AUTOKEY"
+          TopLeft="500.999992534518,313.199996146361" />
+        <NodeLayout
+          Size="152,41.6"
+          Id="Package\AUTOKEY (CONTRACT)\OLE DB Source"
+          TopLeft="69.9999989569187,49.9999992549419" />
+        <NodeLayout
+          Size="134.4,41.6"
+          Id="Package\AUTOKEY (CONTRACT)\Default 10m"
+          TopLeft="933.999986082316,52.9999992102385" />
+        <NodeLayout
+          Size="161.6,41.6"
+          Id="Package\AUTOKEY (CONTRACT)\Derived Column 1"
+          TopLeft="506.999992445111,138.999997928739" />
+        <NodeLayout
+          Size="119.2,41.6"
+          Id="Package\AUTOKEY (CONTRACT)\Multicast"
+          TopLeft="524.999971315266,224.866665358875" />
+        <NodeLayout
+          Size="153.6,41.6"
+          Id="Package\AUTOKEY (CONTRACT)\Conditional Split"
+          TopLeft="707.999989449978,51.9999992251396" />
+        <NodeLayout
+          Size="120,41.6"
+          Id="Package\AUTOKEY (CONTRACT)\Union All"
+          TopLeft="739.999988973141,137.99999794364" />
+        <NodeLayout
+          Size="126.4,41.6"
+          Id="Package\AUTOKEY (CONTRACT)\Aggregate"
+          TopLeft="522.999992206693,51.9999992251396" />
+        <NodeLayout
+          Size="152.8,41.6"
+          Id="Package\AUTOKEY (CONTRACT)\Derived Column"
+          TopLeft="293.999995619059,51.9999992251396" />
+        <EdgeLayout
+          Id="Package\AUTOKEY (CONTRACT).Paths[Derived Column Output1]"
+          TopLeft="586.199981880188,180.599997928739">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,44.2666674301356"
+              Start="0,0"
+              End="0,36.7666674301356">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,36.7666674301356" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\AUTOKEY (CONTRACT).Paths[Derived Column Output]"
+          TopLeft="446.799995619059,72.7999992251396">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="76.199996587634,0"
+              Start="0,0"
+              End="68.699996587634,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="68.699996587634,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\AUTOKEY (CONTRACT).Paths[ISNULL]"
+          TopLeft="861.599989449978,73.299999217689">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="72.399996632338,0"
+              Start="0,0"
+              End="64.899996632338,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="64.899996632338,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="15.446463159919,5,34.0070703125,9.5537109375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\AUTOKEY (CONTRACT).Paths[Aggregate Output 1]"
+          TopLeft="649.399992206693,72.7999992251396">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="58.5999972432847,0"
+              Start="0,0"
+              End="51.0999972432847,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="51.0999972432847,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\AUTOKEY (CONTRACT).Paths[Union All Output 1]"
+          TopLeft="739.999988973141,159.299997936189">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-71.3999965280296,0"
+              Start="0,0"
+              End="-63.8999965280296,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="-63.8999965280296,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\AUTOKEY (CONTRACT).Paths[Derived Column Output2]"
+          TopLeft="1001.19998608232,94.5999992102385">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-182.533330442508,43.3999987334015"
+              Start="0,0"
+              End="-182.533330442508,35.8999987334015">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,21.697367671093" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,21.697367671093"
+                    Point2="0,25.697367671093"
+                    Point3="-4,25.697367671093" />
+                  <mssgle:LineSegment
+                    End="-178.533330442508,25.697367671093" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-178.533330442508,25.697367671093"
+                    Point2="-182.533330442508,25.697367671093"
+                    Point3="-182.533330442508,29.697367671093" />
+                  <mssgle:LineSegment
+                    End="-182.533330442508,35.8999987334015" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\AUTOKEY (CONTRACT).Paths[Conditional Split Default Output]"
+          TopLeft="783.066655878226,93.5999992251396">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,44.3999987185002"
+              Start="0,0"
+              End="0,36.8999987185002">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,36.8999987185002" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-70.61390625,12.6208977967501,141.2278125,11.658203125"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\AUTOKEY (CONTRACT).Paths[OLE DB Source Output]"
+          TopLeft="221.999998956919,71.7999992400407">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="71.9999966621404,0"
+              Start="0,0"
+              End="64.4999966621404,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="64.4999966621404,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\AUTOKEY (CONTRACT).Paths[Multicast Output 1]"
+          TopLeft="603.133304648599,266.466665358875">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-15.7333121140813,46.733330787486"
+              Start="0,0"
+              End="-15.7333121140813,39.233330787486">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,15.0647230232393" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,15.0647230232393"
+                    Point2="0,19.0647230232393"
+                    Point3="-4,19.0647230232393" />
+                  <mssgle:LineSegment
+                    End="-11.7333121140813,19.0647230232393" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-11.7333121140813,19.0647230232393"
+                    Point2="-15.7333121140813,19.0647230232393"
+                    Point3="-15.7333121140813,23.0647230232393" />
+                  <mssgle:LineSegment
+                    End="-15.7333121140813,39.233330787486" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
 </Objects>]]></DTS:DesignTimeProperties>
 </DTS:Executable>

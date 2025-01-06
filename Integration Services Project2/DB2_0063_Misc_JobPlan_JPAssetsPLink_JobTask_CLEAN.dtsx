@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0063_Misc_JobPlan_JPAssetsPLink_JobTask_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="233"
-  DTS:VersionGUID="{3377A638-2A87-4679-AF5A-19D11511EDF8}"
+  DTS:VersionBuild="234"
+  DTS:VersionGUID="{562A96D0-174D-4272-A940-4DE6AA8FD79A}"
   DTS:VersionMajor="4"
   DTS:VersionMinor="2">
   <DTS:Property
@@ -465,7 +465,7 @@
       DTS:refId="Package\AUTOKEY (JPNUM)"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:Description="Data Flow Task"
-      DTS:DTSID="{f7a8969c-7e5e-4498-84d4-9b8728812f57}"
+      DTS:DTSID="{7e4bba15-ee86-482e-a37e-5525384f8761}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="-1"
       DTS:ObjectName="AUTOKEY (JPNUM)"
@@ -512,10 +512,10 @@
                   name="Aggregate Input 1">
                   <inputColumns>
                     <inputColumn
-                      refId="Package\AUTOKEY (JPNUM)\Aggregate.Inputs[Aggregate Input 1].Columns[v_jpnum]"
+                      refId="Package\AUTOKEY (JPNUM)\Aggregate.Inputs[Aggregate Input 1].Columns[v_ticketid]"
                       cachedDataType="i8"
-                      cachedName="v_jpnum"
-                      lineageId="Package\AUTOKEY (JPNUM)\Derived Column.Outputs[Derived Column Output].Columns[v_jpnum]" />
+                      cachedName="v_ticketid"
+                      lineageId="Package\AUTOKEY (JPNUM)\Derived Column.Outputs[Derived Column Output].Columns[v_ticketid]" />
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -537,16 +537,16 @@
                   </properties>
                   <outputColumns>
                     <outputColumn
-                      refId="Package\AUTOKEY (JPNUM)\Aggregate.Outputs[Aggregate Output 1].Columns[v_jpnum]"
+                      refId="Package\AUTOKEY (JPNUM)\Aggregate.Outputs[Aggregate Output 1].Columns[v_ticketid]"
                       dataType="i8"
-                      lineageId="Package\AUTOKEY (JPNUM)\Aggregate.Outputs[Aggregate Output 1].Columns[v_jpnum]"
-                      name="v_jpnum">
+                      lineageId="Package\AUTOKEY (JPNUM)\Aggregate.Outputs[Aggregate Output 1].Columns[v_ticketid]"
+                      name="v_ticketid">
                       <properties>
                         <property
                           containsID="true"
                           dataType="System.Int32"
                           description="Specifies the ID of the input column used in the aggregation."
-                          name="AggregationColumnId">#{Package\AUTOKEY (JPNUM)\Derived Column.Outputs[Derived Column Output].Columns[v_jpnum]}</property>
+                          name="AggregationColumnId">#{Package\AUTOKEY (JPNUM)\Derived Column.Outputs[Derived Column Output].Columns[v_ticketid]}</property>
                         <property
                           dataType="System.Int32"
                           description="Specifies the type of aggregation."
@@ -562,6 +562,169 @@
                           name="AggregationComparisonFlags">0</property>
                       </properties>
                     </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\AUTOKEY (JPNUM)\Conditional Split"
+              componentClassID="Microsoft.ConditionalSplit"
+              contactInfo="Conditional Split;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Routes data rows to different outputs depending on the content of the data. Use conditions (SSIS expressions) to specify which rows are routed. For example, separate records that need to be cleaned from those that are ready to be loaded or route only a subset of records."
+              name="Conditional Split"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\AUTOKEY (JPNUM)\Conditional Split.Inputs[Conditional Split Input]"
+                  description="Input to the Conditional Split Transformation"
+                  name="Conditional Split Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\AUTOKEY (JPNUM)\Conditional Split.Inputs[Conditional Split Input].Columns[v_ticketid]"
+                      cachedDataType="i8"
+                      cachedName="v_ticketid"
+                      lineageId="Package\AUTOKEY (JPNUM)\Aggregate.Outputs[Aggregate Output 1].Columns[v_ticketid]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\AUTOKEY (JPNUM)\Conditional Split.Outputs[ISNULL]"
+                  description="Output 1 of the Conditional Split Transformation"
+                  errorOrTruncationOperation="Computation"
+                  errorRowDisposition="FailComponent"
+                  exclusionGroup="1"
+                  name="ISNULL"
+                  synchronousInputId="Package\AUTOKEY (JPNUM)\Conditional Split.Inputs[Conditional Split Input]"
+                  truncationRowDisposition="FailComponent">
+                  <properties>
+                    <property
+                      containsID="true"
+                      dataType="System.String"
+                      description="Specifies the expression. This expression version uses lineage identifiers instead of column names."
+                      name="Expression">[REPLACENULL](#{Package\AUTOKEY (JPNUM)\Aggregate.Outputs[Aggregate Output 1].Columns[v_ticketid]},0) &lt; 10000000</property>
+                    <property
+                      containsID="true"
+                      dataType="System.String"
+                      description="Specifies the friendly version of the expression. This expression version uses column names."
+                      expressionType="Notify"
+                      name="FriendlyExpression">REPLACENULL(v_ticketid,0) &lt; 10000000</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the position of the condition in the list of conditions that the transformation evaluates. The evaluation order is from the lowest to the highest value."
+                      name="EvaluationOrder">0</property>
+                  </properties>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\AUTOKEY (JPNUM)\Conditional Split.Outputs[Conditional Split Default Output]"
+                  description="Default Output of the Conditional Split Transformation"
+                  exclusionGroup="1"
+                  name="Conditional Split Default Output"
+                  synchronousInputId="Package\AUTOKEY (JPNUM)\Conditional Split.Inputs[Conditional Split Input]">
+                  <properties>
+                    <property
+                      dataType="System.Boolean"
+                      name="IsDefaultOut">true</property>
+                  </properties>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\AUTOKEY (JPNUM)\Conditional Split.Outputs[Conditional Split Error Output]"
+                  description="Error Output of the Conditional Split Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Conditional Split Error Output"
+                  synchronousInputId="Package\AUTOKEY (JPNUM)\Conditional Split.Inputs[Conditional Split Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTOKEY (JPNUM)\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\AUTOKEY (JPNUM)\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\AUTOKEY (JPNUM)\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\AUTOKEY (JPNUM)\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\AUTOKEY (JPNUM)\Default 10m"
+              componentClassID="Microsoft.DerivedColumn"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="Default 10m"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\AUTOKEY (JPNUM)\Default 10m.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\AUTOKEY (JPNUM)\Default 10m.Inputs[Derived Column Input].Columns[v_ticketid]"
+                      cachedDataType="i8"
+                      cachedName="v_ticketid"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\AUTOKEY (JPNUM)\Aggregate.Outputs[Aggregate Output 1].Columns[v_ticketid]"
+                      truncationRowDisposition="FailComponent"
+                      usageType="readWrite">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">10000000</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">10000000</property>
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\AUTOKEY (JPNUM)\Default 10m.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\AUTOKEY (JPNUM)\Default 10m.Inputs[Derived Column Input]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\AUTOKEY (JPNUM)\Default 10m.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\AUTOKEY (JPNUM)\Default 10m.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTOKEY (JPNUM)\Default 10m.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\AUTOKEY (JPNUM)\Default 10m.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\AUTOKEY (JPNUM)\Default 10m.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\AUTOKEY (JPNUM)\Default 10m.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
                   </outputColumns>
                   <externalMetadataColumns />
                 </output>
@@ -600,12 +763,12 @@
                   synchronousInputId="Package\AUTOKEY (JPNUM)\Derived Column.Inputs[Derived Column Input]">
                   <outputColumns>
                     <outputColumn
-                      refId="Package\AUTOKEY (JPNUM)\Derived Column.Outputs[Derived Column Output].Columns[v_jpnum]"
+                      refId="Package\AUTOKEY (JPNUM)\Derived Column.Outputs[Derived Column Output].Columns[v_ticketid]"
                       dataType="i8"
                       errorOrTruncationOperation="Computation"
                       errorRowDisposition="IgnoreFailure"
-                      lineageId="Package\AUTOKEY (JPNUM)\Derived Column.Outputs[Derived Column Output].Columns[v_jpnum]"
-                      name="v_jpnum"
+                      lineageId="Package\AUTOKEY (JPNUM)\Derived Column.Outputs[Derived Column Output].Columns[v_ticketid]"
+                      name="v_ticketid"
                       truncationRowDisposition="IgnoreFailure">
                       <properties>
                         <property
@@ -663,10 +826,10 @@
                   name="Derived Column Input">
                   <inputColumns>
                     <inputColumn
-                      refId="Package\AUTOKEY (JPNUM)\Derived Column 1.Inputs[Derived Column Input].Columns[v_jpnum]"
+                      refId="Package\AUTOKEY (JPNUM)\Derived Column 1.Inputs[Derived Column Input].Columns[v_ticketid]"
                       cachedDataType="i8"
-                      cachedName="v_jpnum"
-                      lineageId="Package\AUTOKEY (JPNUM)\Aggregate.Outputs[Aggregate Output 1].Columns[v_jpnum]" />
+                      cachedName="v_ticketid"
+                      lineageId="Package\AUTOKEY (JPNUM)\Union All.Outputs[Union All Output 1].Columns[v_ticketid]" />
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -694,13 +857,13 @@
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">(DT_STR,16,1252)"JPNUM"</property>
+                          name="Expression">(DT_STR,16,1252)"JOBPLANNUM"</property>
                         <property
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
-                          name="FriendlyExpression">(DT_STR,16,1252)"JPNUM"</property>
+                          name="FriendlyExpression">(DT_STR,16,1252)"JOBPLANNUM"</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
@@ -742,13 +905,13 @@
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">(DT_STR,16,1252)(#{Package\AUTOKEY (JPNUM)\Aggregate.Outputs[Aggregate Output 1].Columns[v_jpnum]} + 1)</property>
+                          name="Expression">(DT_STR,16,1252)(#{Package\AUTOKEY (JPNUM)\Union All.Outputs[Union All Output 1].Columns[v_ticketid]} + 1)</property>
                         <property
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
-                          name="FriendlyExpression">(DT_STR,16,1252)(v_jpnum + 1)</property>
+                          name="FriendlyExpression">(DT_STR,16,1252)(v_ticketid + 1)</property>
                       </properties>
                     </outputColumn>
                   </outputColumns>
@@ -801,10 +964,10 @@
                   <externalMetadataColumns />
                 </output>
                 <output
-                  refId="Package\AUTOKEY (JPNUM)\Multicast.Outputs[Multicast Output 3]"
+                  refId="Package\AUTOKEY (JPNUM)\Multicast.Outputs[Multicast Output 2]"
                   dangling="true"
                   deleteOutputOnPathDetached="true"
-                  name="Multicast Output 3"
+                  name="Multicast Output 2"
                   synchronousInputId="Package\AUTOKEY (JPNUM)\Multicast.Inputs[Multicast Input 1]">
                   <externalMetadataColumns />
                 </output>
@@ -835,7 +998,7 @@
                   dataType="System.String"
                   description="The SQL command to be executed."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT REPLACE(JPNUM, 'JP', '') AS JPNUM from maximo.JOBPLAN a WHERE ste_migrationid IS NOT NULL;</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT REPLACE(JPNUM, 'JP', '') AS JPNUM from maximo.JOBPLAN a WHERE JPNUM LIKE 'JP%';</property>
                 <property
                   dataType="System.String"
                   description="The variable that contains the SQL command to be executed."
@@ -923,6 +1086,78 @@
               </outputs>
             </component>
             <component
+              refId="Package\AUTOKEY (JPNUM)\Union All"
+              componentClassID="Microsoft.UnionAll"
+              contactInfo="Union All;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
+              description="Combines rows from multiple data flows without sorting. For example, add rows back to a data flow after correction of errors. If sorting is important, we recommend using the Merge transformation."
+              name="Union All"
+              version="1">
+              <inputs>
+                <input
+                  refId="Package\AUTOKEY (JPNUM)\Union All.Inputs[Union All Input 1]"
+                  name="Union All Input 1">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\AUTOKEY (JPNUM)\Union All.Inputs[Union All Input 1].Columns[v_ticketid]"
+                      cachedDataType="i8"
+                      cachedName="v_ticketid"
+                      lineageId="Package\AUTOKEY (JPNUM)\Aggregate.Outputs[Aggregate Output 1].Columns[v_ticketid]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\AUTOKEY (JPNUM)\Union All.Outputs[Union All Output 1].Columns[v_ticketid]}</property>
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+                <input
+                  refId="Package\AUTOKEY (JPNUM)\Union All.Inputs[Union All Input 2]"
+                  hasSideEffects="true"
+                  name="Union All Input 2">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\AUTOKEY (JPNUM)\Union All.Inputs[Union All Input 2].Columns[v_ticketid]"
+                      cachedDataType="i8"
+                      cachedName="v_ticketid"
+                      lineageId="Package\AUTOKEY (JPNUM)\Aggregate.Outputs[Aggregate Output 1].Columns[v_ticketid]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\AUTOKEY (JPNUM)\Union All.Outputs[Union All Output 1].Columns[v_ticketid]}</property>
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+                <input
+                  refId="Package\AUTOKEY (JPNUM)\Union All.Inputs[Union All Input 3]"
+                  dangling="true"
+                  hasSideEffects="true"
+                  name="Union All Input 3">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\AUTOKEY (JPNUM)\Union All.Outputs[Union All Output 1]"
+                  name="Union All Output 1">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\AUTOKEY (JPNUM)\Union All.Outputs[Union All Output 1].Columns[v_ticketid]"
+                      dataType="i8"
+                      lineageId="Package\AUTOKEY (JPNUM)\Union All.Outputs[Union All Output 1].Columns[v_ticketid]"
+                      name="v_ticketid" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
               refId="Package\AUTOKEY (JPNUM)\UPDATE AUTOKEY"
               componentClassID="Microsoft.OLEDBCommand"
               contactInfo="OLE DB Command;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;2"
@@ -940,8 +1175,7 @@
                   description="The SQL command to be executed."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">update maximo.autokey set seed=cast(? as varchar(16))
-where autokeyname=?;</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">update maximo.autokey set seed=? where autokeyname=?;</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -964,14 +1198,6 @@ where autokeyname=?;</property>
                   name="OLE DB Command Input">
                   <inputColumns>
                     <inputColumn
-                      refId="Package\AUTOKEY (JPNUM)\UPDATE AUTOKEY.Inputs[OLE DB Command Input].Columns[v_autokey]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="16"
-                      cachedName="v_autokey"
-                      externalMetadataColumnId="Package\AUTOKEY (JPNUM)\UPDATE AUTOKEY.Inputs[OLE DB Command Input].ExternalColumns[Param_1]"
-                      lineageId="Package\AUTOKEY (JPNUM)\Derived Column 1.Outputs[Derived Column Output].Columns[v_autokey]" />
-                    <inputColumn
                       refId="Package\AUTOKEY (JPNUM)\UPDATE AUTOKEY.Inputs[OLE DB Command Input].Columns[v_seed]"
                       cachedCodepage="1252"
                       cachedDataType="str"
@@ -979,14 +1205,20 @@ where autokeyname=?;</property>
                       cachedName="v_seed"
                       externalMetadataColumnId="Package\AUTOKEY (JPNUM)\UPDATE AUTOKEY.Inputs[OLE DB Command Input].ExternalColumns[Param_0]"
                       lineageId="Package\AUTOKEY (JPNUM)\Derived Column 1.Outputs[Derived Column Output].Columns[v_seed]" />
+                    <inputColumn
+                      refId="Package\AUTOKEY (JPNUM)\UPDATE AUTOKEY.Inputs[OLE DB Command Input].Columns[v_autokey]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="16"
+                      cachedName="v_autokey"
+                      externalMetadataColumnId="Package\AUTOKEY (JPNUM)\UPDATE AUTOKEY.Inputs[OLE DB Command Input].ExternalColumns[Param_1]"
+                      lineageId="Package\AUTOKEY (JPNUM)\Derived Column 1.Outputs[Derived Column Output].Columns[v_autokey]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
                     <externalMetadataColumn
                       refId="Package\AUTOKEY (JPNUM)\UPDATE AUTOKEY.Inputs[OLE DB Command Input].ExternalColumns[Param_0]"
-                      codePage="1252"
-                      dataType="str"
-                      length="16"
+                      dataType="i8"
                       name="Param_0">
                       <properties>
                         <property
@@ -1047,9 +1279,14 @@ where autokeyname=?;</property>
           <paths>
             <path
               refId="Package\AUTOKEY (JPNUM).Paths[Aggregate Output 1]"
-              endId="Package\AUTOKEY (JPNUM)\Derived Column 1.Inputs[Derived Column Input]"
+              endId="Package\AUTOKEY (JPNUM)\Conditional Split.Inputs[Conditional Split Input]"
               name="Aggregate Output 1"
               startId="Package\AUTOKEY (JPNUM)\Aggregate.Outputs[Aggregate Output 1]" />
+            <path
+              refId="Package\AUTOKEY (JPNUM).Paths[Conditional Split Default Output]"
+              endId="Package\AUTOKEY (JPNUM)\Union All.Inputs[Union All Input 1]"
+              name="Conditional Split Default Output"
+              startId="Package\AUTOKEY (JPNUM)\Conditional Split.Outputs[Conditional Split Default Output]" />
             <path
               refId="Package\AUTOKEY (JPNUM).Paths[Derived Column Output]"
               endId="Package\AUTOKEY (JPNUM)\Aggregate.Inputs[Aggregate Input 1]"
@@ -1061,6 +1298,16 @@ where autokeyname=?;</property>
               name="Derived Column Output"
               startId="Package\AUTOKEY (JPNUM)\Derived Column 1.Outputs[Derived Column Output]" />
             <path
+              refId="Package\AUTOKEY (JPNUM).Paths[Derived Column Output2]"
+              endId="Package\AUTOKEY (JPNUM)\Union All.Inputs[Union All Input 2]"
+              name="Derived Column Output"
+              startId="Package\AUTOKEY (JPNUM)\Default 10m.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\AUTOKEY (JPNUM).Paths[ISNULL]"
+              endId="Package\AUTOKEY (JPNUM)\Default 10m.Inputs[Derived Column Input]"
+              name="ISNULL"
+              startId="Package\AUTOKEY (JPNUM)\Conditional Split.Outputs[ISNULL]" />
+            <path
               refId="Package\AUTOKEY (JPNUM).Paths[Multicast Output 1]"
               endId="Package\AUTOKEY (JPNUM)\UPDATE AUTOKEY.Inputs[OLE DB Command Input]"
               name="Multicast Output 1"
@@ -1070,6 +1317,11 @@ where autokeyname=?;</property>
               endId="Package\AUTOKEY (JPNUM)\Derived Column.Inputs[Derived Column Input]"
               name="OLE DB Source Output"
               startId="Package\AUTOKEY (JPNUM)\OLE DB Source.Outputs[OLE DB Source Output]" />
+            <path
+              refId="Package\AUTOKEY (JPNUM).Paths[Union All Output 1]"
+              endId="Package\AUTOKEY (JPNUM)\Derived Column 1.Inputs[Derived Column Input]"
+              name="Union All Output 1"
+              startId="Package\AUTOKEY (JPNUM)\Union All.Outputs[Union All Output 1]" />
           </paths>
         </pipeline>
       </DTS:ObjectData>
@@ -13167,7 +13419,7 @@ where et.EQ_LEVL &gt; 0;</property>
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint]"
       DTS:CreationName=""
-      DTS:DTSID="{2B9A9C9A-1ABA-439A-B91D-FB8D58F95978}"
+      DTS:DTSID="{CEBE79E3-19DD-4509-BB0A-A2F29AC7B182}"
       DTS:From="Package\DF - JobPlan (JOB_DIR)"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint"
@@ -13189,12 +13441,12 @@ where et.EQ_LEVL &gt; 0;</property>
       DTS:ObjectName="Constraint 11"
       DTS:To="Package\POST-PKG" />
     <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[Constraint 13]"
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
       DTS:CreationName=""
-      DTS:DTSID="{93CC14B8-B7C8-4706-BF2B-620AF3B4EBB3}"
+      DTS:DTSID="{084AF9D4-CF2E-47A5-8B5D-0ABA4D48C208}"
       DTS:From="Package\AUTOKEY (JPNUM)"
       DTS:LogicalAnd="True"
-      DTS:ObjectName="Constraint 13"
+      DTS:ObjectName="Constraint 2"
       DTS:To="Package\MAXSEQ (JOBPLAN)" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
@@ -13265,10 +13517,6 @@ where et.EQ_LEVL &gt; 0;</property>
     <LayoutInfo>
       <GraphLayout
         Capacity="64" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
-        <NodeLayout
-          Size="173.6,41.6"
-          Id="Package\AUTOKEY (JPNUM)"
-          TopLeft="164.249991326283,843.32963551288" />
         <NodeLayout
           Size="192.8,41.6"
           Id="Package\DF - JobPlan (JOB_DIR)"
@@ -13455,28 +13703,6 @@ where et.EQ_LEVL &gt; 0;</property>
           Id="Package\Pre-Task 1 1"
           TopLeft="972.866629831826,100.30000235041" />
         <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="253.924991497026,715.16666644368">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,128.1629690692"
-              Start="0,0"
-              End="0,120.6629690692">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,120.6629690692" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 1]"
           TopLeft="257.349991736065,447.633332851198">
           <EdgeLayout.Curve>
@@ -13512,28 +13738,6 @@ where et.EQ_LEVL &gt; 0;</property>
                   Capacity="5">
                   <mssgle:LineSegment
                     End="0,343.796297997023" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 13]"
-          TopLeft="248.524990768524,884.92963551288">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,45.47036779061"
-              Start="0,0"
-              End="0,37.97036779061">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,37.97036779061" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -13732,169 +13936,69 @@ where et.EQ_LEVL &gt; 0;</property>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <NodeLayout
+          Size="173.6,41.6"
+          Id="Package\AUTOKEY (JPNUM)"
+          TopLeft="171.749990916501,816.200004804136" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="257.674991292135,715.16666644368">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,101.033338360456"
+              Start="0,0"
+              End="0,93.5333383604565">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,93.5333383604565" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="258.549990916501,857.800004804137">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-12.550000705736,72.5999984993535"
+              Start="0,0"
+              End="-12.550000705736,65.0999984993535">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,39.1762105612896" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,39.1762105612896"
+                    Point2="0,43.1762105612896"
+                    Point3="-4,43.1762105612896" />
+                  <mssgle:LineSegment
+                    End="-8.55000070573601,43.1762105612896" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-8.55000070573601,43.1762105612896"
+                    Point2="-12.550000705736,43.1762105612896"
+                    Point3="-12.550000705736,47.1762105612896" />
+                  <mssgle:LineSegment
+                    End="-12.550000705736,65.0999984993535" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </Package>
-  <TaskHost
-    design-time-name="Package\AUTOKEY (JPNUM)">
-    <LayoutInfo>
-      <GraphLayout
-        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
-        <NodeLayout
-          Size="172.8,53.6"
-          Id="Package\AUTOKEY (JPNUM)\UPDATE AUTOKEY"
-          TopLeft="500.999992534518,301.599996146361" />
-        <NodeLayout
-          Size="152,41.6"
-          Id="Package\AUTOKEY (JPNUM)\OLE DB Source"
-          TopLeft="68.833332274523,49.9999992549419" />
-        <NodeLayout
-          Size="161.6,41.6"
-          Id="Package\AUTOKEY (JPNUM)\Derived Column 1"
-          TopLeft="506.999992445111,138.999997928739" />
-        <NodeLayout
-          Size="119.2,41.6"
-          Id="Package\AUTOKEY (JPNUM)\Multicast"
-          TopLeft="524.999971315266,224.866665358875" />
-        <NodeLayout
-          Size="126.4,41.6"
-          Id="Package\AUTOKEY (JPNUM)\Aggregate"
-          TopLeft="522.999992206693,51.9999992251396" />
-        <NodeLayout
-          Size="152.8,41.6"
-          Id="Package\AUTOKEY (JPNUM)\Derived Column"
-          TopLeft="293.999995619059,51.9999992251396" />
-        <EdgeLayout
-          Id="Package\AUTOKEY (JPNUM).Paths[Derived Column Output1]"
-          TopLeft="586.199981880188,180.599997928739">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,44.2666674301356"
-              Start="0,0"
-              End="0,36.7666674301356">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,36.7666674301356" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\AUTOKEY (JPNUM).Paths[Derived Column Output]"
-          TopLeft="446.799995619059,72.7999992251396">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="76.199996587634,0"
-              Start="0,0"
-              End="68.699996587634,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="68.699996587634,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\AUTOKEY (JPNUM).Paths[Aggregate Output 1]"
-          TopLeft="586.999992325902,93.5999992251396">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,45.3999987035989"
-              Start="0,0"
-              End="0,37.8999987035989">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,37.8999987035989" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\AUTOKEY (JPNUM).Paths[OLE DB Source Output]"
-          TopLeft="220.833332274523,71.7999992400407">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="73.1666633445361,0"
-              Start="0,0"
-              End="65.6666633445361,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="65.6666633445361,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\AUTOKEY (JPNUM).Paths[Multicast Output 1]"
-          TopLeft="585.999981924892,266.466665358875">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,35.1333307874861"
-              Start="0,0"
-              End="0,27.6333307874861">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,27.6333307874861" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-      </GraphLayout>
-    </LayoutInfo>
-  </TaskHost>
-  <PipelineComponentMetadata
-    design-time-name="Package\AUTOKEY (JPNUM)\OLE DB Source">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
   <TaskHost
     design-time-name="Package\DF - JobPlan (JOB_DIR)">
     <LayoutInfo>
@@ -14386,7 +14490,7 @@ where et.EQ_LEVL &gt; 0;</property>
       <Property>
         <Name>OverwriteParamsSQLProp</Name>
         <Value
-          type="q2:boolean">false</Value>
+          type="q2:string">false</Value>
       </Property>
       <Property>
         <Name>UsedTableName</Name>
@@ -14396,7 +14500,7 @@ where et.EQ_LEVL &gt; 0;</property>
       <Property>
         <Name>TableInfoObjectType</Name>
         <Value
-          type="q4:int">0</Value>
+          type="q4:string">0</Value>
       </Property>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -15193,7 +15297,7 @@ where et.EQ_LEVL &gt; 0;</property>
       <Property>
         <Name>OverwriteParamsSQLProp</Name>
         <Value
-          type="q2:boolean">false</Value>
+          type="q2:string">false</Value>
       </Property>
       <Property>
         <Name>UsedTableName</Name>
@@ -15218,5 +15322,289 @@ where et.EQ_LEVL &gt; 0;</property>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\AUTOKEY (JPNUM)">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        <NodeLayout
+          Size="172.8,41.6"
+          Id="Package\AUTOKEY (JPNUM)\UPDATE AUTOKEY"
+          TopLeft="500.999992534518,313.199996146361" />
+        <NodeLayout
+          Size="152,41.6"
+          Id="Package\AUTOKEY (JPNUM)\OLE DB Source"
+          TopLeft="68.9999989718198,49.9999992549419" />
+        <NodeLayout
+          Size="134.4,41.6"
+          Id="Package\AUTOKEY (JPNUM)\Default 10m"
+          TopLeft="933.999986082316,52.9999992102385" />
+        <NodeLayout
+          Size="161.6,41.6"
+          Id="Package\AUTOKEY (JPNUM)\Derived Column 1"
+          TopLeft="506.999992445111,138.999997928739" />
+        <NodeLayout
+          Size="119.2,41.6"
+          Id="Package\AUTOKEY (JPNUM)\Multicast"
+          TopLeft="524.999971315266,224.866665358875" />
+        <NodeLayout
+          Size="153.6,41.6"
+          Id="Package\AUTOKEY (JPNUM)\Conditional Split"
+          TopLeft="707.999989449978,51.9999992251396" />
+        <NodeLayout
+          Size="120,41.6"
+          Id="Package\AUTOKEY (JPNUM)\Union All"
+          TopLeft="739.999988973141,137.99999794364" />
+        <NodeLayout
+          Size="126.4,41.6"
+          Id="Package\AUTOKEY (JPNUM)\Aggregate"
+          TopLeft="522.999992206693,51.9999992251396" />
+        <NodeLayout
+          Size="152.8,41.6"
+          Id="Package\AUTOKEY (JPNUM)\Derived Column"
+          TopLeft="293.999995619059,51.9999992251396" />
+        <EdgeLayout
+          Id="Package\AUTOKEY (JPNUM).Paths[Derived Column Output1]"
+          TopLeft="586.199981880188,180.599997928739">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,44.2666674301356"
+              Start="0,0"
+              End="0,36.7666674301356">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,36.7666674301356" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\AUTOKEY (JPNUM).Paths[Derived Column Output]"
+          TopLeft="446.799995619059,72.7999992251396">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="76.199996587634,0"
+              Start="0,0"
+              End="68.699996587634,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="68.699996587634,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\AUTOKEY (JPNUM).Paths[ISNULL]"
+          TopLeft="861.599989449978,73.299999217689">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="72.399996632338,0"
+              Start="0,0"
+              End="64.899996632338,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="64.899996632338,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="15.446463159919,5,34.0070703125,9.5537109375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\AUTOKEY (JPNUM).Paths[Aggregate Output 1]"
+          TopLeft="649.399992206693,72.7999992251396">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="58.5999972432847,0"
+              Start="0,0"
+              End="51.0999972432847,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="51.0999972432847,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\AUTOKEY (JPNUM).Paths[Union All Output 1]"
+          TopLeft="739.999988973141,159.299997936189">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-71.3999965280296,0"
+              Start="0,0"
+              End="-63.8999965280296,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="-63.8999965280296,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\AUTOKEY (JPNUM).Paths[Derived Column Output2]"
+          TopLeft="1001.19998608232,94.5999992102385">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-182.533330442508,43.3999987334015"
+              Start="0,0"
+              End="-182.533330442508,35.8999987334015">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,21.697367671093" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,21.697367671093"
+                    Point2="0,25.697367671093"
+                    Point3="-4,25.697367671093" />
+                  <mssgle:LineSegment
+                    End="-178.533330442508,25.697367671093" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-178.533330442508,25.697367671093"
+                    Point2="-182.533330442508,25.697367671093"
+                    Point3="-182.533330442508,29.697367671093" />
+                  <mssgle:LineSegment
+                    End="-182.533330442508,35.8999987334015" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\AUTOKEY (JPNUM).Paths[Conditional Split Default Output]"
+          TopLeft="783.066655878226,93.5999992251396">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,44.3999987185002"
+              Start="0,0"
+              End="0,36.8999987185002">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,36.8999987185002" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-70.61390625,12.6208977967501,141.2278125,11.658203125"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\AUTOKEY (JPNUM).Paths[OLE DB Source Output]"
+          TopLeft="220.99999897182,71.7999992400407">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="72.9999966472392,0"
+              Start="0,0"
+              End="65.4999966472392,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="65.4999966472392,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\AUTOKEY (JPNUM).Paths[Multicast Output 1]"
+          TopLeft="603.133304648599,266.466665358875">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-15.7333121140813,46.733330787486"
+              Start="0,0"
+              End="-15.7333121140813,39.233330787486">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,15.0647230232393" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,15.0647230232393"
+                    Point2="0,19.0647230232393"
+                    Point3="-4,19.0647230232393" />
+                  <mssgle:LineSegment
+                    End="-11.7333121140813,19.0647230232393" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-11.7333121140813,19.0647230232393"
+                    Point2="-15.7333121140813,19.0647230232393"
+                    Point3="-15.7333121140813,23.0647230232393" />
+                  <mssgle:LineSegment
+                    End="-15.7333121140813,39.233330787486" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
 </Objects>]]></DTS:DesignTimeProperties>
 </DTS:Executable>
