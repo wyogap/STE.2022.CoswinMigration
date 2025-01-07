@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0015_Misc_Meter_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="104"
-  DTS:VersionGUID="{D0DB4195-FBEC-47C2-B9E7-1654E70C20E6}"
+  DTS:VersionBuild="105"
+  DTS:VersionGUID="{1B3D4D4D-16B5-43E6-8594-4439AF002133}"
   DTS:VersionMajor="4"
   DTS:VersionMinor="1">
   <DTS:Property
@@ -753,6 +753,20 @@
                       cachedName="PK_DIR_METER"
                       externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONID]"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DIR_METER]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[MT_FREQ]"
+                      cachedDataType="i4"
+                      cachedName="MT_FREQ"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_CSWNFREQUENCY]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[MT_FREQ]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[FREQUENCYNUNIT]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="5"
+                      cachedName="FREQUENCYNUNIT"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_CSWNFREQUENCYUNIT]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[FREQUENCYNUNIT]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1073,17 +1087,21 @@
 	, case when dm.MT_TYPE=48 then 'CONTINUOUS'
 		WHEN dm.MT_TYPE=49 THEN 'GAUGE'
 		ELSE CAST(dm.MT_TYPE AS varchar(10))
-		END AS METER_TYPE
+	 END AS METER_TYPE
 	, case when dm.MT_TYPE=48 then 'ALL'
 		ELSE NULL
-		END AS AVGCALCMETHOD
+	 END AS AVGCALCMETHOD
 	, case when dm.MT_TYPE=48 then 'ASSET'
 		ELSE NULL
-		END AS ROLLDOWNSOURCE
+	 END AS ROLLDOWNSOURCE
 	, case when dm.MT_TYPE=48 then 999999
 		ELSE NULL
-		END AS ROLLOVER
+	 END AS ROLLOVER
 	, CASE WHEN dm.MT_MS_UNIT='HR' THEN 'HRS' ELSE dm.MT_MS_UNIT END AS MEASUREUNITID 
+	,CASE WHEN dm.MT_FR_UNIT=87 THEN 'WEEKS'
+		WHEN dm.MT_FR_UNIT=68 THEN 'DAYS'
+		ELSE 'HOURS'
+	 END AS FREQUENCYNUNIT
 from COSWIN.DIR_METER dm
 ORDER BY dm.PK_DIR_METER</property>
                 <property
@@ -1323,6 +1341,14 @@ ORDER BY dm.PK_DIR_METER</property>
                       length="5"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[MEASUREUNITID]"
                       name="MEASUREUNITID" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[FREQUENCYNUNIT]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[FREQUENCYNUNIT]"
+                      length="5"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[FREQUENCYNUNIT]"
+                      name="FREQUENCYNUNIT" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1464,6 +1490,12 @@ ORDER BY dm.PK_DIR_METER</property>
                       dataType="str"
                       length="5"
                       name="MEASUREUNITID" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[FREQUENCYNUNIT]"
+                      codePage="1252"
+                      dataType="str"
+                      length="5"
+                      name="FREQUENCYNUNIT" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -1667,6 +1699,14 @@ ORDER BY dm.PK_DIR_METER</property>
                       length="5"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[MEASUREUNITID]"
                       name="MEASUREUNITID" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[FREQUENCYNUNIT]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[FREQUENCYNUNIT]"
+                      length="5"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[FREQUENCYNUNIT]"
+                      name="FREQUENCYNUNIT" />
                     <outputColumn
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -1996,6 +2036,45 @@ ORDER BY dm.PK_DIR_METER</property>
           Id="Package\POST-PKG"
           TopLeft="258.369841746836,515.85978530531" />
         <NodeLayout
+          Size="135.2,41.6"
+          Id="Package\PRE-PKG\GET LOGID"
+          TopLeft="47.4999810134378,99.1999989151955" />
+        <NodeLayout
+          Size="128,41.6"
+          Id="Package\PRE-PKG\START LOG"
+          TopLeft="45.833314437834,26.3999994214376" />
+        <EdgeLayout
+          Id="Package\PRE-PKG.PrecedenceConstraints[Constraint]"
+          TopLeft="112.466647725636,67.9999994214376">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,31.1999994937579"
+              Start="0,0"
+              End="0,23.6999994937579">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,23.6999994937579" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43.2"
+          IsExpanded="False"
+          PanelSize="240,177.6"
+          Size="149.6,43.2"
+          Id="Package\PRE-PKG"
+          TopLeft="281.888873787666,22.5042338981272" />
+        <NodeLayout
           Size="164.8,41.6"
           Id="Package\Pre-Task\Execute SQL Task"
           TopLeft="18.3,107.1" />
@@ -2077,67 +2156,6 @@ ORDER BY dm.PK_DIR_METER</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 3]"
-          TopLeft="192.7,537.079892652655">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="65.6698417468359,0"
-              Start="0,0"
-              End="58.1698417468359,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="58.1698417468359,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="135.2,41.6"
-          Id="Package\PRE-PKG\GET LOGID"
-          TopLeft="47.4999810134378,99.1999989151955" />
-        <NodeLayout
-          Size="128,41.6"
-          Id="Package\PRE-PKG\START LOG"
-          TopLeft="45.833314437834,26.3999994214376" />
-        <EdgeLayout
-          Id="Package\PRE-PKG.PrecedenceConstraints[Constraint]"
-          TopLeft="112.466647725636,67.9999994214376">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,31.1999994937579"
-              Start="0,0"
-              End="0,23.6999994937579">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,23.6999994937579" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <ContainerLayout
-          HeaderHeight="43.2"
-          IsExpanded="False"
-          PanelSize="240,177.6"
-          Size="149.6,43.2"
-          Id="Package\PRE-PKG"
-          TopLeft="281.888873787666,22.5042338981272" />
-        <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 2]"
           TopLeft="281.888873787666,44.1042338981272">
           <EdgeLayout.Curve>
@@ -2163,6 +2181,28 @@ ORDER BY dm.PK_DIR_METER</property>
                     Point3="-41.3944368938332,135.795766101873" />
                   <mssgle:LineSegment
                     End="-67.2888737876664,135.795766101873" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 3]"
+          TopLeft="192.7,537.079892652655">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="65.6698417468359,0"
+              Start="0,0"
+              End="58.1698417468359,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="58.1698417468359,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
