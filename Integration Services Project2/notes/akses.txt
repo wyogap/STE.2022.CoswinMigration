@@ -1,0 +1,147 @@
+April 2024
+
+SID: MMS1
+Hostname: 192.168.5.69
+Port 1521
+username/password: coswin
+
+Oct 2024
+
+SID: MMS2
+Hostname: 192.168.5.69
+Port 1521
+username/password: coswin
+
+https://admin.neldev.apps.nel1902ocp.eamsdev.com
+maxadmin/qwertyuiop@nel1902
+
+https://nel.home.dev.eamsdev.com/
+maxadmin/qwertyuiop@nel1902
+
+https://admin.max.apps.sam.eamsdev.com/
+maxadmin/Asdfghjkl@188188
+
+https://admin.max.apps.nel-a.eamsdev.com
+maxadmin/Asdfghjk@123123
+
+https://console-openshift-console.apps.nel-a.eamsdev.com/
+https://api.nel-a.eamsdev.com:6443
+kubeadmin/cNnVt-tqjwu-xUjQi-IoKGG
+
+coswin oracle proxmox VM Host https://192.168.5.60:8006/
+root/Asdfghjk@288
+
+
+.\oc login -u ocpadmin https://api.sam.eamsdev.com:6443
+.\oc port-forward -n db2u c-mas-max-ws1-manage-db2u-0 50000:50000
+
+User ID=db2inst1;Password=hLuaj3xYGtXyR7F;Initial Catalog=BLUDB;Provider=DB2OLEDB.1;Persist Security Info=True;Authentication=Server_Encrypt_UsrPwd;Certificate Common Name=ca.db2u;Connect Timeout=15;Network Address=db2-manage-route-db2u.apps.nel-a.eamsdev.com;Network Port=443;
+
+User ID=maximo;Password=mammamia;Initial Catalog=BLUDB;Provider=DB2OLEDB.1;Persist Security Info=True;Connect Timeout=15;Network Address=103.16.117.210;Network Port=25010;
+
+SELECT C.TABSCHEMA, C.TABNAME, C.COLNAME
+FROM SYSCAT.TABLES AS T,
+SYSCAT.COLUMNS AS C
+WHERE T.TBSPACEID = 3
+AND T.TABLEID = 1703
+AND C.COLNO = 16
+AND C.TABSCHEMA=T.TABSCHEMA
+AND C.TABNAME=T.TABNAME
+
+BSPACEID=3, TABLEID=1361, COLNO=91
+
+0511 - JobPlan not required anymore?
+0605 - Workorder. Which package to run? what seq?
+0514 - before transactional fix?
+
+0203 - Check invlot mapping
+
+
+192.168.5.92:25010
+BLUDB
+db2inst1/Asdfghjk@288
+snapshot on-prem clean as per 20241120051948
+dah ready bang kalo mo di pake
+
+User ID=db2inst1;Password=Asdfghjk@288;Initial Catalog=BLUDB;Provider=DB2OLEDB.1;Persist Security Info=True;Authentication=Server;Connect Timeout=15;Network Address=192.168.5.92;Network Port=25010;
+
+jdbc:db2://192.168.5.92:25010/BLUDB
+jdbc:db2://192.168.5.92:25010/BLUDB2
+jdbc:db2://192.168.5.92:25010/BLUDB8
+
+db2inst1/Asdfghjk@288
+
+
+db2 => connect to bludb
+
+   Database Connection Information
+
+ Database server        = DB2/LINUXX8664 11.5.9.0
+ SQL authorization ID   = DB2INST1
+ Local database alias   = BLUDB
+
+db2 => connect to bludb2
+
+   Database Connection Information
+
+ Database server        = DB2/LINUXX8664 11.5.9.0
+ SQL authorization ID   = DB2INST1
+ Local database alias   = BLUDB2
+
+db2 => connect to bludb8
+
+   Database Connection Information
+
+ Database server        = DB2/LINUXX8664 11.5.9.0
+ SQL authorization ID   = DB2INST1
+ Local database alias   = BLUDB8
+
+(DT_STR,10,1252)(MT_TYPE == 49 ? "DELTA" : "ACTUAL")
+
+select colno as position,
+       colname as column_name,
+       typename as data_type,
+       length,
+       scale,
+       default,
+       remarks as description, 
+       case when nulls='Y' then 1 else 0 end as nullable,
+       case when identity ='Y' then 1 else 0 end as is_identity,
+       case when generated ='' then 0 else 1 end as  is_computed,
+       text as computed_formula
+from syscat.columns
+where tabname = 'PROJECT'            -- enter table name here
+      --and tabschema = 'schema name'
+order by colno;
+
+ASSET-METER
+- ASSETMETER (WITH ROLLOVER)
+- A_ASSETMETER
+- METERREADING
+- PLUSTMTRCHNG -> STARTREADING=0
+
+ASSET-METER-DELTA
+- ASSETMETER (NO ROLLOVER)
+- A_ASSETMETER
+
+METER-READING
+- ASSETMETER
+  -> ROLLOVER 
+  -> SINCELASTREPAIR, SINCELASTOVERHAUL, SINCELASTINSPECT, SINCEINSTALL, LIFETODATE -> CUMMULATIVE WITHOUT ROLLOVER
+  -> LASTREADING -> CUMULATIVE WITH ROLLOVER 	
+- A_ASSETMETER
+- METERREADING
+  -> READING -> ENTERED VALUE / CUMULATIVE VALUE WITH ROLLOVER (BUG: ROLLOVER CAN ONLY BE APPLIED WHEN NEW VALUE < LAST VALUE)
+  -> DELTA -> CALCULATED DIFF FROM LAST VALUE
+  -> PLUSTLTD -> CUMULATIVE VALUE WITHOUT ROLLOVER
+
+METER-READING-DELTA
+- ASSETMETER
+  -> ROLLOVER=0
+  -> SINCELASTREPAIR, SINCELASTOVERHAUL, SINCELASTINSPECT, SINCEINSTALL, LIFETODATE -> CUMMULATIVE WITHOUT ROLLOVER
+  -> LASTREADING -> CUMULATIVE WITHOUT ROLLOVER 	
+- A_ASSETMETER
+- METERREADING
+  -> READING -> CUMULATIVE VALUE WITHOUT ROLLOVER
+  -> DELTA -> ENTERED VALUE / DIFF FROM LAST VALUE
+  -> PLUSTLTD -> CUMULATIVE VALUE WITHOUT ROLLOVER
