@@ -398,7 +398,6 @@ CREATE INDEX STE_TABLE_VALIDATION_TABLE_NAME_IDX ON MIGRATION.STE_TABLE_VALIDATI
 CREATE INDEX STE_TABLE_VALIDATION_TYPE_IDX ON MIGRATION.STE_TABLE_VALIDATION ("TYPE");
 CREATE INDEX STE_TABLE_VALIDATION_MIGRATED_IDX ON MIGRATION.STE_TABLE_VALIDATION (MIGRATED);
 		
-		
 CREATE TABLE "MIGRATION".DBG_ROWSTAMP_SNAPSHOT  (
 		  "ID" BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (  
 		    START WITH +1  
@@ -483,5 +482,87 @@ BEGIN
 			AND ISNULL(A.ROWSTAMP,0)!=ISNULL(B.ROWSTAMP,0);
 
 	OPEN C1;
+END;
+/
+
+--#SET TERMINATOR /
+
+CREATE OR REPLACE PROCEDURE MIGRATION.STE_VALIDATE_MAXDOMAIN()
+LANGUAGE SQL
+SPECIFIC STE_VALIDATE_MAXDOMAIN
+BEGIN
+   	DECLARE v_counter INTEGER DEFAULT 0;
+	DECLARE V_SQL VARCHAR(8000);
+	DECLARE V_SQL2 VARCHAR(8000);
+	DECLARE v_domainid VARCHAR(50);
+	DECLARE v_domaintype VARCHAR(50);
+	DECLARE v_table VARCHAR(50);
+	DECLARE v_column VARCHAR(50);
+
+	DECLARE cursor1 CURSOR WITH RETURN FOR
+		SELECT
+		   v.domainid,
+		   v.domaintype,
+		   TRIM(si.item) AS tab,
+		   v.COLUMN AS col
+		FROM 
+			MIGRATION.STE_MAXDOMAIN_VALIDATION v
+			, XMLTABLE('$doc/items/item'
+		          PASSING XMLPARSE(DOCUMENT CAST('<items><item><value>' || replace(v.table, ',', '</value></item><item><value>')|| '</value></item></items>' AS CLOB)) AS "doc"
+		          COLUMNS
+		          ITEM VARCHAR(255) PATH 'value'
+			) si
+		WHERE v.TABLE IS NOT NULL
+		   AND v.COLUMN IS NOT NULL;
+
+	DECLARE CONTINUE HANDLER FOR NOT FOUND
+		SET v_counter = -1;
+
+	DELETE FROM MIGRATION.STE_MAXDOMAIN_VALIDATION_LOG;
+	
+	OPEN cursor1;
+
+	fetch_loop:
+	LOOP
+		SET v_counter=0;
+	
+		FETCH FROM cursor1
+		INTO v_domainid, v_domaintype, v_table, v_column;
+
+		IF (v_counter =-1) THEN LEAVE fetch_loop; END IF;
+
+		IF (v_domaintype = 'SYNONYM') THEN
+			SET V_SQL = 'INSERT INTO MIGRATION.STE_MAXDOMAIN_VALIDATION_LOG (DOMAINID, VALUE, TABLE, COLUMN) ';
+			SET V_SQL = V_SQL || ' SELECT ''' || v_domainid || ''' AS DOMAINID, a.VALUE, ''' || v_table || ''' AS TAB, ''' || v_column || ''' AS COL';
+			SET V_SQL = V_SQL || ' FROM ( SELECT DISTINCT ' || v_column || ' AS VALUE FROM MAXIMO.' || v_table || ' WHERE ' || v_column || ' IS NOT NULL ) a';
+			SET V_SQL = V_SQL || ' LEFT JOIN MAXIMO.SYNONYMDOMAIN s ON s.DOMAINID=''' || v_domainid || ''' AND s.VALUE=a.VALUE';
+			SET V_SQL = V_SQL || ' LEFT JOIN MIGRATION.STE_MAXDOMAIN_VALIDATION_LOG l ON l.DOMAINID=''' || v_domainid || ''' AND l.VALUE=a.VALUE';
+			SET V_SQL = V_SQL || ' WHERE s.SYNONYMDOMAINID IS NULL AND l.ID IS NULL;';
+		ELSEIF (v_domaintype = 'ALN') THEN
+			SET V_SQL = 'INSERT INTO MIGRATION.STE_MAXDOMAIN_VALIDATION_LOG (DOMAINID, VALUE, TABLE, COLUMN) ';
+			SET V_SQL = V_SQL || ' SELECT ''' || v_domainid || ''' AS DOMAINID, a.VALUE, ''' || v_table || ''' AS TAB, ''' || v_column || ''' AS COL';
+			SET V_SQL = V_SQL || ' FROM ( SELECT DISTINCT ' || v_column || ' AS VALUE FROM MAXIMO.' || v_table || ' WHERE ' || v_column || ' IS NOT NULL ) a';
+			SET V_SQL = V_SQL || ' LEFT JOIN MAXIMO.ALNDOMAIN s ON s.DOMAINID=''' || v_domainid || ''' AND s.VALUE=a.VALUE';
+			SET V_SQL = V_SQL || ' LEFT JOIN MIGRATION.STE_MAXDOMAIN_VALIDATION_LOG l ON l.DOMAINID=''' || v_domainid || ''' AND l.VALUE=a.VALUE';
+			SET V_SQL = V_SQL || ' WHERE s.ALNDOMAINID IS NULL AND l.ID IS NULL; ';
+		ELSEIF (v_domaintype = 'TABLE') THEN
+			-- TODO
+			SET V_SQL = '';
+		ELSE
+			-- NOTHING
+			SET V_SQL = '';
+		END IF;
+
+		-- CALL DBMS_OUTPUT.PUT_LINE(V_SQL);
+
+		IF (V_SQL != '') THEN
+			PREPARE SQL_UPDATE FROM V_SQL;
+			EXECUTE SQL_UPDATE;
+		END IF;
+
+	END LOOP fetch_loop;
+
+	CLOSE cursor1;
+
 END;
 /
