@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0105_Asset_AssetTrans_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="156"
-  DTS:VersionGUID="{EAEAC7DD-02E2-4159-B313-F465B2539AF3}"
+  DTS:VersionBuild="158"
+  DTS:VersionGUID="{71FFD5AD-0285-4AA3-BA37-7A5CEF7F2D49}"
   DTS:VersionMajor="6">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -1993,6 +1993,14 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
                       cachedName="LOCATION"
                       externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[TOLOC]"
                       lineageId="Package\Data Flow Task\Lookup - Asset.Outputs[Lookup Match Output].Columns[LOCATION]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[EM_ZONE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="EM_ZONE"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[SOURCESYSID]"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[EM_ZONE]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -2035,13 +2043,13 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
                       refId="Package\Data Flow Task\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[GLCREDITACCT]"
                       codePage="1252"
                       dataType="str"
-                      length="26"
+                      length="110"
                       name="GLCREDITACCT" />
                     <externalMetadataColumn
                       refId="Package\Data Flow Task\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[GLDEBITACCT]"
                       codePage="1252"
                       dataType="str"
-                      length="26"
+                      length="110"
                       name="GLDEBITACCT" />
                     <externalMetadataColumn
                       refId="Package\Data Flow Task\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[TRANSDATE]"
@@ -2178,13 +2186,13 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
                       refId="Package\Data Flow Task\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[TLOAMFROMGLACCOUNT]"
                       codePage="1252"
                       dataType="str"
-                      length="26"
+                      length="110"
                       name="TLOAMFROMGLACCOUNT" />
                     <externalMetadataColumn
                       refId="Package\Data Flow Task\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[TLOAMTOGLACCOUNT]"
                       codePage="1252"
                       dataType="str"
-                      length="26"
+                      length="110"
                       name="TLOAMTOGLACCOUNT" />
                     <externalMetadataColumn
                       refId="Package\Data Flow Task\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[PLUSCFROMLPLOC]"
@@ -2658,6 +2666,8 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
 	,et.EQ_CATG
 	,et.EQ_ZONE 
 	,et.EQ_UNIT 
+	,em.EM_ZONE 
+	,em.EM_UNIT 
 	-- PO Number
 	,ep.PO_ORD_REF
 	,row_number() over (partition by em.eq_em_01 order by em.EM_DATE , em.EM_TIME  asc) linenum 
@@ -2665,7 +2675,7 @@ where "refTable"."STE_MIGRATIONID" = ?</property>
 FROM COSWIN.EQP_MOVE em
 JOIN COSWIN.EQP_TOPO et ON et.PK_EQP_TOPO = em.EQ_EM_01
 LEFT JOIN COSWIN.EQP_PODP ep ON ep.PO_EQCD = et.EQ_EQCD 
-WHERE et.EQ_LEVL!=0
+WHERE et.EQ_LEVL!=0 
 ORDER BY et.PK_EQP_TOPO, em.PK_EQP_MOVE
 ;</property>
                 <property
@@ -2830,6 +2840,22 @@ ORDER BY et.PK_EQP_TOPO, em.PK_EQP_MOVE
                       externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[RN]"
                       name="RN" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[EM_ZONE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EM_ZONE]"
+                      length="10"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[EM_ZONE]"
+                      name="EM_ZONE" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[EM_UNIT]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EM_UNIT]"
+                      length="10"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[EM_UNIT]"
+                      name="EM_UNIT" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -2920,6 +2946,18 @@ ORDER BY et.PK_EQP_TOPO, em.PK_EQP_MOVE
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
                       dataType="r8"
                       name="RN" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EM_ZONE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="EM_ZONE" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EM_UNIT]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="EM_UNIT" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -3048,6 +3086,22 @@ ORDER BY et.PK_EQP_TOPO, em.PK_EQP_MOVE
                       externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
                       lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[RN]"
                       name="RN" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[EM_ZONE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EM_ZONE]"
+                      length="10"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[EM_ZONE]"
+                      name="EM_ZONE" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[EM_UNIT]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EM_UNIT]"
+                      length="10"
+                      lineageId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[EM_UNIT]"
+                      name="EM_UNIT" />
                     <outputColumn
                       refId="Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -3409,6 +3463,45 @@ ORDER BY et.PK_EQP_TOPO, em.PK_EQP_MOVE
           Id="Package\POST-PKG"
           TopLeft="387.055551973758,402.862960694251" />
         <NodeLayout
+          Size="135.2,41.6"
+          Id="Package\PRE-PKG\GET LOGID"
+          TopLeft="47.4999810134378,99.1999989151955" />
+        <NodeLayout
+          Size="128,41.6"
+          Id="Package\PRE-PKG\START LOG"
+          TopLeft="45.833314437834,26.3999994214376" />
+        <EdgeLayout
+          Id="Package\PRE-PKG.PrecedenceConstraints[Constraint]"
+          TopLeft="112.466647725636,67.9999994214376">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,31.1999994937579"
+              Start="0,0"
+              End="0,23.6999994937579">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,23.6999994937579" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43.2"
+          IsExpanded="False"
+          PanelSize="240,177.6"
+          Size="149.6,43.2"
+          Id="Package\PRE-PKG"
+          TopLeft="409.666644583975,8.41852061714934" />
+        <NodeLayout
           Size="164.8,41.6"
           Id="Package\Pre-Task\Execute SQL Task"
           TopLeft="51.3333308291106,31.4999998191992" />
@@ -3464,6 +3557,40 @@ ORDER BY et.PK_EQP_TOPO, em.PK_EQP_MOVE
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="409.666644583975,30.0185206171493">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-94.8333141646461,60.2148127222108"
+              Start="0,0"
+              End="-87.3333141646461,60.2148127222108">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="-43.4166570823231,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-43.4166570823231,0"
+                    Point2="-47.4166570823231,0"
+                    Point3="-47.4166570823231,4" />
+                  <mssgle:LineSegment
+                    End="-47.4166570823231,56.2148127222108" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-47.4166570823231,56.2148127222108"
+                    Point2="-47.4166570823231,60.2148127222108"
+                    Point3="-51.4166570823231,60.2148127222108" />
+                  <mssgle:LineSegment
+                    End="-87.3333141646461,60.2148127222108" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 3]"
           TopLeft="294.933329959876,424.864814571118">
           <EdgeLayout.Curve>
@@ -3499,79 +3626,6 @@ ORDER BY et.PK_EQP_TOPO, em.PK_EQP_MOVE
                   Capacity="5">
                   <mssgle:LineSegment
                     End="0,55.4666621070442" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="135.2,41.6"
-          Id="Package\PRE-PKG\GET LOGID"
-          TopLeft="47.4999810134378,99.1999989151955" />
-        <NodeLayout
-          Size="128,41.6"
-          Id="Package\PRE-PKG\START LOG"
-          TopLeft="45.833314437834,26.3999994214376" />
-        <EdgeLayout
-          Id="Package\PRE-PKG.PrecedenceConstraints[Constraint]"
-          TopLeft="112.466647725636,67.9999994214376">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,31.1999994937579"
-              Start="0,0"
-              End="0,23.6999994937579">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,23.6999994937579" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <ContainerLayout
-          HeaderHeight="43.2"
-          IsExpanded="False"
-          PanelSize="240,177.6"
-          Size="149.6,43.2"
-          Id="Package\PRE-PKG"
-          TopLeft="409.666644583975,8.41852061714934" />
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 2]"
-          TopLeft="409.666644583975,30.0185206171493">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-94.8333141646461,60.2148127222108"
-              Start="0,0"
-              End="-87.3333141646461,60.2148127222108">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="-43.4166570823231,0" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-43.4166570823231,0"
-                    Point2="-47.4166570823231,0"
-                    Point3="-47.4166570823231,4" />
-                  <mssgle:LineSegment
-                    End="-47.4166570823231,56.2148127222108" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-47.4166570823231,56.2148127222108"
-                    Point2="-47.4166570823231,60.2148127222108"
-                    Point3="-51.4166570823231,60.2148127222108" />
-                  <mssgle:LineSegment
-                    End="-87.3333141646461,60.2148127222108" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -3659,9 +3713,7 @@ ORDER BY et.PK_EQP_TOPO, em.PK_EQP_MOVE
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-30.72357421875,13.3633790056905,61.4471484375,9.5732421875"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -3683,9 +3735,7 @@ ORDER BY et.PK_EQP_TOPO, em.PK_EQP_MOVE
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-8.94024407260941,5,61.4471484375,9.5732421875"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -3707,9 +3757,7 @@ ORDER BY et.PK_EQP_TOPO, em.PK_EQP_MOVE
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -3731,9 +3779,7 @@ ORDER BY et.PK_EQP_TOPO, em.PK_EQP_MOVE
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-30.72357421875,17.182063609229,61.4471484375,9.6025390625"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -3755,9 +3801,7 @@ ORDER BY et.PK_EQP_TOPO, em.PK_EQP_MOVE
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -3804,7 +3848,7 @@ ORDER BY et.PK_EQP_TOPO, em.PK_EQP_MOVE
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="-83.24173828125,65.5453123643995,166.4834765625,11.609375"
+              BoundingBox="-83.24173828125,65.5453123643995,96.3827734375,11.609375"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
@@ -3827,9 +3871,7 @@ ORDER BY et.PK_EQP_TOPO, em.PK_EQP_MOVE
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -3851,9 +3893,7 @@ ORDER BY et.PK_EQP_TOPO, em.PK_EQP_MOVE
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-30.72357421875,15.930044861767,61.4471484375,9.5732421875"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -3875,9 +3915,7 @@ ORDER BY et.PK_EQP_TOPO, em.PK_EQP_MOVE
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -3899,9 +3937,7 @@ ORDER BY et.PK_EQP_TOPO, em.PK_EQP_MOVE
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -3923,9 +3959,7 @@ ORDER BY et.PK_EQP_TOPO, em.PK_EQP_MOVE
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
