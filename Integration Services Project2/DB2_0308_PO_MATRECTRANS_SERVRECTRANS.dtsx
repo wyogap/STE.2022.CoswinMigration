@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0308_PO_MATRECTRANS_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="250"
-  DTS:VersionGUID="{840F064B-F611-4A44-A2EA-2362315AC9BD}"
+  DTS:VersionBuild="253"
+  DTS:VersionGUID="{B8F6EB78-746B-4413-87D3-753DB3C1EB50}"
   DTS:VersionMajor="6"
   DTS:VersionMinor="3">
   <DTS:Property
@@ -6969,6 +6969,14 @@ where "refTable"."STE_CSWNITEMNO" = ?</property>
                       cachedName="RCT_VAL"
                       externalMetadataColumnId="Package\DF - MATRECTRANS_SERVRECTRANS\MATRECTRANS.Inputs[OLE DB Destination Input].ExternalColumns[STE_CSWNRCTVAL]"
                       lineageId="Package\DF - MATRECTRANS_SERVRECTRANS\Oracle Source.Outputs[Oracle Source Output].Columns[RCT_VAL]" />
+                    <inputColumn
+                      refId="Package\DF - MATRECTRANS_SERVRECTRANS\MATRECTRANS.Inputs[OLE DB Destination Input].Columns[INV_REF]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="INV_REF"
+                      externalMetadataColumnId="Package\DF - MATRECTRANS_SERVRECTRANS\MATRECTRANS.Inputs[OLE DB Destination Input].ExternalColumns[INVOICENUM]"
+                      lineageId="Package\DF - MATRECTRANS_SERVRECTRANS\Oracle Source.Outputs[Oracle Source Output].Columns[INV_REF]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -8570,8 +8578,12 @@ where "refTable"."STE_CSWNITEMNO" = ?</property>
 	, r.RCT_DEM_WO_REF
 	, r.TM_RECEIPT
 	--, ri.rct_qty AS quantity
+	-- invoice
+	, i.INV_REF 
+	-- purchaseorder
 	, COALESCE(ri.RCT_PO_REF, 'CSWN_NONPO') AS RCT_PO_REF
 	, COALESCE(p.PO_AMD_NO, 0) AS PO_AMD_NO
+	-- running number
 	, ROW_NUMBER() OVER (ORDER BY ri.PK_RCT_ITEMS) RN
 FROM COSWIN.RCT_ITEMS ri
 JOIN COSWIN.RECEIPT_ r ON r.PK_RECEIPT_ = ri.S_RCT_ITEM 
@@ -8586,6 +8598,7 @@ LEFT JOIN (
 ) it ON it.PK_RCT_ITEMS = ri.PK_RCT_ITEMS 
 LEFT JOIN COSWIN.SUPPLIER_ s ON s.SUPL_CD = r.RCT_SUPL_CD 
 LEFT JOIN COSWIN.PORDER_ p ON ri.RCT_PO_REF = p.PO_REF
+LEFT JOIN COSWIN.INVOICE_ i ON i.INV_DN_REF = r.DN_REF 
 -- WHERE ri.PK_RCT_ITEMS=7041 
 ORDER BY ri.PK_RCT_ITEMS
 ;</property>
@@ -8893,6 +8906,14 @@ ORDER BY ri.PK_RCT_ITEMS
                       externalMetadataColumnId="Package\DF - MATRECTRANS_SERVRECTRANS\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
                       lineageId="Package\DF - MATRECTRANS_SERVRECTRANS\Oracle Source.Outputs[Oracle Source Output].Columns[RN]"
                       name="RN" />
+                    <outputColumn
+                      refId="Package\DF - MATRECTRANS_SERVRECTRANS\Oracle Source.Outputs[Oracle Source Output].Columns[INV_REF]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\DF - MATRECTRANS_SERVRECTRANS\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[INV_REF]"
+                      length="10"
+                      lineageId="Package\DF - MATRECTRANS_SERVRECTRANS\Oracle Source.Outputs[Oracle Source Output].Columns[INV_REF]"
+                      name="INV_REF" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -9083,6 +9104,12 @@ ORDER BY ri.PK_RCT_ITEMS
                       refId="Package\DF - MATRECTRANS_SERVRECTRANS\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
                       dataType="r8"
                       name="RN" />
+                    <externalMetadataColumn
+                      refId="Package\DF - MATRECTRANS_SERVRECTRANS\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[INV_REF]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="INV_REF" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -9353,6 +9380,14 @@ ORDER BY ri.PK_RCT_ITEMS
                       externalMetadataColumnId="Package\DF - MATRECTRANS_SERVRECTRANS\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[RN]"
                       lineageId="Package\DF - MATRECTRANS_SERVRECTRANS\Oracle Source.Outputs[Oracle Source Error Output].Columns[RN]"
                       name="RN" />
+                    <outputColumn
+                      refId="Package\DF - MATRECTRANS_SERVRECTRANS\Oracle Source.Outputs[Oracle Source Error Output].Columns[INV_REF]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\DF - MATRECTRANS_SERVRECTRANS\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[INV_REF]"
+                      length="10"
+                      lineageId="Package\DF - MATRECTRANS_SERVRECTRANS\Oracle Source.Outputs[Oracle Source Error Output].Columns[INV_REF]"
+                      name="INV_REF" />
                     <outputColumn
                       refId="Package\DF - MATRECTRANS_SERVRECTRANS\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -10945,14 +10980,6 @@ ORDER BY ri.PK_RCT_ITEMS
                       externalMetadataColumnId="Package\DF - MATRECTRANS_SERVRECTRANS\SERVRECTRANS.Inputs[OLE DB Destination Input].ExternalColumns[UNITCOST]"
                       lineageId="Package\DF - MATRECTRANS_SERVRECTRANS\SERVICE - Derived Column.Outputs[Derived Column Output].Columns[v_unitcost]" />
                     <inputColumn
-                      refId="Package\DF - MATRECTRANS_SERVRECTRANS\SERVRECTRANS.Inputs[OLE DB Destination Input].Columns[DN_REF]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="10"
-                      cachedName="DN_REF"
-                      externalMetadataColumnId="Package\DF - MATRECTRANS_SERVRECTRANS\SERVRECTRANS.Inputs[OLE DB Destination Input].ExternalColumns[CLAIMNUM]"
-                      lineageId="Package\DF - MATRECTRANS_SERVRECTRANS\Oracle Source.Outputs[Oracle Source Output].Columns[DN_REF]" />
-                    <inputColumn
                       refId="Package\DF - MATRECTRANS_SERVRECTRANS\SERVRECTRANS.Inputs[OLE DB Destination Input].Columns[v_donum]"
                       cachedCodepage="1252"
                       cachedDataType="str"
@@ -10990,6 +11017,22 @@ ORDER BY ri.PK_RCT_ITEMS
                       cachedName="RCT_VAL"
                       externalMetadataColumnId="Package\DF - MATRECTRANS_SERVRECTRANS\SERVRECTRANS.Inputs[OLE DB Destination Input].ExternalColumns[STE_CSWNRCTVAL]"
                       lineageId="Package\DF - MATRECTRANS_SERVRECTRANS\Oracle Source.Outputs[Oracle Source Output].Columns[RCT_VAL]" />
+                    <inputColumn
+                      refId="Package\DF - MATRECTRANS_SERVRECTRANS\SERVRECTRANS.Inputs[OLE DB Destination Input].Columns[INV_REF]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="INV_REF"
+                      externalMetadataColumnId="Package\DF - MATRECTRANS_SERVRECTRANS\SERVRECTRANS.Inputs[OLE DB Destination Input].ExternalColumns[INVOICENUM]"
+                      lineageId="Package\DF - MATRECTRANS_SERVRECTRANS\Oracle Source.Outputs[Oracle Source Output].Columns[INV_REF]" />
+                    <inputColumn
+                      refId="Package\DF - MATRECTRANS_SERVRECTRANS\SERVRECTRANS.Inputs[OLE DB Destination Input].Columns[DN_REF]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="DN_REF"
+                      externalMetadataColumnId="Package\DF - MATRECTRANS_SERVRECTRANS\SERVRECTRANS.Inputs[OLE DB Destination Input].ExternalColumns[PACKINGSLIPNUM]"
+                      lineageId="Package\DF - MATRECTRANS_SERVRECTRANS\Oracle Source.Outputs[Oracle Source Output].Columns[DN_REF]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -11685,34 +11728,34 @@ ORDER BY ri.PK_RCT_ITEMS
               startId="Package\DF - MATRECTRANS_SERVRECTRANS\Conditional Split 1.Outputs[Conditional Split Default Output]" />
             <path
               refId="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Derived Column Output4]"
-              endId="Package\DF - MATRECTRANS_SERVRECTRANS\Conditional Split 1.Inputs[Conditional Split Input]"
-              name="Derived Column Output"
-              startId="Package\DF - MATRECTRANS_SERVRECTRANS\Derived Column 2.Outputs[Derived Column Output]" />
-            <path
-              refId="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Derived Column Output3]"
-              endId="Package\DF - MATRECTRANS_SERVRECTRANS\Multicast 1.Inputs[Multicast Input 1]"
-              name="Derived Column Output"
-              startId="Package\DF - MATRECTRANS_SERVRECTRANS\SERVICE - Derived Column.Outputs[Derived Column Output]" />
-            <path
-              refId="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Derived Column Output5]"
-              endId="Package\DF - MATRECTRANS_SERVRECTRANS\OLE DB Destination 1 1 2.Inputs[OLE DB Destination Input]"
-              name="Derived Column Output"
-              startId="Package\DF - MATRECTRANS_SERVRECTRANS\Derived Column 4 2.Outputs[Derived Column Output]" />
-            <path
-              refId="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Derived Column Output1]"
-              endId="Package\DF - MATRECTRANS_SERVRECTRANS\OLE DB Destination 1 1.Inputs[OLE DB Destination Input]"
-              name="Derived Column Output"
-              startId="Package\DF - MATRECTRANS_SERVRECTRANS\Derived Column 4.Outputs[Derived Column Output]" />
-            <path
-              refId="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Derived Column Output]"
               endId="Package\DF - MATRECTRANS_SERVRECTRANS\Multicast.Inputs[Multicast Input 1]"
               name="Derived Column Output"
               startId="Package\DF - MATRECTRANS_SERVRECTRANS\Derived Column.Outputs[Derived Column Output]" />
             <path
-              refId="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Derived Column Output2]"
+              refId="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Derived Column Output3]"
+              endId="Package\DF - MATRECTRANS_SERVRECTRANS\OLE DB Destination 1 1.Inputs[OLE DB Destination Input]"
+              name="Derived Column Output"
+              startId="Package\DF - MATRECTRANS_SERVRECTRANS\Derived Column 4.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Derived Column Output5]"
               endId="Package\DF - MATRECTRANS_SERVRECTRANS\OLE DB Destination 1 1 1.Inputs[OLE DB Destination Input]"
               name="Derived Column Output"
               startId="Package\DF - MATRECTRANS_SERVRECTRANS\Derived Column 4 1.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Derived Column Output1]"
+              endId="Package\DF - MATRECTRANS_SERVRECTRANS\Multicast 1.Inputs[Multicast Input 1]"
+              name="Derived Column Output"
+              startId="Package\DF - MATRECTRANS_SERVRECTRANS\SERVICE - Derived Column.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Derived Column Output]"
+              endId="Package\DF - MATRECTRANS_SERVRECTRANS\Conditional Split 1.Inputs[Conditional Split Input]"
+              name="Derived Column Output"
+              startId="Package\DF - MATRECTRANS_SERVRECTRANS\Derived Column 2.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Derived Column Output2]"
+              endId="Package\DF - MATRECTRANS_SERVRECTRANS\OLE DB Destination 1 1 2.Inputs[OLE DB Destination Input]"
+              name="Derived Column Output"
+              startId="Package\DF - MATRECTRANS_SERVRECTRANS\Derived Column 4 2.Outputs[Derived Column Output]" />
             <path
               refId="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[IS_VALID]"
               endId="Package\DF - MATRECTRANS_SERVRECTRANS\Lookup - Item.Inputs[Lookup Input]"
@@ -18066,10 +18109,6 @@ ORDER BY ri.PK_RCT_ITEMS
           Id="Package\DF - MATRECTRANS_SERVRECTRANS\MATRECTRANS"
           TopLeft="417.611089185984,511.388884441255" />
         <NodeLayout
-          Size="164,41.6"
-          Id="Package\DF - MATRECTRANS_SERVRECTRANS\SERVRECTRANS"
-          TopLeft="183.388879934395,804.283325300808" />
-        <NodeLayout
           Size="158.4,41.6"
           Id="Package\DF - MATRECTRANS_SERVRECTRANS\Derived Column"
           TopLeft="419.055543979837,336.288887520035" />
@@ -18090,13 +18129,25 @@ ORDER BY ri.PK_RCT_ITEMS
           Id="Package\DF - MATRECTRANS_SERVRECTRANS\Lookup - Item"
           TopLeft="218.833338383999,139.983331700282" />
         <NodeLayout
-          Size="128,41.6"
-          Id="Package\DF - MATRECTRANS_SERVRECTRANS\Multicast 3"
-          TopLeft="436.19998151511,139.799999150236" />
+          Size="180,41.6"
+          Id="Package\DF - MATRECTRANS_SERVRECTRANS\OLE DB Destination 1 1 2"
+          TopLeft="582.444434916806,801.283327566151" />
+        <NodeLayout
+          Size="148.8,41.6"
+          Id="Package\DF - MATRECTRANS_SERVRECTRANS\Oracle Source"
+          TopLeft="17.000000136594,28.1666665159994" />
+        <NodeLayout
+          Size="164,41.6"
+          Id="Package\DF - MATRECTRANS_SERVRECTRANS\SERVRECTRANS"
+          TopLeft="183.388879934395,804.283325300808" />
         <NodeLayout
           Size="153.6,41.6"
           Id="Package\DF - MATRECTRANS_SERVRECTRANS\Conditional Split 1"
           TopLeft="430.033311296173,27.2555548083117" />
+        <NodeLayout
+          Size="180,41.6"
+          Id="Package\DF - MATRECTRANS_SERVRECTRANS\OLE DB Destination 1 1"
+          TopLeft="784.166635158991,513.322218467648" />
         <NodeLayout
           Size="170.4,41.6"
           Id="Package\DF - MATRECTRANS_SERVRECTRANS\Flat File Destination"
@@ -18110,29 +18161,25 @@ ORDER BY ri.PK_RCT_ITEMS
           Id="Package\DF - MATRECTRANS_SERVRECTRANS\Aggregate 1"
           TopLeft="626.616634544317,144.088887740851" />
         <NodeLayout
-          Size="180,41.6"
-          Id="Package\DF - MATRECTRANS_SERVRECTRANS\OLE DB Destination 1 1"
-          TopLeft="784.166635158991,513.322218467648" />
+          Size="207.2,41.6"
+          Id="Package\DF - MATRECTRANS_SERVRECTRANS\SERVICE - Derived Column"
+          TopLeft="162.444437439245,606.255551861248" />
+        <NodeLayout
+          Size="128,41.6"
+          Id="Package\DF - MATRECTRANS_SERVRECTRANS\Multicast 3"
+          TopLeft="436.19998151511,139.799999150236" />
         <NodeLayout
           Size="180,41.6"
-          Id="Package\DF - MATRECTRANS_SERVRECTRANS\OLE DB Destination 1 1 2"
-          TopLeft="582.444434916806,801.283327566151" />
-        <NodeLayout
-          Size="148.8,41.6"
-          Id="Package\DF - MATRECTRANS_SERVRECTRANS\Oracle Source"
-          TopLeft="17.000000136594,28.1666665159994" />
-        <NodeLayout
-          Size="119.2,41.6"
-          Id="Package\DF - MATRECTRANS_SERVRECTRANS\Multicast 1"
-          TopLeft="202.722213391629,703.983322160812" />
+          Id="Package\DF - MATRECTRANS_SERVRECTRANS\OLE DB Destination 1 1 1"
+          TopLeft="798.783302076079,235.88888739733" />
         <NodeLayout
           Size="153.6,41.6"
           Id="Package\DF - MATRECTRANS_SERVRECTRANS\Conditional Split"
           TopLeft="215.83332154072,241.199998662074" />
         <NodeLayout
-          Size="180,41.6"
-          Id="Package\DF - MATRECTRANS_SERVRECTRANS\OLE DB Destination 1 1 1"
-          TopLeft="798.783302076079,235.88888739733" />
+          Size="119.2,41.6"
+          Id="Package\DF - MATRECTRANS_SERVRECTRANS\Multicast 1"
+          TopLeft="202.722213391629,703.983322160812" />
         <NodeLayout
           Size="161.6,41.6"
           Id="Package\DF - MATRECTRANS_SERVRECTRANS\Derived Column 4 1"
@@ -18142,10 +18189,6 @@ ORDER BY ri.PK_RCT_ITEMS
           Id="Package\DF - MATRECTRANS_SERVRECTRANS\Multicast"
           TopLeft="438.233309520451,420.999998969435" />
         <NodeLayout
-          Size="207.2,41.6"
-          Id="Package\DF - MATRECTRANS_SERVRECTRANS\SERVICE - Derived Column"
-          TopLeft="162.444437439245,606.255551861248" />
-        <NodeLayout
           Size="126.4,41.6"
           Id="Package\DF - MATRECTRANS_SERVRECTRANS\Aggregate"
           TopLeft="611.999967627229,421.522218811172" />
@@ -18154,201 +18197,7 @@ ORDER BY ri.PK_RCT_ITEMS
           Id="Package\DF - MATRECTRANS_SERVRECTRANS\Derived Column 2"
           TopLeft="220.5,31.099999538064" />
         <EdgeLayout
-          Id="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Multicast Output 2]"
-          TopLeft="564.19998151511,162.744443445543">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="62.4166530292074,0"
-              Start="0,0"
-              End="54.9166530292074,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="54.9166530292074,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Multicast Output 12]"
-          TopLeft="263.855546663012,745.583322160812">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,58.7000031399958"
-              Start="0,0"
-              End="0,51.2000031399958">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,51.2000031399958" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Multicast Output 11]"
-          TopLeft="497.122199353218,462.599998969435">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,48.78888547182"
-              Start="0,0"
-              End="0,41.28888547182">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,41.28888547182" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Multicast Output 1]"
-          TopLeft="500.199979420255,181.399999150236">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,58.933332634237"
-              Start="0,0"
-              End="0,51.433332634237">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,51.433332634237" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Lookup No Match Output]"
-          TopLeft="360.433338383999,160.691665425259">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="75.7666431311108,0"
-              Start="0,0"
-              End="68.2666431311108,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="68.2666431311108,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-21.6730651531946,5,111.6127734375,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Lookup Match Output]"
-          TopLeft="291.13332996236,181.583331700282">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,59.616666961792"
-              Start="0,0"
-              End="0,52.116666961792">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,52.116666961792" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-48.19138671875,20.253645980896,96.3827734375,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[IS_VALID]"
-          TopLeft="506.833311296173,68.8555548083117">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-217.199972912174,71.1277768919703"
-              Start="0,0"
-              End="-217.199972912174,63.6277768919703">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,31.5638884459852" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,31.5638884459852"
-                    Point2="0,35.5638884459852"
-                    Point3="-4,35.5638884459852" />
-                  <mssgle:LineSegment
-                    End="-213.199972912174,35.5638884459852" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-213.199972912174,35.5638884459852"
-                    Point2="-217.199972912174,35.5638884459852"
-                    Point3="-217.199972912174,39.5638884459852" />
-                  <mssgle:LineSegment
-                    End="-217.199972912174,63.6277768919703" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-130.327798956087,40.5638884459852,43.455625,10.8671875"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Derived Column Output2]"
-          TopLeft="892.749964690458,185.622221369501">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,50.2666660278296"
-              Start="0,0"
-              End="0,42.7666660278296">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,42.7666660278296" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Derived Column Output]"
+          Id="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Derived Column Output4]"
           TopLeft="498.044426750144,377.888887520035">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -18370,7 +18219,7 @@ ORDER BY ri.PK_RCT_ITEMS
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Derived Column Output1]"
+          Id="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Derived Column Output3]"
           TopLeft="878.133297773371,463.055552439821">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -18392,7 +18241,7 @@ ORDER BY ri.PK_RCT_ITEMS
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Derived Column Output5]"
+          Id="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Derived Column Output2]"
           TopLeft="676.411097531187,751.016661538322">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -18414,7 +18263,7 @@ ORDER BY ri.PK_RCT_ITEMS
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Derived Column Output3]"
+          Id="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Derived Column Output1]"
           TopLeft="264.183325415437,647.855551861249">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -18436,7 +18285,7 @@ ORDER BY ri.PK_RCT_ITEMS
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Derived Column Output4]"
+          Id="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Derived Column Output]"
           TopLeft="369.3,49.9777771731878">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -18665,6 +18514,200 @@ ORDER BY ri.PK_RCT_ITEMS
                   Capacity="5">
                   <mssgle:LineSegment
                     End="80.8555539934179,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Multicast Output 2]"
+          TopLeft="564.19998151511,162.744443445543">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="62.4166530292074,0"
+              Start="0,0"
+              End="54.9166530292074,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="54.9166530292074,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Multicast Output 12]"
+          TopLeft="263.855546663012,745.583322160812">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,58.7000031399959"
+              Start="0,0"
+              End="0,51.2000031399959">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,51.2000031399959" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Multicast Output 11]"
+          TopLeft="497.122199353218,462.599998969435">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,48.78888547182"
+              Start="0,0"
+              End="0,41.28888547182">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,41.28888547182" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Multicast Output 1]"
+          TopLeft="500.199979420255,181.399999150236">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,58.933332634237"
+              Start="0,0"
+              End="0,51.433332634237">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,51.433332634237" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Lookup No Match Output]"
+          TopLeft="360.433338383999,160.691665425259">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="75.7666431311108,0"
+              Start="0,0"
+              End="68.2666431311108,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="68.2666431311108,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-21.6730651531946,5,111.6127734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Lookup Match Output]"
+          TopLeft="291.13332996236,181.583331700282">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,59.616666961792"
+              Start="0,0"
+              End="0,52.116666961792">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.116666961792" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-48.19138671875,20.253645980896,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[IS_VALID]"
+          TopLeft="506.833311296173,68.8555548083117">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-217.199972912174,71.1277768919703"
+              Start="0,0"
+              End="-217.199972912174,63.6277768919703">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,31.5638884459852" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,31.5638884459852"
+                    Point2="0,35.5638884459852"
+                    Point3="-4,35.5638884459852" />
+                  <mssgle:LineSegment
+                    End="-213.199972912174,35.5638884459852" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-213.199972912174,35.5638884459852"
+                    Point2="-217.199972912174,35.5638884459852"
+                    Point3="-217.199972912174,39.5638884459852" />
+                  <mssgle:LineSegment
+                    End="-217.199972912174,63.6277768919703" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-130.327798956087,40.5638884459852,43.455625,10.8671875"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - MATRECTRANS_SERVRECTRANS.Paths[Derived Column Output5]"
+          TopLeft="892.749964690458,185.622221369501">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,50.2666660278296"
+              Start="0,0"
+              End="0,42.7666660278296">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,42.7666660278296" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
