@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0061_Misc_Shift_ShiftPatternDay_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="136"
-  DTS:VersionGUID="{72BE1DF5-CD66-431A-8A46-DEB6B599053B}"
+  DTS:VersionBuild="139"
+  DTS:VersionGUID="{F74609B5-0F48-45FE-A372-8E01EBCC7123}"
   DTS:VersionMinor="2">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -1893,6 +1893,20 @@
                       cachedName="PK_DAILY_SHIFT"
                       externalMetadataColumnId="Package\DF - ShiftPatternDay\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STE_MIGRATIONID]"
                       lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DAILY_SHIFT]" />
+                    <inputColumn
+                      refId="Package\DF - ShiftPatternDay\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[v_starttime]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="v_starttime"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[STARTTIME]"
+                      lineageId="Package\DF - ShiftPatternDay\Derived Column.Outputs[Derived Column Output].Columns[v_starttime]" />
+                    <inputColumn
+                      refId="Package\DF - ShiftPatternDay\OLE DB Destination.Inputs[ADO NET Destination Input].Columns[PATTERNDAYNAME]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="1"
+                      cachedName="PATTERNDAYNAME"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\OLE DB Destination.Inputs[ADO NET Destination Input].ExternalColumns[PATTERNDAYNAME]"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[PATTERNDAYNAME]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -2214,7 +2228,13 @@
 	, s.SHIFT_START 
 	, s.SHIFT_END 
 	, LPAD(DSH_DAY+1, 3, '0') AS PATTERNDAYSEQ
-	, round((SHIFT_END - SHIFT_START) / 3600, 2) AS workhours
+	, CASE WHEN SHIFT_START&gt;SHIFT_END THEN round((86400 + SHIFT_END - SHIFT_START) / 3600, 2)
+	       ELSE round((SHIFT_END - SHIFT_START) / 3600, 2) 
+	  END AS WORKHOURS
+	, CASE WHEN SHIFT_CODE='LATE' THEN 'E'  -- evening
+	       WHEN SHIFT_CODE='NGHT' THEN 'N'  -- night
+	       ELSE 'D'  -- day
+	  END AS PATTERNDAYNAME
 	, DSH_ASSISTANTS, DSH_DAY, DSH_LEADERS, DSH_STAFF
 FROM COSWIN.DAILY_SHIFT ds
 JOIN COSWIN.SHIFT s ON s.PK_SHIFT = ds.S_SHIFT_DSH
@@ -2375,6 +2395,14 @@ ORDER BY sp.PK_SHIFT_PATTERN, s.PK_SHIFT, ds.DSH_DAY;</property>
                       externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WORKHOURS]"
                       lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[WORKHOURS]"
                       name="WORKHOURS" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[PATTERNDAYNAME]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PATTERNDAYNAME]"
+                      length="1"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].Columns[PATTERNDAYNAME]"
+                      name="PATTERNDAYNAME" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -2458,6 +2486,12 @@ ORDER BY sp.PK_SHIFT_PATTERN, s.PK_SHIFT, ds.DSH_DAY;</property>
                       refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WORKHOURS]"
                       dataType="r8"
                       name="WORKHOURS" />
+                    <externalMetadataColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PATTERNDAYNAME]"
+                      codePage="1252"
+                      dataType="str"
+                      length="1"
+                      name="PATTERNDAYNAME" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -2579,6 +2613,14 @@ ORDER BY sp.PK_SHIFT_PATTERN, s.PK_SHIFT, ds.DSH_DAY;</property>
                       externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WORKHOURS]"
                       lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[WORKHOURS]"
                       name="WORKHOURS" />
+                    <outputColumn
+                      refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[PATTERNDAYNAME]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PATTERNDAYNAME]"
+                      length="1"
+                      lineageId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[PATTERNDAYNAME]"
+                      name="PATTERNDAYNAME" />
                     <outputColumn
                       refId="Package\DF - ShiftPatternDay\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -3330,7 +3372,7 @@ ORDER BY sp.PK_SHIFT_PATTERN, s.PK_SHIFT, ds.DSH_DAY;</property>
     design-time-name="Package\DF - Shift">
     <LayoutInfo>
       <GraphLayout
-        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="119.2,41.6"
           Id="Package\DF - Shift\Multicast"
@@ -3378,7 +3420,9 @@ ORDER BY sp.PK_SHIFT_PATTERN, s.PK_SHIFT, ds.DSH_DAY;</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -3412,7 +3456,9 @@ ORDER BY sp.PK_SHIFT_PATTERN, s.PK_SHIFT, ds.DSH_DAY;</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -3434,7 +3480,9 @@ ORDER BY sp.PK_SHIFT_PATTERN, s.PK_SHIFT, ds.DSH_DAY;</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -3456,7 +3504,9 @@ ORDER BY sp.PK_SHIFT_PATTERN, s.PK_SHIFT, ds.DSH_DAY;</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -3478,7 +3528,9 @@ ORDER BY sp.PK_SHIFT_PATTERN, s.PK_SHIFT, ds.DSH_DAY;</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -3512,7 +3564,9 @@ ORDER BY sp.PK_SHIFT_PATTERN, s.PK_SHIFT, ds.DSH_DAY;</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
