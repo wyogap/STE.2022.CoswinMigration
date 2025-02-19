@@ -11,8 +11,8 @@
   DTS:LocaleID="14345"
   DTS:ObjectName="DB2_1105_File_Asset_Master"
   DTS:PackageType="5"
-  DTS:VersionBuild="75"
-  DTS:VersionGUID="{23790148-AF3C-44C9-AAA3-F4E82CEF8429}">
+  DTS:VersionBuild="103"
+  DTS:VersionGUID="{10A5AA4E-63F9-48BE-AEE5-7D82FFECAA96}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -25,16 +25,36 @@
         <DTS:ConnectionManager
           DTS:ConnectRetryCount="0"
           DTS:ConnectRetryInterval="0"
-          DTS:ConnectionString="Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\NEL1902\Data Migration\Working Folder\Asset-NEL 1902_Review_30112024.xlsx;Extended Properties=&quot;EXCEL 12.0 XML;HDR=YES&quot;;" />
+          DTS:ConnectionString="Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\NEL1902\Data Migration\Working Folder\Asset-NEL 1902_Review_24102024 (v9).xlsx;Extended Properties=&quot;EXCEL 12.0 XML;HDR=YES&quot;;" />
       </DTS:ObjectData>
     </DTS:ConnectionManager>
   </DTS:ConnectionManagers>
-  <DTS:Variables />
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{E1988623-F22C-4137-A456-CE154F5F34FC}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="log_id">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{1259E744-9224-4A35-9F58-CE3BC32FC730}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="max_id">
+      <DTS:VariableValue
+        DTS:DataType="20">0</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
   <DTS:Executables>
     <DTS:Executable
       DTS:refId="Package\AFC"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:Description="Data Flow Task"
+      DTS:Disabled="True"
       DTS:DTSID="{96DE9D15-C77D-4D93-B485-FD034A2A63DD}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="-1"
@@ -1327,6 +1347,7 @@
       DTS:refId="Package\AMS"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:Description="Data Flow Task"
+      DTS:Disabled="True"
       DTS:DTSID="{5AE5633C-47B1-4F92-9739-D6788A41FB43}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="-1"
@@ -2619,6 +2640,7 @@
       DTS:refId="Package\BMS"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:Description="Data Flow Task"
+      DTS:Disabled="True"
       DTS:DTSID="{48602361-B980-4510-8773-CA4F2DE2DC2F}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="-1"
@@ -3911,6 +3933,7 @@
       DTS:refId="Package\CIV"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:Description="Data Flow Task"
+      DTS:Disabled="True"
       DTS:DTSID="{0041ABEC-DFE1-4F33-B27F-60CF5C41A19A}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="-1"
@@ -5033,7 +5056,7 @@
                   dataType="System.Int32"
                   description="Specifies the mode used to access the database."
                   name="AccessMode"
-                  typeConverter="AccessMode">0</property>
+                  typeConverter="AccessMode">3</property>
                 <property
                   dataType="System.Boolean"
                   description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
@@ -5045,7 +5068,7 @@
                 <property
                   dataType="System.String"
                   description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
-                  name="FastLoadOptions"></property>
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
@@ -5252,6 +5275,18 @@
                       refId="Package\CIV\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LOCATIONID]"
                       dataType="i8"
                       name="LOCATIONID" />
+                    <externalMetadataColumn
+                      refId="Package\CIV\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LOCATIONCODE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="LOCATIONCODE" />
+                    <externalMetadataColumn
+                      refId="Package\CIV\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LOCATIONTYPE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="LOCATIONTYPE" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -5379,6 +5414,23 @@
               SQLTask:SqlStatementSource="UPDATE MIGRATION.SBST_ASSET_MASTER&#xA;SET depotbuilding=NULL &#xA;WHERE LENGTH(trim(depotbuilding))=0;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
           </DTS:ObjectData>
         </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Clean Up\Execute SQL Task 4"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Remove Trailing /"
+          DTS:DTSID="{E1FD68F7-E1DD-4C99-AA73-A0BC812CC9D3}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Execute SQL Task 4"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="UPDATE MIGRATION.SBST_ASSET_MASTER A &#xA;SET LOCATIONCODE = LEFT(TRIM(LOCATIONCODE), LENGTH(TRIM(LOCATIONCODE))-1)&#xA;WHERE RIGHT(TRIM(LOCATIONCODE),1)='/';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
       </DTS:Executables>
       <DTS:PrecedenceConstraints>
         <DTS:PrecedenceConstraint
@@ -5405,12 +5457,72 @@
           DTS:LogicalAnd="True"
           DTS:ObjectName="Constraint 2"
           DTS:To="Package\Clean Up\Execute SQL Task 3" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Clean Up.PrecedenceConstraints[Constraint 3]"
+          DTS:CreationName=""
+          DTS:DTSID="{D20A6603-DAB5-4E30-B766-921BE4DEA5A2}"
+          DTS:From="Package\Clean Up\Execute SQL Task 3"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 3"
+          DTS:To="Package\Clean Up\Execute SQL Task 4" />
       </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Default DEPOT Location for DEPOT, DEPTRK Assets"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{3c70182a-fc9c-4333-b185-5fabc9e3094f}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Default DEPOT Location for DEPOT, DEPTRK Assets"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="MERGE INTO MIGRATION.SBST_ASSET_MASTER AS a&#xA;USING (&#xA; SELECT a.locationcode, a.DEPOT, c.LOCATION, c.LOCATIONSID, c.ste_loccode, a.ID &#xA; FROM MIGRATION.SBST_ASSET_MASTER a&#xA; JOIN MAXIMO.LOCATIONS c ON c.STE_LOCCODE=coalesce(a.DEPOT,'NED')&#xA; WHERE a.LOCATIONCODE IS NOT NULL AND a.location IS NULL AND locationtype IN ('DEPOT', 'DEPTRK')&#xA;) AS b ON b.ID=a.ID&#xA;WHEN MATCHED THEN&#xA;UPDATE SET location=b.location, locationid=b.locationsid&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Default STATION Location for STATION Assets"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{1209fe78-a0a2-40f8-8e5a-4dada9cea04f}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Default STATION Location for STATION Assets"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="MERGE INTO MIGRATION.SBST_ASSET_MASTER AS a&#xA;USING (&#xA; SELECT b.LOCATION, b.LOCATIONSID, b.ste_loccode, a.ID &#xA; FROM MIGRATION.SBST_ASSET_MASTER a&#xA; JOIN MAXIMO.LOCATIONS b&#xA;  ON b.STE_LOCCODE=a.LOCATIONCODE &#xA; WHERE a.LOCATIONCODE IS NOT NULL&#xA;) AS b ON b.ID=a.ID&#xA;WHEN MATCHED THEN&#xA;UPDATE SET location=b.location, locationid=b.locationsid&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Default STATION Location for STATION Assets (DPT-&gt;SKG)"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{9d998552-d323-4139-be4f-43193f732cf7}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Default STATION Location for STATION Assets (DPT-&gt;SKG)"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="MERGE INTO MIGRATION.SBST_ASSET_MASTER AS a&#xA;USING (&#xA; SELECT a.coswinassetid, a.locationcode, a.STATION, a.ID, c.LOCATION, c.LOCATIONSID&#xA; FROM MIGRATION.SBST_ASSET_MASTER a&#xA; JOIN MAXIMO.LOCATIONS c ON c.STE_LOCCODE='SKG'&#xA; WHERE a.LOCATIONCODE IS NOT NULL AND a.location IS NULL AND locationtype IN ('STATION')&#xA;  AND a.STATION='DPT'&#xA;) AS b ON b.ID=a.ID&#xA;WHEN MATCHED THEN&#xA;UPDATE SET location=b.location, locationid=b.locationsid, a.station='SKG'&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
       DTS:refId="Package\DEQ"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:Description="Data Flow Task"
+      DTS:Disabled="True"
       DTS:DTSID="{856459CE-2552-4C78-B5AB-0F04FD2003C4}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="-1"
@@ -6703,6 +6815,7 @@
       DTS:refId="Package\ECS"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:Description="Data Flow Task"
+      DTS:Disabled="True"
       DTS:DTSID="{076E0D9B-1ACC-40E8-AA68-16A1AAE6270D}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="-1"
@@ -7987,6 +8100,7 @@
       DTS:refId="Package\ELE"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:Description="Data Flow Task"
+      DTS:Disabled="True"
       DTS:DTSID="{29177D7D-418A-4687-8850-46324E9A5260}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="-1"
@@ -9276,20 +9390,1497 @@
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
-      DTS:refId="Package\Execute SQL Task 1 1"
+      DTS:refId="Package\Generate Missing Depot Locations"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
       DTS:Description="Execute SQL Task"
-      DTS:DTSID="{5AE7193E-15A3-4F31-8D6F-BEBED535629E}"
+      DTS:DTSID="{185183a4-0614-4f47-80f8-55121e05b45c}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:LocaleID="-1"
-      DTS:ObjectName="Execute SQL Task 1 1"
+      DTS:ObjectName="Generate Missing Depot Locations"
       DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
       DTS:ThreadHint="0">
       <DTS:Variables />
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-          SQLTask:SqlStatementSource="delete from MIGRATION.SBST_ASSET_MASTER" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:SqlStatementSource="INSERT INTO MIGRATION.SBST_LOCATION_MASTER (&#xA;&#x9;LOCATIONCODE, &quot;TYPE&quot;, LINE, DESCRIPTION, DEPOT, BUILDING, LEVEL, AREA&#xA;)&#xA;WITH DEPOT_LOCATIONS AS (&#xA;&#x9;SELECT &#xA;&#x9;&#x9;A.LOCATIONCODE&#xA;&#x9;&#x9;, CASE WHEN SEPARATOR1&gt;0 &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;THEN SUBSTR(A.LOCATIONCODE, 1,SEPARATOR1-1) &#xA;&#x9;&#x9;&#x9;   ELSE A.LOCATIONCODE &#xA;&#x9;&#x9;  END as DEPOT&#xA;&#x9;  &#x9;, CASE WHEN SEPARATOR2&gt;0 AND SEPARATOR2&gt;SEPARATOR1 &#xA;&#x9;  &#x9;&#x9;&#x9;&#x9;THEN SUBSTR(A.LOCATIONCODE, SEPARATOR1+1, SEPARATOR2-SEPARATOR1-1) &#xA;&#x9;  &#x9;&#x9;   WHEN SEPARATOR1&gt;0&#xA;&#x9;  &#x9;&#x9;        THEN SUBSTR(A.LOCATIONCODE, SEPARATOR1+1)&#xA;&#x9;  &#x9;       ELSE NULL&#xA;&#x9;  &#x9;  END as BUILDING&#xA;&#x9;  &#x9;, CASE WHEN SEPARATOR3&gt;0 AND SEPARATOR3&gt;SEPARATOR2 AND SEPARATOR2&gt;SEPARATOR1&#xA;&#x9;  &#x9;&#x9;&#x9;&#x9;THEN SUBSTR(A.LOCATIONCODE, SEPARATOR2+1, SEPARATOR3-SEPARATOR2-1)&#xA;&#x9;  &#x9;&#x9;   WHEN SEPARATOR2&gt;0 AND SEPARATOR2&gt;SEPARATOR1&#xA;&#x9;  &#x9;&#x9;&#x9;&#x9;THEN SUBSTR(A.LOCATIONCODE, SEPARATOR2+1) &#xA;&#x9;  &#x9;&#x9;   ELSE NULL &#xA;&#x9;  &#x9;  END as &quot;LEVEL&quot;&#xA;&#x9;  &#x9;, CASE WHEN SEPARATOR3&gt;0 AND SEPARATOR3&gt;SEPARATOR2 AND SEPARATOR2&gt;SEPARATOR1&#xA;&#x9;  &#x9;&#x9;&#x9;&#x9;THEN SUBSTR(A.LOCATIONCODE, SEPARATOR3+1) &#xA;&#x9;  &#x9;&#x9;   ELSE NULL &#xA;&#x9;  &#x9;  END AS AREA&#xA;&#x9;FROM (&#xA;&#x9;&#x9;SELECT DISTINCT locationcode&#xA;&#x9;&#x9;&#x9;, LOCATE('/',locationcode) AS SEPARATOR1&#xA;&#x9;&#x9;&#x9;, LOCATE('/',locationcode, LOCATE('/',locationcode)+1) AS SEPARATOR2 &#xA;&#x9;&#x9;&#x9;, LOCATE('/',locationcode, LOCATE('/',locationcode, LOCATE('/',locationcode)+1)+1) AS SEPARATOR3 &#xA;&#x9;&#x9;FROM MIGRATION.SBST_ASSET_MASTER sam &#xA;&#x9;&#x9;WHERE locationcode IS NOT NULL AND location IS NULL AND locationtype='DEPOT'&#xA;&#x9;) A&#xA;)&#xA;SELECT C.LOCATIONCODE, C.&quot;TYPE&quot;, C.LINE, C.DESCRIPTION, C.DEPOT, C.BUILDING, C.LEVEL, C.AREA&#xA;FROM (&#xA;&#x9;SELECT LOCATIONCODE, 'DEPOT' AS &quot;TYPE&quot;, 'NEL' AS LINE&#xA;&#x9;&#x9;, DESCRIPTION, DEPOT, BUILDING, LEVEL, AREA&#xA;&#x9;&#x9;, ROW_NUMBER() OVER(PARTITION BY LOCATIONCODE) RN&#xA;&#x9;FROM (&#xA;&#x9;&#x9;SELECT &#xA;&#x9;&#x9;&#x9;CONCAT(A.DEPOT, &#xA;&#x9;&#x9;&#x9;&#x9;CONCAT('/',&#xA;&#x9;&#x9;&#x9;&#x9;CONCAT(A.BUILDING,&#xA;&#x9;&#x9;&#x9;&#x9;CONCAT('/',TRIM(A.LEVEL))&#xA;&#x9;&#x9;&#x9;  ))) AS LOCATIONCODE&#xA;&#x9;&#x9;&#x9;, A.DEPOT, A.BUILDING, A.LEVEL, NULL AS AREA&#xA;&#x9;&#x9;&#x9;, CONCAT(B.DESCRIPTION,&#xA;&#x9;&#x9;&#x9;&#x9;CONCAT(' ',&#xA;&#x9;&#x9;&#x9;&#x9;CONCAT(C.DESCRIPTION,&#xA;&#x9;&#x9;&#x9;&#x9;CONCAT(' Level ', TRIM(A.LEVEL))&#xA;&#x9;&#x9;&#x9;  ))) AS DESCRIPTION&#xA;&#x9;&#x9;FROM (&#xA;&#x9;&#x9;&#x9;SELECT DISTINCT A.DEPOT, A.BUILDING, A.LEVEL FROM DEPOT_LOCATIONS A&#xA;&#x9;&#x9;&#x9;WHERE A.LEVEL IS NOT NULL&#xA;&#x9;&#x9;) A&#xA;&#x9;&#x9;JOIN MIGRATION.SBST_LOCATION_REF_DEPOT B ON B.CODE=A.DEPOT&#xA;&#x9;&#x9;JOIN MIGRATION.SBST_LOCATION_REF_DEPOT_BUILDING C ON C.CODE=A.BUILDING&#xA;&#x9;) B&#xA;&#x9;ORDER BY B.LOCATIONCODE&#xA;) C &#xA;LEFT JOIN MIGRATION.SBST_LOCATION_MASTER D ON D.LOCATIONCODE=C.LOCATIONCODE&#xA;WHERE C.RN=1 AND D.LOCATIONCODE IS NULL&#xA;;&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Generate Missing Station Locations"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{7DFC67DF-798A-4C3A-9207-5CB352338BAD}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Generate Missing Station Locations"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="INSERT INTO MIGRATION.SBST_LOCATION_MASTER (&#xA;&#x9;LOCATIONCODE, &quot;TYPE&quot;, LINE, DESCRIPTION, STATION, LEVEL, AREA&#xA;)&#xA;WITH STATION_LOCATIONS AS (&#xA;&#x9;SELECT &#xA;&#x9;&#x9;A.LOCATIONCODE&#xA;&#x9;&#x9;, CASE WHEN SEPARATOR1&gt;0 &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;THEN SUBSTR(A.LOCATIONCODE, 1,SEPARATOR1-1) &#xA;&#x9;&#x9;&#x9;   ELSE A.LOCATIONCODE &#xA;&#x9;&#x9;  END as STATION&#xA;&#x9;  &#x9;, CASE WHEN SEPARATOR2&gt;0 AND SEPARATOR2&gt;SEPARATOR1 &#xA;&#x9;  &#x9;&#x9;&#x9;&#x9;THEN SUBSTR(A.LOCATIONCODE, SEPARATOR1+1, SEPARATOR2-SEPARATOR1-1) &#xA;&#x9;  &#x9;&#x9;   WHEN SEPARATOR1&gt;0&#xA;&#x9;  &#x9;&#x9;        THEN SUBSTR(A.LOCATIONCODE, SEPARATOR1+1)&#xA;&#x9;  &#x9;       ELSE NULL&#xA;&#x9;  &#x9;  END as &quot;LEVEL&quot;&#xA;&#x9;  &#x9;, CASE WHEN SEPARATOR2&gt;0 AND SEPARATOR2&gt;SEPARATOR1&#xA;&#x9;  &#x9;&#x9;&#x9;&#x9;THEN SUBSTR(A.LOCATIONCODE, SEPARATOR2+1) &#xA;&#x9;  &#x9;&#x9;   ELSE NULL &#xA;&#x9;  &#x9;  END as AREA&#xA;&#x9;FROM (&#xA;&#x9;&#x9;SELECT DISTINCT locationcode&#xA;&#x9;&#x9;&#x9;, LOCATE('/',locationcode) AS SEPARATOR1&#xA;&#x9;&#x9;&#x9;, LOCATE('/',locationcode, LOCATE('/',locationcode)+1) AS SEPARATOR2 &#xA;&#x9;&#x9;FROM MIGRATION.SBST_ASSET_MASTER sam &#xA;&#x9;&#x9;WHERE locationcode IS NOT NULL AND location IS NULL AND locationtype='STATION'&#xA;&#x9;) A&#xA;)&#xA;SELECT C.LOCATIONCODE, C.&quot;TYPE&quot;, C.LINE, C.DESCRIPTION, C.STATION, C.LEVEL, C.AREA&#xA;FROM (&#xA;&#x9;SELECT LOCATIONCODE, 'STATION' AS &quot;TYPE&quot;, 'NEL' AS LINE&#xA;&#x9;&#x9;, DESCRIPTION, STATION, LEVEL, AREA&#xA;&#x9;&#x9;, ROW_NUMBER() OVER(PARTITION BY LOCATIONCODE) RN&#xA;&#x9;FROM (&#xA;&#x9;&#x9;SELECT &#xA;&#x9;&#x9;&#x9;CONCAT(A.STATION, &#xA;&#x9;&#x9;&#x9;&#x9;CONCAT('/',TRIM(A.LEVEL))&#xA;&#x9;&#x9;&#x9;  ) AS LOCATIONCODE&#xA;&#x9;&#x9;&#x9;, A.STATION, A.LEVEL, NULL AS AREA&#xA;&#x9;&#x9;&#x9;, CONCAT(B.DESCRIPTION,&#xA;&#x9;&#x9;&#x9;&#x9;CONCAT(' Station Level ', TRIM(A.LEVEL))&#xA;&#x9;&#x9;&#x9;  ) AS DESCRIPTION&#xA;&#x9;&#x9;FROM (&#xA;&#x9;&#x9;&#x9;SELECT DISTINCT A.STATION, A.LEVEL FROM STATION_LOCATIONS A&#xA;&#x9;&#x9;&#x9;WHERE A.LEVEL IS NOT NULL AND UCASE(A.LEVEL) = LCASE(A.LEVEL)&#xA;&#x9;&#x9;) A&#xA;&#x9;&#x9;JOIN MIGRATION.SBST_LOCATION_REF_STATION B ON B.CODE=A.STATION&#xA;&#x9;) B&#xA;&#x9;ORDER BY B.LOCATIONCODE&#xA;) C &#xA;LEFT JOIN MIGRATION.SBST_LOCATION_MASTER D ON D.LOCATIONCODE=C.LOCATIONCODE&#xA;WHERE C.RN=1 AND D.LOCATIONCODE IS NULL&#xA;;&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Generate Missing Train Locations"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{AD5F66AC-9F70-45B2-ABD4-AB3034B65AA8}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Generate Missing Train Locations"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="INSERT INTO MIGRATION.SBST_LOCATION_MASTER (&#xA;&#x9;LOCATIONCODE, &quot;TYPE&quot;, LINE, DESCRIPTION, TRAINCAR, AREA, SUBAREA&#xA;)&#xA;WITH TRAIN_LOCATIONS AS (&#xA;&#x9;SELECT &#xA;&#x9;&#x9;A.LOCATIONCODE&#xA;&#x9;&#x9;, CASE WHEN SEPARATOR1&gt;0 &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;THEN SUBSTR(A.LOCATIONCODE, 1,SEPARATOR1-1) &#xA;&#x9;&#x9;&#x9;   ELSE A.LOCATIONCODE &#xA;&#x9;&#x9;  END as TRAIN_CAR&#xA;&#x9;  &#x9;, CASE WHEN SEPARATOR2&gt;0 AND SEPARATOR2&gt;SEPARATOR1 &#xA;&#x9;  &#x9;&#x9;&#x9;&#x9;THEN SUBSTR(A.LOCATIONCODE, SEPARATOR1+1, SEPARATOR2-SEPARATOR1-1) &#xA;&#x9;  &#x9;&#x9;   WHEN SEPARATOR1&gt;0&#xA;&#x9;  &#x9;&#x9;        THEN SUBSTR(A.LOCATIONCODE, SEPARATOR1+1)&#xA;&#x9;  &#x9;       ELSE NULL&#xA;&#x9;  &#x9;  END as TRAIN_AREA&#xA;&#x9;  &#x9;, CASE WHEN SEPARATOR2&gt;0 AND SEPARATOR2&gt;SEPARATOR1&#xA;&#x9;  &#x9;&#x9;&#x9;&#x9;THEN SUBSTR(A.LOCATIONCODE, SEPARATOR2+1) &#xA;&#x9;  &#x9;&#x9;   ELSE NULL &#xA;&#x9;  &#x9;  END as TRAIN_SUBAREA&#xA;--&#x9;&#x9;, SUBSTR(A.LOCATIONCODE, 1,SEPARATOR1-1) as TRAIN_CAR&#xA;--&#x9;  &#x9;, SUBSTR(A.LOCATIONCODE, SEPARATOR1+1, SEPARATOR2-SEPARATOR1-1) as TRAIN_AREA&#xA;--&#x9;  &#x9;, SUBSTR(A.LOCATIONCODE, SEPARATOR2+1) as TRAIN_SUBAREA&#xA;&#x9;FROM (&#xA;&#x9;&#x9;SELECT DISTINCT locationcode&#xA;&#x9;&#x9;&#x9;, LOCATE('/',locationcode) AS SEPARATOR1&#xA;&#x9;&#x9;&#x9;, LOCATE('/',locationcode, LOCATE('/',locationcode)+1) AS SEPARATOR2 &#xA;&#x9;&#x9;FROM MIGRATION.SBST_ASSET_MASTER sam &#xA;&#x9;&#x9;WHERE locationcode IS NOT NULL AND TRIM(LOCATIONCODE)!='' &#xA;&#x9;&#x9;&#x9;AND location IS NULL AND locationtype='TRAIN'&#xA;&#x9;) A&#xA;)&#xA;SELECT C.LOCATIONCODE, C.&quot;TYPE&quot;, C.LINE, C.DESCRIPTION, C.TRAINCAR, C.AREA, C.SUBAREA&#xA;FROM (&#xA;&#x9;SELECT LOCATIONCODE, 'TRAIN' AS &quot;TYPE&quot;, 'NEL' AS LINE&#xA;&#x9;&#x9;, DESCRIPTION, TRAIN_CAR AS TRAINCAR, TRAIN_AREA AS AREA, TRAIN_SUBAREA AS SUBAREA&#xA;&#x9;&#x9;, ROW_NUMBER() OVER(PARTITION BY LOCATIONCODE) RN&#xA;&#x9;FROM (&#xA;&#x9;&#x9;SELECT &#xA;&#x9;&#x9;&#x9;CONCAT(A.TRAIN_CAR, CONCAT('/',A.TRAIN_AREA)) AS LOCATIONCODE&#xA;&#x9;&#x9;&#x9;, A.TRAIN_CAR, A.TRAIN_AREA, NULL AS TRAIN_SUBAREA&#xA;&#x9;&#x9;&#x9;, CONCAT(B.DESCRIPTION,&#xA;&#x9;&#x9;&#x9;&#x9;CONCAT(' ', C.DESCRIPTION)&#xA;&#x9;&#x9;&#x9;  ) AS DESCRIPTION&#xA;&#x9;&#x9;FROM (&#xA;&#x9;&#x9;&#x9;SELECT DISTINCT A.TRAIN_CAR, A.TRAIN_AREA FROM TRAIN_LOCATIONS A&#xA;&#x9;&#x9;&#x9;WHERE A.TRAIN_AREA IS NOT NULL&#xA;&#x9;&#x9;) A&#xA;&#x9;&#x9;LEFT JOIN MIGRATION.SBST_LOCATION_REF_TRAIN_CAR B ON B.CODE=A.TRAIN_CAR&#xA;&#x9;&#x9;LEFT JOIN MIGRATION.SBST_LOCATION_REF_TRAIN_AREA C ON C.CODE=A.TRAIN_AREA&#xA;&#x9;&#x9;&#xA;&#x9;&#x9;UNION ALL&#xA;&#x9;&#x9;&#xA;&#x9;&#x9;SELECT &#xA;&#x9;&#x9;&#x9;A.LOCATIONCODE, A.TRAIN_CAR, A.TRAIN_AREA, A.TRAIN_SUBAREA&#xA;&#x9;&#x9;&#x9;, CONCAT(B.DESCRIPTION,&#xA;&#x9;&#x9;&#x9;&#x9;CONCAT(' ',&#xA;&#x9;&#x9;&#x9;&#x9;CONCAT(C.DESCRIPTION,&#xA;&#x9;&#x9;&#x9;&#x9;CONCAT(' ', D.DESCRIPTION)&#xA;&#x9;&#x9;&#x9;  ))) AS DESCRIPTION&#xA;&#x9;&#x9;FROM TRAIN_LOCATIONS A&#xA;&#x9;&#x9;LEFT JOIN MIGRATION.SBST_LOCATION_REF_TRAIN_CAR B ON B.CODE=A.TRAIN_CAR&#xA;&#x9;&#x9;LEFT JOIN MIGRATION.SBST_LOCATION_REF_TRAIN_AREA C ON C.CODE=A.TRAIN_AREA&#xA;&#x9;&#x9;LEFT JOIN MIGRATION.SBST_LOCATION_REF_TRAIN_SUBAREA D ON D.CODE=A.TRAIN_SUBAREA&#xA;&#x9;) B&#xA;&#x9;ORDER BY B.LOCATIONCODE&#xA;) C &#xA;LEFT JOIN MIGRATION.SBST_LOCATION_MASTER D ON D.LOCATIONCODE=C.LOCATIONCODE&#xA;WHERE C.RN=1 AND D.LOCATIONCODE IS NULL&#xA;;&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\MERGED"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{18891396-db3c-4199-bdb6-9a9f2afdc4e7}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="MERGED"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\MERGED\Data Conversion"
+              componentClassID="Microsoft.DataConvert"
+              contactInfo="Data Conversion;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Data Conversion"
+              name="Data Conversion"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\MERGED\Data Conversion.Inputs[Data Conversion Input]"
+                  name="Data Conversion Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\MERGED\Data Conversion.Inputs[Data Conversion Input].Columns[AssetId]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="AssetId"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[AssetId]" />
+                    <inputColumn
+                      refId="Package\MERGED\Data Conversion.Inputs[Data Conversion Input].Columns[EqptCode]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="EqptCode"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[EqptCode]" />
+                    <inputColumn
+                      refId="Package\MERGED\Data Conversion.Inputs[Data Conversion Input].Columns[Line]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="Line"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Line]" />
+                    <inputColumn
+                      refId="Package\MERGED\Data Conversion.Inputs[Data Conversion Input].Columns[Depot]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="Depot"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Depot]" />
+                    <inputColumn
+                      refId="Package\MERGED\Data Conversion.Inputs[Data Conversion Input].Columns[DepotBuilding]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="DepotBuilding"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[DepotBuilding]" />
+                    <inputColumn
+                      refId="Package\MERGED\Data Conversion.Inputs[Data Conversion Input].Columns[Station]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="Station"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Station]" />
+                    <inputColumn
+                      refId="Package\MERGED\Data Conversion.Inputs[Data Conversion Input].Columns[Level]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="Level"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Level]" />
+                    <inputColumn
+                      refId="Package\MERGED\Data Conversion.Inputs[Data Conversion Input].Columns[Area]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="Area"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Area]" />
+                    <inputColumn
+                      refId="Package\MERGED\Data Conversion.Inputs[Data Conversion Input].Columns[System]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="System"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[System]" />
+                    <inputColumn
+                      refId="Package\MERGED\Data Conversion.Inputs[Data Conversion Input].Columns[Subsystem]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="Subsystem"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Subsystem]" />
+                    <inputColumn
+                      refId="Package\MERGED\Data Conversion.Inputs[Data Conversion Input].Columns[DetailCode]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="DetailCode"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[DetailCode]" />
+                    <inputColumn
+                      refId="Package\MERGED\Data Conversion.Inputs[Data Conversion Input].Columns[Location Code]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="Location Code"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Location Code]" />
+                    <inputColumn
+                      refId="Package\MERGED\Data Conversion.Inputs[Data Conversion Input].Columns[Location Type]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="Location Type"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Location Type]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output]"
+                  exclusionGroup="1"
+                  name="Data Conversion Output"
+                  synchronousInputId="Package\MERGED\Data Conversion.Inputs[Data Conversion Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_assetid]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="40"
+                      lineageId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_assetid]"
+                      name="v_assetid"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[AssetId]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_eqptcode]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="25"
+                      lineageId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_eqptcode]"
+                      name="v_eqptcode"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[EqptCode]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_line]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="4"
+                      lineageId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_line]"
+                      name="v_line"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Line]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_depot]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="10"
+                      lineageId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_depot]"
+                      name="v_depot"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Depot]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_depotbuilding]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="10"
+                      lineageId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_depotbuilding]"
+                      name="v_depotbuilding"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[DepotBuilding]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_station]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="10"
+                      lineageId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_station]"
+                      name="v_station"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Station]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_level]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="10"
+                      lineageId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_level]"
+                      name="v_level"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Level]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_area]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="30"
+                      lineageId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_area]"
+                      name="v_area"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Area]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_system]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="10"
+                      lineageId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_system]"
+                      name="v_system"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[System]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_subsystem]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="10"
+                      lineageId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_subsystem]"
+                      name="v_subsystem"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Subsystem]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_detailcode]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="30"
+                      lineageId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_detailcode]"
+                      name="v_detailcode"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[DetailCode]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_locationcode]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="100"
+                      lineageId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_locationcode]"
+                      name="v_locationcode"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Location Code]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_locationtype]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="16"
+                      lineageId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_locationtype]"
+                      name="v_locationtype"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Location Type]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\MERGED\Data Conversion.Outputs[Data Conversion Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Data Conversion Error Output"
+                  synchronousInputId="Package\MERGED\Data Conversion.Inputs[Data Conversion Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MERGED\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\MERGED\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\MERGED\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\MERGED\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\MERGED\Derived Column"
+              componentClassID="Microsoft.DerivedColumn"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="Derived Column"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\MERGED\Derived Column.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\MERGED\Derived Column.Inputs[Derived Column Input].Columns[v_depot]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="v_depot"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_depot]"
+                      truncationRowDisposition="FailComponent"
+                      usageType="readWrite">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">[LEN]([TRIM](#{Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_depot]})) == 0 ? NULL(DT_WSTR,1) : [TRIM](#{Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_depot]})</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">LEN(TRIM(v_depot)) == 0 ? NULL(DT_WSTR,1) : TRIM(v_depot)</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\MERGED\Derived Column.Inputs[Derived Column Input].Columns[v_depotbuilding]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="v_depotbuilding"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_depotbuilding]"
+                      truncationRowDisposition="FailComponent"
+                      usageType="readWrite">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">[LEN]([TRIM](#{Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_depotbuilding]})) == 0 ? NULL(DT_WSTR,1) : [TRIM](#{Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_depotbuilding]})</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">LEN(TRIM(v_depotbuilding)) == 0 ? NULL(DT_WSTR,1) : TRIM(v_depotbuilding)</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\MERGED\Derived Column.Inputs[Derived Column Input].Columns[v_station]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="v_station"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_station]"
+                      truncationRowDisposition="FailComponent"
+                      usageType="readWrite">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">[LEN]([TRIM](#{Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_station]})) == 0 ? NULL(DT_WSTR,1) : [TRIM](#{Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_station]})</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">LEN(TRIM(v_station)) == 0 ? NULL(DT_WSTR,1) : TRIM(v_station)</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\MERGED\Derived Column.Inputs[Derived Column Input].Columns[v_level]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="v_level"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_level]"
+                      truncationRowDisposition="FailComponent"
+                      usageType="readWrite">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">[LEN]([TRIM](#{Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_level]})) == 0 ? NULL(DT_WSTR,1) : [TRIM](#{Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_level]})</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">LEN(TRIM(v_level)) == 0 ? NULL(DT_WSTR,1) : TRIM(v_level)</property>
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\MERGED\Derived Column.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\MERGED\Derived Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MERGED\Derived Column.Outputs[Derived Column Output].Columns[v_sheet]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="20"
+                      lineageId="Package\MERGED\Derived Column.Outputs[Derived Column Output].Columns[v_sheet]"
+                      name="v_sheet"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_STR,20,1252)"MERGED"</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_STR,20,1252)"MERGED"</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\MERGED\Derived Column.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\MERGED\Derived Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MERGED\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\MERGED\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\MERGED\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\MERGED\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\MERGED\Excel Source"
+              componentClassID="Microsoft.ExcelSource"
+              contactInfo="Excel Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
+              description="Excel Source"
+              name="Excel Source"
+              usesDispositions="true"
+              version="1">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">Merged$</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">0</property>
+                <property
+                  dataType="System.String"
+                  description="The mapping from parameters in the SQL command to variables."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\MERGED\Excel Source.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[Excel Connection Manager]"
+                  connectionManagerRefId="Package.ConnectionManagers[Excel Connection Manager]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\MERGED\Excel Source.Outputs[Excel Source Output]"
+                  name="Excel Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[AssetId]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Coswin Asset ID__&lt;40 Char&gt;]"
+                      length="255"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[AssetId]"
+                      name="AssetId"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[EqptCode]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Coswin Equipment Code__&lt;25 Char&gt;]"
+                      length="255"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[EqptCode]"
+                      name="EqptCode"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Line]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Line__&lt;4 Char&gt;__(NEL/LRT)]"
+                      length="255"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Line]"
+                      name="Line"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Depot]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Depot__&lt;3 Char&gt;_Drop-down]"
+                      length="255"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Depot]"
+                      name="Depot"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[DepotBuilding]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Depot Building__&lt;7 Char&gt;_Drop-down]"
+                      length="255"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[DepotBuilding]"
+                      name="DepotBuilding"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Station]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Station__&lt;6 Char&gt;_Drop-down]"
+                      length="255"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Station]"
+                      name="Station"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Level]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Level__&lt;5 char&gt;]"
+                      length="255"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Level]"
+                      name="Level"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Area]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Area__&lt;30 char&gt;]"
+                      length="255"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Area]"
+                      name="Area"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[System]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[System Code__&lt;4 Char&gt;_Drop-down]"
+                      length="255"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[System]"
+                      name="System"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Subsystem]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Subsystem Code__&lt;6 Char&gt;_Drop-down]"
+                      length="255"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Subsystem]"
+                      name="Subsystem"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[DetailCode]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[_Detail Code __&lt;15 Char&gt;]"
+                      length="255"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[DetailCode]"
+                      name="DetailCode"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Location Type]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Location Type]"
+                      length="255"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Location Type]"
+                      name="Location Type"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Location Code]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Location Code]"
+                      length="255"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Location Code]"
+                      name="Location Code"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Tunnel  __&lt;6 char&gt;_Drop-down]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Tunnel  __&lt;6 char&gt;_Drop-down]"
+                      length="255"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Output].Columns[Tunnel  __&lt;6 char&gt;_Drop-down]"
+                      name="Tunnel  __&lt;6 char&gt;_Drop-down"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Coswin Asset ID__&lt;40 Char&gt;]"
+                      dataType="wstr"
+                      length="255"
+                      name="Coswin Asset ID__&lt;40 Char&gt;" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Coswin Equipment Code__&lt;25 Char&gt;]"
+                      dataType="wstr"
+                      length="255"
+                      name="Coswin Equipment Code__&lt;25 Char&gt;" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Line__&lt;4 Char&gt;__(NEL/LRT)]"
+                      dataType="wstr"
+                      length="255"
+                      name="Line__&lt;4 Char&gt;__(NEL/LRT)" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Location Type]"
+                      dataType="wstr"
+                      length="255"
+                      name="Location Type" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Depot__&lt;3 Char&gt;_Drop-down]"
+                      dataType="wstr"
+                      length="255"
+                      name="Depot__&lt;3 Char&gt;_Drop-down" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Depot Building__&lt;7 Char&gt;_Drop-down]"
+                      dataType="wstr"
+                      length="255"
+                      name="Depot Building__&lt;7 Char&gt;_Drop-down" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Station__&lt;6 Char&gt;_Drop-down]"
+                      dataType="wstr"
+                      length="255"
+                      name="Station__&lt;6 Char&gt;_Drop-down" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Level__&lt;5 char&gt;]"
+                      dataType="wstr"
+                      length="255"
+                      name="Level__&lt;5 char&gt;" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Area__&lt;30 char&gt;]"
+                      dataType="wstr"
+                      length="255"
+                      name="Area__&lt;30 char&gt;" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Viaduct  __&lt;5 char&gt;_Drop-down]"
+                      dataType="wstr"
+                      length="255"
+                      name="Viaduct  __&lt;5 char&gt;_Drop-down" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Track Bound __&lt;3 Char&gt;_Drop-down]"
+                      dataType="wstr"
+                      length="255"
+                      name="Track Bound __&lt;3 Char&gt;_Drop-down" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Track No# __&lt;6 Char&gt;_Drop-down]"
+                      dataType="wstr"
+                      length="255"
+                      name="Track No# __&lt;6 Char&gt;_Drop-down" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Chainage Start__&lt;20 Char&gt;]"
+                      dataType="wstr"
+                      length="255"
+                      name="Chainage Start__&lt;20 Char&gt;" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Chainage End__&lt;20 Char&gt;]"
+                      dataType="wstr"
+                      length="255"
+                      name="Chainage End__&lt;20 Char&gt;" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Train Car__&lt;7 char&gt;]"
+                      dataType="wstr"
+                      length="255"
+                      name="Train Car__&lt;7 char&gt;" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Train Area__&lt;2 char&gt;]"
+                      dataType="wstr"
+                      length="255"
+                      name="Train Area__&lt;2 char&gt;" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Sub-Area__&lt;4 char&gt;]"
+                      dataType="wstr"
+                      length="255"
+                      name="Sub-Area__&lt;4 char&gt;" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Assembly__&lt;6 Char&gt;]"
+                      dataType="wstr"
+                      length="255"
+                      name="Assembly__&lt;6 Char&gt;" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Viaduct Column/Pier Code__&lt;6 char&gt;]"
+                      dataType="wstr"
+                      length="255"
+                      name="Viaduct Column/Pier Code__&lt;6 char&gt;" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Bound &amp; Column Number__&lt;2 char&gt;]"
+                      dataType="wstr"
+                      length="255"
+                      name="Bound &amp; Column Number__&lt;2 char&gt;" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Crosshead _Location?__(Y/N)]"
+                      dataType="wstr"
+                      length="255"
+                      name="Crosshead _Location?__(Y/N)" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Bearing _Location ?__(Y/N)]"
+                      dataType="wstr"
+                      length="255"
+                      name="Bearing _Location ?__(Y/N)" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Bearing Number__&lt;1 char&gt;]"
+                      dataType="wstr"
+                      length="255"
+                      name="Bearing Number__&lt;1 char&gt;" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Bearing Bound__&lt;1 char&gt;]"
+                      dataType="wstr"
+                      length="255"
+                      name="Bearing Bound__&lt;1 char&gt;" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Location Description__&lt;100 Char&gt;]"
+                      dataType="wstr"
+                      length="255"
+                      name="Location Description__&lt;100 Char&gt;" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Location Code]"
+                      dataType="wstr"
+                      length="255"
+                      name="Location Code" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Is Track Location?__(Y/N)]"
+                      dataType="wstr"
+                      length="255"
+                      name="Is Track Location?__(Y/N)" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Is PTW Location?__(Y/N)]"
+                      dataType="wstr"
+                      length="255"
+                      name="Is PTW Location?__(Y/N)" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Parent_Location Code_]"
+                      dataType="wstr"
+                      length="255"
+                      name="Parent_Location Code_" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[System Code__&lt;4 Char&gt;_Drop-down]"
+                      dataType="wstr"
+                      length="255"
+                      name="System Code__&lt;4 Char&gt;_Drop-down" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Subsystem Code__&lt;6 Char&gt;_Drop-down]"
+                      dataType="wstr"
+                      length="255"
+                      name="Subsystem Code__&lt;6 Char&gt;_Drop-down" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Asset /_Tool Asset Type__&lt;10 Char&gt;_Drop-down]"
+                      dataType="wstr"
+                      length="255"
+                      name="Asset /_Tool Asset Type__&lt;10 Char&gt;_Drop-down" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[_Detail Code __&lt;15 Char&gt;]"
+                      dataType="wstr"
+                      length="255"
+                      name="_Detail Code __&lt;15 Char&gt;" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Asset Number_&lt;13 Char&gt;]"
+                      dataType="wstr"
+                      length="255"
+                      name="Asset Number_&lt;13 Char&gt;" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Usage__&lt;10 Char&gt;_(LOGICAL/LRU/LRU-NR/SRU/SRU-NR/TOOL)]"
+                      dataType="wstr"
+                      length="255"
+                      name="Usage__&lt;10 Char&gt;_(LOGICAL/LRU/LRU-NR/SRU/SRU-NR/TOOL)" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Asset / Tool Asset _Description__&lt;100 Char&gt;]"
+                      dataType="wstr"
+                      length="255"
+                      name="Asset / Tool Asset _Description__&lt;100 Char&gt;" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Asset / Tool Asset Code_( &lt;System&gt;/&lt;Subsystem&gt;/&lt;Asset Type&gt;/&lt;Ass]"
+                      dataType="wstr"
+                      length="255"
+                      name="Asset / Tool Asset Code_( &lt;System&gt;/&lt;Subsystem&gt;/&lt;Asset Type&gt;/&lt;Ass" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Parent _Asset Number_&lt;20 char&gt;]"
+                      dataType="wstr"
+                      length="255"
+                      name="Parent _Asset Number_&lt;20 char&gt;" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Existing?]"
+                      dataType="wstr"
+                      length="255"
+                      name="Existing?" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Output].ExternalColumns[Tunnel  __&lt;6 char&gt;_Drop-down]"
+                      dataType="wstr"
+                      length="255"
+                      name="Tunnel  __&lt;6 char&gt;_Drop-down" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output]"
+                  isErrorOut="true"
+                  name="Excel Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output].Columns[Coswin Asset ID__&lt;40 Char&gt;]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output].Columns[Coswin Asset ID__&lt;40 Char&gt;]"
+                      name="Coswin Asset ID__&lt;40 Char&gt;" />
+                    <outputColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output].Columns[Coswin Equipment Code__&lt;25 Char&gt;]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output].Columns[Coswin Equipment Code__&lt;25 Char&gt;]"
+                      name="Coswin Equipment Code__&lt;25 Char&gt;" />
+                    <outputColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output].Columns[Line__&lt;4 Char&gt;__(NEL/LRT)]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output].Columns[Line__&lt;4 Char&gt;__(NEL/LRT)]"
+                      name="Line__&lt;4 Char&gt;__(NEL/LRT)" />
+                    <outputColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output].Columns[Depot__&lt;3 Char&gt;_Drop-down]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output].Columns[Depot__&lt;3 Char&gt;_Drop-down]"
+                      name="Depot__&lt;3 Char&gt;_Drop-down" />
+                    <outputColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output].Columns[Depot Building__&lt;7 Char&gt;_Drop-down]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output].Columns[Depot Building__&lt;7 Char&gt;_Drop-down]"
+                      name="Depot Building__&lt;7 Char&gt;_Drop-down" />
+                    <outputColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output].Columns[Station__&lt;6 Char&gt;_Drop-down]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output].Columns[Station__&lt;6 Char&gt;_Drop-down]"
+                      name="Station__&lt;6 Char&gt;_Drop-down" />
+                    <outputColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output].Columns[Level__&lt;5 char&gt;]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output].Columns[Level__&lt;5 char&gt;]"
+                      name="Level__&lt;5 char&gt;" />
+                    <outputColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output].Columns[Area__&lt;30 char&gt;]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output].Columns[Area__&lt;30 char&gt;]"
+                      name="Area__&lt;30 char&gt;" />
+                    <outputColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output].Columns[System Code__&lt;4 Char&gt;_Drop-down]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output].Columns[System Code__&lt;4 Char&gt;_Drop-down]"
+                      name="System Code__&lt;4 Char&gt;_Drop-down" />
+                    <outputColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output].Columns[Tunnel  __&lt;6 char&gt;_Drop-down]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output].Columns[Tunnel  __&lt;6 char&gt;_Drop-down]"
+                      name="Tunnel  __&lt;6 char&gt;_Drop-down" />
+                    <outputColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output].Columns[Subsystem Code__&lt;6 Char&gt;_Drop-down]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output].Columns[Subsystem Code__&lt;6 Char&gt;_Drop-down]"
+                      name="Subsystem Code__&lt;6 Char&gt;_Drop-down" />
+                    <outputColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output].Columns[_Detail Code __&lt;15 Char&gt;]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output].Columns[_Detail Code __&lt;15 Char&gt;]"
+                      name="_Detail Code __&lt;15 Char&gt;" />
+                    <outputColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                    <outputColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output].Columns[Location Type]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output].Columns[Location Type]"
+                      name="Location Type" />
+                    <outputColumn
+                      refId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output].Columns[Location Code]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\MERGED\Excel Source.Outputs[Excel Source Error Output].Columns[Location Code]"
+                      name="Location Code" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\MERGED\OLE DB Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="OLE DB Destination"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">"MIGRATION"."SBST_ASSET_MASTER"</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\MERGED\OLE DB Destination.Connections[OleDbConnection]"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[BLUDB]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_line]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="4"
+                      cachedName="v_line"
+                      externalMetadataColumnId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LINE]"
+                      lineageId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_line]" />
+                    <inputColumn
+                      refId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_assetid]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="40"
+                      cachedName="v_assetid"
+                      externalMetadataColumnId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[COSWINASSETID]"
+                      lineageId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_assetid]" />
+                    <inputColumn
+                      refId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_eqptcode]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="25"
+                      cachedName="v_eqptcode"
+                      externalMetadataColumnId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[COSWINEQPTCODE]"
+                      lineageId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_eqptcode]" />
+                    <inputColumn
+                      refId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_system]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="v_system"
+                      externalMetadataColumnId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[SYSTEM]"
+                      lineageId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_system]" />
+                    <inputColumn
+                      refId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_depot]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="v_depot"
+                      externalMetadataColumnId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DEPOT]"
+                      lineageId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_depot]" />
+                    <inputColumn
+                      refId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_depotbuilding]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="v_depotbuilding"
+                      externalMetadataColumnId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DEPOTBUILDING]"
+                      lineageId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_depotbuilding]" />
+                    <inputColumn
+                      refId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_station]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="v_station"
+                      externalMetadataColumnId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STATION]"
+                      lineageId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_station]" />
+                    <inputColumn
+                      refId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_level]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="v_level"
+                      externalMetadataColumnId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LEVEL]"
+                      lineageId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_level]" />
+                    <inputColumn
+                      refId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_area]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="30"
+                      cachedName="v_area"
+                      externalMetadataColumnId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[AREA]"
+                      lineageId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_area]" />
+                    <inputColumn
+                      refId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_subsystem]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="v_subsystem"
+                      externalMetadataColumnId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[SUBSYSTEM]"
+                      lineageId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_subsystem]" />
+                    <inputColumn
+                      refId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_detailcode]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="30"
+                      cachedName="v_detailcode"
+                      externalMetadataColumnId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DETAILCODE]"
+                      lineageId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_detailcode]" />
+                    <inputColumn
+                      refId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_sheet]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="v_sheet"
+                      externalMetadataColumnId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[SHEET]"
+                      lineageId="Package\MERGED\Derived Column.Outputs[Derived Column Output].Columns[v_sheet]" />
+                    <inputColumn
+                      refId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_locationcode]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="v_locationcode"
+                      externalMetadataColumnId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LOCATIONCODE]"
+                      lineageId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_locationcode]" />
+                    <inputColumn
+                      refId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_locationtype]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="16"
+                      cachedName="v_locationtype"
+                      externalMetadataColumnId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LOCATIONTYPE]"
+                      lineageId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output].Columns[v_locationtype]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ID]"
+                      dataType="i8"
+                      name="ID" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[SYSTEM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="SYSTEM" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[COSWINASSETID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="40"
+                      name="COSWINASSETID" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[COSWINEQPTCODE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="25"
+                      name="COSWINEQPTCODE" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LINE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="4"
+                      name="LINE" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DEPOT]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="DEPOT" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DEPOTBUILDING]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="DEPOTBUILDING" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STATION]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="STATION" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LEVEL]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="LEVEL" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[AREA]"
+                      codePage="1252"
+                      dataType="str"
+                      length="30"
+                      name="AREA" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[SUBSYSTEM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="SUBSYSTEM" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DETAILCODE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="25"
+                      name="DETAILCODE" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[SHEET]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="SHEET" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LOCATION]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="LOCATION" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LOCATIONID]"
+                      dataType="i8"
+                      name="LOCATIONID" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LOCATIONCODE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="LOCATIONCODE" />
+                    <externalMetadataColumn
+                      refId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LOCATIONTYPE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="LOCATIONTYPE" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\MERGED\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\MERGED\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\MERGED\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\MERGED\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\MERGED\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\MERGED.Paths[Data Conversion Output]"
+              endId="Package\MERGED\Derived Column.Inputs[Derived Column Input]"
+              name="Data Conversion Output"
+              startId="Package\MERGED\Data Conversion.Outputs[Data Conversion Output]" />
+            <path
+              refId="Package\MERGED.Paths[Derived Column Output]"
+              endId="Package\MERGED\OLE DB Destination.Inputs[OLE DB Destination Input]"
+              name="Derived Column Output"
+              startId="Package\MERGED\Derived Column.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\MERGED.Paths[Excel Source Output]"
+              endId="Package\MERGED\Data Conversion.Inputs[Data Conversion Input]"
+              name="Excel Source Output"
+              startId="Package\MERGED\Excel Source.Outputs[Excel Source Output]" />
+          </paths>
+        </pipeline>
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -9424,6 +11015,7 @@
       DTS:refId="Package\PWR"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:Description="Data Flow Task"
+      DTS:Disabled="True"
       DTS:DTSID="{F852DB7C-6F15-4252-9A76-851B7BF7DE9F}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="-1"
@@ -10716,6 +12308,7 @@
       DTS:refId="Package\PWYL"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:Description="Data Flow Task"
+      DTS:Disabled="True"
       DTS:DTSID="{D592B1E6-7DF8-440C-BCCC-723619C2C2EC}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="-1"
@@ -12005,9 +13598,27 @@
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
+      DTS:refId="Package\RESET ASSETMASTER"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{5AE7193E-15A3-4F31-8D6F-BEBED535629E}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="RESET ASSETMASTER"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="delete from MIGRATION.SBST_ASSET_MASTER" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
       DTS:refId="Package\TO"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:Description="Data Flow Task"
+      DTS:Disabled="True"
       DTS:DTSID="{08D82461-129D-46F2-94FA-8966AB59BBAD}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="-1"
@@ -13297,26 +14908,45 @@
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
-      DTS:refId="Package\Update Location"
+      DTS:refId="Package\Update Location (INFER FROM LOCATION DATA"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
       DTS:Description="Execute SQL Task"
-      DTS:DTSID="{5BDF4A75-C4AE-4B4E-B9E0-15F64CBD8B45}"
+      DTS:Disabled="True"
+      DTS:DTSID="{97c73952-24a1-4a59-8c2f-b3cd87d7f7cd}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:LocaleID="-1"
-      DTS:ObjectName="Update Location"
+      DTS:ObjectName="Update Location (INFER FROM LOCATION DATA"
       DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
       DTS:ThreadHint="0">
       <DTS:Variables />
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-          SQLTask:SqlStatementSource="MERGE INTO MIGRATION.SBST_ASSET_MASTER AS a&#xA;USING (&#xA;&#x9;SELECT b.LOCATION, b.LOCATIONSID, b.ste_loccode, a.ID &#xA;&#x9;FROM MIGRATION.SBST_ASSET_MASTER a&#xA;&#x9;JOIN MAXIMO.LOCATIONS b&#xA;&#x9;ON 1=1&#xA;&#x9;&#x9;AND (&#xA;&#x9;&#x9;&#x9;((a.DEPOT IS NOT NULL AND length(a.DEPOT)&gt;0 AND b.TYPE='DEPOT' AND a.DEPOT=b.STE_DEPOT)  &#xA;&#x9;&#x9;&#x9;AND (a.DEPOTBUILDING=b.STE_BUILDING OR (a.DEPOTBUILDING IS NULL AND b.STE_BUILDING IS NULL))&#xA;&#x9;&#x9;&#x9;AND (a.LEVEL=b.STE_LEVEL OR (a.LEVEL IS NULL AND b.STE_LEVEL IS NULL))&#xA;&#x9;&#x9;&#x9;) &#xA;&#x9;&#x9;&#x9;OR &#xA;&#x9;&#x9;&#x9;((a.STATION IS NOT NULL AND length(a.STATION)&gt;0 AND b.TYPE='STATION' AND a.STATION=b.STE_STATION)&#xA;&#x9;&#x9;&#x9;AND (a.LEVEL=b.STE_LEVEL OR (a.LEVEL IS NULL AND b.STE_LEVEL IS NULL))&#xA;&#x9;&#x9;&#x9;)&#xA;&#x9;&#x9;)&#xA;) AS b ON b.ID=a.ID&#xA;WHEN MATCHED THEN&#xA;UPDATE SET location=b.location, locationid=b.locationsid&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:SqlStatementSource="MERGE INTO MIGRATION.SBST_ASSET_MASTER AS a&#xA;USING (&#xA; SELECT b.LOCATION, b.LOCATIONSID, b.ste_loccode, a.ID &#xA; FROM MIGRATION.SBST_ASSET_MASTER a&#xA; JOIN MAXIMO.LOCATIONS b&#xA; ON 1=1&#xA;  AND (&#xA;   ((a.DEPOT IS NOT NULL AND length(a.DEPOT)&gt;0 AND b.TYPE='DEPOT' AND a.DEPOT=b.STE_DEPOT)  &#xA;   AND (a.DEPOTBUILDING=b.STE_BUILDING OR (a.DEPOTBUILDING IS NULL AND b.STE_BUILDING IS NULL))&#xA;   AND (a.LEVEL=b.STE_LEVEL OR (a.LEVEL IS NULL AND b.STE_LEVEL IS NULL))&#xA;   ) &#xA;   OR &#xA;   ((a.STATION IS NOT NULL AND length(a.STATION)&gt;0 AND b.TYPE='STATION' AND a.STATION=b.STE_STATION)&#xA;   AND (a.LEVEL=b.STE_LEVEL OR (a.LEVEL IS NULL AND b.STE_LEVEL IS NULL))&#xA;   )&#xA;  )&#xA; WHERE a.LOCATIONCODE IS NULL&#xA;) AS b ON b.ID=a.ID&#xA;WHEN MATCHED THEN&#xA;UPDATE SET location=b.location, locationid=b.locationsid&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Update Location (LOCATION CODE)"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{c496e980-825c-4fad-8257-cf2ca8d86bfc}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Update Location (LOCATION CODE)"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="MERGE INTO MIGRATION.SBST_ASSET_MASTER AS a&#xA;USING (&#xA; SELECT b.LOCATION, b.LOCATIONSID, b.ste_loccode, a.ID &#xA; FROM MIGRATION.SBST_ASSET_MASTER a&#xA; JOIN MAXIMO.LOCATIONS b&#xA;  ON b.STE_LOCCODE=a.LOCATIONCODE &#xA; WHERE a.LOCATIONCODE IS NOT NULL&#xA;) AS b ON b.ID=a.ID&#xA;WHEN MATCHED THEN&#xA;UPDATE SET location=b.location, locationid=b.locationsid&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
       DTS:refId="Package\VIA"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:Description="Data Flow Task"
+      DTS:Disabled="True"
       DTS:DTSID="{043537DA-9A62-4797-A7EA-13763FD53833}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="-1"
@@ -14642,11 +16272,11 @@
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 12]"
       DTS:CreationName=""
-      DTS:DTSID="{156D1C76-12A3-4278-AB9A-D2DA011DCC00}"
+      DTS:DTSID="{C5647099-987A-400D-A065-FC4C42BE7573}"
       DTS:From="Package\Clean Up"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 12"
-      DTS:To="Package\Update Location" />
+      DTS:To="Package\Update Location (INFER FROM LOCATION DATA" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 13]"
       DTS:CreationName=""
@@ -14654,15 +16284,55 @@
       DTS:From="Package\PRE-PKG"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 13"
-      DTS:To="Package\Execute SQL Task 1 1" />
+      DTS:To="Package\RESET ASSETMASTER" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 14]"
       DTS:CreationName=""
-      DTS:DTSID="{781FE7EB-1C9B-4F40-BFFF-805D8C1F62D5}"
-      DTS:From="Package\Update Location"
+      DTS:DTSID="{623AA5B5-13C5-4608-A5FD-F3CE9DE0C1FA}"
+      DTS:From="Package\Generate Missing Station Locations"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 14"
-      DTS:To="Package\POST-PKG" />
+      DTS:To="Package\Update Location (LOCATION CODE)" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 15]"
+      DTS:CreationName=""
+      DTS:DTSID="{3B4EFD70-A976-46F5-B09C-ECF4607E5E82}"
+      DTS:From="Package\MERGED"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 15"
+      DTS:To="Package\CIV" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 16]"
+      DTS:CreationName=""
+      DTS:DTSID="{BA3DB3A1-844E-4CC4-80B1-CE97268937C2}"
+      DTS:From="Package\Update Location (INFER FROM LOCATION DATA"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 16"
+      DTS:To="Package\Generate Missing Train Locations" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 17]"
+      DTS:CreationName=""
+      DTS:DTSID="{605EEC02-5C51-432F-AA84-C29FB0B06183}"
+      DTS:From="Package\Generate Missing Train Locations"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 17"
+      DTS:To="Package\Generate Missing Depot Locations" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 18]"
+      DTS:CreationName=""
+      DTS:DTSID="{77CA8E9F-252D-466D-875A-80C765AB0DE9}"
+      DTS:From="Package\Generate Missing Depot Locations"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 18"
+      DTS:To="Package\Generate Missing Station Locations" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 19]"
+      DTS:CreationName=""
+      DTS:DTSID="{9DD4BE21-BC77-496B-A4AD-76A55B18D80F}"
+      DTS:From="Package\Update Location (LOCATION CODE)"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 19"
+      DTS:To="Package\Default DEPOT Location for DEPOT, DEPTRK Assets" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
       DTS:CreationName=""
@@ -14672,13 +16342,37 @@
       DTS:ObjectName="Constraint 2"
       DTS:To="Package\ELE" />
     <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 20]"
+      DTS:CreationName=""
+      DTS:DTSID="{62FBB4C0-FD79-4963-A2D9-1B917600396A}"
+      DTS:From="Package\Default DEPOT Location for DEPOT, DEPTRK Assets"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 20"
+      DTS:To="Package\Default STATION Location for STATION Assets" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 21]"
+      DTS:CreationName=""
+      DTS:DTSID="{F0F629E2-47FC-40C7-846A-5240472BAEA7}"
+      DTS:From="Package\Default STATION Location for STATION Assets"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 21"
+      DTS:To="Package\Default STATION Location for STATION Assets (DPT-&gt;SKG)" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 22]"
+      DTS:CreationName=""
+      DTS:DTSID="{B4DE7755-E7BC-4A6F-B898-0E8E846F97BB}"
+      DTS:From="Package\Default STATION Location for STATION Assets (DPT-&gt;SKG)"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 22"
+      DTS:To="Package\POST-PKG" />
+    <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
       DTS:CreationName=""
-      DTS:DTSID="{781BD6ED-56A5-4767-A403-9EB9EAA890F4}"
-      DTS:From="Package\Execute SQL Task 1 1"
+      DTS:DTSID="{B29B7002-55BC-4A00-AB0E-78B84CD3AFA5}"
+      DTS:From="Package\RESET ASSETMASTER"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 3"
-      DTS:To="Package\CIV" />
+      DTS:To="Package\MERGED" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 4]"
       DTS:CreationName=""
@@ -14743,19 +16437,19 @@
         <NodeLayout
           Size="99.2,41.6"
           Id="Package\AFC"
-          TopLeft="524.166638027464,197.599998625914" />
+          TopLeft="478.796270136021,318.562960858978" />
         <NodeLayout
           Size="100.8,41.6"
           Id="Package\AMS"
-          TopLeft="387.499978827935,196.733331965274" />
+          TopLeft="342.129610936492,317.696294198338" />
         <NodeLayout
           Size="100.8,41.6"
           Id="Package\BMS"
-          TopLeft="244.99998661379,195.866665304634" />
+          TopLeft="199.629618722347,316.829627537698" />
         <NodeLayout
           Size="96,41.6"
           Id="Package\CIV"
-          TopLeft="105.833327550855,123.733332851198" />
+          TopLeft="60.4629596594123,244.696295084262" />
         <NodeLayout
           Size="164.8,41.6"
           Id="Package\Clean Up\Execute SQL Task"
@@ -14767,11 +16461,15 @@
         <NodeLayout
           Size="173.6,41.6"
           Id="Package\Clean Up\Execute SQL Task 2"
-          TopLeft="264.999988799294,127.133334279524" />
+          TopLeft="473.333310749796,40.4666682155265" />
         <NodeLayout
           Size="164.8,41.6"
           Id="Package\Clean Up\Execute SQL Task 3"
-          TopLeft="47.5000006829699,126.466668324007" />
+          TopLeft="480.833310340015,117.800001717607" />
+        <NodeLayout
+          Size="173.6,41.6"
+          Id="Package\Clean Up\Execute SQL Task 4"
+          TopLeft="261.837007694628,117.007405934216" />
         <EdgeLayout
           Id="Package\Clean Up.PrecedenceConstraints[Constraint]"
           TopLeft="208.966667531762,60.966667157842">
@@ -14798,18 +16496,18 @@
         </EdgeLayout>
         <EdgeLayout
           Id="Package\Clean Up.PrecedenceConstraints[Constraint 1]"
-          TopLeft="348.766655511492,83.6000008316834">
+          TopLeft="428.13332222369,62.033334523605">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,43.5333334478404"
+              EndConnector="45.1999885261064,0"
               Start="0,0"
-              End="0,36.0333334478404">
+              End="37.6999885261064,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,36.0333334478404" />
+                    End="37.6999885261064,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -14822,18 +16520,42 @@
         </EdgeLayout>
         <EdgeLayout
           Id="Package\Clean Up.PrecedenceConstraints[Constraint 2]"
-          TopLeft="264.999988799294,147.600001301765">
+          TopLeft="561.683310544906,82.0666682155265">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-52.6999881163246,0"
+              EndConnector="0,35.7333335020808"
               Start="0,0"
-              End="-45.1999881163246,0">
+              End="0,28.2333335020808">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="-45.1999881163246,0" />
+                    End="0,28.2333335020808" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Clean Up.PrecedenceConstraints[Constraint 3]"
+          TopLeft="480.833310340015,138.203703825912">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-45.3963026453866,0"
+              Start="0,0"
+              End="-37.8963026453866,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="-37.8963026453866,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -14845,28 +16567,40 @@
           </EdgeLayout.Labels>
         </EdgeLayout>
         <ContainerLayout
-          HeaderHeight="43"
+          HeaderHeight="43.2"
           IsExpanded="False"
-          PanelSize="458.4,190.4"
-          Size="145.6,43.2"
+          PanelSize="795.2,196.8"
+          Size="795.2,43.2"
           Id="Package\Clean Up"
-          TopLeft="274.166651686861,325.13333113359" />
+          TopLeft="276.018503437532,446.096293366654" />
         <NodeLayout
           Size="100.8,41.6"
           Id="Package\DEQ"
-          TopLeft="247.499986477197,123.066665810877" />
+          TopLeft="202.129618585754,244.029628043941" />
         <NodeLayout
           Size="100,41.6"
           Id="Package\ECS"
-          TopLeft="389.99997869134,124.999999837279" />
+          TopLeft="344.629610799897,245.962962070343" />
         <NodeLayout
           Size="98.4,41.6"
           Id="Package\ELE"
-          TopLeft="522.49997145186,124.799999132157" />
+          TopLeft="477.129603560417,245.762961365221" />
         <NodeLayout
-          Size="164.8,41.6"
-          Id="Package\Execute SQL Task 1 1"
-          TopLeft="339.166648135418,15.4000002712012" />
+          Size="237.6,41.6"
+          Id="Package\Generate Missing Depot Locations"
+          TopLeft="241.481472172855,996.962959139362" />
+        <NodeLayout
+          Size="242.4,41.6"
+          Id="Package\Generate Missing Station Locations"
+          TopLeft="239.740727739018,1084.96296163039" />
+        <NodeLayout
+          Size="233.6,41.6"
+          Id="Package\Generate Missing Train Locations"
+          TopLeft="239.814801711912,910.074072560705" />
+        <NodeLayout
+          Size="124,41.6"
+          Id="Package\MERGED"
+          TopLeft="377.407386786777,128.555554661596" />
         <NodeLayout
           Size="137.6,41.6"
           Id="Package\POST-PKG\FINISH LOG"
@@ -14877,7 +16611,7 @@
           PanelSize="270.4,130.4"
           Size="156,43.2"
           Id="Package\POST-PKG"
-          TopLeft="275.833318262465,709.19999714335" />
+          TopLeft="648.51848308503,1235.00740670966" />
         <NodeLayout
           Size="135.2,41.6"
           Id="Package\PRE-PKG\GET LOGID"
@@ -14920,26 +16654,30 @@
         <NodeLayout
           Size="102.4,41.6"
           Id="Package\PWR"
-          TopLeft="658.333297363588,125.666665792795" />
+          TopLeft="612.962929472145,246.629628025859" />
         <NodeLayout
           Size="108,41.6"
           Id="Package\PWYL"
-          TopLeft="797.499956426523,125.666665792796" />
+          TopLeft="752.12958853508,246.62962802586" />
+        <NodeLayout
+          Size="193.6,41.6"
+          Id="Package\RESET ASSETMASTER"
+          TopLeft="339.166648135418,15.4000002712012" />
         <NodeLayout
           Size="92.8,41.6"
           Id="Package\TO"
-          TopLeft="807.499955880147,202.133332634236" />
+          TopLeft="762.129587988704,323.0962948673" />
         <NodeLayout
-          Size="154.4,41.6"
-          Id="Package\Update Location"
-          TopLeft="274.199999180436,620.599997052949" />
+          Size="311.2,41.6"
+          Id="Package\Update Location (INFER FROM LOCATION DATA"
+          TopLeft="194.444433820469,820.37036756461" />
         <NodeLayout
           Size="95.2,41.6"
           Id="Package\VIA"
-          TopLeft="667.49996352941,199.333331947194" />
+          TopLeft="622.129595637968,320.296294180258" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="201.833327550855,144.199999331038">
+          TopLeft="156.462959659412,265.162961564102">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -14961,7 +16699,7 @@
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 1]"
-          TopLeft="348.299986477197,144.833332824078">
+          TopLeft="302.929618585754,265.796295057142">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -14983,7 +16721,7 @@
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 10]"
-          TopLeft="387.499978827935,217.099998634954">
+          TopLeft="342.129610936492,338.062960868018">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -15005,52 +16743,30 @@
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 11]"
-          TopLeft="295.39998661379,237.466665304634">
+          TopLeft="250.029618722347,358.429627537698">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="51.5666650730705,87.6666658289565"
+              EndConnector="423.588884715185,87.6666658289561"
               Start="0,0"
-              End="51.5666650730705,80.1666658289565">
+              End="423.588884715185,80.1666658289561">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,39.8333329144782" />
+                    End="0,39.833332914478" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,39.8333329144782"
-                    Point2="0,43.8333329144782"
-                    Point3="4,43.8333329144782" />
+                    Point1="0,39.833332914478"
+                    Point2="0,43.833332914478"
+                    Point3="4,43.833332914478" />
                   <mssgle:LineSegment
-                    End="47.5666650730705,43.8333329144782" />
+                    End="419.588884715185,43.833332914478" />
                   <mssgle:CubicBezierSegment
-                    Point1="47.5666650730705,43.8333329144782"
-                    Point2="51.5666650730705,43.8333329144782"
-                    Point3="51.5666650730705,47.8333329144782" />
+                    Point1="419.588884715185,43.833332914478"
+                    Point2="423.588884715185,43.833332914478"
+                    Point3="423.588884715185,47.833332914478" />
                   <mssgle:LineSegment
-                    End="51.5666650730705,80.1666658289565" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 12]"
-          TopLeft="349.183325433649,368.33333113359">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,252.266665919359"
-              Start="0,0"
-              End="0,244.766665919359">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,244.766665919359" />
+                    End="423.588884715185,80.1666658289561" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -15082,19 +16798,97 @@
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 14]"
-          TopLeft="352.616658721451,662.199997052949">
+          Id="Package.PrecedenceConstraints[Constraint 15]"
+          TopLeft="439.407386786777,170.155554661596">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,47.0000000904009"
+              EndConnector="-330.944427127365,74.5407404226654"
               Start="0,0"
-              End="0,39.5000000904009">
+              End="-330.944427127365,67.0407404226654">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,39.5000000904009" />
+                    End="0,33.2703702113327" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,33.2703702113327"
+                    Point2="0,37.2703702113327"
+                    Point3="-4,37.2703702113327" />
+                  <mssgle:LineSegment
+                    End="-326.944427127365,37.2703702113327" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-326.944427127365,37.2703702113327"
+                    Point2="-330.944427127365,37.2703702113327"
+                    Point3="-330.944427127365,41.2703702113327" />
+                  <mssgle:LineSegment
+                    End="-330.944427127365,67.0407404226654" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 16]"
+          TopLeft="353.32961776619,861.97036756461">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,48.1037049960943"
+              Start="0,0"
+              End="0,40.6037049960943">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,40.6037049960943" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 17]"
+          TopLeft="358.448136942383,951.674072560705">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,45.2888865786571"
+              Start="0,0"
+              End="0,37.7888865786571">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,37.7888865786571" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 18]"
+          TopLeft="360.611099955937,1038.56295913936">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,46.4000024910326"
+              Start="0,0"
+              End="0,38.9000024910326">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,38.9000024910326" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -15105,7 +16899,7 @@
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 2]"
-          TopLeft="489.99997869134,145.699999484718">
+          TopLeft="444.629610799897,266.662961717782">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -15127,30 +16921,18 @@
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 3]"
-          TopLeft="421.566648135418,57.0000002712012">
+          TopLeft="437.687017461097,57.0000002712012">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-267.733320584563,66.7333325799966"
+              EndConnector="0,71.5555543903951"
               Start="0,0"
-              End="-267.733320584563,59.2333325799966">
+              End="0,64.0555543903951">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,29.3666662899983" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,29.3666662899983"
-                    Point2="0,33.3666662899983"
-                    Point3="-4,33.3666662899983" />
-                  <mssgle:LineSegment
-                    End="-263.733320584563,33.3666662899983" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-263.733320584563,33.3666662899983"
-                    Point2="-267.733320584563,33.3666662899983"
-                    Point3="-267.733320584563,37.3666662899983" />
-                  <mssgle:LineSegment
-                    End="-267.733320584563,59.2333325799966" />
+                    End="0,64.0555543903951" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -15161,7 +16943,7 @@
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 4]"
-          TopLeft="620.89997145186,146.033332462476">
+          TopLeft="575.529603560418,266.99629469554">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -15183,7 +16965,7 @@
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 5]"
-          TopLeft="760.733297363588,146.466665792796">
+          TopLeft="715.362929472146,267.42962802586">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -15205,7 +16987,7 @@
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 6]"
-          TopLeft="852.699956153335,167.266665792796">
+          TopLeft="807.329588261893,288.22962802586">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -15227,7 +17009,7 @@
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 7]"
-          TopLeft="807.499955880147,221.533332290715">
+          TopLeft="762.129587988704,342.496294523779">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -15249,7 +17031,7 @@
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 8]"
-          TopLeft="667.49996352941,219.266665286554">
+          TopLeft="622.129595637968,340.229627519618">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -15271,7 +17053,7 @@
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 9]"
-          TopLeft="524.166638027464,217.966665295594">
+          TopLeft="478.796270136021,338.929627528658">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -15283,6 +17065,190 @@
                   Capacity="5">
                   <mssgle:LineSegment
                     End="-28.3666591995292,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 12]"
+          TopLeft="673.618503437532,489.296293366654">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-323.574069617063,331.074074197956"
+              Start="0,0"
+              End="-323.574069617063,323.574074197956">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,161.537037098978" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,161.537037098978"
+                    Point2="0,165.537037098978"
+                    Point3="-4,165.537037098978" />
+                  <mssgle:LineSegment
+                    End="-319.574069617063,165.537037098978" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-319.574069617063,165.537037098978"
+                    Point2="-323.574069617063,165.537037098978"
+                    Point3="-323.574069617063,169.537037098978" />
+                  <mssgle:LineSegment
+                    End="-323.574069617063,323.574074197956" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="249.6,41.6"
+          Id="Package\Update Location (LOCATION CODE)"
+          TopLeft="546.666636798118,912.407405425971" />
+        <NodeLayout
+          Size="327.2,41.6"
+          Id="Package\Default DEPOT Location for DEPOT, DEPTRK Assets"
+          TopLeft="565.133343942132,995.340738132529" />
+        <NodeLayout
+          Size="298.4,41.6"
+          Id="Package\Default STATION Location for STATION Assets"
+          TopLeft="576.66663515899,1066.6740700074" />
+        <NodeLayout
+          Size="360,41.6"
+          Id="Package\Default STATION Location for STATION Assets (DPT-&gt;SKG)"
+          TopLeft="551.66663652493,1140.74073655956" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 14]"
+          TopLeft="400.007394405685,1084.96296163039">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="231.192575725767,-130.955556204419"
+              Start="0,0"
+              End="231.192575725767,-123.455556204419">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,-61.4931127158886" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,-61.4931127158886"
+                    Point2="0,-65.4931127158886"
+                    Point3="4,-65.4931127158886" />
+                  <mssgle:LineSegment
+                    End="227.192575725767,-65.4931127158886" />
+                  <mssgle:CubicBezierSegment
+                    Point1="227.192575725767,-65.4931127158886"
+                    Point2="231.192575725767,-65.4931127158886"
+                    Point3="231.192575725767,-69.4931127158886" />
+                  <mssgle:LineSegment
+                    End="231.192575725767,-123.455556204419" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 19]"
+          TopLeft="711.733303464785,954.007405425971">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="17.0000404773468,41.3333327065575"
+              Start="0,0"
+              End="17.0000404773468,33.8333327065575">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,12.6912948636671" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,12.6912948636671"
+                    Point2="0,16.6912948636671"
+                    Point3="4,16.6912948636671" />
+                  <mssgle:LineSegment
+                    End="13.0000404773468,16.6912948636671" />
+                  <mssgle:CubicBezierSegment
+                    Point1="13.0000404773468,16.6912948636671"
+                    Point2="17.0000404773468,16.6912948636671"
+                    Point3="17.0000404773468,20.6912948636671" />
+                  <mssgle:LineSegment
+                    End="17.0000404773468,33.8333327065575" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 20]"
+          TopLeft="727.299989550561,1036.94073813253">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,29.7333318748692"
+              Start="0,0"
+              End="0,22.2333318748692">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,22.2333318748692" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 21]"
+          TopLeft="728.76663584196,1108.2740700074">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,32.4666665521599"
+              Start="0,0"
+              End="0,24.9666665521599">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,24.9666665521599" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 22]"
+          TopLeft="729.09255980498,1182.34073655956">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,52.666670150099"
+              Start="0,0"
+              End="0,45.166670150099">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,45.166670150099" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -16137,6 +18103,122 @@
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
     design-time-name="Package\ELE\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\MERGED">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="171.2,41.6"
+          Id="Package\MERGED\OLE DB Destination"
+          TopLeft="73.3333293265768,292.933331296311" />
+        <NodeLayout
+          Size="152.8,41.6"
+          Id="Package\MERGED\Derived Column"
+          TopLeft="84.9999953558049,200.666665449275" />
+        <NodeLayout
+          Size="156,41.6"
+          Id="Package\MERGED\Data Conversion"
+          TopLeft="80.9999987930059,116.999998256564" />
+        <NodeLayout
+          Size="140,41.6"
+          Id="Package\MERGED\Excel Source"
+          TopLeft="89.999995082617,13.8666665702396" />
+        <EdgeLayout
+          Id="Package\MERGED.Paths[Derived Column Output]"
+          TopLeft="160.166662341191,242.266665449275">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,50.6666658470365"
+              Start="0,0"
+              End="0,43.1666658470365">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,43.1666658470365" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\MERGED.Paths[Data Conversion Output]"
+          TopLeft="160.199997074405,158.599998256564">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,42.066667192711"
+              Start="0,0"
+              End="0,34.566667192711">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,34.566667192711" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\MERGED.Paths[Excel Source Output]"
+          TopLeft="159.499996937811,55.4666665702396">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,61.5333316863244"
+              Start="0,0"
+              End="0,54.0333316863244">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,54.0333316863244" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\MERGED\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\MERGED\Excel Source">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
