@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0003_Master_Locations_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="332"
-  DTS:VersionGUID="{37BC3799-F7CD-4BE9-BA84-4646B7D2CDFF}"
+  DTS:VersionBuild="334"
+  DTS:VersionGUID="{9DD09AA2-00DD-42C1-83DD-7DE5D018FBD4}"
   DTS:VersionMajor="7"
   DTS:VersionMinor="2">
   <DTS:Property
@@ -1288,6 +1288,58 @@
               startId="Package\AUTOKEY (LOCATION)\Union All.Outputs[Union All Output 1]" />
           </paths>
         </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Default DEPOT Location for DEPOT, DEPTRK Assets"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{bfddcfc3-97fe-4484-8c36-1e6663c6830e}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Default DEPOT Location for DEPOT, DEPTRK Assets"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="MERGE INTO MIGRATION.SBST_ASSET_MASTER AS a&#xA;USING (&#xA; SELECT a.locationcode, a.DEPOT, c.LOCATION, c.LOCATIONSID, c.ste_loccode, a.ID &#xA; FROM MIGRATION.SBST_ASSET_MASTER a&#xA; JOIN MAXIMO.LOCATIONS c ON c.STE_LOCCODE=coalesce(a.DEPOT,'NED')&#xA; WHERE a.LOCATIONCODE IS NOT NULL AND a.location IS NULL AND locationtype IN ('DEPOT', 'DEPTRK')&#xA;) AS b ON b.ID=a.ID&#xA;WHEN MATCHED THEN&#xA;UPDATE SET location=b.location, locationid=b.locationsid&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Default STATION Location for STATION Assets"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{fd937f68-d443-4b0a-a506-c44251cda1fe}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Default STATION Location for STATION Assets"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="MERGE INTO MIGRATION.SBST_ASSET_MASTER AS a&#xA;USING (&#xA; SELECT a.locationcode, a.STATION, b.LOCATION, b.LOCATIONSID, b.ste_loccode, a.ID &#xA; FROM MIGRATION.SBST_ASSET_MASTER a&#xA; JOIN MAXIMO.LOCATIONS b ON b.STE_LOCCODE=a.STATION AND b.TYPE='STATION'&#xA; WHERE a.LOCATIONCODE IS NOT NULL AND a.location IS NULL AND a.locationtype IN ('STATION')&#xA;) AS b ON b.ID=a.ID&#xA;WHEN MATCHED THEN&#xA;UPDATE SET location=b.location, locationid=b.locationsid&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Default STATION Location for STATION Assets (DPT-&gt;SKG)"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:Disabled="True"
+      DTS:DTSID="{26c9a663-64c4-451d-9bfe-f1acb272d8b1}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Default STATION Location for STATION Assets (DPT-&gt;SKG)"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="MERGE INTO MIGRATION.SBST_ASSET_MASTER AS a&#xA;USING (&#xA; SELECT a.coswinassetid, a.locationcode, a.STATION, a.ID, c.LOCATION, c.LOCATIONSID&#xA; FROM MIGRATION.SBST_ASSET_MASTER a&#xA; JOIN MAXIMO.LOCATIONS c ON c.STE_LOCCODE='SKG'&#xA; WHERE a.LOCATIONCODE IS NOT NULL AND a.location IS NULL AND locationtype IN ('STATION')&#xA;  AND a.STATION='DPT'&#xA;) AS b ON b.ID=a.ID&#xA;WHEN MATCHED THEN&#xA;UPDATE SET location=b.location, locationid=b.locationsid, a.station='SKG'&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -14892,6 +14944,40 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           DTS:To="Package\Pre-Task\Get Max ID" />
       </DTS:PrecedenceConstraints>
     </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Reset ITEM MASTER Location"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{d0626462-22f7-4bd9-8df7-1b89f878579b}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Reset ITEM MASTER Location"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="UPDATE MIGRATION.SBST_ASSET_MASTER SET locationid=NULL, location=NULL" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Update ASSET MASTER's Location"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{7b4543b5-01d6-468a-9a58-97960311142a}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Update ASSET MASTER's Location"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="MERGE INTO MIGRATION.SBST_ASSET_MASTER AS a&#xA;USING (&#xA; SELECT b.LOCATION, b.LOCATIONSID, b.ste_loccode, a.ID &#xA; FROM MIGRATION.SBST_ASSET_MASTER a&#xA; JOIN MAXIMO.LOCATIONS b&#xA;  ON b.STE_LOCCODE=a.LOCATIONCODE &#xA; WHERE a.LOCATIONCODE IS NOT NULL&#xA;) AS b ON b.ID=a.ID&#xA;WHEN MATCHED THEN&#xA;UPDATE SET location=b.location, locationid=b.locationsid&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
   </DTS:Executables>
   <DTS:PrecedenceConstraints>
     <DTS:PrecedenceConstraint
@@ -14911,6 +14997,30 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
       DTS:ObjectName="Constraint 1"
       DTS:To="Package\DF - FM_FACILITY" />
     <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 17]"
+      DTS:CreationName=""
+      DTS:DTSID="{9663f3c0-c031-446f-b02d-883c50b529c1}"
+      DTS:From="Package\Update ASSET MASTER's Location"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 17"
+      DTS:To="Package\Default DEPOT Location for DEPOT, DEPTRK Assets" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 18]"
+      DTS:CreationName=""
+      DTS:DTSID="{446570fb-3684-4035-89d4-5095e03e89c4}"
+      DTS:From="Package\Default DEPOT Location for DEPOT, DEPTRK Assets"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 18"
+      DTS:To="Package\Default STATION Location for STATION Assets" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 19]"
+      DTS:CreationName=""
+      DTS:DTSID="{2a4491ba-baf5-438e-8bd2-e65d8fa01a02}"
+      DTS:From="Package\Default STATION Location for STATION Assets"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 19"
+      DTS:To="Package\Default STATION Location for STATION Assets (DPT-&gt;SKG)" />
+    <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
       DTS:CreationName=""
       DTS:DTSID="{B67D6BCD-1E10-4E51-A75F-B66A8C497FD0}"
@@ -14918,6 +15028,14 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 2"
       DTS:To="Package\Get Max ID" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 21]"
+      DTS:CreationName=""
+      DTS:DTSID="{0c997b59-6af8-4d3d-a9ed-4db8bcd66dc5}"
+      DTS:From="Package\Reset ITEM MASTER Location"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 21"
+      DTS:To="Package\Update ASSET MASTER's Location" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
       DTS:CreationName=""
@@ -14929,8 +15047,8 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 4]"
       DTS:CreationName=""
-      DTS:DTSID="{29F02417-48CB-4A78-949D-1EFE37E8CD4A}"
-      DTS:From="Package\MAXSEQ (LOCATIONS)"
+      DTS:DTSID="{9CB8A7AE-B545-4DFC-939A-841F10B8DFD4}"
+      DTS:From="Package\Default STATION Location for STATION Assets (DPT-&gt;SKG)"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 4"
       DTS:To="Package\POST-PKG" />
@@ -14966,6 +15084,14 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 8"
       DTS:To="Package\MAXSEQ (LOCATIONS)" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 9]"
+      DTS:CreationName=""
+      DTS:DTSID="{4CA4E884-AECE-4F83-8E16-FCD0B8D16576}"
+      DTS:From="Package\MAXSEQ (LOCATIONS)"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 9"
+      DTS:To="Package\Reset ITEM MASTER Location" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
 <!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
@@ -14978,7 +15104,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
     design-time-name="Package">
     <LayoutInfo>
       <GraphLayout
-        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        Capacity="64" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="191.2,41.6"
           Id="Package\AUTOKEY (LOCATION)"
@@ -15006,7 +15132,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         <NodeLayout
           Size="192.8,41.6"
           Id="Package\MAXSEQ (LOCATIONS)"
-          TopLeft="75.9111081819293,996.544443928162" />
+          TopLeft="156.744437098724,998.277777249442" />
         <NodeLayout
           Size="137.6,41.6"
           Id="Package\POST-PKG\FINISH LOG"
@@ -15015,9 +15141,9 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           HeaderHeight="43.2"
           IsExpanded="False"
           PanelSize="270.4,130.4"
-          Size="270.4,43.2"
+          Size="156,43.2"
           Id="Package\POST-PKG"
-          TopLeft="356.240721577113,991.351852078191" />
+          TopLeft="554.574044073991,987.018518774991" />
         <NodeLayout
           Size="135.2,41.6"
           Id="Package\PRE-PKG\GET LOGID"
@@ -15207,28 +15333,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 4]"
-          TopLeft="268.711108181929,1015.14814800318">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="87.5296133951837,0"
-              Start="0,0"
-              End="80.0296133951837,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="80.0296133951837,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 5]"
           TopLeft="174.144440650167,566.744444380162">
           <EdgeLayout.Curve>
@@ -15300,26 +15404,202 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-9.06666520966436,52.6666653046345"
+              EndConnector="71.7666637071306,54.399998625915"
               Start="0,0"
-              End="-9.06666520966436,45.1666653046345">
+              End="71.7666637071306,46.899998625915">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,22.3333326523173" />
+                    End="0,23.1999993129575" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,22.3333326523173"
-                    Point2="0,26.3333326523173"
-                    Point3="-4,26.3333326523173" />
+                    Point1="0,23.1999993129575"
+                    Point2="0,27.1999993129575"
+                    Point3="4,27.1999993129575" />
                   <mssgle:LineSegment
-                    End="-5.06666520966436,26.3333326523173" />
+                    End="67.7666637071306,27.1999993129575" />
                   <mssgle:CubicBezierSegment
-                    Point1="-5.06666520966436,26.3333326523173"
-                    Point2="-9.06666520966436,26.3333326523173"
-                    Point3="-9.06666520966436,30.3333326523173" />
+                    Point1="67.7666637071306,27.1999993129575"
+                    Point2="71.7666637071306,27.1999993129575"
+                    Point3="71.7666637071306,31.1999993129575" />
                   <mssgle:LineSegment
-                    End="-9.06666520966436,45.1666653046345" />
+                    End="71.7666637071306,46.899998625915" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="327.2,41.6"
+          Id="Package\Default DEPOT Location for DEPOT, DEPTRK Assets"
+          TopLeft="459.577796202787,748.01111302961" />
+        <NodeLayout
+          Size="298.4,41.6"
+          Id="Package\Default STATION Location for STATION Assets"
+          TopLeft="471.111087419646,819.344444904479" />
+        <NodeLayout
+          Size="360,41.6"
+          Id="Package\Default STATION Location for STATION Assets (DPT-&gt;SKG)"
+          TopLeft="446.111088785586,893.411111456638" />
+        <NodeLayout
+          Size="244,41.6"
+          Id="Package\Update ASSET MASTER's Location"
+          TopLeft="498.744460729483,673.544446585932" />
+        <NodeLayout
+          Size="221.6,41.6"
+          Id="Package\Reset ITEM MASTER Location"
+          TopLeft="326.944428629898,589.411114132497" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 17]"
+          TopLeft="621.961128466136,715.144446585931">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,32.8666664436842"
+              Start="0,0"
+              End="0,25.3666664436842">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,25.3666664436842" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 18]"
+          TopLeft="621.744441811218,789.611113029609">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,29.7333318748699"
+              Start="0,0"
+              End="0,22.2333318748699">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,22.2333318748699" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 19]"
+          TopLeft="623.211088102617,860.944444904478">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,32.4666665521593"
+              Start="0,0"
+              End="0,24.9666665521593">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,24.9666665521593" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 21]"
+          TopLeft="473.344428629898,631.011114132497">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="147.400032099585,42.5333324534352"
+              Start="0,0"
+              End="147.400032099585,35.0333324534352">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,13.1962720456899" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,13.1962720456899"
+                    Point2="0,17.1962720456899"
+                    Point3="4,17.1962720456899" />
+                  <mssgle:LineSegment
+                    End="143.400032099585,17.1962720456899" />
+                  <mssgle:CubicBezierSegment
+                    Point1="143.400032099585,17.1962720456899"
+                    Point2="147.400032099585,17.1962720456899"
+                    Point3="147.400032099585,21.1962720456899" />
+                  <mssgle:LineSegment
+                    End="147.400032099585,35.0333324534352" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 4]"
+          TopLeft="629.342566429788,935.011111456638">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,52.0074073183532"
+              Start="0,0"
+              End="0,44.5074073183532">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,44.5074073183532" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 9]"
+          TopLeft="283.944437098724,998.277777249442">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="118.199991531174,-367.266663116945"
+              Start="0,0"
+              End="118.199991531174,-359.766663116945">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,-179.876189958523" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,-179.876189958523"
+                    Point2="0,-183.876189958523"
+                    Point3="4,-183.876189958523" />
+                  <mssgle:LineSegment
+                    End="114.199991531174,-183.876189958523" />
+                  <mssgle:CubicBezierSegment
+                    Point1="114.199991531174,-183.876189958523"
+                    Point2="118.199991531174,-183.876189958523"
+                    Point3="118.199991531174,-187.876189958523" />
+                  <mssgle:LineSegment
+                    End="118.199991531174,-359.766663116945" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
