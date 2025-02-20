@@ -1,5 +1,6 @@
 delete from maximo.asset;
 delete from maximo.plustassetalias;
+delete from maximo.PLUSTASSETSTHIST;
 delete from maximo.assetlocusercust;
 delete from maximo.ste_cswnassetslhist;
 delete from maximo.assettrans;
@@ -10,6 +11,7 @@ delete from maximo.assetancestor;
 delete from maximo.tloamassetgrp;
 delete from maximo.assetmeter;
 delete from maximo.meterreading;
+delete from maximo.PLUSTMTRCHNG;
 
 delete from maximo.inventory;
 delete from maximo.invvendor;
@@ -50,3 +52,5 @@ delete from maximo.wplabor;
 delete from maximo.wpmaterial;
 delete from maximo.matusetrans;
 delete from maximo.multiassetlocci;
+
+DELETE FROM maximo.item;
