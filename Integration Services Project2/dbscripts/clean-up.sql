@@ -24,6 +24,7 @@ delete from maximo.invtrans;
 
 delete from maximo.contract;
 delete from maximo.contractline;
+delete from maximo.contractauth;
 delete from maximo.pr;
 delete from maximo.prline;
 delete from maximo.prcost;
