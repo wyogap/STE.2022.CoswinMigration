@@ -54,4 +54,9 @@ delete from maximo.wpmaterial;
 delete from maximo.matusetrans;
 delete from maximo.multiassetlocci;
 
+DELETE FROM MAXIMO.WORKVIEW;
+DELETE FROM MAXIMO.WOSERVICEADDRESS;
+DELETE FROM MAXIMO.PLUSTWOQUALFLG;
+DELETE FROM WOSTATUS;
+
 DELETE FROM maximo.item;
