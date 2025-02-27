@@ -11,8 +11,8 @@
   DTS:LocaleID="14345"
   DTS:ObjectName="DB2_1104_File_Location_Master"
   DTS:PackageType="5"
-  DTS:VersionBuild="172"
-  DTS:VersionGUID="{D6EFEF59-B424-4D82-9515-6B3BBE08B5BF}">
+  DTS:VersionBuild="182"
+  DTS:VersionGUID="{98F7BC9E-4771-4525-A4F3-171D9F3D0E02}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -64,6 +64,96 @@
         <pipeline
           version="1">
           <components>
+            <component
+              refId="Package\BUILDING_REF\Conditional Split"
+              componentClassID="Microsoft.ConditionalSplit"
+              contactInfo="Conditional Split;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Routes data rows to different outputs depending on the content of the data. Use conditions (SSIS expressions) to specify which rows are routed. For example, separate records that need to be cleaned from those that are ready to be loaded or route only a subset of records."
+              name="Conditional Split"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\BUILDING_REF\Conditional Split.Inputs[Conditional Split Input]"
+                  description="Input to the Conditional Split Transformation"
+                  name="Conditional Split Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\BUILDING_REF\Conditional Split.Inputs[Conditional Split Input].Columns[Building ABBV]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="Building ABBV"
+                      lineageId="Package\BUILDING_REF\Excel Source.Outputs[Excel Source Output].Columns[Building ABBV]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\BUILDING_REF\Conditional Split.Outputs[IS_VALID]"
+                  description="Output 1 of the Conditional Split Transformation"
+                  errorOrTruncationOperation="Computation"
+                  errorRowDisposition="FailComponent"
+                  exclusionGroup="1"
+                  name="IS_VALID"
+                  synchronousInputId="Package\BUILDING_REF\Conditional Split.Inputs[Conditional Split Input]"
+                  truncationRowDisposition="FailComponent">
+                  <properties>
+                    <property
+                      containsID="true"
+                      dataType="System.String"
+                      description="Specifies the expression. This expression version uses lineage identifiers instead of column names."
+                      name="Expression">![ISNULL](#{Package\BUILDING_REF\Excel Source.Outputs[Excel Source Output].Columns[Building ABBV]}) &amp;&amp; [TRIM](#{Package\BUILDING_REF\Excel Source.Outputs[Excel Source Output].Columns[Building ABBV]}) != ""</property>
+                    <property
+                      containsID="true"
+                      dataType="System.String"
+                      description="Specifies the friendly version of the expression. This expression version uses column names."
+                      expressionType="Notify"
+                      name="FriendlyExpression">!ISNULL([Building ABBV]) &amp;&amp; TRIM([Building ABBV]) != ""</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the position of the condition in the list of conditions that the transformation evaluates. The evaluation order is from the lowest to the highest value."
+                      name="EvaluationOrder">0</property>
+                  </properties>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\BUILDING_REF\Conditional Split.Outputs[Conditional Split Default Output]"
+                  description="Default Output of the Conditional Split Transformation"
+                  exclusionGroup="1"
+                  name="Conditional Split Default Output"
+                  synchronousInputId="Package\BUILDING_REF\Conditional Split.Inputs[Conditional Split Input]">
+                  <properties>
+                    <property
+                      dataType="System.Boolean"
+                      name="IsDefaultOut">true</property>
+                  </properties>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\BUILDING_REF\Conditional Split.Outputs[Conditional Split Error Output]"
+                  description="Error Output of the Conditional Split Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Conditional Split Error Output"
+                  synchronousInputId="Package\BUILDING_REF\Conditional Split.Inputs[Conditional Split Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\BUILDING_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\BUILDING_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\BUILDING_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\BUILDING_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
             <component
               refId="Package\BUILDING_REF\Derived Column"
               componentClassID="Microsoft.DerivedColumn"
@@ -461,9 +551,14 @@
               startId="Package\BUILDING_REF\Derived Column.Outputs[Derived Column Output]" />
             <path
               refId="Package\BUILDING_REF.Paths[Excel Source Output]"
-              endId="Package\BUILDING_REF\Derived Column.Inputs[Derived Column Input]"
+              endId="Package\BUILDING_REF\Conditional Split.Inputs[Conditional Split Input]"
               name="Excel Source Output"
               startId="Package\BUILDING_REF\Excel Source.Outputs[Excel Source Output]" />
+            <path
+              refId="Package\BUILDING_REF.Paths[IS_VALID]"
+              endId="Package\BUILDING_REF\Derived Column.Inputs[Derived Column Input]"
+              name="IS_VALID"
+              startId="Package\BUILDING_REF\Conditional Split.Outputs[IS_VALID]" />
           </paths>
         </pipeline>
       </DTS:ObjectData>
@@ -1481,6 +1576,96 @@
           version="1">
           <components>
             <component
+              refId="Package\DEPOT_REF\Conditional Split"
+              componentClassID="Microsoft.ConditionalSplit"
+              contactInfo="Conditional Split;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Routes data rows to different outputs depending on the content of the data. Use conditions (SSIS expressions) to specify which rows are routed. For example, separate records that need to be cleaned from those that are ready to be loaded or route only a subset of records."
+              name="Conditional Split"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\DEPOT_REF\Conditional Split.Inputs[Conditional Split Input]"
+                  description="Input to the Conditional Split Transformation"
+                  name="Conditional Split Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DEPOT_REF\Conditional Split.Inputs[Conditional Split Input].Columns[Depot ABBV]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="Depot ABBV"
+                      lineageId="Package\DEPOT_REF\Excel Source.Outputs[Excel Source Output].Columns[Depot ABBV]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DEPOT_REF\Conditional Split.Outputs[IS_VALID]"
+                  description="Output 1 of the Conditional Split Transformation"
+                  errorOrTruncationOperation="Computation"
+                  errorRowDisposition="FailComponent"
+                  exclusionGroup="1"
+                  name="IS_VALID"
+                  synchronousInputId="Package\DEPOT_REF\Conditional Split.Inputs[Conditional Split Input]"
+                  truncationRowDisposition="FailComponent">
+                  <properties>
+                    <property
+                      containsID="true"
+                      dataType="System.String"
+                      description="Specifies the expression. This expression version uses lineage identifiers instead of column names."
+                      name="Expression">![ISNULL](#{Package\DEPOT_REF\Excel Source.Outputs[Excel Source Output].Columns[Depot ABBV]}) &amp;&amp; [TRIM](#{Package\DEPOT_REF\Excel Source.Outputs[Excel Source Output].Columns[Depot ABBV]}) != ""</property>
+                    <property
+                      containsID="true"
+                      dataType="System.String"
+                      description="Specifies the friendly version of the expression. This expression version uses column names."
+                      expressionType="Notify"
+                      name="FriendlyExpression">!ISNULL([Depot ABBV]) &amp;&amp; TRIM([Depot ABBV]) != ""</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the position of the condition in the list of conditions that the transformation evaluates. The evaluation order is from the lowest to the highest value."
+                      name="EvaluationOrder">0</property>
+                  </properties>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DEPOT_REF\Conditional Split.Outputs[Conditional Split Default Output]"
+                  description="Default Output of the Conditional Split Transformation"
+                  exclusionGroup="1"
+                  name="Conditional Split Default Output"
+                  synchronousInputId="Package\DEPOT_REF\Conditional Split.Inputs[Conditional Split Input]">
+                  <properties>
+                    <property
+                      dataType="System.Boolean"
+                      name="IsDefaultOut">true</property>
+                  </properties>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DEPOT_REF\Conditional Split.Outputs[Conditional Split Error Output]"
+                  description="Error Output of the Conditional Split Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Conditional Split Error Output"
+                  synchronousInputId="Package\DEPOT_REF\Conditional Split.Inputs[Conditional Split Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DEPOT_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DEPOT_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DEPOT_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DEPOT_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
               refId="Package\DEPOT_REF\Derived Column"
               componentClassID="Microsoft.DerivedColumn"
               contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
@@ -1532,13 +1717,13 @@
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">(DT_STR,16,1252)#{Package\DEPOT_REF\Excel Source.Outputs[Excel Source Output].Columns[Depot ABBV]}</property>
+                          name="Expression">(DT_STR,16,1252)[TRIM](#{Package\DEPOT_REF\Excel Source.Outputs[Excel Source Output].Columns[Depot ABBV]})</property>
                         <property
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
-                          name="FriendlyExpression">(DT_STR,16,1252)[Depot ABBV]</property>
+                          name="FriendlyExpression">(DT_STR,16,1252)TRIM([Depot ABBV])</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
@@ -1556,13 +1741,13 @@
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">(DT_STR,100,1252)#{Package\DEPOT_REF\Excel Source.Outputs[Excel Source Output].Columns[Description]}</property>
+                          name="Expression">(DT_STR,100,1252)[TRIM](#{Package\DEPOT_REF\Excel Source.Outputs[Excel Source Output].Columns[Description]})</property>
                         <property
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
-                          name="FriendlyExpression">(DT_STR,100,1252)Description</property>
+                          name="FriendlyExpression">(DT_STR,100,1252)TRIM(Description)</property>
                       </properties>
                     </outputColumn>
                   </outputColumns>
@@ -1877,9 +2062,14 @@
               startId="Package\DEPOT_REF\Derived Column.Outputs[Derived Column Output]" />
             <path
               refId="Package\DEPOT_REF.Paths[Excel Source Output]"
-              endId="Package\DEPOT_REF\Derived Column.Inputs[Derived Column Input]"
+              endId="Package\DEPOT_REF\Conditional Split.Inputs[Conditional Split Input]"
               name="Excel Source Output"
               startId="Package\DEPOT_REF\Excel Source.Outputs[Excel Source Output]" />
+            <path
+              refId="Package\DEPOT_REF.Paths[IS_VALID]"
+              endId="Package\DEPOT_REF\Derived Column.Inputs[Derived Column Input]"
+              name="IS_VALID"
+              startId="Package\DEPOT_REF\Conditional Split.Outputs[IS_VALID]" />
           </paths>
         </pipeline>
       </DTS:ObjectData>
@@ -6322,6 +6512,96 @@
           version="1">
           <components>
             <component
+              refId="Package\STATION_REF\Conditional Split"
+              componentClassID="Microsoft.ConditionalSplit"
+              contactInfo="Conditional Split;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Routes data rows to different outputs depending on the content of the data. Use conditions (SSIS expressions) to specify which rows are routed. For example, separate records that need to be cleaned from those that are ready to be loaded or route only a subset of records."
+              name="Conditional Split"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\STATION_REF\Conditional Split.Inputs[Conditional Split Input]"
+                  description="Input to the Conditional Split Transformation"
+                  name="Conditional Split Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\STATION_REF\Conditional Split.Inputs[Conditional Split Input].Columns[ABBV]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="ABBV"
+                      lineageId="Package\STATION_REF\Excel Source.Outputs[Excel Source Output].Columns[ABBV]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\STATION_REF\Conditional Split.Outputs[IS_VALID]"
+                  description="Output 1 of the Conditional Split Transformation"
+                  errorOrTruncationOperation="Computation"
+                  errorRowDisposition="FailComponent"
+                  exclusionGroup="1"
+                  name="IS_VALID"
+                  synchronousInputId="Package\STATION_REF\Conditional Split.Inputs[Conditional Split Input]"
+                  truncationRowDisposition="FailComponent">
+                  <properties>
+                    <property
+                      containsID="true"
+                      dataType="System.String"
+                      description="Specifies the expression. This expression version uses lineage identifiers instead of column names."
+                      name="Expression">![ISNULL](#{Package\STATION_REF\Excel Source.Outputs[Excel Source Output].Columns[ABBV]}) &amp;&amp; [TRIM](#{Package\STATION_REF\Excel Source.Outputs[Excel Source Output].Columns[ABBV]}) != ""</property>
+                    <property
+                      containsID="true"
+                      dataType="System.String"
+                      description="Specifies the friendly version of the expression. This expression version uses column names."
+                      expressionType="Notify"
+                      name="FriendlyExpression">!ISNULL(ABBV) &amp;&amp; TRIM(ABBV) != ""</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the position of the condition in the list of conditions that the transformation evaluates. The evaluation order is from the lowest to the highest value."
+                      name="EvaluationOrder">0</property>
+                  </properties>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\STATION_REF\Conditional Split.Outputs[Conditional Split Default Output]"
+                  description="Default Output of the Conditional Split Transformation"
+                  exclusionGroup="1"
+                  name="Conditional Split Default Output"
+                  synchronousInputId="Package\STATION_REF\Conditional Split.Inputs[Conditional Split Input]">
+                  <properties>
+                    <property
+                      dataType="System.Boolean"
+                      name="IsDefaultOut">true</property>
+                  </properties>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\STATION_REF\Conditional Split.Outputs[Conditional Split Error Output]"
+                  description="Error Output of the Conditional Split Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Conditional Split Error Output"
+                  synchronousInputId="Package\STATION_REF\Conditional Split.Inputs[Conditional Split Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\STATION_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\STATION_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\STATION_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\STATION_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
               refId="Package\STATION_REF\Derived Column"
               componentClassID="Microsoft.DerivedColumn"
               contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
@@ -6765,9 +7045,14 @@
               startId="Package\STATION_REF\Derived Column.Outputs[Derived Column Output]" />
             <path
               refId="Package\STATION_REF.Paths[Excel Source Output]"
-              endId="Package\STATION_REF\Derived Column.Inputs[Derived Column Input]"
+              endId="Package\STATION_REF\Conditional Split.Inputs[Conditional Split Input]"
               name="Excel Source Output"
               startId="Package\STATION_REF\Excel Source.Outputs[Excel Source Output]" />
+            <path
+              refId="Package\STATION_REF.Paths[IS_VALID]"
+              endId="Package\STATION_REF\Derived Column.Inputs[Derived Column Input]"
+              name="IS_VALID"
+              startId="Package\STATION_REF\Conditional Split.Outputs[IS_VALID]" />
           </paths>
         </pipeline>
       </DTS:ObjectData>
@@ -6786,6 +7071,96 @@
         <pipeline
           version="1">
           <components>
+            <component
+              refId="Package\TRACKBOUND_REF\Conditional Split"
+              componentClassID="Microsoft.ConditionalSplit"
+              contactInfo="Conditional Split;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Routes data rows to different outputs depending on the content of the data. Use conditions (SSIS expressions) to specify which rows are routed. For example, separate records that need to be cleaned from those that are ready to be loaded or route only a subset of records."
+              name="Conditional Split"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\TRACKBOUND_REF\Conditional Split.Inputs[Conditional Split Input]"
+                  description="Input to the Conditional Split Transformation"
+                  name="Conditional Split Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\TRACKBOUND_REF\Conditional Split.Inputs[Conditional Split Input].Columns[Track Bound Type]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="Track Bound Type"
+                      lineageId="Package\TRACKBOUND_REF\Excel Source.Outputs[Excel Source Output].Columns[Track Bound Type]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\TRACKBOUND_REF\Conditional Split.Outputs[IS_VALID]"
+                  description="Output 1 of the Conditional Split Transformation"
+                  errorOrTruncationOperation="Computation"
+                  errorRowDisposition="FailComponent"
+                  exclusionGroup="1"
+                  name="IS_VALID"
+                  synchronousInputId="Package\TRACKBOUND_REF\Conditional Split.Inputs[Conditional Split Input]"
+                  truncationRowDisposition="FailComponent">
+                  <properties>
+                    <property
+                      containsID="true"
+                      dataType="System.String"
+                      description="Specifies the expression. This expression version uses lineage identifiers instead of column names."
+                      name="Expression">![ISNULL](#{Package\TRACKBOUND_REF\Excel Source.Outputs[Excel Source Output].Columns[Track Bound Type]}) &amp;&amp; [TRIM](#{Package\TRACKBOUND_REF\Excel Source.Outputs[Excel Source Output].Columns[Track Bound Type]}) != ""</property>
+                    <property
+                      containsID="true"
+                      dataType="System.String"
+                      description="Specifies the friendly version of the expression. This expression version uses column names."
+                      expressionType="Notify"
+                      name="FriendlyExpression">!ISNULL([Track Bound Type]) &amp;&amp; TRIM([Track Bound Type]) != ""</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the position of the condition in the list of conditions that the transformation evaluates. The evaluation order is from the lowest to the highest value."
+                      name="EvaluationOrder">0</property>
+                  </properties>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\TRACKBOUND_REF\Conditional Split.Outputs[Conditional Split Default Output]"
+                  description="Default Output of the Conditional Split Transformation"
+                  exclusionGroup="1"
+                  name="Conditional Split Default Output"
+                  synchronousInputId="Package\TRACKBOUND_REF\Conditional Split.Inputs[Conditional Split Input]">
+                  <properties>
+                    <property
+                      dataType="System.Boolean"
+                      name="IsDefaultOut">true</property>
+                  </properties>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\TRACKBOUND_REF\Conditional Split.Outputs[Conditional Split Error Output]"
+                  description="Error Output of the Conditional Split Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Conditional Split Error Output"
+                  synchronousInputId="Package\TRACKBOUND_REF\Conditional Split.Inputs[Conditional Split Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\TRACKBOUND_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\TRACKBOUND_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\TRACKBOUND_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\TRACKBOUND_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
             <component
               refId="Package\TRACKBOUND_REF\Derived Column"
               componentClassID="Microsoft.DerivedColumn"
@@ -7165,9 +7540,14 @@
               startId="Package\TRACKBOUND_REF\Derived Column.Outputs[Derived Column Output]" />
             <path
               refId="Package\TRACKBOUND_REF.Paths[Excel Source Output]"
-              endId="Package\TRACKBOUND_REF\Derived Column.Inputs[Derived Column Input]"
+              endId="Package\TRACKBOUND_REF\Conditional Split.Inputs[Conditional Split Input]"
               name="Excel Source Output"
               startId="Package\TRACKBOUND_REF\Excel Source.Outputs[Excel Source Output]" />
+            <path
+              refId="Package\TRACKBOUND_REF.Paths[IS_VALID]"
+              endId="Package\TRACKBOUND_REF\Derived Column.Inputs[Derived Column Input]"
+              name="IS_VALID"
+              startId="Package\TRACKBOUND_REF\Conditional Split.Outputs[IS_VALID]" />
           </paths>
         </pipeline>
       </DTS:ObjectData>
@@ -7203,6 +7583,96 @@
         <pipeline
           version="1">
           <components>
+            <component
+              refId="Package\TRAIN_AREA_REF\Conditional Split"
+              componentClassID="Microsoft.ConditionalSplit"
+              contactInfo="Conditional Split;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Routes data rows to different outputs depending on the content of the data. Use conditions (SSIS expressions) to specify which rows are routed. For example, separate records that need to be cleaned from those that are ready to be loaded or route only a subset of records."
+              name="Conditional Split"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\TRAIN_AREA_REF\Conditional Split.Inputs[Conditional Split Input]"
+                  description="Input to the Conditional Split Transformation"
+                  name="Conditional Split Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\TRAIN_AREA_REF\Conditional Split.Inputs[Conditional Split Input].Columns[Train Area Code_&lt;2 Char&gt;]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="Train Area Code_&lt;2 Char&gt;"
+                      lineageId="Package\TRAIN_AREA_REF\Excel Source.Outputs[Excel Source Output].Columns[Train Area Code_&lt;2 Char&gt;]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\TRAIN_AREA_REF\Conditional Split.Outputs[IS_VALID]"
+                  description="Output 1 of the Conditional Split Transformation"
+                  errorOrTruncationOperation="Computation"
+                  errorRowDisposition="FailComponent"
+                  exclusionGroup="1"
+                  name="IS_VALID"
+                  synchronousInputId="Package\TRAIN_AREA_REF\Conditional Split.Inputs[Conditional Split Input]"
+                  truncationRowDisposition="FailComponent">
+                  <properties>
+                    <property
+                      containsID="true"
+                      dataType="System.String"
+                      description="Specifies the expression. This expression version uses lineage identifiers instead of column names."
+                      name="Expression">![ISNULL](#{Package\TRAIN_AREA_REF\Excel Source.Outputs[Excel Source Output].Columns[Train Area Code_&lt;2 Char&gt;]}) &amp;&amp; [TRIM](#{Package\TRAIN_AREA_REF\Excel Source.Outputs[Excel Source Output].Columns[Train Area Code_&lt;2 Char&gt;]}) != ""</property>
+                    <property
+                      containsID="true"
+                      dataType="System.String"
+                      description="Specifies the friendly version of the expression. This expression version uses column names."
+                      expressionType="Notify"
+                      name="FriendlyExpression">!ISNULL([Train Area Code_&lt;2 Char&gt;]) &amp;&amp; TRIM([Train Area Code_&lt;2 Char&gt;]) != ""</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the position of the condition in the list of conditions that the transformation evaluates. The evaluation order is from the lowest to the highest value."
+                      name="EvaluationOrder">0</property>
+                  </properties>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\TRAIN_AREA_REF\Conditional Split.Outputs[Conditional Split Default Output]"
+                  description="Default Output of the Conditional Split Transformation"
+                  exclusionGroup="1"
+                  name="Conditional Split Default Output"
+                  synchronousInputId="Package\TRAIN_AREA_REF\Conditional Split.Inputs[Conditional Split Input]">
+                  <properties>
+                    <property
+                      dataType="System.Boolean"
+                      name="IsDefaultOut">true</property>
+                  </properties>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\TRAIN_AREA_REF\Conditional Split.Outputs[Conditional Split Error Output]"
+                  description="Error Output of the Conditional Split Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Conditional Split Error Output"
+                  synchronousInputId="Package\TRAIN_AREA_REF\Conditional Split.Inputs[Conditional Split Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\TRAIN_AREA_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\TRAIN_AREA_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\TRAIN_AREA_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\TRAIN_AREA_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
             <component
               refId="Package\TRAIN_AREA_REF\Derived Column"
               componentClassID="Microsoft.DerivedColumn"
@@ -7582,9 +8052,14 @@
               startId="Package\TRAIN_AREA_REF\Derived Column.Outputs[Derived Column Output]" />
             <path
               refId="Package\TRAIN_AREA_REF.Paths[Excel Source Output]"
-              endId="Package\TRAIN_AREA_REF\Derived Column.Inputs[Derived Column Input]"
+              endId="Package\TRAIN_AREA_REF\Conditional Split.Inputs[Conditional Split Input]"
               name="Excel Source Output"
               startId="Package\TRAIN_AREA_REF\Excel Source.Outputs[Excel Source Output]" />
+            <path
+              refId="Package\TRAIN_AREA_REF.Paths[IS_VALID]"
+              endId="Package\TRAIN_AREA_REF\Derived Column.Inputs[Derived Column Input]"
+              name="IS_VALID"
+              startId="Package\TRAIN_AREA_REF\Conditional Split.Outputs[IS_VALID]" />
           </paths>
         </pipeline>
       </DTS:ObjectData>
@@ -7603,6 +8078,96 @@
         <pipeline
           version="1">
           <components>
+            <component
+              refId="Package\TRAIN_CAR_REF\Conditional Split"
+              componentClassID="Microsoft.ConditionalSplit"
+              contactInfo="Conditional Split;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Routes data rows to different outputs depending on the content of the data. Use conditions (SSIS expressions) to specify which rows are routed. For example, separate records that need to be cleaned from those that are ready to be loaded or route only a subset of records."
+              name="Conditional Split"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\TRAIN_CAR_REF\Conditional Split.Inputs[Conditional Split Input]"
+                  description="Input to the Conditional Split Transformation"
+                  name="Conditional Split Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\TRAIN_CAR_REF\Conditional Split.Inputs[Conditional Split Input].Columns[Train Car_&lt;7 Char&gt;]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="Train Car_&lt;7 Char&gt;"
+                      lineageId="Package\TRAIN_CAR_REF\Excel Source.Outputs[Excel Source Output].Columns[Train Car_&lt;7 Char&gt;]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\TRAIN_CAR_REF\Conditional Split.Outputs[IS_VALID]"
+                  description="Output 1 of the Conditional Split Transformation"
+                  errorOrTruncationOperation="Computation"
+                  errorRowDisposition="FailComponent"
+                  exclusionGroup="1"
+                  name="IS_VALID"
+                  synchronousInputId="Package\TRAIN_CAR_REF\Conditional Split.Inputs[Conditional Split Input]"
+                  truncationRowDisposition="FailComponent">
+                  <properties>
+                    <property
+                      containsID="true"
+                      dataType="System.String"
+                      description="Specifies the expression. This expression version uses lineage identifiers instead of column names."
+                      name="Expression">![ISNULL](#{Package\TRAIN_CAR_REF\Excel Source.Outputs[Excel Source Output].Columns[Train Car_&lt;7 Char&gt;]}) &amp;&amp; [TRIM](#{Package\TRAIN_CAR_REF\Excel Source.Outputs[Excel Source Output].Columns[Train Car_&lt;7 Char&gt;]}) != ""</property>
+                    <property
+                      containsID="true"
+                      dataType="System.String"
+                      description="Specifies the friendly version of the expression. This expression version uses column names."
+                      expressionType="Notify"
+                      name="FriendlyExpression">!ISNULL([Train Car_&lt;7 Char&gt;]) &amp;&amp; TRIM([Train Car_&lt;7 Char&gt;]) != ""</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the position of the condition in the list of conditions that the transformation evaluates. The evaluation order is from the lowest to the highest value."
+                      name="EvaluationOrder">0</property>
+                  </properties>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\TRAIN_CAR_REF\Conditional Split.Outputs[Conditional Split Default Output]"
+                  description="Default Output of the Conditional Split Transformation"
+                  exclusionGroup="1"
+                  name="Conditional Split Default Output"
+                  synchronousInputId="Package\TRAIN_CAR_REF\Conditional Split.Inputs[Conditional Split Input]">
+                  <properties>
+                    <property
+                      dataType="System.Boolean"
+                      name="IsDefaultOut">true</property>
+                  </properties>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\TRAIN_CAR_REF\Conditional Split.Outputs[Conditional Split Error Output]"
+                  description="Error Output of the Conditional Split Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Conditional Split Error Output"
+                  synchronousInputId="Package\TRAIN_CAR_REF\Conditional Split.Inputs[Conditional Split Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\TRAIN_CAR_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\TRAIN_CAR_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\TRAIN_CAR_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\TRAIN_CAR_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
             <component
               refId="Package\TRAIN_CAR_REF\Derived Column"
               componentClassID="Microsoft.DerivedColumn"
@@ -8047,9 +8612,14 @@
               startId="Package\TRAIN_CAR_REF\Derived Column.Outputs[Derived Column Output]" />
             <path
               refId="Package\TRAIN_CAR_REF.Paths[Excel Source Output]"
-              endId="Package\TRAIN_CAR_REF\Derived Column.Inputs[Derived Column Input]"
+              endId="Package\TRAIN_CAR_REF\Conditional Split.Inputs[Conditional Split Input]"
               name="Excel Source Output"
               startId="Package\TRAIN_CAR_REF\Excel Source.Outputs[Excel Source Output]" />
+            <path
+              refId="Package\TRAIN_CAR_REF.Paths[IS_VALID]"
+              endId="Package\TRAIN_CAR_REF\Derived Column.Inputs[Derived Column Input]"
+              name="IS_VALID"
+              startId="Package\TRAIN_CAR_REF\Conditional Split.Outputs[IS_VALID]" />
           </paths>
         </pipeline>
       </DTS:ObjectData>
@@ -8068,6 +8638,96 @@
         <pipeline
           version="1">
           <components>
+            <component
+              refId="Package\TRAIN_SUB_AREA_REF\Conditional Split"
+              componentClassID="Microsoft.ConditionalSplit"
+              contactInfo="Conditional Split;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Routes data rows to different outputs depending on the content of the data. Use conditions (SSIS expressions) to specify which rows are routed. For example, separate records that need to be cleaned from those that are ready to be loaded or route only a subset of records."
+              name="Conditional Split"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\TRAIN_SUB_AREA_REF\Conditional Split.Inputs[Conditional Split Input]"
+                  description="Input to the Conditional Split Transformation"
+                  name="Conditional Split Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\TRAIN_SUB_AREA_REF\Conditional Split.Inputs[Conditional Split Input].Columns[Sub-Area Code_&lt;4 Char&gt;]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="Sub-Area Code_&lt;4 Char&gt;"
+                      lineageId="Package\TRAIN_SUB_AREA_REF\Excel Source.Outputs[Excel Source Output].Columns[Sub-Area Code_&lt;4 Char&gt;]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\TRAIN_SUB_AREA_REF\Conditional Split.Outputs[IS_VALID]"
+                  description="Output 1 of the Conditional Split Transformation"
+                  errorOrTruncationOperation="Computation"
+                  errorRowDisposition="FailComponent"
+                  exclusionGroup="1"
+                  name="IS_VALID"
+                  synchronousInputId="Package\TRAIN_SUB_AREA_REF\Conditional Split.Inputs[Conditional Split Input]"
+                  truncationRowDisposition="FailComponent">
+                  <properties>
+                    <property
+                      containsID="true"
+                      dataType="System.String"
+                      description="Specifies the expression. This expression version uses lineage identifiers instead of column names."
+                      name="Expression">![ISNULL](#{Package\TRAIN_SUB_AREA_REF\Excel Source.Outputs[Excel Source Output].Columns[Sub-Area Code_&lt;4 Char&gt;]}) &amp;&amp; [TRIM](#{Package\TRAIN_SUB_AREA_REF\Excel Source.Outputs[Excel Source Output].Columns[Sub-Area Code_&lt;4 Char&gt;]}) != ""</property>
+                    <property
+                      containsID="true"
+                      dataType="System.String"
+                      description="Specifies the friendly version of the expression. This expression version uses column names."
+                      expressionType="Notify"
+                      name="FriendlyExpression">!ISNULL([Sub-Area Code_&lt;4 Char&gt;]) &amp;&amp; TRIM([Sub-Area Code_&lt;4 Char&gt;]) != ""</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the position of the condition in the list of conditions that the transformation evaluates. The evaluation order is from the lowest to the highest value."
+                      name="EvaluationOrder">0</property>
+                  </properties>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\TRAIN_SUB_AREA_REF\Conditional Split.Outputs[Conditional Split Default Output]"
+                  description="Default Output of the Conditional Split Transformation"
+                  exclusionGroup="1"
+                  name="Conditional Split Default Output"
+                  synchronousInputId="Package\TRAIN_SUB_AREA_REF\Conditional Split.Inputs[Conditional Split Input]">
+                  <properties>
+                    <property
+                      dataType="System.Boolean"
+                      name="IsDefaultOut">true</property>
+                  </properties>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\TRAIN_SUB_AREA_REF\Conditional Split.Outputs[Conditional Split Error Output]"
+                  description="Error Output of the Conditional Split Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Conditional Split Error Output"
+                  synchronousInputId="Package\TRAIN_SUB_AREA_REF\Conditional Split.Inputs[Conditional Split Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\TRAIN_SUB_AREA_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\TRAIN_SUB_AREA_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\TRAIN_SUB_AREA_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\TRAIN_SUB_AREA_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
             <component
               refId="Package\TRAIN_SUB_AREA_REF\Derived Column"
               componentClassID="Microsoft.DerivedColumn"
@@ -8447,9 +9107,14 @@
               startId="Package\TRAIN_SUB_AREA_REF\Derived Column.Outputs[Derived Column Output]" />
             <path
               refId="Package\TRAIN_SUB_AREA_REF.Paths[Excel Source Output]"
-              endId="Package\TRAIN_SUB_AREA_REF\Derived Column.Inputs[Derived Column Input]"
+              endId="Package\TRAIN_SUB_AREA_REF\Conditional Split.Inputs[Conditional Split Input]"
               name="Excel Source Output"
               startId="Package\TRAIN_SUB_AREA_REF\Excel Source.Outputs[Excel Source Output]" />
+            <path
+              refId="Package\TRAIN_SUB_AREA_REF.Paths[IS_VALID]"
+              endId="Package\TRAIN_SUB_AREA_REF\Derived Column.Inputs[Derived Column Input]"
+              name="IS_VALID"
+              startId="Package\TRAIN_SUB_AREA_REF\Conditional Split.Outputs[IS_VALID]" />
           </paths>
         </pipeline>
       </DTS:ObjectData>
@@ -9690,6 +10355,96 @@ WHERE B.CODE IS NULL
           version="1">
           <components>
             <component
+              refId="Package\TUNNEL_REF\Conditional Split"
+              componentClassID="Microsoft.ConditionalSplit"
+              contactInfo="Conditional Split;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Routes data rows to different outputs depending on the content of the data. Use conditions (SSIS expressions) to specify which rows are routed. For example, separate records that need to be cleaned from those that are ready to be loaded or route only a subset of records."
+              name="Conditional Split"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\TUNNEL_REF\Conditional Split.Inputs[Conditional Split Input]"
+                  description="Input to the Conditional Split Transformation"
+                  name="Conditional Split Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\TUNNEL_REF\Conditional Split.Inputs[Conditional Split Input].Columns[Tunnel]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="Tunnel"
+                      lineageId="Package\TUNNEL_REF\Excel Source.Outputs[Excel Source Output].Columns[Tunnel]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\TUNNEL_REF\Conditional Split.Outputs[IS_VALID]"
+                  description="Output 1 of the Conditional Split Transformation"
+                  errorOrTruncationOperation="Computation"
+                  errorRowDisposition="FailComponent"
+                  exclusionGroup="1"
+                  name="IS_VALID"
+                  synchronousInputId="Package\TUNNEL_REF\Conditional Split.Inputs[Conditional Split Input]"
+                  truncationRowDisposition="FailComponent">
+                  <properties>
+                    <property
+                      containsID="true"
+                      dataType="System.String"
+                      description="Specifies the expression. This expression version uses lineage identifiers instead of column names."
+                      name="Expression">![ISNULL](#{Package\TUNNEL_REF\Excel Source.Outputs[Excel Source Output].Columns[Tunnel]}) &amp;&amp; [TRIM](#{Package\TUNNEL_REF\Excel Source.Outputs[Excel Source Output].Columns[Tunnel]}) != ""</property>
+                    <property
+                      containsID="true"
+                      dataType="System.String"
+                      description="Specifies the friendly version of the expression. This expression version uses column names."
+                      expressionType="Notify"
+                      name="FriendlyExpression">!ISNULL(Tunnel) &amp;&amp; TRIM(Tunnel) != ""</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the position of the condition in the list of conditions that the transformation evaluates. The evaluation order is from the lowest to the highest value."
+                      name="EvaluationOrder">0</property>
+                  </properties>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\TUNNEL_REF\Conditional Split.Outputs[Conditional Split Default Output]"
+                  description="Default Output of the Conditional Split Transformation"
+                  exclusionGroup="1"
+                  name="Conditional Split Default Output"
+                  synchronousInputId="Package\TUNNEL_REF\Conditional Split.Inputs[Conditional Split Input]">
+                  <properties>
+                    <property
+                      dataType="System.Boolean"
+                      name="IsDefaultOut">true</property>
+                  </properties>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\TUNNEL_REF\Conditional Split.Outputs[Conditional Split Error Output]"
+                  description="Error Output of the Conditional Split Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Conditional Split Error Output"
+                  synchronousInputId="Package\TUNNEL_REF\Conditional Split.Inputs[Conditional Split Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\TUNNEL_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\TUNNEL_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\TUNNEL_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\TUNNEL_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
               refId="Package\TUNNEL_REF\Derived Column"
               componentClassID="Microsoft.DerivedColumn"
               contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
@@ -9741,13 +10496,13 @@ WHERE B.CODE IS NULL
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">(DT_STR,16,1252)#{Package\TUNNEL_REF\Excel Source.Outputs[Excel Source Output].Columns[Tunnel]}</property>
+                          name="Expression">(DT_STR,16,1252)[TRIM](#{Package\TUNNEL_REF\Excel Source.Outputs[Excel Source Output].Columns[Tunnel]})</property>
                         <property
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
-                          name="FriendlyExpression">(DT_STR,16,1252)Tunnel</property>
+                          name="FriendlyExpression">(DT_STR,16,1252)TRIM(Tunnel)</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
@@ -9765,13 +10520,13 @@ WHERE B.CODE IS NULL
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">(DT_STR,100,1252)[REPLACE]([REPLACE](#{Package\TUNNEL_REF\Excel Source.Outputs[Excel Source Output].Columns[Location Description]}," Center Siding","")," Cross over","")</property>
+                          name="Expression">(DT_STR,100,1252)[TRIM]([REPLACE]([REPLACE](#{Package\TUNNEL_REF\Excel Source.Outputs[Excel Source Output].Columns[Location Description]}," Center Siding","")," Cross over",""))</property>
                         <property
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
-                          name="FriendlyExpression">(DT_STR,100,1252)REPLACE(REPLACE([Location Description]," Center Siding","")," Cross over","")</property>
+                          name="FriendlyExpression">(DT_STR,100,1252)TRIM(REPLACE(REPLACE([Location Description]," Center Siding","")," Cross over",""))</property>
                       </properties>
                     </outputColumn>
                   </outputColumns>
@@ -10326,9 +11081,14 @@ WHERE B.CODE IS NULL
               startId="Package\TUNNEL_REF\Derived Column.Outputs[Derived Column Output]" />
             <path
               refId="Package\TUNNEL_REF.Paths[Excel Source Output]"
-              endId="Package\TUNNEL_REF\Derived Column.Inputs[Derived Column Input]"
+              endId="Package\TUNNEL_REF\Conditional Split.Inputs[Conditional Split Input]"
               name="Excel Source Output"
               startId="Package\TUNNEL_REF\Excel Source.Outputs[Excel Source Output]" />
+            <path
+              refId="Package\TUNNEL_REF.Paths[IS_VALID]"
+              endId="Package\TUNNEL_REF\Derived Column.Inputs[Derived Column Input]"
+              name="IS_VALID"
+              startId="Package\TUNNEL_REF\Conditional Split.Outputs[IS_VALID]" />
             <path
               refId="Package\TUNNEL_REF.Paths[Sort Output]"
               endId="Package\TUNNEL_REF\OLE DB Destination.Inputs[OLE DB Destination Input]"
@@ -11032,6 +11792,96 @@ WHERE B.CODE IS NULL
           version="1">
           <components>
             <component
+              refId="Package\VIADUCT_REF\Conditional Split"
+              componentClassID="Microsoft.ConditionalSplit"
+              contactInfo="Conditional Split;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Routes data rows to different outputs depending on the content of the data. Use conditions (SSIS expressions) to specify which rows are routed. For example, separate records that need to be cleaned from those that are ready to be loaded or route only a subset of records."
+              name="Conditional Split"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\VIADUCT_REF\Conditional Split.Inputs[Conditional Split Input]"
+                  description="Input to the Conditional Split Transformation"
+                  name="Conditional Split Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\VIADUCT_REF\Conditional Split.Inputs[Conditional Split Input].Columns[Viaduct]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="Viaduct"
+                      lineageId="Package\VIADUCT_REF\Excel Source.Outputs[Excel Source Output].Columns[Viaduct]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\VIADUCT_REF\Conditional Split.Outputs[IS_VALID]"
+                  description="Output 1 of the Conditional Split Transformation"
+                  errorOrTruncationOperation="Computation"
+                  errorRowDisposition="FailComponent"
+                  exclusionGroup="1"
+                  name="IS_VALID"
+                  synchronousInputId="Package\VIADUCT_REF\Conditional Split.Inputs[Conditional Split Input]"
+                  truncationRowDisposition="FailComponent">
+                  <properties>
+                    <property
+                      containsID="true"
+                      dataType="System.String"
+                      description="Specifies the expression. This expression version uses lineage identifiers instead of column names."
+                      name="Expression">![ISNULL](#{Package\VIADUCT_REF\Excel Source.Outputs[Excel Source Output].Columns[Viaduct]}) &amp;&amp; [TRIM](#{Package\VIADUCT_REF\Excel Source.Outputs[Excel Source Output].Columns[Viaduct]}) != ""</property>
+                    <property
+                      containsID="true"
+                      dataType="System.String"
+                      description="Specifies the friendly version of the expression. This expression version uses column names."
+                      expressionType="Notify"
+                      name="FriendlyExpression">!ISNULL(Viaduct) &amp;&amp; TRIM(Viaduct) != ""</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the position of the condition in the list of conditions that the transformation evaluates. The evaluation order is from the lowest to the highest value."
+                      name="EvaluationOrder">0</property>
+                  </properties>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\VIADUCT_REF\Conditional Split.Outputs[Conditional Split Default Output]"
+                  description="Default Output of the Conditional Split Transformation"
+                  exclusionGroup="1"
+                  name="Conditional Split Default Output"
+                  synchronousInputId="Package\VIADUCT_REF\Conditional Split.Inputs[Conditional Split Input]">
+                  <properties>
+                    <property
+                      dataType="System.Boolean"
+                      name="IsDefaultOut">true</property>
+                  </properties>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\VIADUCT_REF\Conditional Split.Outputs[Conditional Split Error Output]"
+                  description="Error Output of the Conditional Split Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Conditional Split Error Output"
+                  synchronousInputId="Package\VIADUCT_REF\Conditional Split.Inputs[Conditional Split Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\VIADUCT_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\VIADUCT_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\VIADUCT_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\VIADUCT_REF\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
               refId="Package\VIADUCT_REF\Derived Column"
               componentClassID="Microsoft.DerivedColumn"
               contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
@@ -11579,9 +12429,14 @@ WHERE B.CODE IS NULL
               startId="Package\VIADUCT_REF\Derived Column.Outputs[Derived Column Output]" />
             <path
               refId="Package\VIADUCT_REF.Paths[Excel Source Output]"
-              endId="Package\VIADUCT_REF\Derived Column.Inputs[Derived Column Input]"
+              endId="Package\VIADUCT_REF\Conditional Split.Inputs[Conditional Split Input]"
               name="Excel Source Output"
               startId="Package\VIADUCT_REF\Excel Source.Outputs[Excel Source Output]" />
+            <path
+              refId="Package\VIADUCT_REF.Paths[IS_VALID]"
+              endId="Package\VIADUCT_REF\Derived Column.Inputs[Derived Column Input]"
+              name="IS_VALID"
+              startId="Package\VIADUCT_REF\Conditional Split.Outputs[IS_VALID]" />
             <path
               refId="Package\VIADUCT_REF.Paths[Sort Output]"
               endId="Package\VIADUCT_REF\OLE DB Destination.Inputs[OLE DB Destination Input]"
@@ -13363,7 +14218,7 @@ WHERE B.CODE IS NULL
         <NodeLayout
           Size="171.2,41.6"
           Id="Package\BUILDING_REF\OLE DB Destination"
-          TopLeft="257.16666396045,184.466668151153" />
+          TopLeft="263.166663871043,299.466666437519" />
         <NodeLayout
           Size="140,41.6"
           Id="Package\BUILDING_REF\Excel Source"
@@ -13371,34 +14226,10 @@ WHERE B.CODE IS NULL
         <NodeLayout
           Size="152.8,41.6"
           Id="Package\BUILDING_REF\Derived Column"
-          TopLeft="259.499987192453,60.5333331404792" />
-        <EdgeLayout
-          Id="Package\BUILDING_REF.Paths[Excel Source Output]"
-          TopLeft="200,81.0666665702396">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="59.4999871924527,0"
-              Start="0,0"
-              End="51.9999871924527,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="51.9999871924527,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
+          TopLeft="265.499987103046,175.533331426846" />
         <EdgeLayout
           Id="Package\BUILDING_REF.Paths[Derived Column Output]"
-          TopLeft="339.333325576451,102.133333140479">
+          TopLeft="345.333325487044,217.133331426845">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -13415,8 +14246,56 @@ WHERE B.CODE IS NULL
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="153.6,41.6"
+          Id="Package\BUILDING_REF\Conditional Split"
+          TopLeft="261.999996989966,61.0666715039141" />
+        <EdgeLayout
+          Id="Package\BUILDING_REF.Paths[Excel Source Output]"
+          TopLeft="200,81.333335751957">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="61.9999969899656,0"
+              Start="0,0"
+              End="54.4999969899656,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="54.4999969899656,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\BUILDING_REF.Paths[IS_VALID]"
+          TopLeft="340.349992046506,102.666671503914">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,72.8666599229316"
+              Start="0,0"
+              End="0,65.3666599229316">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,65.3666599229316" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
+              BoundingBox="-21.7278125,27.2497362114658,43.455625,10.8671875"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
@@ -13577,44 +14456,70 @@ WHERE B.CODE IS NULL
       <GraphLayout
         Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
-          Size="171.2,41.6"
-          Id="Package\DEPOT_REF\OLE DB Destination"
-          TopLeft="324.333325586385,142.133334884113" />
-        <NodeLayout
           Size="140,41.6"
           Id="Package\DEPOT_REF\Excel Source"
           TopLeft="127.166661625935,17.6666667329603" />
         <NodeLayout
+          Size="153.6,41.6"
+          Id="Package\DEPOT_REF\Conditional Split"
+          TopLeft="329.1666586159,20.733338207072" />
+        <NodeLayout
+          Size="171.2,41.6"
+          Id="Package\DEPOT_REF\OLE DB Destination"
+          TopLeft="334.333325437373,267.133333021468" />
+        <NodeLayout
           Size="152.8,41.6"
           Id="Package\DEPOT_REF\Derived Column"
-          TopLeft="326.666648818388,18.1999998734395" />
+          TopLeft="336.666648669376,143.199998010794" />
         <EdgeLayout
-          Id="Package\DEPOT_REF.Paths[Excel Source Output]"
-          TopLeft="267.166661625935,38.7333333031999">
+          Id="Package\DEPOT_REF.Paths[IS_VALID]"
+          TopLeft="409.516653642638,62.333338207072">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="59.4999871924527,0"
+              EndConnector="0,80.8666598037224"
               Start="0,0"
-              End="51.9999871924527,0">
+              End="0,73.3666598037224">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="51.9999871924527,0" />
+                    End="0,73.3666598037224" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
+              BoundingBox="-21.7278125,31.2497361518612,43.455625,10.8671875"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
+          Id="Package\DEPOT_REF.Paths[Excel Source Output]"
+          TopLeft="267.166661625935,40.0000024700161">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="61.9999969899654,0"
+              Start="0,0"
+              End="54.4999969899654,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="54.4999969899654,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
           Id="Package\DEPOT_REF.Paths[Derived Column Output]"
-          TopLeft="406.499987202386,59.7999998734395">
+          TopLeft="416.499987053374,184.799998010794">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -13631,16 +14536,14 @@ WHERE B.CODE IS NULL
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\DEPOT_REF\OLE DB Destination">
+    design-time-name="Package\DEPOT_REF\Excel Source">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -13653,7 +14556,7 @@ WHERE B.CODE IS NULL
     </Properties>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
-    design-time-name="Package\DEPOT_REF\Excel Source">
+    design-time-name="Package\DEPOT_REF\OLE DB Destination">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -14287,38 +15190,14 @@ WHERE B.CODE IS NULL
         <NodeLayout
           Size="152.8,41.6"
           Id="Package\STATION_REF\Derived Column"
-          TopLeft="259.499987192453,60.5333331404792" />
+          TopLeft="267.499987073244,185.533331277834" />
         <NodeLayout
           Size="171.2,41.6"
           Id="Package\STATION_REF\OLE DB Destination"
-          TopLeft="257.16666396045,184.466668151153" />
-        <EdgeLayout
-          Id="Package\STATION_REF.Paths[Excel Source Output]"
-          TopLeft="200,81.0666665702396">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="59.4999871924527,0"
-              Start="0,0"
-              End="51.9999871924527,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="51.9999871924527,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
+          TopLeft="265.166663841241,309.466666288508" />
         <EdgeLayout
           Id="Package\STATION_REF.Paths[Derived Column Output]"
-          TopLeft="339.333325576451,102.133333140479">
+          TopLeft="347.333325457242,227.133331277834">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -14335,8 +15214,68 @@ WHERE B.CODE IS NULL
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="153.6,41.6"
+          Id="Package\STATION_REF\Conditional Split"
+          TopLeft="257.99999704957,65.0666714443097" />
+        <EdgeLayout
+          Id="Package\STATION_REF.Paths[Excel Source Output]"
+          TopLeft="200,83.3333357221548">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="57.9999970495702,0"
+              Start="0,0"
+              End="50.4999970495702,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="50.4999970495702,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\STATION_REF.Paths[IS_VALID]"
+          TopLeft="334.79999704957,106.66667144431">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="9.09999002367334,78.8666598335244"
+              Start="0,0"
+              End="9.09999002367334,71.3666598335244">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,35.4333299167622" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,35.4333299167622"
+                    Point2="0,39.4333299167622"
+                    Point3="4,39.4333299167622" />
+                  <mssgle:LineSegment
+                    End="5.09999002367334,39.4333299167622" />
+                  <mssgle:CubicBezierSegment
+                    Point1="5.09999002367334,39.4333299167622"
+                    Point2="9.09999002367334,39.4333299167622"
+                    Point3="9.09999002367334,43.4333299167622" />
+                  <mssgle:LineSegment
+                    End="9.09999002367334,71.3666598335244" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
+              BoundingBox="-17.1778174881633,44.4333299167622,43.455625,10.8671875"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
@@ -14377,42 +15316,18 @@ WHERE B.CODE IS NULL
         <NodeLayout
           Size="171.2,41.6"
           Id="Package\TRACKBOUND_REF\OLE DB Destination"
-          TopLeft="257.16666396045,184.466668151153" />
+          TopLeft="267.166663811438,327.666666243804" />
         <NodeLayout
           Size="140,41.6"
           Id="Package\TRACKBOUND_REF\Excel Source"
-          TopLeft="60,60" />
+          TopLeft="60,75.2" />
         <NodeLayout
           Size="152.8,41.6"
           Id="Package\TRACKBOUND_REF\Derived Column"
-          TopLeft="259.499987192453,60.5333331404792" />
-        <EdgeLayout
-          Id="Package\TRACKBOUND_REF.Paths[Excel Source Output]"
-          TopLeft="200,81.0666665702396">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="59.4999871924527,0"
-              Start="0,0"
-              End="51.9999871924527,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="51.9999871924527,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
+          TopLeft="269.499987043441,203.733331233131" />
         <EdgeLayout
           Id="Package\TRACKBOUND_REF.Paths[Derived Column Output]"
-          TopLeft="339.333325576451,102.133333140479">
+          TopLeft="349.333325427439,245.33333123313">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -14429,8 +15344,68 @@ WHERE B.CODE IS NULL
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="153.6,41.6"
+          Id="Package\TRACKBOUND_REF\Conditional Split"
+          TopLeft="259.999997019768,77.8666703118214" />
+        <EdgeLayout
+          Id="Package\TRACKBOUND_REF.Paths[Excel Source Output]"
+          TopLeft="200,97.3333351559107">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="59.9999970197678,0"
+              Start="0,0"
+              End="52.4999970197678,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="52.4999970197678,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\TRACKBOUND_REF.Paths[IS_VALID]"
+          TopLeft="336.799997019768,119.466670311821">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="9.09999002367357,84.2666609213093"
+              Start="0,0"
+              End="9.09999002367357,76.7666609213093">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,38.1333304606546" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,38.1333304606546"
+                    Point2="0,42.1333304606546"
+                    Point3="4,42.1333304606546" />
+                  <mssgle:LineSegment
+                    End="5.09999002367357,42.1333304606546" />
+                  <mssgle:CubicBezierSegment
+                    Point1="5.09999002367357,42.1333304606546"
+                    Point2="9.09999002367357,42.1333304606546"
+                    Point3="9.09999002367357,46.1333304606546" />
+                  <mssgle:LineSegment
+                    End="9.09999002367357,76.7666609213093" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
+              BoundingBox="-17.1778174881632,47.1333304606546,43.455625,10.8671875"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
@@ -14471,7 +15446,7 @@ WHERE B.CODE IS NULL
         <NodeLayout
           Size="171.2,41.6"
           Id="Package\TRAIN_AREA_REF\OLE DB Destination"
-          TopLeft="257.16666396045,184.466668151153" />
+          TopLeft="260.166663915747,314.466666214002" />
         <NodeLayout
           Size="140,41.6"
           Id="Package\TRAIN_AREA_REF\Excel Source"
@@ -14479,34 +15454,10 @@ WHERE B.CODE IS NULL
         <NodeLayout
           Size="152.8,41.6"
           Id="Package\TRAIN_AREA_REF\Derived Column"
-          TopLeft="259.499987192453,60.5333331404792" />
-        <EdgeLayout
-          Id="Package\TRAIN_AREA_REF.Paths[Excel Source Output]"
-          TopLeft="200,81.0666665702396">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="59.4999871924527,0"
-              Start="0,0"
-              End="51.9999871924527,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="51.9999871924527,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
+          TopLeft="262.49998714775,190.533331203328" />
         <EdgeLayout
           Id="Package\TRAIN_AREA_REF.Paths[Derived Column Output]"
-          TopLeft="339.333325576451,102.133333140479">
+          TopLeft="342.333325531748,232.133331203328">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -14523,8 +15474,56 @@ WHERE B.CODE IS NULL
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="153.6,41.6"
+          Id="Package\TRAIN_AREA_REF\Conditional Split"
+          TopLeft="262.999996975064,64.2666716827282" />
+        <EdgeLayout
+          Id="Package\TRAIN_AREA_REF.Paths[Excel Source Output]"
+          TopLeft="200,82.9333358413641">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="62.9999969750643,0"
+              Start="0,0"
+              End="55.4999969750643,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="55.4999969750643,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\TRAIN_AREA_REF.Paths[IS_VALID]"
+          TopLeft="339.349992061407,105.866671682728">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,84.6666595206001"
+              Start="0,0"
+              End="0,77.1666595206001">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,77.1666595206001" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
+              BoundingBox="-21.7278125,33.1497360103001,43.455625,10.8671875"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
@@ -14569,38 +15568,14 @@ WHERE B.CODE IS NULL
         <NodeLayout
           Size="152.8,41.6"
           Id="Package\TRAIN_CAR_REF\Derived Column"
-          TopLeft="259.499987192453,60.5333331404792" />
+          TopLeft="268.499987058342,186.533331262933" />
         <NodeLayout
           Size="171.2,41.6"
           Id="Package\TRAIN_CAR_REF\OLE DB Destination"
-          TopLeft="257.16666396045,184.466668151153" />
-        <EdgeLayout
-          Id="Package\TRAIN_CAR_REF.Paths[Excel Source Output]"
-          TopLeft="200,81.0666665702396">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="59.4999871924527,0"
-              Start="0,0"
-              End="51.9999871924527,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="51.9999871924527,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
+          TopLeft="266.166663826339,310.466666273607" />
         <EdgeLayout
           Id="Package\TRAIN_CAR_REF.Paths[Derived Column Output]"
-          TopLeft="339.333325576452,102.133333140479">
+          TopLeft="348.333325442341,228.133331262933">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -14617,8 +15592,56 @@ WHERE B.CODE IS NULL
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="153.6,41.6"
+          Id="Package\TRAIN_CAR_REF\Conditional Split"
+          TopLeft="265.999996930361,67.0666714145074" />
+        <EdgeLayout
+          Id="Package\TRAIN_CAR_REF.Paths[Excel Source Output]"
+          TopLeft="200,84.3333357072537">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="65.9999969303608,0"
+              Start="0,0"
+              End="58.4999969303608,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="58.4999969303608,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\TRAIN_CAR_REF.Paths[IS_VALID]"
+          TopLeft="343.849991994352,108.666671414507">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,77.8666598484255"
+              Start="0,0"
+              End="0,70.3666598484255">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,70.3666598484255" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
+              BoundingBox="-21.7278125,29.7497361742127,43.455625,10.8671875"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
@@ -14659,7 +15682,7 @@ WHERE B.CODE IS NULL
         <NodeLayout
           Size="171.2,41.6"
           Id="Package\TRAIN_SUB_AREA_REF\OLE DB Destination"
-          TopLeft="257.16666396045,184.466668151153" />
+          TopLeft="260.166663915747,309.466666288508" />
         <NodeLayout
           Size="140,41.6"
           Id="Package\TRAIN_SUB_AREA_REF\Excel Source"
@@ -14667,34 +15690,10 @@ WHERE B.CODE IS NULL
         <NodeLayout
           Size="152.8,41.6"
           Id="Package\TRAIN_SUB_AREA_REF\Derived Column"
-          TopLeft="259.499987192453,60.5333331404792" />
-        <EdgeLayout
-          Id="Package\TRAIN_SUB_AREA_REF.Paths[Excel Source Output]"
-          TopLeft="200,81.0666665702396">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="59.4999871924527,0"
-              Start="0,0"
-              End="51.9999871924527,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="51.9999871924527,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
+          TopLeft="262.49998714775,185.533331277834" />
         <EdgeLayout
           Id="Package\TRAIN_SUB_AREA_REF.Paths[Derived Column Output]"
-          TopLeft="339.333325576451,102.133333140479">
+          TopLeft="342.333325531748,227.133331277834">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -14711,8 +15710,56 @@ WHERE B.CODE IS NULL
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="153.6,41.6"
+          Id="Package\TRAIN_SUB_AREA_REF\Conditional Split"
+          TopLeft="258.999997034669,64.0666714592109" />
+        <EdgeLayout
+          Id="Package\TRAIN_SUB_AREA_REF.Paths[Excel Source Output]"
+          TopLeft="200,82.8333357296054">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="58.999997034669,0"
+              Start="0,0"
+              End="51.499997034669,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="51.499997034669,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\TRAIN_SUB_AREA_REF.Paths[IS_VALID]"
+          TopLeft="337.349992091209,105.666671459211">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,79.8666598186232"
+              Start="0,0"
+              End="0,72.3666598186232">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,72.3666598186232" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
+              BoundingBox="-21.7278125,30.7497361593116,43.455625,10.8671875"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
@@ -14947,26 +15994,30 @@ WHERE B.CODE IS NULL
     design-time-name="Package\TUNNEL_REF">
     <LayoutInfo>
       <GraphLayout
-        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
-        <NodeLayout
-          Size="168.8,41.6"
-          Id="Package\TUNNEL_REF\Remove Duplicates"
-          TopLeft="250.999996259809,156.999997660518" />
-        <NodeLayout
-          Size="140,41.6"
-          Id="Package\TUNNEL_REF\Excel Source"
-          TopLeft="60,60" />
-        <NodeLayout
-          Size="171.2,41.6"
-          Id="Package\TUNNEL_REF\OLE DB Destination"
-          TopLeft="255.166663990252,243.466667271984" />
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="152.8,41.6"
           Id="Package\TUNNEL_REF\Derived Column"
-          TopLeft="259.499987192453,60.5333331404792" />
+          TopLeft="259.499987192453,121.399999439518" />
+        <NodeLayout
+          Size="140,41.6"
+          Id="Package\TUNNEL_REF\Excel Source"
+          TopLeft="64.16666643901,10.8000003977616" />
+        <NodeLayout
+          Size="168.8,41.6"
+          Id="Package\TUNNEL_REF\Remove Duplicates"
+          TopLeft="250.999996259809,217.866663959556" />
+        <NodeLayout
+          Size="153.6,41.6"
+          Id="Package\TUNNEL_REF\Conditional Split"
+          TopLeft="264.999985521039,11.86666667872" />
+        <NodeLayout
+          Size="171.2,41.6"
+          Id="Package\TUNNEL_REF\OLE DB Destination"
+          TopLeft="255.166663990252,304.333333571022" />
         <EdgeLayout
           Id="Package\TUNNEL_REF.Paths[Sort Output]"
-          TopLeft="338.08333012503,198.599997660518">
+          TopLeft="338.08333012503,259.466663959556">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -14987,19 +16038,43 @@ WHERE B.CODE IS NULL
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\TUNNEL_REF.Paths[Excel Source Output]"
-          TopLeft="200,81.0666665702396">
+          Id="Package\TUNNEL_REF.Paths[IS_VALID]"
+          TopLeft="338.849986356746,53.46666667872">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="59.499987192453,0"
+              EndConnector="0,67.9333327607977"
               Start="0,0"
-              End="51.999987192453,0">
+              End="0,60.4333327607977">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="51.999987192453,0" />
+                    End="0,60.4333327607977" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-21.7278125,24.7830726303989,43.455625,10.8671875"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\TUNNEL_REF.Paths[Excel Source Output]"
+          TopLeft="204.16666643901,32.1333335382408">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="60.833319082029,0"
+              Start="0,0"
+              End="53.333319082029,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="53.333319082029,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -15010,7 +16085,7 @@ WHERE B.CODE IS NULL
         </EdgeLayout>
         <EdgeLayout
           Id="Package\TUNNEL_REF.Paths[Derived Column Output]"
-          TopLeft="335.649991726131,102.133333140479">
+          TopLeft="335.649991726131,162.999999439517">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -15034,7 +16109,7 @@ WHERE B.CODE IS NULL
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\TUNNEL_REF\Excel Source">
+    design-time-name="Package\TUNNEL_REF\OLE DB Destination">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -15047,7 +16122,7 @@ WHERE B.CODE IS NULL
     </Properties>
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
-    design-time-name="Package\TUNNEL_REF\OLE DB Destination">
+    design-time-name="Package\TUNNEL_REF\Excel Source">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
@@ -15185,15 +16260,15 @@ WHERE B.CODE IS NULL
     design-time-name="Package\VIADUCT_REF">
     <LayoutInfo>
       <GraphLayout
-        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="171.2,41.6"
           Id="Package\VIADUCT_REF\OLE DB Destination"
-          TopLeft="255.166663990252,243.466667271984" />
+          TopLeft="255.166663990252,342.866665886176" />
         <NodeLayout
           Size="168.8,41.6"
           Id="Package\VIADUCT_REF\Remove Duplicates"
-          TopLeft="250.999996259809,156.999997660518" />
+          TopLeft="250.999996259809,256.39999627471" />
         <NodeLayout
           Size="140,41.6"
           Id="Package\VIADUCT_REF\Excel Source"
@@ -15201,10 +16276,10 @@ WHERE B.CODE IS NULL
         <NodeLayout
           Size="152.8,41.6"
           Id="Package\VIADUCT_REF\Derived Column"
-          TopLeft="259.499987192453,60.5333331404792" />
+          TopLeft="259.499987192453,159.933331754671" />
         <EdgeLayout
           Id="Package\VIADUCT_REF.Paths[Sort Output]"
-          TopLeft="338.08333012503,198.599997660518">
+          TopLeft="338.08333012503,297.99999627471">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -15225,30 +16300,8 @@ WHERE B.CODE IS NULL
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\VIADUCT_REF.Paths[Excel Source Output]"
-          TopLeft="200,81.0666665702396">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="59.4999871924527,0"
-              Start="0,0"
-              End="51.9999871924527,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="51.9999871924527,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
           Id="Package\VIADUCT_REF.Paths[Derived Column Output]"
-          TopLeft="335.649991726131,102.133333140479">
+          TopLeft="335.649991726131,201.533331754671">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -15266,6 +16319,56 @@ WHERE B.CODE IS NULL
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="153.6,41.6"
+          Id="Package\VIADUCT_REF\Conditional Split"
+          TopLeft="254.999997094274,62.4666715784196" />
+        <EdgeLayout
+          Id="Package\VIADUCT_REF.Paths[Excel Source Output]"
+          TopLeft="200,82.0333357892098">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="54.9999970942736,0"
+              Start="0,0"
+              End="47.4999970942736,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="47.4999970942736,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\VIADUCT_REF.Paths[IS_VALID]"
+          TopLeft="333.849992143363,104.06667157842">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,55.8666601762517"
+              Start="0,0"
+              End="0,48.3666601762517">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,48.3666601762517" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-21.7278125,18.7497363381258,43.455625,10.8671875"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
