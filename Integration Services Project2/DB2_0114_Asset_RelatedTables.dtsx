@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0114_Asset_RelatedTables"
   DTS:PackageType="5"
-  DTS:VersionBuild="250"
-  DTS:VersionGUID="{35CA45B0-F440-4E11-90F5-16A6A399BA18}"
+  DTS:VersionBuild="253"
+  DTS:VersionGUID="{C86E3C6E-DF16-411A-B5F5-3D9121E0626A}"
   DTS:VersionMajor="6"
   DTS:VersionMinor="3">
   <DTS:Property
@@ -564,20 +564,37 @@
       </DTS:PrecedenceConstraints>
     </DTS:Executable>
     <DTS:Executable
-      DTS:refId="Package\Update JobPlan"
+      DTS:refId="Package\Update JobPan from JPAssetsPLink"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
       DTS:Description="Execute SQL Task"
-      DTS:DTSID="{47c2d78c-c250-4f2a-97b3-febc4ecc0ccd}"
+      DTS:DTSID="{444fec1f-00b3-4502-ac7a-052c90331b82}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:LocaleID="-1"
-      DTS:ObjectName="Update JobPlan"
+      DTS:ObjectName="Update JobPan from JPAssetsPLink"
       DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
       DTS:ThreadHint="0">
       <DTS:Variables />
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-          SQLTask:SqlStatementSource="MERGE INTO MAXIMO.ROUTES AS A&#xA;USING (&#xA; WITH DATA AS (&#xA;  SELECT r.routesid, r.route, rs.assetnum &#xA;   , b.ste_system, b.ste_subsystem&#xA;   , b.location, l.TYPE AS locationtype&#xA;  FROM maximo.ROUTES r &#xA;  JOIN MAXIMO.ROUTE_STOP rs ON rs.route=r.route&#xA;  JOIN maximo.ASSET b ON b.assetnum=rs.assetnum&#xA;  LEFT JOIN maximo.LOCATIONS l ON l.location=b.location&#xA;  ORDER BY r.route&#xA; ),&#xA; SYSTEMCNT AS (&#xA;  SELECT routesid, count(DISTINCT ste_system) AS cnt, max(ste_system) AS ste_system&#xA;  FROM DATA&#xA;  WHERE ste_system IS NOT null&#xA;  GROUP BY routesid&#xA; ),&#xA; SUBSYSTEMCNT AS (&#xA;  SELECT routesid, count(DISTINCT ste_subsystem) AS cnt, max(ste_subsystem) AS ste_subsystem&#xA;  FROM DATA&#xA;  WHERE ste_subsystem IS NOT null&#xA;  GROUP BY routesid&#xA; ),&#xA; LOCTYPECNT AS (&#xA;  SELECT routesid, count(DISTINCT locationtype) AS cnt, max(locationtype) AS locationtype&#xA;  FROM DATA&#xA;  WHERE locationtype IS NOT null&#xA;  GROUP BY routesid&#xA; )&#xA; SELECT R.ROUTESID, R.ROUTE, B.CNT, C.CNT, D.CNT&#xA;  , CASE WHEN COALESCE(B.CNT,0)=1 THEN B.STE_SYSTEM ELSE NULL END AS STE_SYSTEM&#xA;  , CASE WHEN COALESCE(C.CNT,0)=1 THEN C.STE_SUBSYSTEM ELSE NULL END AS STE_SUBSYSTEM&#xA;  , CASE WHEN COALESCE(D.CNT,0)=1 THEN D.LOCATIONTYPE ELSE NULL END AS LOCATIONTYPE&#xA; FROM MAXIMO.ROUTES R&#xA; LEFT JOIN SYSTEMCNT B ON B.ROUTESID=R.ROUTESID&#xA; LEFT JOIN SUBSYSTEMCNT C ON C.ROUTESID=R.ROUTESID&#xA; LEFT JOIN LOCTYPECNT D ON D.ROUTESID=R.ROUTESID&#xA; ORDER BY R.route&#xA;) B ON B.ROUTESID=A.ROUTESID&#xA;WHEN MATCHED THEN&#xA;UPDATE SET &#xA; ste_system=B.ste_system,&#xA; ste_subsystem=B.ste_subsystem,&#xA; ste_loctype=B.locationtype&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:SqlStatementSource="MERGE INTO MAXIMO.JOBPLAN AS A&#xA;USING (&#xA; WITH DATA AS (&#xA;  SELECT j.jobplanid, j.jpnum, B.ASSETNUM&#xA;   , B.ste_system, B.ste_subsystem, C.type AS locationtype&#xA;  FROM maximo.jobplan j &#xA;  JOIN MAXIMO.JPASSETSPLINK A ON A.JPNUM=J.JPNUM&#xA;  JOIN MAXIMO.ASSET B ON B.ASSETNUM=A.ASSETNUM&#xA;  LEFT JOIN MAXIMO.LOCATIONS C ON C.LOCATION=B.LOCATION &#xA;  WHERE B.ste_system IS NOT NULL OR B.ste_subsystem IS NOT NULL or C.type IS NOT null&#xA;  ORDER BY j.jobplanid&#xA; ),&#xA; SYSTEMCNT AS (&#xA;  SELECT jobplanid, count(DISTINCT ste_system) AS cnt, max(ste_system) AS ste_system&#xA;  FROM DATA&#xA;  WHERE ste_system IS NOT null&#xA;  GROUP BY jobplanid&#xA; ),&#xA; SUBSYSTEMCNT AS (&#xA;  SELECT jobplanid, count(DISTINCT ste_subsystem) AS cnt, max(ste_subsystem) AS ste_subsystem&#xA;  FROM DATA&#xA;  WHERE ste_subsystem IS NOT null&#xA;  GROUP BY jobplanid&#xA; ),&#xA; LOCTYPECNT AS (&#xA;  SELECT jobplanid, count(DISTINCT locationtype) AS cnt, max(locationtype) AS locationtype&#xA;  FROM DATA&#xA;  WHERE locationtype IS NOT null&#xA;  GROUP BY jobplanid&#xA; )&#xA; SELECT J.JOBPLANID, J.JPNUM, B.CNT, C.CNT, D.CNT&#xA;  , CASE WHEN COALESCE(B.CNT,0)=1 THEN B.STE_SYSTEM ELSE NULL END AS STE_SYSTEM&#xA;  , CASE WHEN COALESCE(C.CNT,0)=1 THEN C.STE_SUBSYSTEM ELSE NULL END AS STE_SUBSYSTEM&#xA;  , CASE WHEN COALESCE(D.CNT,0)=1 THEN D.LOCATIONTYPE ELSE NULL END AS LOCATIONTYPE&#xA;  , J.STE_SYSTEM AS OLD_SYSTEM&#xA;  , J.STE_SUBSYSTEM AS OLD_SUBSYSTEM&#xA;  , J.ste_loctype AS OLD_LOCATIONTYPE&#xA; FROM MAXIMO.JOBPLAN J&#xA; LEFT JOIN SYSTEMCNT B ON B.JOBPLANID=J.JOBPLANID&#xA; LEFT JOIN SUBSYSTEMCNT C ON C.JOBPLANID=J.JOBPLANID&#xA; LEFT JOIN LOCTYPECNT D ON D.JOBPLANID=J.JOBPLANID&#xA; WHERE B.CNT=1 OR C.CNT=1 OR D.CNT=1&#xA; ORDER BY J.JOBPLANID&#xA;) B ON B.JOBPLANID=A.JOBPLANID&#xA;WHEN MATCHED THEN&#xA;UPDATE SET &#xA; ste_system=B.ste_system,&#xA; ste_subsystem=B.ste_subsystem,&#xA; ste_loctype=B.locationtype&#xA;;&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Update JobPlan from PM"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{3458f160-bd82-41e0-a3d2-a7776d8c05d6}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Update JobPlan from PM"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="MERGE INTO MAXIMO.JOBPLAN AS A&#xA;USING (&#xA; WITH DATA AS (&#xA;  SELECT j.jobplanid, j.jpnum&#xA;   , a.ste_system, a.ste_subsystem, a.ste_loctype AS locationtype&#xA;  FROM maximo.jobplan j &#xA;  JOIN maximo.pm a ON a.jpnum=j.jpnum&#xA;  WHERE a.ste_system IS NOT NULL OR a.ste_subsystem IS NOT NULL or a.ste_loctype IS NOT null&#xA;  ORDER BY j.jobplanid&#xA; ),&#xA; SYSTEMCNT AS (&#xA;  SELECT jobplanid, count(DISTINCT ste_system) AS cnt, max(ste_system) AS ste_system&#xA;  FROM DATA&#xA;  WHERE ste_system IS NOT null&#xA;  GROUP BY jobplanid&#xA; ),&#xA; SUBSYSTEMCNT AS (&#xA;  SELECT jobplanid, count(DISTINCT ste_subsystem) AS cnt, max(ste_subsystem) AS ste_subsystem&#xA;  FROM DATA&#xA;  WHERE ste_subsystem IS NOT null&#xA;  GROUP BY jobplanid&#xA; ),&#xA; LOCTYPECNT AS (&#xA;  SELECT jobplanid, count(DISTINCT locationtype) AS cnt, max(locationtype) AS locationtype&#xA;  FROM DATA&#xA;  WHERE locationtype IS NOT null&#xA;  GROUP BY jobplanid&#xA; )&#xA; SELECT J.JOBPLANID, J.JPNUM, B.CNT, C.CNT, D.CNT&#xA;  , CASE WHEN COALESCE(B.CNT,0)=1 THEN B.STE_SYSTEM ELSE NULL END AS STE_SYSTEM&#xA;  , CASE WHEN COALESCE(C.CNT,0)=1 THEN C.STE_SUBSYSTEM ELSE NULL END AS STE_SUBSYSTEM&#xA;  , CASE WHEN COALESCE(D.CNT,0)=1 THEN D.LOCATIONTYPE ELSE NULL END AS LOCATIONTYPE&#xA;  , J.STE_SYSTEM AS OLD_SYSTEM&#xA;  , J.STE_SUBSYSTEM AS OLD_SUBSYSTEM&#xA;  , J.ste_loctype AS OLD_LOCATIONTYPE&#xA; FROM MAXIMO.JOBPLAN J&#xA; LEFT JOIN SYSTEMCNT B ON B.JOBPLANID=J.JOBPLANID&#xA; LEFT JOIN SUBSYSTEMCNT C ON C.JOBPLANID=J.JOBPLANID&#xA; LEFT JOIN LOCTYPECNT D ON D.JOBPLANID=J.JOBPLANID&#xA; WHERE B.CNT=1 OR C.CNT=1 OR D.CNT=1&#xA; ORDER BY J.JOBPLANID&#xA;) B ON B.JOBPLANID=A.JOBPLANID&#xA;WHEN MATCHED THEN&#xA;UPDATE SET &#xA; ste_system=COALESCE(B.OLD_SYSTEM, B.ste_system),&#xA; ste_subsystem=COALESCE(B.OLD_SUBSYSTEM, B.ste_subsystem),&#xA; ste_loctype=COALESCE(B.OLD_LOCATIONTYPE, B.locationtype)&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -660,18 +677,26 @@
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
       DTS:CreationName=""
-      DTS:DTSID="{17112E40-8B7A-4E18-96DD-2531483E439C}"
+      DTS:DTSID="{854528E6-35E1-47E5-B967-45C141670573}"
       DTS:From="Package\Update PM (Route)"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 3"
-      DTS:To="Package\Update JobPlan" />
+      DTS:To="Package\Update JobPan from JPAssetsPLink" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 4]"
       DTS:CreationName=""
-      DTS:DTSID="{39C4AC3C-7509-4A45-A9E8-99BC55ED4DF2}"
-      DTS:From="Package\Update JobPlan"
+      DTS:DTSID="{603FF052-7D22-458F-829F-34B8167759AA}"
+      DTS:From="Package\Update JobPan from JPAssetsPLink"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 4"
+      DTS:To="Package\Update JobPlan from PM" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 5]"
+      DTS:CreationName=""
+      DTS:DTSID="{CEED2354-0D44-42DC-BE92-DBC4021CA311}"
+      DTS:From="Package\Update JobPlan from PM"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 5"
       DTS:To="Package\POST-PKG" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
@@ -685,7 +710,7 @@
     design-time-name="Package">
     <LayoutInfo>
       <GraphLayout
-        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="137.6,41.6"
           Id="Package\POST-PKG\FINISH LOG"
@@ -696,7 +721,7 @@
           PanelSize="270.4,130.4"
           Size="156,43.2"
           Id="Package\POST-PKG"
-          TopLeft="409.500785870358,459.340485029268" />
+          TopLeft="411.167452445962,554.27381889295" />
         <NodeLayout
           Size="135.2,41.6"
           Id="Package\PRE-PKG\GET LOGID"
@@ -737,10 +762,6 @@
           Id="Package\PRE-PKG"
           TopLeft="408.833311296173,13.6515999572844" />
         <NodeLayout
-          Size="148,41.6"
-          Id="Package\Update Routes"
-          TopLeft="410.889674683361,92.929377197682" />
-        <NodeLayout
           Size="165.6,41.6"
           Id="Package\Update PM (Asset)"
           TopLeft="401.167452992338,179.762709913279" />
@@ -749,9 +770,9 @@
           Id="Package\Update PM (Route)"
           TopLeft="403.806338458789,268.826197135043" />
         <NodeLayout
-          Size="152,41.6"
-          Id="Package\Update JobPlan"
-          TopLeft="408.111897057355,360.318264213274" />
+          Size="148,41.6"
+          Id="Package\Update Routes"
+          TopLeft="410.889674683361,92.929377197682" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
           TopLeft="484.261492989767,56.8515999572844">
@@ -818,20 +839,28 @@
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <NodeLayout
+          Size="245.6,41.6"
+          Id="Package\Update JobPan from JPAssetsPLink"
+          TopLeft="367.834121480257,375.807154184958" />
+        <NodeLayout
+          Size="194.4,41.6"
+          Id="Package\Update JobPlan from PM"
+          TopLeft="389.639679122665,463.899220919669" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 3]"
-          TopLeft="485.959117758072,310.426197135043">
+          TopLeft="489.220229969523,310.426197135043">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,49.8920670782313"
+              EndConnector="0,65.3809570499154"
               Start="0,0"
-              End="0,42.3920670782313">
+              End="0,57.8809570499154">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,42.3920670782313" />
+                    End="0,57.8809570499154" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -842,18 +871,40 @@
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 4]"
-          TopLeft="485.806341463857,401.918264213274">
+          TopLeft="488.736900301461,417.407154184958">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,57.422220815994"
+              EndConnector="0,46.4920667347101"
               Start="0,0"
-              End="0,49.922220815994">
+              End="0,38.9920667347101">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,49.922220815994" />
+                    End="0,38.9920667347101" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 5]"
+          TopLeft="488.003565784314,505.499220919669">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,48.7745979732817"
+              Start="0,0"
+              End="0,41.2745979732817">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,41.2745979732817" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
