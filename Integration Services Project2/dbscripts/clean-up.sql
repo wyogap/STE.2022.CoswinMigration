@@ -22,6 +22,11 @@ delete from maximo.mr;
 delete from maximo.mrline;
 delete from maximo.invtrans;
 
+DELETE FROM MAXIMO.MATUSETRANS;
+DELETE FROM MAXIMO.INVUSE;
+DELETE FROM MAXIMO.INVUSELINE;
+DELETE FROM MAXIMO.INVRESERVE;
+
 delete from maximo.contract;
 delete from maximo.contractline;
 delete from maximo.contractauth;
@@ -52,7 +57,6 @@ delete from maximo.ste_altfailurecode;
 delete from maximo.relatedrecord;
 delete from maximo.wplabor;
 delete from maximo.wpmaterial;
-delete from maximo.matusetrans;
 delete from maximo.multiassetlocci;
 
 DELETE FROM MAXIMO.PLUSTWOQUALFLG;
@@ -61,7 +65,14 @@ DELETE FROM MAXIMO.WOSERVICEADDRESS;
 DELETE FROM MAXIMO.WOSTATUS;
 DELETE FROM MAXIMO.WORKVIEW;
 
-DELETE FROM maximo.item;
+DELETE FROM MAXIMO.ITEM;
+DELETE FROM MAXIMO.ITEMORGINFO;
+DELETE FROM MAXIMO.ALTITEM;
+DELETE FROM MAXIMO.SERVICEITEMS;
+DELETE FROM MAXIMO.STE_ITEM_MAINTENTITY;
+
+DELETE FROM MAXIMO.ROUTES;
+DELETE FROM MAXIMO.ROUTE_STOP;
 
 --DELETE FROM MAXIMO.SKDACTION;
 --DELETE FROM maximo.SKDPROJECT;

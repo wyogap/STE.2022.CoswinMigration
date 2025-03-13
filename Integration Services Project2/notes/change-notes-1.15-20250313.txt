@@ -1,0 +1,219 @@
+CHANGE NOTES (1.15 - 2025/03/13)
+
+- Added 0004-Master-LOCSTATUS-LOCOPER: to populate LOCSTATUS and LOCOPER
+- Added 0021-Master-STE_ITEM_MAINTENTITY: to store one-to-many relationship of ITEM and MAINTENTITY
+- Added 0022-Master-LOCANCESTOR-LOCHIERARCHY: to populate location hierarchy
+- Added 0072-Master-LABORSTATUS: to populate LABORSTATUS
+- Added 0411-WO-RelatedTables: to populate WO related tables (WOSERVICEADDRESS, PLUSTWOQUALFLG, WOANCESTOR, WOSTATUS)
+- Added 1106-File-User-Master: load master user file (XLSX), including for SAPID fixes.
+- Added 1107-File_Zone-Location-Mapping: load zone to location mapping
+- Added 1108-File-FailureList-Master: load latest failure list file (XLSX)
+- Added 1011-Fix-User-SAPID: to fix user's SAPID
+- Added 1026-Fix-User-SAPID-Labor: to fix user's SAPID for Labor (LABOR, LABORCRAFTRATE, ATTENDANCE, LABORQUAL, LABTRANS)
+- Added 1012-Fix-Upper-PersonGroup: to set PersonGroup to all uppercase to avoid error in reference/join
+- Added: load CSWNGROUP to MAINTENTITY mapping file (1102-File-Lookup)
+- Added 1013-Fix-PersonGroupTeam-MaintEntity: to add user membership to corresponding maintentity group based on cswngroup mapping
+- Added 1015-Fix-Routes-System-Subsystem-LocType: to set Route's system/subsystem/loctype from Assets
+- Added 1016-Fix-PM-System-Subsystem-LocType: to set PM's system/subsystem/loctype/maintentity from Asset/Route
+- Added 1017-Fix-JobPlan-System-Subsystem-LocType: to set JobPlan's system/subsystem/loctype/maintentity from JPAssetsPLink/PM
+- Added 1018-Fix-AssetCode: to generate assetcode
+- Added 1018-Fix-PersonGroup-Department: to populate PersonGroup.Department based on MAINTENTITY
+- Added 1019-Fix-Old-WO-Reference: to clean-up old references to Workorder which are 
+not deleted during clean-up.
+- Added 1020-Fix-Reset-Item-Commodity: to reset Item.Commodity
+- Added 1021-Fix-Asset-Item-Mapping: to fix itemnum mapping in Asset
+- Added 1025-Fix-ITEMNUM-mapping: to fix itemnum mapping (SPAREPART, ALTITEM, INVBALANCES, INVLOT, JOBMATERIAL, QUOTATIONLINE)
+- Added 1022-Fix-MULTIASSETLOCCI: to fix MULTIASSETLOCCI.SITEID and MULTIASSETLOCCI.Location 
+- Added 1023-Fix-Disable-CREW: to disable CREW so that we can assign resource in GWW
+- Added 1024-Fix-PersonGroup: (1) set ISCREWWORKGROUP=1 for PersonGroup migrated from Coswin's TRADE; (2) GroupDefault for each PersonGroup must be set only and only to ONE Person; (3) Coswin Entity 'CSC' should be migrated to PersonGroup 'CSC' (Maint-Entity) and Dept 'CSC'
+- Added 1025-Fix-WPLabor-LabTrans: (1) to set SKILLLEVEL for WPLabor and LabTrans; (2) to remove CREW in WPLabor
+- Added 1027-Fix-Train-LocationType: to change location type for TRAINCAR location to 'TRAIN' (originally it is RST)
+- Added 1028-Fix-FailureList: to load latest failure code master file
+- Added 1029-Fix-AssetTrans: to fix how Coswin's EQP_MOVE is migrated to AssetTrans (using zone-to-location mapping)
+- Added 1030-Fix-Location-Hierarchy: to build location hierarchy
+- Added 1031-Fix-Workorder: (1) set WO's STE_LINE/STE_SYSTEM/STE_SUBSYSTEM/CSWNEQAUTHORITY from
+Asset/Route; (2) fix WO.STE_MAINTENTITY based on CSWNACTIONAUTH/CSWNEQAUTHORITY
+- Added 1031-Fix-FailureReport: to fix how Coswin's EQP_DEFR is migrated to FailureReport. Only the first entry for a given WO, goes to FAILUREREPORT table. The remaining entries for the WO, goes to STE_ALTFAILURECODE.
+- Added 1033-Fix-Item-Line: to set ITEM.STE_LINE
+- Added 1035-Fix-Disable-INVLOT: to disable INVLOT (related columns in other tables)
+- Added 1036-Fix-MRLINE-StoreLoc: to set MRLINE's store to 'CW'
+- Added 1037-Fix-Asset-RotatingItem: to remove Asset rotating item when item is non-rotating
+- Added 1038-Fix-JOBMATERIAL-StoreRoom: to set JobMaterial storeroom
+- Added 1039-Fix-NULL-MeterReading: to set NULL value in MeterReading to -1 to avoid error when generating WO from PM.
+- Added 1040-Fix-PM-MiscValues: to set misc default values in PM
+- Added 1041-Fix-JobTask: to clean up duplicate JobTask
+- Moved 0409-WO-MATUSETRANS to 0209-INV-MATUSETRANS
+- Added: as-is migration for RES_SUPV (used in EQP_JOBS but no employee is assigned to it) in 0713_Others_TransactionTables8
+- Added: load asset-master-issues-(fixes).xlsx and update asset location/location type in 1010-Fix-Asset-Location
+- Fixed: Cannot schedule labor assignment for migrated user/labor (disable CREW with 1023-Fix-Disable-CREW)
+- Fixed: duplicate failure report for given WO is to be stored in custom table STE_ALTFAILURECODE (1031-Fix-FailureReport)
+- Fixed: to set location components according to location type
+
+The following location components are set:
+- DEPOT: STE_DEPOT, STE_BUILDING, STE_LEVEL, STE_AREA
+- DEPTRK: STE_DEPOT, STE_TRACKNO, STE_CHAINAGESTART, STE_CHAINAGEEND
+- STATION: STE_STATION, STE_LEVEL, STE_AREA
+- TRAIN: STE_TRAINCAR, STE_TRAINAREA, STE_SUBAREA, STE_ASSEMBLY
+- TUNTRK: STE_TUNNEL, STE_BOUND, STE_CHAINAGESTART, STE_CHAINAGEEND
+- VIADTRK: STE_VIADUCT, STE_BOUND, STE_CHAINAGESTART, STE_CHAINAGEEND
+- VIADUCT: STE_VIADUCTCOLUMNPIERCODE, STE_BOUNDANDCOLUMNNO, STE_CROSSHEADLOCATION, STE_BEARINGLOCATION
+
+0003-Master-Locations:
+- Fixed: to set location components according to location type
+
+0006-Master-Item
+- Fixed: to set Item.PLUSTCOMP to NULL (instead of 0)
+- Fixed: to set Item.Commodity to NULL (dont migrate!)
+- Fixed: to set ITEM.STE_LINE
+
+0008-Master-AltItem:
+- Fixed: ItemNum mapping
+
+0011-Master-Routes:
+- Added: populate STE_CSWNAUTHORITY from EQP_TOPO.EQ_EQAUTHORITY
+
+0014-Master-FailureCode-FailureList:
+- Fixed: to load latest master file (xlsx)
+
+0018-Master-Supplier-History
+- Fixed: to update seq value for pkey
+
+0051-Master-Person:
+- Added: logic to update SAPID based on xls file (user master)
+
+0052-Master-Craft-CraftSkill:
+- Set CraftSkill default to 'STANDARD'.
+- Set CraftSkill.Description for STANDARD to Craft's description.
+
+0053-Master-PersonGroup
+- Fixed: to populate PersonGroup.STE_Department based on maint-entity
+- Added: CSC as Maintenance Entity
+- Added: CSC as DEPT-ENTITY mapping
+- Fixed: Coswin Entity 'CSC' should be migrated to PersonGroup 'CSC' (Maint-Entity) and Dept 'CSC'
+- Fixed: For Coswin TRADE migrated as PersonGroup but found to be duplicate (already exist),
+ISCREWWORKGROUP is not set to 1;
+
+0054-Master-PersonGroupTeam
+- Added: Coswin UserGroup to MaintEntity mapping
+- Fixed: PersonGroup must be all uppercase
+- Fixed: GroupDefault for each PersonGroup must be set only and only to ONE Person.
+
+0055-Master-Labor-LaborCraftRate:
+- Set Labor.AvailFactor=1
+- Set default LaborCraftRate.skilllevel to 'STANDARD'
+- Fixed: User SAPID for Labor (LABOR, LABORCRAFTRATE)
+
+0056-Master-Crew
+- Disable CREW migration for now because it makes it too complicated to schedule work
+
+0058-Misc-PPCraftRate:
+- Set default skilllevel to 'STANDARD'
+- Only migrate premium rate when value>0
+
+0059-Misc-LaborQual:
+- Fixed: User SAPID for Labor
+
+0060-Misc-Attendance:
+- Fixed: User SAPID for Labor
+
+0063-Misc-JobPlan-JPAssetsPLink-JobTask
+- Fixed: to clean up duplicate JobTask
+
+0065-Misc-JobMaterial
+- Fixed: ItemNum mapping
+- Fixed: to set JobMaterial storeroom
+
+0066-Misc-PM-PMMeter-PMSeason
+- Fixed: to set various PM's default value
+- Fixed: to set PM.ParentChngsStatus=1
+
+0070-Misc-MAXDOMAIN:
+- Disable STE_DEPOTTRACK domain
+- Fixed: to change default skilllevel to 'STANDARD' (originally 'NORMAL')
+
+0101-Asset-Asset:
+- Added: calculate STE_ASSETCODE based on format: SYSTEM/SUBSYSTEM/ASSETTYPE/ASSETID
+- Fixed: format for AssetCode should be: SYSTEM/SUBSYSTEM/ASSETTYPE/ASSETNUM
+- Fixed: Asset.ITEMNUM still using the coswin itemno instead of maximo itemnum
+- Fixed: to set maintenance entity for Routes, Workorder, PM and JobPlan
+- Fixed: to remove Asset rotating item when item is non-rotating
+
+0104-Asset-STE_CSWNASSETSLHIST
+- Fixed: to update seq value for pkey
+
+0105-Asset-AssetTrans:
+- Fixed: mapping fromparent and toparent
+- Fixed: mapping fromloc and toloc using zone-to-location mapping
+
+0113-Asset-Meterreading
+- Fixed: to set NULL value in MeterReading to -1 to avoid error when generating WO from PM.
+
+0114-Asset-RelatedTables:
+- Fixed: to update JobPlan's system/subsyste/loctype from JPAssetsPLink and PM
+
+0201-Inventory-Inventory:
+- Added: logging for item lookup
+
+0202-Inventory-InvVendor:
+- Added: logging for item lookup
+
+0203-Inventory-InvBalances-InvLot:
+- Fixed: disable INVLOT and reset INVBALANCES.LOTNUM
+- Fixed: ItemNum mapping
+- Fixed: to disable INVLOT and clear INVBALANCES.LOTNUM
+- Fixed: to aggregate INVBALANCES value in BINNUM level since we now do not migrate LOTNUM
+
+0204-Inventory-InvCost
+- Added: logging for item lookup
+
+0205-Inventory-MR-MRLine
+- Fixed: to migrate only Demand with type=49 (Issue). For type=52 (Return) and type=53 (Transfer), it will be created as INVUSE only.
+
+0206-InvTrans:
+- Added: logging for item lookup
+
+0305-PO-QuotationLine:
+- Fixed: ItemNum mapping
+
+0401-WO-Workorder
+- Fixed: to populate Workorder.STE_CSQNEQAUTHORITY fro Asset/Route
+- Fixed: to set maintentity based on STE_CSWNACTIONAUTH or STE_CSQNEQAUTHORITY
+
+0403-WO-LabTrans
+- Fixed: User SAPID for Labor
+- Fixed: moved lookup for WO to after data flow (use bulk update script)
+- Fixed: to set LABTRANS.SKILLLEVEL to 'STANDARD'
+
+0405-WO-SR-TKServiceAddress
+- Fixed: to remove hardcode filter in TKServiceAddress
+
+0408-WO-WPLabor:
+- Added: set WPLabor.SkillLevel='STANDARD'
+- Fixed: to set WPLABOR.SKILLLEVEL to 'STANDARD'
+- Fixed: to remove crew in WPLabor (AMCREW, AMCREWTYPE, CREWWORKGROUP)
+
+0410-WO-MULTIASSETLOCCI:
+- Fixed: MULTIASSETLOCCI.SITEID is wrongly set to "SBST".
+- Fixed: MULTIASSETLOCCI.Location is not populated (should get from asset.location)
+- Clean up logic: remove unnecessary join and sort
+
+0107-Asset-SparePart:
+- Fixed: ItemNum mapping
+
+1015-Fix-ROUTES-System-Subsystem-LocType
+- Fixed: dont override existing value if the new value is NULL
+
+1022-Fix-CraftSkill-CraftRate:
+- Fixed: to update ALNDOMAIN for SKILLLEVEL.NORMAL to STANDARD
+
+1104-File-Location-Master:
+- Disable creation of DEPOTTRACK NED location
+- For TUNNEL location, set LINE=NEL
+- For VIADUCT location, set LINE=LRT
+- Use latest location master file (Location-NEL1902 Reference Tables - Feb 2025 Draft-v2.XLSX)
+- Fixed: TUNNEL_REF table is accidentally deleted
+- Added: filter against empty rows when loading XLSX
+- Fixed: viaduct track (VIADTRK) type is incorrectly set as viaduct (VIADUCT) type
+- Fixed: rename the viaduct track and tunnel track hierarchy tables
+- Fixed: to change location type from RST to TRAIN
+
