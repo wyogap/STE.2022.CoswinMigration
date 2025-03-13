@@ -11,8 +11,8 @@
   DTS:LocaleID="14345"
   DTS:ObjectName="DB2_1015_Fix_ROUTES_System_Subsystem_LocType"
   DTS:PackageType="5"
-  DTS:VersionBuild="175"
-  DTS:VersionGUID="{A9FD551D-FF93-4D56-95AD-2F291F94E15D}">
+  DTS:VersionBuild="177"
+  DTS:VersionGUID="{3238829C-2830-4C16-B33C-553E445D389D}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -281,7 +281,7 @@
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-          SQLTask:SqlStatementSource="MERGE INTO MAXIMO.ROUTES AS A&#xA;USING (&#xA;&#x9;WITH DATA AS (&#xA;&#x9;&#x9;SELECT r.routesid, r.route, rs.assetnum &#xA;&#x9;&#x9;&#x9;, b.ste_system, b.ste_subsystem&#xA;&#x9;&#x9;&#x9;, b.location, l.TYPE AS locationtype&#xA;&#x9;&#x9;FROM maximo.ROUTES r &#xA;&#x9;&#x9;JOIN MAXIMO.ROUTE_STOP rs ON rs.route=r.route&#xA;&#x9;&#x9;JOIN maximo.ASSET b ON b.assetnum=rs.assetnum&#xA;&#x9;&#x9;LEFT JOIN maximo.LOCATIONS l ON l.location=b.location&#xA;&#x9;&#x9;ORDER BY r.route&#xA;&#x9;),&#xA;&#x9;SYSTEMCNT AS (&#xA;&#x9;&#x9;SELECT routesid, count(DISTINCT ste_system) AS cnt, max(ste_system) AS ste_system&#xA;&#x9;&#x9;FROM DATA&#xA;&#x9;&#x9;WHERE ste_system IS NOT null&#xA;&#x9;&#x9;GROUP BY routesid&#xA;&#x9;),&#xA;&#x9;SUBSYSTEMCNT AS (&#xA;&#x9;&#x9;SELECT routesid, count(DISTINCT ste_subsystem) AS cnt, max(ste_subsystem) AS ste_subsystem&#xA;&#x9;&#x9;FROM DATA&#xA;&#x9;&#x9;WHERE ste_subsystem IS NOT null&#xA;&#x9;&#x9;GROUP BY routesid&#xA;&#x9;),&#xA;&#x9;LOCTYPECNT AS (&#xA;&#x9;&#x9;SELECT routesid, count(DISTINCT locationtype) AS cnt, max(locationtype) AS locationtype&#xA;&#x9;&#x9;FROM DATA&#xA;&#x9;&#x9;WHERE locationtype IS NOT null&#xA;&#x9;&#x9;GROUP BY routesid&#xA;&#x9;)&#xA;&#x9;SELECT R.ROUTESID, R.ROUTE, B.CNT, C.CNT, D.CNT&#xA;&#x9;&#x9;, CASE WHEN COALESCE(B.CNT,0)=1 THEN B.STE_SYSTEM ELSE NULL END AS STE_SYSTEM&#xA;&#x9;&#x9;, CASE WHEN COALESCE(C.CNT,0)=1 THEN C.STE_SUBSYSTEM ELSE NULL END AS STE_SUBSYSTEM&#xA;&#x9;&#x9;, CASE WHEN COALESCE(D.CNT,0)=1 THEN D.LOCATIONTYPE ELSE NULL END AS LOCATIONTYPE&#xA;&#x9;FROM MAXIMO.ROUTES R&#xA;&#x9;LEFT JOIN SYSTEMCNT B ON B.ROUTESID=R.ROUTESID&#xA;&#x9;LEFT JOIN SUBSYSTEMCNT C ON C.ROUTESID=R.ROUTESID&#xA;&#x9;LEFT JOIN LOCTYPECNT D ON D.ROUTESID=R.ROUTESID&#xA;&#x9;ORDER BY R.route&#xA;) B ON B.ROUTESID=A.ROUTESID&#xA;WHEN MATCHED THEN&#xA;UPDATE SET &#xA;&#x9;ste_system=B.ste_system,&#xA;&#x9;ste_subsystem=B.ste_subsystem,&#xA;&#x9;ste_loctype=B.locationtype&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:SqlStatementSource="MERGE INTO MAXIMO.ROUTES AS A&#xA;USING (&#xA; WITH DATA AS (&#xA;  SELECT r.routesid, r.route, rs.assetnum &#xA;   , b.ste_system, b.ste_subsystem&#xA;   , b.location, l.TYPE AS locationtype&#xA;  FROM maximo.ROUTES r &#xA;  JOIN MAXIMO.ROUTE_STOP rs ON rs.route=r.route&#xA;  JOIN maximo.ASSET b ON b.assetnum=rs.assetnum&#xA;  LEFT JOIN maximo.LOCATIONS l ON l.location=b.location&#xA;  ORDER BY r.route&#xA; ),&#xA; SYSTEMCNT AS (&#xA;  SELECT routesid, count(DISTINCT ste_system) AS cnt, max(ste_system) AS ste_system&#xA;  FROM DATA&#xA;  WHERE ste_system IS NOT null&#xA;  GROUP BY routesid&#xA; ),&#xA; SUBSYSTEMCNT AS (&#xA;  SELECT routesid, count(DISTINCT ste_subsystem) AS cnt, max(ste_subsystem) AS ste_subsystem&#xA;  FROM DATA&#xA;  WHERE ste_subsystem IS NOT null&#xA;  GROUP BY routesid&#xA; ),&#xA; LOCTYPECNT AS (&#xA;  SELECT routesid, count(DISTINCT locationtype) AS cnt, max(locationtype) AS locationtype&#xA;  FROM DATA&#xA;  WHERE locationtype IS NOT null&#xA;  GROUP BY routesid&#xA; )&#xA; SELECT R.ROUTESID, R.ROUTE, B.CNT, C.CNT, D.CNT&#xA;  , CASE WHEN COALESCE(B.CNT,0)=1 THEN B.STE_SYSTEM ELSE NULL END AS STE_SYSTEM&#xA;  , CASE WHEN COALESCE(C.CNT,0)=1 THEN C.STE_SUBSYSTEM ELSE NULL END AS STE_SUBSYSTEM&#xA;  , CASE WHEN COALESCE(D.CNT,0)=1 THEN D.LOCATIONTYPE ELSE NULL END AS LOCATIONTYPE&#xA;  , R.STE_SYSTEM AS ORIG_SYSTEM&#xA;  , R.STE_SUBSYSTEM AS ORIG_SUBSYSTEM&#xA;  , R.STE_LOCTYPE AS ORIG_LOCTYPE&#xA; FROM MAXIMO.ROUTES R&#xA; LEFT JOIN SYSTEMCNT B ON B.ROUTESID=R.ROUTESID&#xA; LEFT JOIN SUBSYSTEMCNT C ON C.ROUTESID=R.ROUTESID&#xA; LEFT JOIN LOCTYPECNT D ON D.ROUTESID=R.ROUTESID&#xA; ORDER BY R.route&#xA;) B ON B.ROUTESID=A.ROUTESID&#xA;WHEN MATCHED THEN&#xA;UPDATE SET &#xA; ste_system=COALESCE(B.ste_system,B.ORIG_SYSTEM),&#xA; ste_subsystem=COALESCE(B.ste_subsystem,B.ORIG_SUBSYSTEM),&#xA; ste_loctype=COALESCE(B.locationtype,B.ORIG_LOCTYPE)&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
   </DTS:Executables>
@@ -414,7 +414,7 @@
           </EdgeLayout.Labels>
         </EdgeLayout>
         <AnnotationLayout
-          Text="Notes:&#xA;Set Route's system/subsystem/locationtype based on &#xA;Asset's system/subsystem/locationtype.&#xA;&#xA;Because one Route can have multiple Assets (RouteStop), only set the value&#xA;if it is unique for the given Route&#xD;&#xA;&#xD;&#xA;In the migration script, it is triggered in 0101-Asset-Asset pkg"
+          Text="Notes:&#xA;Set Route's system/subsystem/locationtype based on &#xA;Asset's system/subsystem/locationtype.&#xA;&#xA;Because one Route can have multiple Assets (RouteStop), only set the value&#xA;if it is unique for the given Route&#xA;&#xA;In the migration script, it is triggered in 0101-Asset-Asset pkg"
           ParentId="Package"
           FontInfo="{assembly:Null}"
           Size="427.2,152"

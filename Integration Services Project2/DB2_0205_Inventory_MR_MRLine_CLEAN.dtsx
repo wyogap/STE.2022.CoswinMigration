@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0205_Inventory_MR_MRLine_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="184"
-  DTS:VersionGUID="{895C333B-58C1-4D0D-9D4D-7EEA54FCA05F}"
+  DTS:VersionBuild="191"
+  DTS:VersionGUID="{08862319-78BD-4101-9810-20C0150FEE2B}"
   DTS:VersionMajor="3"
   DTS:VersionMinor="1">
   <DTS:Property
@@ -3801,7 +3801,7 @@ where "refTable"."COMPVALUE" = ?</property>
                   containsID="true"
                   dataType="System.String"
                   description="Specifies the list of lineage identifiers that map to the parameters that the SQL statement in the SQLCommand property uses. Entries in the list are separated by semicolons."
-                  name="ParameterMap">#{Package\DF - MR\1861:invalid};</property>
+                  name="ParameterMap">#{Package\DF - MR\8174:invalid};</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -5276,7 +5276,8 @@ where "refTable"."STE_CSWNWOID" = ?</property>
                   description="The SQL command to be executed."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT 
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">-- MR
+SELECT 
 	PK_DEM_ISS
 	, "TIMESTAMP"
 	--, S_RET_ISS
@@ -5294,7 +5295,7 @@ where "refTable"."STE_CSWNWOID" = ?</property>
 	--, DEM_ISS_TAG
 	, DEM_STRING1
 	, DEM_STRING2
-	, REPLACE(REPLACE(DEM_DEMANDER,'(',''),')','') as DEM_DEMANDER
+	, REPLACE(REPLACE(TRIM(DEM_DEMANDER),'(',''),')','') as DEM_DEMANDER
 	--, DEM_ISSUER
 	, CASE WHEN DEM_STATUS=48 THEN 'APPR'
 	       WHEN DEM_STATUS=49 THEN 'APPR'
@@ -5304,8 +5305,11 @@ where "refTable"."STE_CSWNWOID" = ?</property>
 	       WHEN DEM_STATUS=57 THEN 'CLOSE'
 	       ELSE CAST(DEM_STATUS AS varchar(4))
 	  END AS MR_STATUS 
-FROM COSWIN.DEM_ISS di
-ORDER BY di.PK_DEM_ISS</property>
+FROM COSWIN.DEM_ISS d
+-- (mr type: 49-Issue, 52-Return, 53-Transfer?)
+WHERE d.DEM_TYPE=49
+ORDER BY d.PK_DEM_ISS
+;</property>
                 <property
                   dataType="System.Int32"
                   description="Specify the number of rows fetched per batch."
@@ -11104,24 +11108,24 @@ where "refTable"."DISPLAY_NAME" = ?</property>
               startId="Package\DF - MR\Conditional Split 1.Outputs[HAS COSTCENTER]" />
             <path
               refId="Package\DF - MR.Paths[Lookup Match Output3]"
-              endId="Package\DF - MR\Union All.Inputs[Union All Input 1]"
-              name="Lookup Match Output"
-              startId="Package\DF - MR\ReqBy - PersonID.Outputs[Lookup Match Output]" />
-            <path
-              refId="Package\DF - MR.Paths[Lookup Match Output2]"
               endId="Package\DF - MR\ReqBy - PersonID.Inputs[Lookup Input]"
               name="Lookup Match Output"
               startId="Package\DF - MR\Lookup - WOID.Outputs[Lookup Match Output]" />
             <path
-              refId="Package\DF - MR.Paths[Lookup Match Output]"
-              endId="Package\DF - MR\Replace Invalid CostCenter.Inputs[Derived Column Input]"
+              refId="Package\DF - MR.Paths[Lookup Match Output2]"
+              endId="Package\DF - MR\Union All.Inputs[Union All Input 1]"
               name="Lookup Match Output"
-              startId="Package\DF - MR\Lookup - Invalid CC Replacement.Outputs[Lookup Match Output]" />
+              startId="Package\DF - MR\ReqBy - PersonID.Outputs[Lookup Match Output]" />
             <path
-              refId="Package\DF - MR.Paths[Lookup Match Output1]"
+              refId="Package\DF - MR.Paths[Lookup Match Output]"
               endId="Package\DF - MR\Union All 2.Inputs[Union All Input 1]"
               name="Lookup Match Output"
               startId="Package\DF - MR\Lookup - CC.Outputs[Lookup Match Output]" />
+            <path
+              refId="Package\DF - MR.Paths[Lookup Match Output1]"
+              endId="Package\DF - MR\Replace Invalid CostCenter.Inputs[Derived Column Input]"
+              name="Lookup Match Output"
+              startId="Package\DF - MR\Lookup - Invalid CC Replacement.Outputs[Lookup Match Output]" />
             <path
               refId="Package\DF - MR.Paths[Lookup No Match Output]"
               endId="Package\DF - MR\Union All 1.Inputs[Union All Input 1]"
@@ -12609,13 +12613,13 @@ where "refTable"."DISPLAY_NAME" = ?</property>
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">(DT_STR,4,1252)""</property>
+                          name="Expression">(DT_STR,4,1252)"SOFT"</property>
                         <property
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
-                          name="FriendlyExpression">(DT_STR,4,1252)""</property>
+                          name="FriendlyExpression">(DT_STR,4,1252)"SOFT"</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
@@ -12854,6 +12858,30 @@ where "refTable"."DISPLAY_NAME" = ?</property>
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
                           name="FriendlyExpression">(DT_STR,110,1252)(ISNULL(CostCenter) ? (cc_dept) : ISNULL(GLCode) ? (cc_dept + "-" + CostCenter) : (cc_dept + "-" + CostCenter + "-" + GLCode))</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\DF - MRLine\Derived Column 1.Outputs[Derived Column Output].Columns[v_worktype]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="8"
+                      lineageId="Package\DF - MRLine\Derived Column 1.Outputs[Derived Column Output].Columns[v_worktype]"
+                      name="v_worktype"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_STR,8,1252)"Others"</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_STR,8,1252)"Others"</property>
                       </properties>
                     </outputColumn>
                   </outputColumns>
@@ -16218,6 +16246,14 @@ where "refTable"."STE_CSWNITEMNO" = ?</property>
                       cachedName="DEM_CC"
                       externalMetadataColumnId="Package\DF - MRLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_COSC]"
                       lineageId="Package\DF - MRLine\Union All 2.Outputs[Union All Output 1].Columns[DEM_CC]" />
+                    <inputColumn
+                      refId="Package\DF - MRLine\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_worktype]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8"
+                      cachedName="v_worktype"
+                      externalMetadataColumnId="Package\DF - MRLine\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[STE_WORKTYPE]"
+                      lineageId="Package\DF - MRLine\Union All 2.Outputs[Union All Output 1].Columns[v_worktype]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -17085,37 +17121,32 @@ where "refTable"."STE_CSWNITEMNO" = ?</property>
                   description="The SQL command to be executed."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT 
-	di.PK_DEM_ITEMS
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">-- MRLINE
+SELECT 
+	d.PK_DEM_ISS, d.DEM_REF, d.DEM_CC
+	, di.PK_DEM_ITEMS
 	, di."TIMESTAMP"
-	--, di.S_DEM_RES_ITEM
-	--, di.S_ITEM_DEM
 	, di.DT_DEM_ITEMS
 	, di.TM_DEM_ITEMS
 	, di.DEM_QTY
-	--, di.QTY_RES
-	--, di.DEM_1EXTRA
-	--, di.RES_ITEM_STATUS
-	--, di.DEM_CHANCE_NO
-	--, di.DEM_ACT_NO
-	--, di.DEM_IT_NUMBER1
-	--, di.DEM_IT_STRING1
-	--, d.PK_DEM_ISS 
-	, d.DEM_REF 
-	, d.DEM_CC
 	--, i.PK_ITEM_ 
 	, i.ITEM_CD 
 	, i.ITEM_SHORT 
 	, i.BUY_PRICE 
 	, i.STOCK_UNITS
 	, ROW_NUMBER() OVER (PARTITION BY d.PK_DEM_ISS  ORDER BY i.ITEM_CD) LINENUM
-	, i.MAIN_STORE 
+	-- , i.MAIN_STORE 
+	-- Hardcode item's mainstore to 'CW'
+	, 'CW' as MAIN_STORE 
 	, COALESCE(i.BUY_CURR, 'SGD') AS BUY_CURR 
-FROM COSWIN.DEM_ITEMS di
-JOIN COSWIN.DEM_ISS d ON d.PK_DEM_ISS = di.S_DEM_RES_ITEM 
+FROM COSWIN.DEM_ISS d 
+JOIN COSWIN.DEM_ITEMS di ON d.PK_DEM_ISS = di.S_DEM_RES_ITEM 
 -- must be valid item
 JOIN COSWIN.ITEM_ i ON i.PK_ITEM_ = di.S_ITEM_DEM 
-order by di.PK_DEM_ITEMS</property>
+-- (mr type: 49-Issue, 52-Return, 53-Transfer?)
+WHERE d.DEM_TYPE=49
+order by di.PK_DEM_ITEMS
+;</property>
                 <property
                   dataType="System.Int32"
                   description="Specify the number of rows fetched per batch."
@@ -17258,6 +17289,12 @@ order by di.PK_DEM_ITEMS</property>
                       lineageId="Package\DF - MRLine\Oracle Source.Outputs[Oracle Source Output].Columns[TIMESTAMP]"
                       name="TIMESTAMP"
                       precision="10" />
+                    <outputColumn
+                      refId="Package\DF - MRLine\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DEM_ISS]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - MRLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DEM_ISS]"
+                      lineageId="Package\DF - MRLine\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DEM_ISS]"
+                      name="PK_DEM_ISS" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -17309,7 +17346,7 @@ order by di.PK_DEM_ITEMS</property>
                       refId="Package\DF - MRLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[MAIN_STORE]"
                       codePage="1252"
                       dataType="str"
-                      length="10"
+                      length="2"
                       name="MAIN_STORE" />
                     <externalMetadataColumn
                       refId="Package\DF - MRLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[BUY_CURR]"
@@ -17334,6 +17371,10 @@ order by di.PK_DEM_ITEMS</property>
                       dataType="numeric"
                       name="TIMESTAMP"
                       precision="10" />
+                    <externalMetadataColumn
+                      refId="Package\DF - MRLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DEM_ISS]"
+                      dataType="i4"
+                      name="PK_DEM_ISS" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -17408,7 +17449,7 @@ order by di.PK_DEM_ITEMS</property>
                       codePage="1252"
                       dataType="str"
                       externalMetadataColumnId="Package\DF - MRLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[MAIN_STORE]"
-                      length="10"
+                      length="2"
                       lineageId="Package\DF - MRLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[MAIN_STORE]"
                       name="MAIN_STORE" />
                     <outputColumn
@@ -17442,6 +17483,12 @@ order by di.PK_DEM_ITEMS</property>
                       lineageId="Package\DF - MRLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[TIMESTAMP]"
                       name="TIMESTAMP"
                       precision="10" />
+                    <outputColumn
+                      refId="Package\DF - MRLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_DEM_ISS]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - MRLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DEM_ISS]"
+                      lineageId="Package\DF - MRLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_DEM_ISS]"
+                      name="PK_DEM_ISS" />
                     <outputColumn
                       refId="Package\DF - MRLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -22764,6 +22811,21 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="OutputColumnLineageID">#{Package\DF - MRLine\Union All 2.Outputs[Union All Output 1].Columns[v_glaccount]}</property>
                       </properties>
                     </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - MRLine\Union All 2.Inputs[Union All Input 1].Columns[v_worktype]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8"
+                      cachedName="v_worktype"
+                      lineageId="Package\DF - MRLine\Derived Column 1.Outputs[Derived Column Output].Columns[v_worktype]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - MRLine\Union All 2.Outputs[Union All Output 1].Columns[v_worktype]}</property>
+                      </properties>
+                    </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -23374,6 +23436,21 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           dataType="System.Int32"
                           description="Output column lineage ID"
                           name="OutputColumnLineageID">#{Package\DF - MRLine\Union All 2.Outputs[Union All Output 1].Columns[v_glaccount]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - MRLine\Union All 2.Inputs[Union All Input 2].Columns[v_worktype]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8"
+                      cachedName="v_worktype"
+                      lineageId="Package\DF - MRLine\Derived Column 1.Outputs[Derived Column Output].Columns[v_worktype]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - MRLine\Union All 2.Outputs[Union All Output 1].Columns[v_worktype]}</property>
                       </properties>
                     </inputColumn>
                   </inputColumns>
@@ -23988,6 +24065,21 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="OutputColumnLineageID">#{Package\DF - MRLine\Union All 2.Outputs[Union All Output 1].Columns[v_glaccount]}</property>
                       </properties>
                     </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - MRLine\Union All 2.Inputs[Union All Input 3].Columns[v_worktype]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="8"
+                      cachedName="v_worktype"
+                      lineageId="Package\DF - MRLine\Derived Column 1.Outputs[Derived Column Output].Columns[v_worktype]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - MRLine\Union All 2.Outputs[Union All Output 1].Columns[v_worktype]}</property>
+                      </properties>
+                    </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -24264,6 +24356,13 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       length="110"
                       lineageId="Package\DF - MRLine\Union All 2.Outputs[Union All Output 1].Columns[v_glaccount]"
                       name="v_glaccount" />
+                    <outputColumn
+                      refId="Package\DF - MRLine\Union All 2.Outputs[Union All Output 1].Columns[v_worktype]"
+                      codePage="1252"
+                      dataType="str"
+                      length="8"
+                      lineageId="Package\DF - MRLine\Union All 2.Outputs[Union All Output 1].Columns[v_worktype]"
+                      name="v_worktype" />
                   </outputColumns>
                   <externalMetadataColumns />
                 </output>
@@ -24298,54 +24397,54 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               startId="Package\DF - MRLine\Conditional Split 1.Outputs[Conditional Split Default Output]" />
             <path
               refId="Package\DF - MRLine.Paths[Derived Column Output9]"
-              endId="Package\DF - MRLine\LOG CNT.Inputs[OLE DB Destination Input]"
-              name="Derived Column Output"
-              startId="Package\DF - MRLine\Derived Column 4 2.Outputs[Derived Column Output]" />
-            <path
-              refId="Package\DF - MRLine.Paths[Derived Column Output8]"
-              endId="Package\DF - MRLine\CHARTOFACCOUNTS.Inputs[OLE DB Destination Input]"
-              name="Derived Column Output"
-              startId="Package\DF - MRLine\Derived Column 3 1.Outputs[Derived Column Output]" />
-            <path
-              refId="Package\DF - MRLine.Paths[Derived Column Output7]"
-              endId="Package\DF - MRLine\Conditional Split 2.Inputs[Conditional Split Input]"
-              name="Derived Column Output"
-              startId="Package\DF - MRLine\Derived Column 1.Outputs[Derived Column Output]" />
-            <path
-              refId="Package\DF - MRLine.Paths[Derived Column Output6]"
-              endId="Package\DF - MRLine\LOG CNT 1.Inputs[OLE DB Destination Input]"
-              name="Derived Column Output"
-              startId="Package\DF - MRLine\Derived Column 4 2 1.Outputs[Derived Column Output]" />
-            <path
-              refId="Package\DF - MRLine.Paths[Derived Column Output5]"
               endId="Package\DF - MRLine\Derived Column 1.Inputs[Derived Column Input]"
               name="Derived Column Output"
               startId="Package\DF - MRLine\Derived Column 3.Outputs[Derived Column Output]" />
             <path
-              refId="Package\DF - MRLine.Paths[Derived Column Output3]"
-              endId="Package\DF - MRLine\Lookup - ITEM.Inputs[Lookup Input]"
+              refId="Package\DF - MRLine.Paths[Derived Column Output8]"
+              endId="Package\DF - MRLine\LOG CNT.Inputs[OLE DB Destination Input]"
               name="Derived Column Output"
-              startId="Package\DF - MRLine\Derived Column.Outputs[Derived Column Output]" />
+              startId="Package\DF - MRLine\Derived Column 4 2.Outputs[Derived Column Output]" />
             <path
-              refId="Package\DF - MRLine.Paths[Derived Column Output2]"
+              refId="Package\DF - MRLine.Paths[Derived Column Output7]"
+              endId="Package\DF - MRLine\CHARTOFACCOUNTS.Inputs[OLE DB Destination Input]"
+              name="Derived Column Output"
+              startId="Package\DF - MRLine\Derived Column 3 1.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - MRLine.Paths[Derived Column Output6]"
+              endId="Package\DF - MRLine\Conditional Split 2.Inputs[Conditional Split Input]"
+              name="Derived Column Output"
+              startId="Package\DF - MRLine\Derived Column 1.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - MRLine.Paths[Derived Column Output5]"
+              endId="Package\DF - MRLine\LOG CNT 1.Inputs[OLE DB Destination Input]"
+              name="Derived Column Output"
+              startId="Package\DF - MRLine\Derived Column 4 2 1.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - MRLine.Paths[Derived Column Output3]"
               endId="Package\DF - MRLine\Union All.Inputs[Union All Input 2]"
               name="Derived Column Output"
               startId="Package\DF - MRLine\Replace Invalid CostCenter.Outputs[Derived Column Output]" />
             <path
-              refId="Package\DF - MRLine.Paths[Derived Column Output1]"
+              refId="Package\DF - MRLine.Paths[Derived Column Output2]"
               endId="Package\DF - MRLine\Union All 1.Inputs[Union All Input 2]"
               name="Derived Column Output"
               startId="Package\DF - MRLine\Derived Column 2 1.Outputs[Derived Column Output]" />
             <path
-              refId="Package\DF - MRLine.Paths[Derived Column Output]"
+              refId="Package\DF - MRLine.Paths[Derived Column Output1]"
               endId="Package\DF - MRLine\Union All 1.Inputs[Union All Input 3]"
               name="Derived Column Output"
               startId="Package\DF - MRLine\Derived Column 2.Outputs[Derived Column Output]" />
             <path
-              refId="Package\DF - MRLine.Paths[Derived Column Output4]"
+              refId="Package\DF - MRLine.Paths[Derived Column Output]"
               endId="Package\DF - MRLine\OLE DB Destination 1 1.Inputs[OLE DB Destination Input]"
               name="Derived Column Output"
               startId="Package\DF - MRLine\Derived Column 4.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - MRLine.Paths[Derived Column Output4]"
+              endId="Package\DF - MRLine\Lookup - ITEM.Inputs[Lookup Input]"
+              name="Derived Column Output"
+              startId="Package\DF - MRLine\Derived Column.Outputs[Derived Column Output]" />
             <path
               refId="Package\DF - MRLine.Paths[HAS COSTCENTER]"
               endId="Package\DF - MRLine\Lookup - CC.Inputs[Lookup Input]"
@@ -25622,17 +25721,21 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
       <GraphLayout
         Capacity="64" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
-          Size="180,41.6"
-          Id="Package\DF - MR\OLE DB Destination 1 1"
-          TopLeft="891.745994360477,1088.22222008763" />
-        <NodeLayout
-          Size="204.8,41.6"
-          Id="Package\DF - MR\Replace Invalid CostCenter"
-          TopLeft="570.773778338105,452.373806806417" />
+          Size="124.8,41.6"
+          Id="Package\DF - MR\LOG CNT"
+          TopLeft="1140.53171072207,724.515866413958" />
         <NodeLayout
           Size="161.6,41.6"
           Id="Package\DF - MR\Derived Column 4"
           TopLeft="908.879319589236,996.355554059789" />
+        <NodeLayout
+          Size="170.4,41.6"
+          Id="Package\DF - MR\Derived Column 4 2"
+          TopLeft="1112.55552061426,629.32539165177" />
+        <NodeLayout
+          Size="120,41.6"
+          Id="Package\DF - MR\Union All"
+          TopLeft="395.357121255782,340.580951006006" />
         <NodeLayout
           Size="136.8,41.6"
           Id="Package\DF - MR\Lookup - CC"
@@ -25646,25 +25749,9 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           Id="Package\DF - MR\Derived Column 2 1"
           TopLeft="267.626974749699,727.637288883439" />
         <NodeLayout
-          Size="128.8,41.6"
-          Id="Package\DF - MR\Union All 2"
-          TopLeft="501.904742911696,806.952378774163" />
-        <NodeLayout
           Size="171.2,41.6"
           Id="Package\DF - MR\OLE DB Destination"
           TopLeft="489.246005014808,1082.82221941866" />
-        <NodeLayout
-          Size="161.6,41.6"
-          Id="Package\DF - MR\ReqBy - PersonID"
-          TopLeft="224.5,173.416666666666" />
-        <NodeLayout
-          Size="155.2,41.6"
-          Id="Package\DF - MR\Lookup - WOID"
-          TopLeft="229.5,83.5" />
-        <NodeLayout
-          Size="97.6,41.6"
-          Id="Package\DF - MR\Sort 1"
-          TopLeft="758.785673892926,264.552381945924" />
         <NodeLayout
           Size="128,41.6"
           Id="Package\DF - MR\Multicast 1 1"
@@ -25690,13 +25777,9 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           Id="Package\DF - MR\Derived Column 1"
           TopLeft="486.111084551172,904.222215934374" />
         <NodeLayout
-          Size="148.8,41.6"
-          Id="Package\DF - MR\Oracle Source"
-          TopLeft="19.5000000000001,5.5" />
-        <NodeLayout
-          Size="120,41.6"
-          Id="Package\DF - MR\Union All"
-          TopLeft="395.357121255782,340.580951006006" />
+          Size="97.6,41.6"
+          Id="Package\DF - MR\Sort 1"
+          TopLeft="758.785673892926,264.552381945924" />
         <NodeLayout
           Size="162.4,41.6"
           Id="Package\DF - MR\Conditional Split 1"
@@ -25706,21 +25789,29 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           Id="Package\DF - MR\Lookup - Invalid CC Replacement"
           TopLeft="242.857129588015,452.190473435417" />
         <NodeLayout
+          Size="128.8,41.6"
+          Id="Package\DF - MR\Union All 2"
+          TopLeft="501.904742911696,806.952378774163" />
+        <NodeLayout
           Size="126.4,41.6"
           Id="Package\DF - MR\Aggregate 1 1"
           TopLeft="737.35710363516,179.159529418206" />
+        <NodeLayout
+          Size="148.8,41.6"
+          Id="Package\DF - MR\Oracle Source"
+          TopLeft="19.5000000000001,5.5" />
         <NodeLayout
           Size="124.8,41.6"
           Id="Package\DF - MR\LOG CNT 1"
           TopLeft="1143.35232955628,180.219051738761" />
         <NodeLayout
-          Size="124.8,41.6"
-          Id="Package\DF - MR\LOG CNT"
-          TopLeft="1140.53171072207,724.515866413958" />
+          Size="155.2,41.6"
+          Id="Package\DF - MR\Lookup - WOID"
+          TopLeft="229.5,83.5" />
         <NodeLayout
-          Size="170.4,41.6"
-          Id="Package\DF - MR\Derived Column 4 2"
-          TopLeft="1112.55552061426,629.32539165177" />
+          Size="161.6,41.6"
+          Id="Package\DF - MR\ReqBy - PersonID"
+          TopLeft="224.5,173.416666666666" />
         <NodeLayout
           Size="126.4,41.6"
           Id="Package\DF - MR\Aggregate 1"
@@ -25730,239 +25821,25 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           Id="Package\DF - MR\ReqBy - Default"
           TopLeft="539.023809458765,263.11904698194" />
         <NodeLayout
+          Size="128.8,41.6"
+          Id="Package\DF - MR\Union All 1"
+          TopLeft="292.857126856135,545.999997236332" />
+        <NodeLayout
           Size="161.6,41.6"
           Id="Package\DF - MR\Derived Column 2"
           TopLeft="694.900776937107,724.703958484675" />
+        <NodeLayout
+          Size="204.8,41.6"
+          Id="Package\DF - MR\Replace Invalid CostCenter"
+          TopLeft="570.773778338105,452.373806806417" />
         <NodeLayout
           Size="126.4,41.6"
           Id="Package\DF - MR\Aggregate"
           TopLeft="719.579326828717,996.422220431148" />
         <NodeLayout
-          Size="128.8,41.6"
-          Id="Package\DF - MR\Union All 1"
-          TopLeft="292.857126856135,545.999997236332" />
-        <EdgeLayout
-          Id="Package\DF - MR.Paths[Union All Output 12]"
-          TopLeft="566.607913731434,848.552378774163">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,55.6698371602107"
-              Start="0,0"
-              End="0,48.1698371602107">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,48.1698371602107" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - MR.Paths[Union All Output 1]"
-          TopLeft="354.16704384718,587.599997236332">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,48.437294400544"
-              Start="0,0"
-              End="0,40.937294400544">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,40.937294400544" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - MR.Paths[Union All Output 11]"
-          TopLeft="455.357121255782,382.180951006006">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-95.6999916677678,70.0095224294114"
-              Start="0,0"
-              End="-95.6999916677678,62.5095224294114">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,31.0047612147057" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,31.0047612147057"
-                    Point2="0,35.0047612147057"
-                    Point3="-4,35.0047612147057" />
-                  <mssgle:LineSegment
-                    End="-91.6999916677678,35.0047612147057" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-91.6999916677678,35.0047612147057"
-                    Point2="-95.6999916677678,35.0047612147057"
-                    Point3="-95.6999916677678,39.0047612147057" />
-                  <mssgle:LineSegment
-                    End="-95.6999916677678,62.5095224294114" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - MR.Paths[Sort Output]"
-          TopLeft="856.385673892926,286.59047717541">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="46.4476111772042,0"
-              Start="0,0"
-              End="38.9476111772042,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="38.9476111772042,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - MR.Paths[Oracle Source Output]"
-          TopLeft="168.3,27.61666666968">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="58.0809522508628,0"
-              Start="0,0"
-              End="50.5809522508628,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="50.5809522508628,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - MR.Paths[Multicast Output 3]"
-          TopLeft="677.999969949326,198.66547855573">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="59.3571336858337,0"
-              Start="0,0"
-              End="51.8571336858337,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="51.8571336858337,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - MR.Paths[Multicast Output 22]"
-          TopLeft="830.876954386016,652.537295312943">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="79.8499969787895,0"
-              Start="0,0"
-              End="72.3499969787895,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="72.3499969787895,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - MR.Paths[Multicast Output 21]"
-          TopLeft="633.999969949326,218.171427693253">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="173.585703943599,46.380954252671"
-              Start="0,0"
-              End="173.585703943599,38.880954252671">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,14.8959443251623" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,14.8959443251623"
-                    Point2="0,18.8959443251623"
-                    Point3="4,18.8959443251623" />
-                  <mssgle:LineSegment
-                    End="169.585703943599,18.8959443251623" />
-                  <mssgle:CubicBezierSegment
-                    Point1="169.585703943599,18.8959443251623"
-                    Point2="173.585703943599,18.8959443251623"
-                    Point3="173.585703943599,22.8959443251623" />
-                  <mssgle:LineSegment
-                    End="173.585703943599,38.880954252671" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - MR.Paths[Multicast Output 2]"
-          TopLeft="629.279337209858,1017.72222009667">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="90.2999896188583,0"
-              Start="0,0"
-              End="82.7999896188583,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="82.7999896188583,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
+          Size="180,41.6"
+          Id="Package\DF - MR\OLE DB Destination 1 1"
+          TopLeft="891.745994360477,1088.22222008763" />
         <EdgeLayout
           Id="Package\DF - MR.Paths[Multicast Output 12]"
           TopLeft="766.876954386015,673.237293514422">
@@ -26126,55 +26003,31 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - MR.Paths[Lookup Match Output]"
-          TopLeft="476.457129588014,473.082140120917">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="94.3166487500912,0"
-              Start="0,0"
-              End="86.8166487500912,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="86.8166487500912,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-4.7830623437044,5,96.3827734375,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - MR.Paths[Lookup Match Output1]"
-          TopLeft="566.165852547374,675.17062254824">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,131.781756225923"
-              Start="0,0"
-              End="0,124.281756225923">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,124.281756225923" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-48.19138671875,56.3361906129615,96.3827734375,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
           Id="Package\DF - MR.Paths[Lookup Match Output3]"
+          TopLeft="306.2,125.1">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,48.316666666666"
+              Start="0,0"
+              End="0,40.816666666666">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,40.816666666666" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-48.19138671875,14.603645833333,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - MR.Paths[Lookup Match Output2]"
           TopLeft="305.3,215.016666666666">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -26210,26 +26063,50 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - MR.Paths[Lookup Match Output2]"
-          TopLeft="306.2,125.1">
+          Id="Package\DF - MR.Paths[Lookup Match Output1]"
+          TopLeft="476.457129588014,473.082140120917">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,48.316666666666"
+              EndConnector="94.3166487500912,0"
               Start="0,0"
-              End="0,40.816666666666">
+              End="86.8166487500912,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,40.816666666666" />
+                    End="86.8166487500912,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="-48.19138671875,14.603645833333,96.3827734375,11.609375"
+              BoundingBox="-4.7830623437044,5,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - MR.Paths[Lookup Match Output]"
+          TopLeft="566.165852547374,675.17062254824">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,131.781756225923"
+              Start="0,0"
+              End="0,124.281756225923">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,124.281756225923" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-48.19138671875,56.3361906129615,96.3827734375,11.609375"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
@@ -26593,6 +26470,228 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - MR.Paths[Union All Output 12]"
+          TopLeft="566.607913731434,848.552378774163">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,55.6698371602107"
+              Start="0,0"
+              End="0,48.1698371602107">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,48.1698371602107" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - MR.Paths[Union All Output 11]"
+          TopLeft="455.357121255782,382.180951006006">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-95.6999916677678,70.0095224294114"
+              Start="0,0"
+              End="-95.6999916677678,62.5095224294114">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,31.0047612147057" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,31.0047612147057"
+                    Point2="0,35.0047612147057"
+                    Point3="-4,35.0047612147057" />
+                  <mssgle:LineSegment
+                    End="-91.6999916677678,35.0047612147057" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-91.6999916677678,35.0047612147057"
+                    Point2="-95.6999916677678,35.0047612147057"
+                    Point3="-95.6999916677678,39.0047612147057" />
+                  <mssgle:LineSegment
+                    End="-95.6999916677678,62.5095224294114" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - MR.Paths[Union All Output 1]"
+          TopLeft="354.16704384718,587.599997236332">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,48.437294400544"
+              Start="0,0"
+              End="0,40.937294400544">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,40.937294400544" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - MR.Paths[Sort Output]"
+          TopLeft="856.385673892926,286.59047717541">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="46.4476111772042,0"
+              Start="0,0"
+              End="38.9476111772042,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="38.9476111772042,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - MR.Paths[Oracle Source Output]"
+          TopLeft="168.3,27.61666666968">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="58.0809522508628,0"
+              Start="0,0"
+              End="50.5809522508628,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="50.5809522508628,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - MR.Paths[Multicast Output 3]"
+          TopLeft="677.999969949326,198.66547855573">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="59.3571336858337,0"
+              Start="0,0"
+              End="51.8571336858337,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="51.8571336858337,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - MR.Paths[Multicast Output 22]"
+          TopLeft="830.876954386016,652.537295312943">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="79.8499969787895,0"
+              Start="0,0"
+              End="72.3499969787895,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="72.3499969787895,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - MR.Paths[Multicast Output 21]"
+          TopLeft="633.999969949326,218.171427693253">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="173.585703943599,46.380954252671"
+              Start="0,0"
+              End="173.585703943599,38.880954252671">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,14.8959443251623" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,14.8959443251623"
+                    Point2="0,18.8959443251623"
+                    Point3="4,18.8959443251623" />
+                  <mssgle:LineSegment
+                    End="169.585703943599,18.8959443251623" />
+                  <mssgle:CubicBezierSegment
+                    Point1="169.585703943599,18.8959443251623"
+                    Point2="173.585703943599,18.8959443251623"
+                    Point3="173.585703943599,22.8959443251623" />
+                  <mssgle:LineSegment
+                    End="173.585703943599,38.880954252671" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - MR.Paths[Multicast Output 2]"
+          TopLeft="629.279337209858,1017.72222009667">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="90.2999896188583,0"
+              Start="0,0"
+              End="82.7999896188583,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="82.7999896188583,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
@@ -26860,28 +26959,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - MRLine.Paths[Union All Output 1]"
-          TopLeft="338.243245276905,393.028566191878">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,51.403974299347"
-              Start="0,0"
-              End="0,43.903974299347">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,43.903974299347" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
           Id="Package\DF - MRLine.Paths[Union All Output 11]"
           TopLeft="551.257136470931,660.742851118531">
           <EdgeLayout.Curve>
@@ -26907,6 +26984,28 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                     Point3="10.2023864655139,29.0571496520387" />
                   <mssgle:LineSegment
                     End="10.2023864655139,42.6142993040773" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - MRLine.Paths[Union All Output 1]"
+          TopLeft="338.243245276905,393.028566191878">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,51.403974299347"
+              Start="0,0"
+              End="0,43.903974299347">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,43.903974299347" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -27108,19 +27207,19 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - MRLine.Paths[Multicast Output 2]"
-          TopLeft="816.572201686858,460.932544167292">
+          Id="Package\DF - MRLine.Paths[Multicast Output 22]"
+          TopLeft="624.714278312667,1199.65475361149">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="79.8499969787895,0"
+              EndConnector="68.4999973624938,0"
               Start="0,0"
-              End="72.3499969787895,0">
+              End="60.9999973624938,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="72.3499969787895,0" />
+                    End="60.9999973624938,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -27152,19 +27251,19 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - MRLine.Paths[Multicast Output 22]"
-          TopLeft="624.714278312667,1199.65475361149">
+          Id="Package\DF - MRLine.Paths[Multicast Output 2]"
+          TopLeft="816.572201686858,460.932544167292">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="68.4999973624938,0"
+              EndConnector="79.8499969787895,0"
               Start="0,0"
-              End="60.9999973624938,0">
+              End="72.3499969787895,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="60.9999973624938,0" />
+                    End="72.3499969787895,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -27370,54 +27469,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - MRLine.Paths[Lookup Match Output1]"
-          TopLeft="551.09285079922,997.621422206339">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,51.235716840364"
-              Start="0,0"
-              End="0,43.735716840364">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,43.735716840364" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-48.19138671875,16.063170920182,96.3827734375,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - MRLine.Paths[Lookup Match Output]"
-          TopLeft="462.152376888857,281.477388975266">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="94.3166487500911,0"
-              Start="0,0"
-              End="86.8166487500911,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="86.8166487500911,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-4.78306234370445,5,96.3827734375,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
           Id="Package\DF - MRLine.Paths[Lookup Match Output3]"
           TopLeft="319.699996617436,144.700000059604">
           <EdgeLayout.Curve>
@@ -27478,6 +27529,54 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
+          Id="Package\DF - MRLine.Paths[Lookup Match Output1]"
+          TopLeft="551.09285079922,997.621422206339">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,51.235716840364"
+              Start="0,0"
+              End="0,43.735716840364">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,43.735716840364" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-48.19138671875,16.063170920182,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - MRLine.Paths[Lookup Match Output]"
+          TopLeft="462.152376888857,281.477388975266">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="94.3166487500911,0"
+              Start="0,0"
+              End="86.8166487500911,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="86.8166487500911,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-4.78306234370445,5,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
           Id="Package\DF - MRLine.Paths[HAS GLDEBITACCT]"
           TopLeft="389.899997445515,978.071422411231">
           <EdgeLayout.Curve>
@@ -27526,219 +27625,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - MRLine.Paths[Derived Column Output2]"
-          TopLeft="658.869025638948,302.369055660766">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-300.488076557539,49.059510531112"
-              Start="0,0"
-              End="-300.488076557539,41.559510531112">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,25.0483943934216" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,25.0483943934216"
-                    Point2="0,29.0483943934216"
-                    Point3="-4,29.0483943934216" />
-                  <mssgle:LineSegment
-                    End="-296.488076557539,29.0483943934216" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-296.488076557539,29.0483943934216"
-                    Point2="-300.488076557539,29.0483943934216"
-                    Point3="-300.488076557539,33.0483943934216" />
-                  <mssgle:LineSegment
-                    End="-300.488076557539,41.559510531112" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - MRLine.Paths[Derived Column Output3]"
-          TopLeft="320.949998509884,47.6000011622906">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,55.4999988973136"
-              Start="0,0"
-              End="0,47.9999988973136">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,47.9999988973136" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - MRLine.Paths[Derived Column Output4]"
-          TopLeft="961.3476057915,1215.07142108892">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,45.2666661023427"
-              Start="0,0"
-              End="0,37.7666661023427">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,37.7666661023427" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - MRLine.Paths[Derived Column Output]"
-          TopLeft="760.205548112518,574.699207339024">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-178.748411641587,44.4436437795068"
-              Start="0,0"
-              End="-178.748411641587,36.9436437795068">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,25.0280999939173" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,25.0280999939173"
-                    Point2="0,29.0280999939173"
-                    Point3="-4,29.0280999939173" />
-                  <mssgle:LineSegment
-                    End="-174.748411641587,29.0280999939173" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-174.748411641587,29.0280999939173"
-                    Point2="-178.748411641587,29.0280999939173"
-                    Point3="-178.748411641587,33.0280999939173" />
-                  <mssgle:LineSegment
-                    End="-178.748411641587,36.9436437795068" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - MRLine.Paths[Derived Column Output1]"
-          TopLeft="334.122222050542,577.632537737787">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="197.001581087056,41.5103133807431"
-              Start="0,0"
-              End="197.001581087056,34.0103133807431">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,20.6005906293238" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,20.6005906293238"
-                    Point2="0,24.6005906293238"
-                    Point3="4,24.6005906293238" />
-                  <mssgle:LineSegment
-                    End="193.001581087056,24.6005906293238" />
-                  <mssgle:CubicBezierSegment
-                    Point1="193.001581087056,24.6005906293238"
-                    Point2="197.001581087056,24.6005906293238"
-                    Point3="197.001581087056,28.6005906293238" />
-                  <mssgle:LineSegment
-                    End="197.001581087056,34.0103133807431" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - MRLine.Paths[Derived Column Output7]"
-          TopLeft="312.211111250562,905.860319967739">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,52.6611026483806"
-              Start="0,0"
-              End="0,45.1611026483806">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,45.1611026483806" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - MRLine.Paths[Derived Column Output8]"
-          TopLeft="1188.52498563945,993.621412148062">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,60.3999984800814"
-              Start="0,0"
-              End="0,52.8999984800814">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,52.8999984800814" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
           Id="Package\DF - MRLine.Paths[Derived Column Output9]"
-          TopLeft="1208.65790935221,478.082545276633">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,54.828569991674"
-              Start="0,0"
-              End="0,47.328569991674">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,47.328569991674" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - MRLine.Paths[Derived Column Output5]"
           TopLeft="561.459522936445,752.457150422608">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -27772,7 +27659,73 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
+          Id="Package\DF - MRLine.Paths[Derived Column Output8]"
+          TopLeft="1208.65790935221,478.082545276633">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,54.828569991674"
+              Start="0,0"
+              End="0,47.328569991674">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,47.328569991674" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - MRLine.Paths[Derived Column Output7]"
+          TopLeft="1188.52498563945,993.621412148062">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60.3999984800814"
+              Start="0,0"
+              End="0,52.8999984800814">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.8999984800814" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
           Id="Package\DF - MRLine.Paths[Derived Column Output6]"
+          TopLeft="312.211111250562,905.860319967739">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,52.6611026483806"
+              Start="0,0"
+              End="0,45.1611026483806">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,45.1611026483806" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - MRLine.Paths[Derived Column Output5]"
           TopLeft="992.449986555431,146.471438895804">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -27785,6 +27738,152 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                   Capacity="5">
                   <mssgle:LineSegment
                     End="0,23.0428560678446" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - MRLine.Paths[Derived Column Output4]"
+          TopLeft="320.949998509884,47.6000011622906">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,55.4999988973136"
+              Start="0,0"
+              End="0,47.9999988973136">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,47.9999988973136" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - MRLine.Paths[Derived Column Output3]"
+          TopLeft="658.869025638948,302.369055660766">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-300.488076557539,49.059510531112"
+              Start="0,0"
+              End="-300.488076557539,41.559510531112">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,25.0483943934216" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,25.0483943934216"
+                    Point2="0,29.0483943934216"
+                    Point3="-4,29.0483943934216" />
+                  <mssgle:LineSegment
+                    End="-296.488076557539,29.0483943934216" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-296.488076557539,29.0483943934216"
+                    Point2="-300.488076557539,29.0483943934216"
+                    Point3="-300.488076557539,33.0483943934216" />
+                  <mssgle:LineSegment
+                    End="-300.488076557539,41.559510531112" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - MRLine.Paths[Derived Column Output2]"
+          TopLeft="334.122222050542,577.632537737787">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="197.001581087056,41.5103133807431"
+              Start="0,0"
+              End="197.001581087056,34.0103133807431">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,20.6005906293238" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,20.6005906293238"
+                    Point2="0,24.6005906293238"
+                    Point3="4,24.6005906293238" />
+                  <mssgle:LineSegment
+                    End="193.001581087056,24.6005906293238" />
+                  <mssgle:CubicBezierSegment
+                    Point1="193.001581087056,24.6005906293238"
+                    Point2="197.001581087056,24.6005906293238"
+                    Point3="197.001581087056,28.6005906293238" />
+                  <mssgle:LineSegment
+                    End="197.001581087056,34.0103133807431" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - MRLine.Paths[Derived Column Output1]"
+          TopLeft="760.205548112518,574.699207339024">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-178.748411641587,44.4436437795068"
+              Start="0,0"
+              End="-178.748411641587,36.9436437795068">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,25.0280999939173" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,25.0280999939173"
+                    Point2="0,29.0280999939173"
+                    Point3="-4,29.0280999939173" />
+                  <mssgle:LineSegment
+                    End="-174.748411641587,29.0280999939173" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-174.748411641587,29.0280999939173"
+                    Point2="-178.748411641587,29.0280999939173"
+                    Point3="-178.748411641587,33.0280999939173" />
+                  <mssgle:LineSegment
+                    End="-178.748411641587,36.9436437795068" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - MRLine.Paths[Derived Column Output]"
+          TopLeft="961.3476057915,1215.07142108892">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,45.2666661023427"
+              Start="0,0"
+              End="0,37.7666661023427">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,37.7666661023427" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>

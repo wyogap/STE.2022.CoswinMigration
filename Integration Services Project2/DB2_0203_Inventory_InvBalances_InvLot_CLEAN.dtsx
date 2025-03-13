@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0203_Inventory_InvBalances_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="146"
-  DTS:VersionGUID="{95562E32-3509-4724-90D9-CE702F74015E}"
+  DTS:VersionBuild="156"
+  DTS:VersionGUID="{BCC9AEAD-F7CB-4E2A-9C88-6DD91183BA36}"
   DTS:VersionMajor="3"
   DTS:VersionMinor="1">
   <DTS:Property
@@ -306,6 +306,7 @@
       DTS:refId="Package\AUTOKEY (INVLOTNUM)"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:Description="Data Flow Task"
+      DTS:Disabled="True"
       DTS:DTSID="{6541815b-0897-44ae-b11d-113204a9410d}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="-1"
@@ -1963,19 +1964,19 @@ FROM maximo.INVLOT w;</property>
               startId="Package\AUTOKEY (INVLOTNUM)\Merge Join.Outputs[Merge Join Output]" />
             <path
               refId="Package\AUTOKEY (INVLOTNUM).Paths[Multicast Output 12]"
+              endId="Package\AUTOKEY (INVLOTNUM)\UPDATE AUTOKEY.Inputs[OLE DB Command Input]"
+              name="Multicast Output 1"
+              startId="Package\AUTOKEY (INVLOTNUM)\Multicast.Outputs[Multicast Output 1]" />
+            <path
+              refId="Package\AUTOKEY (INVLOTNUM).Paths[Multicast Output 1]"
               endId="Package\AUTOKEY (INVLOTNUM)\Conditional Split.Inputs[Conditional Split Input]"
               name="Multicast Output 1"
               startId="Package\AUTOKEY (INVLOTNUM)\Multicast 2.Outputs[Multicast Output 1]" />
             <path
-              refId="Package\AUTOKEY (INVLOTNUM).Paths[Multicast Output 1]"
+              refId="Package\AUTOKEY (INVLOTNUM).Paths[Multicast Output 11]"
               endId="Package\AUTOKEY (INVLOTNUM)\Aggregate.Inputs[Aggregate Input 1]"
               name="Multicast Output 1"
               startId="Package\AUTOKEY (INVLOTNUM)\Multicast 1.Outputs[Multicast Output 1]" />
-            <path
-              refId="Package\AUTOKEY (INVLOTNUM).Paths[Multicast Output 11]"
-              endId="Package\AUTOKEY (INVLOTNUM)\UPDATE AUTOKEY.Inputs[OLE DB Command Input]"
-              name="Multicast Output 1"
-              startId="Package\AUTOKEY (INVLOTNUM)\Multicast.Outputs[Multicast Output 1]" />
             <path
               refId="Package\AUTOKEY (INVLOTNUM).Paths[Multicast Output 2]"
               endId="Package\AUTOKEY (INVLOTNUM)\Sort.Inputs[Sort Input]"
@@ -1993,14 +1994,14 @@ FROM maximo.INVLOT w;</property>
               startId="Package\AUTOKEY (INVLOTNUM)\OLE DB Source.Outputs[OLE DB Source Output]" />
             <path
               refId="Package\AUTOKEY (INVLOTNUM).Paths[Sort Output1]"
-              endId="Package\AUTOKEY (INVLOTNUM)\Merge Join.Inputs[Merge Join Right Input]"
-              name="Sort Output"
-              startId="Package\AUTOKEY (INVLOTNUM)\Sort 1.Outputs[Sort Output]" />
-            <path
-              refId="Package\AUTOKEY (INVLOTNUM).Paths[Sort Output]"
               endId="Package\AUTOKEY (INVLOTNUM)\Merge Join.Inputs[Merge Join Left Input]"
               name="Sort Output"
               startId="Package\AUTOKEY (INVLOTNUM)\Sort.Outputs[Sort Output]" />
+            <path
+              refId="Package\AUTOKEY (INVLOTNUM).Paths[Sort Output]"
+              endId="Package\AUTOKEY (INVLOTNUM)\Merge Join.Inputs[Merge Join Right Input]"
+              name="Sort Output"
+              startId="Package\AUTOKEY (INVLOTNUM)\Sort 1.Outputs[Sort Output]" />
             <path
               refId="Package\AUTOKEY (INVLOTNUM).Paths[Union All Output 1]"
               endId="Package\AUTOKEY (INVLOTNUM)\Derived Column 1.Inputs[Derived Column Input]"
@@ -2528,6 +2529,85 @@ FROM maximo.INVLOT w;</property>
               </outputs>
             </component>
             <component
+              refId="Package\DF - INVBALANCES\Derived Column 1"
+              componentClassID="Microsoft.DerivedColumn"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="Derived Column 1"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\DF - INVBALANCES\Derived Column 1.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DF - INVBALANCES\Derived Column 1.Inputs[Derived Column Input].Columns[v_phycnt]"
+                      cachedDataType="r8"
+                      cachedName="v_phycnt"
+                      lineageId="Package\DF - INVBALANCES\Derived Column.Outputs[Derived Column Output].Columns[v_phycnt]" />
+                    <inputColumn
+                      refId="Package\DF - INVBALANCES\Derived Column 1.Inputs[Derived Column Input].Columns[V_PHYSCNTDATE]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="V_PHYSCNTDATE"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\DF - INVBALANCES\Derived Column.Outputs[Derived Column Output].Columns[V_PHYSCNTDATE]"
+                      truncationRowDisposition="FailComponent"
+                      usageType="readWrite">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(#{Package\DF - INVBALANCES\Derived Column.Outputs[Derived Column Output].Columns[v_phycnt]} == 0) ? NULL(DT_DBTIMESTAMP) : #{Package\DF - INVBALANCES\Derived Column.Outputs[Derived Column Output].Columns[V_PHYSCNTDATE]}</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(v_phycnt == 0) ? NULL(DT_DBTIMESTAMP) : V_PHYSCNTDATE</property>
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - INVBALANCES\Derived Column 1.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\DF - INVBALANCES\Derived Column 1.Inputs[Derived Column Input]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - INVBALANCES\Derived Column 1.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\DF - INVBALANCES\Derived Column 1.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - INVBALANCES\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF - INVBALANCES\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF - INVBALANCES\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF - INVBALANCES\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
               refId="Package\DF - INVBALANCES\Derived Column 4"
               componentClassID="Microsoft.DerivedColumn"
               contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
@@ -2967,14 +3047,6 @@ FROM maximo.INVLOT w;</property>
                       cachedName="IS_STOR_CD"
                       externalMetadataColumnId="Package\DF - INVBALANCES\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[IS_STOR_CD]"
                       lineageId="Package\DF - INVBALANCES\Oracle Source.Outputs[Oracle Source Output].Columns[IS_STOR_CD]" />
-                    <inputColumn
-                      refId="Package\DF - INVBALANCES\Flat File Destination.Inputs[Flat File Destination Input].Columns[BATCH_REF]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="12"
-                      cachedName="BATCH_REF"
-                      externalMetadataColumnId="Package\DF - INVBALANCES\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[BATCH_REF]"
-                      lineageId="Package\DF - INVBALANCES\Oracle Source.Outputs[Oracle Source Output].Columns[BATCH_REF]" />
                     <inputColumn
                       refId="Package\DF - INVBALANCES\Flat File Destination.Inputs[Flat File Destination Input].Columns[ITEM_CD]"
                       cachedCodepage="1252"
@@ -3453,14 +3525,6 @@ where "refTable"."STE_CSWNITEMNO" = ?</property>
                       cachedName="IS_STOR_CD"
                       externalMetadataColumnId="Package\DF - INVBALANCES\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LOCATION]"
                       lineageId="Package\DF - INVBALANCES\Oracle Source.Outputs[Oracle Source Output].Columns[IS_STOR_CD]" />
-                    <inputColumn
-                      refId="Package\DF - INVBALANCES\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[BATCH_REF]"
-                      cachedCodepage="1252"
-                      cachedDataType="str"
-                      cachedLength="12"
-                      cachedName="BATCH_REF"
-                      externalMetadataColumnId="Package\DF - INVBALANCES\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LOTNUM]"
-                      lineageId="Package\DF - INVBALANCES\Oracle Source.Outputs[Oracle Source Output].Columns[BATCH_REF]" />
                     <inputColumn
                       refId="Package\DF - INVBALANCES\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[v_orgid]"
                       cachedCodepage="1252"
@@ -4101,7 +4165,8 @@ where "refTable"."STE_CSWNITEMNO" = ?</property>
 	, bn.BIN_REF 
 	-- oracle is case sensitive while sqlserver is not
 	, max(si.TIMESTAMP) as TIMESTAMP
-	, UPPER(bh.BATCH_REF) AS BATCH_REF 
+	--2025-03-11: disable invlot
+	--, UPPER(bh.BATCH_REF) AS BATCH_REF 
 	, MAX(loc.PK_LOCATION_) AS PK_LOCATION_
 	--, MAX(si.PK_STORES_ITEMS) AS PK_STORES_ITEMS
 	--, MAX(i.ITEM_SHORT) AS ITEM_SHORT
@@ -4119,7 +4184,8 @@ JOIN COSWIN.STORES_ITEMS si ON loc.S_STORES_ITEM_LOC = si.PK_STORES_ITEMS
 JOIN COSWIN.ITEM_ i ON i.PK_ITEM_ = loc.S_ITEM_LOC 
 LEFT JOIN COSWIN.BINS bn ON bn.PK_BINS = loc.S_BINS_LOC 
 LEFT JOIN COSWIN.BATCH_ bh ON bh.PK_BATCH_ = loc.S_BATCH_LOC LEFT JOIN COSWIN.ITEM_INFO ii ON ii.S_STORES_ITEM_INFO = si.PK_STORES_ITEMS 
-GROUP BY i.ITEM_CD, si.IS_STOR_CD, bn.BIN_REF, UPPER(bh.BATCH_REF)</property>
+GROUP BY i.ITEM_CD, si.IS_STOR_CD, bn.BIN_REF
+	--, UPPER(bh.BATCH_REF)</property>
                 <property
                   dataType="System.Int32"
                   description="Specify the number of rows fetched per batch."
@@ -4183,14 +4249,6 @@ GROUP BY i.ITEM_CD, si.IS_STOR_CD, bn.BIN_REF, UPPER(bh.BATCH_REF)</property>
                       length="16"
                       lineageId="Package\DF - INVBALANCES\Oracle Source.Outputs[Oracle Source Output].Columns[BIN_REF]"
                       name="BIN_REF" />
-                    <outputColumn
-                      refId="Package\DF - INVBALANCES\Oracle Source.Outputs[Oracle Source Output].Columns[BATCH_REF]"
-                      codePage="1252"
-                      dataType="str"
-                      externalMetadataColumnId="Package\DF - INVBALANCES\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[BATCH_REF]"
-                      length="12"
-                      lineageId="Package\DF - INVBALANCES\Oracle Source.Outputs[Oracle Source Output].Columns[BATCH_REF]"
-                      name="BATCH_REF" />
                     <outputColumn
                       refId="Package\DF - INVBALANCES\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_CD]"
                       codePage="1252"
@@ -4264,12 +4322,6 @@ GROUP BY i.ITEM_CD, si.IS_STOR_CD, bn.BIN_REF, UPPER(bh.BATCH_REF)</property>
                       length="16"
                       name="BIN_REF" />
                     <externalMetadataColumn
-                      refId="Package\DF - INVBALANCES\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[BATCH_REF]"
-                      codePage="1252"
-                      dataType="str"
-                      length="12"
-                      name="BATCH_REF" />
-                    <externalMetadataColumn
                       refId="Package\DF - INVBALANCES\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ITEM_CD]"
                       codePage="1252"
                       dataType="str"
@@ -4332,14 +4384,6 @@ GROUP BY i.ITEM_CD, si.IS_STOR_CD, bn.BIN_REF, UPPER(bh.BATCH_REF)</property>
                       length="16"
                       lineageId="Package\DF - INVBALANCES\Oracle Source.Outputs[Oracle Source Error Output].Columns[BIN_REF]"
                       name="BIN_REF" />
-                    <outputColumn
-                      refId="Package\DF - INVBALANCES\Oracle Source.Outputs[Oracle Source Error Output].Columns[BATCH_REF]"
-                      codePage="1252"
-                      dataType="str"
-                      externalMetadataColumnId="Package\DF - INVBALANCES\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[BATCH_REF]"
-                      length="12"
-                      lineageId="Package\DF - INVBALANCES\Oracle Source.Outputs[Oracle Source Error Output].Columns[BATCH_REF]"
-                      name="BATCH_REF" />
                     <outputColumn
                       refId="Package\DF - INVBALANCES\Oracle Source.Outputs[Oracle Source Error Output].Columns[ITEM_CD]"
                       codePage="1252"
@@ -4426,14 +4470,19 @@ GROUP BY i.ITEM_CD, si.IS_STOR_CD, bn.BIN_REF, UPPER(bh.BATCH_REF)</property>
               startId="Package\DF - INVBALANCES\Derived Column 4.Outputs[Derived Column Output]" />
             <path
               refId="Package\DF - INVBALANCES.Paths[Derived Column Output1]"
-              endId="Package\DF - INVBALANCES\Multicast 1.Inputs[Multicast Input 1]"
-              name="Derived Column Output"
-              startId="Package\DF - INVBALANCES\Derived Column.Outputs[Derived Column Output]" />
-            <path
-              refId="Package\DF - INVBALANCES.Paths[Derived Column Output2]"
               endId="Package\DF - INVBALANCES\OLE DB Destination 1 1 1.Inputs[OLE DB Destination Input]"
               name="Derived Column Output"
               startId="Package\DF - INVBALANCES\Derived Column 4 1 1.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - INVBALANCES.Paths[Derived Column Output2]"
+              endId="Package\DF - INVBALANCES\Derived Column 1.Inputs[Derived Column Input]"
+              name="Derived Column Output"
+              startId="Package\DF - INVBALANCES\Derived Column.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - INVBALANCES.Paths[Derived Column Output3]"
+              endId="Package\DF - INVBALANCES\Multicast 1.Inputs[Multicast Input 1]"
+              name="Derived Column Output"
+              startId="Package\DF - INVBALANCES\Derived Column 1.Outputs[Derived Column Output]" />
             <path
               refId="Package\DF - INVBALANCES.Paths[Lookup Match Output]"
               endId="Package\DF - INVBALANCES\Derived Column.Inputs[Derived Column Input]"
@@ -4477,6 +4526,7 @@ GROUP BY i.ITEM_CD, si.IS_STOR_CD, bn.BIN_REF, UPPER(bh.BATCH_REF)</property>
       DTS:refId="Package\DF - INVLOT"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:Description="Data Flow Task"
+      DTS:Disabled="True"
       DTS:DTSID="{11124cc4-d99b-47e2-bbd4-319f16af2e70}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="-1"
@@ -5505,7 +5555,7 @@ where "refTable"."STE_CSWNITEMNO" = ?</property>
                   containsID="true"
                   dataType="System.String"
                   description="Specifies the list of lineage identifiers that map to the parameters that the SQL statement in the SQLCommand property uses. Entries in the list are separated by semicolons."
-                  name="ParameterMap">#{Package\DF - INVLOT\232:invalid};</property>
+                  name="ParameterMap">#{Package\DF - INVLOT\882:invalid};</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -7582,6 +7632,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
       DTS:refId="Package\Get Max ID"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
       DTS:Description="Execute SQL Task"
+      DTS:Disabled="True"
       DTS:DTSID="{fcc77e5b-f044-488b-b1e6-4d0a7b85201e}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:LocaleID="-1"
@@ -7593,6 +7644,28 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
           SQLTask:SqlStatementSource="select ifnull(max(invlotid),1) as max_id from maximo.invlot"
+          SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ResultBinding
+            SQLTask:ResultName="0"
+            SQLTask:DtsVariableName="User::max_id" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Get Max ID (INVBALANCES)"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{571427ec-ae92-4489-9e3c-d58514bba458}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Get Max ID (INVBALANCES)"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="select ifnull(max(invbalancesid),1) as max_id from maximo.invbalances"
           SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
           <SQLTask:ResultBinding
             SQLTask:ResultName="0"
@@ -7621,6 +7694,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
       DTS:refId="Package\MAXSEQ (INVLOT)"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
       DTS:Description="Execute SQL Task"
+      DTS:Disabled="True"
       DTS:DTSID="{167bcb27-f603-4011-b569-29f1683894c7}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:LocaleID="-1"
@@ -7776,13 +7850,13 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         DTS:LoggingMode="2" />
       <DTS:Executables>
         <DTS:Executable
-          DTS:refId="Package\Pre-Task\Execute SQL Task"
+          DTS:refId="Package\Pre-Task\RESET (INVBALANCES)"
           DTS:CreationName="Microsoft.ExecuteSQLTask"
           DTS:Description="Execute SQL Task"
           DTS:DTSID="{9802521A-2095-486F-809D-738126584100}"
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
-          DTS:ObjectName="Execute SQL Task"
+          DTS:ObjectName="RESET (INVBALANCES)"
           DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
           DTS:ThreadHint="0">
           <DTS:Variables />
@@ -7793,13 +7867,13 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </DTS:ObjectData>
         </DTS:Executable>
         <DTS:Executable
-          DTS:refId="Package\Pre-Task\Execute SQL Task 1"
+          DTS:refId="Package\Pre-Task\RESET (INVLOT)"
           DTS:CreationName="Microsoft.ExecuteSQLTask"
           DTS:Description="Execute SQL Task"
           DTS:DTSID="{082880f0-61d6-4db7-b879-f0cfc3847caa}"
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
-          DTS:ObjectName="Execute SQL Task 1"
+          DTS:ObjectName="RESET (INVLOT)"
           DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
           DTS:ThreadHint="0">
           <DTS:Variables />
@@ -7809,52 +7883,23 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               SQLTask:SqlStatementSource="delete from maximo.invlot" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
           </DTS:ObjectData>
         </DTS:Executable>
-        <DTS:Executable
-          DTS:refId="Package\Pre-Task\Get Max ID"
-          DTS:CreationName="Microsoft.ExecuteSQLTask"
-          DTS:Description="Execute SQL Task"
-          DTS:DTSID="{1AC80ED3-1D1F-49E3-AB9B-2258593AF6F2}"
-          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
-          DTS:LocaleID="-1"
-          DTS:ObjectName="Get Max ID"
-          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-          DTS:ThreadHint="0">
-          <DTS:Variables />
-          <DTS:ObjectData>
-            <SQLTask:SqlTaskData
-              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-              SQLTask:SqlStatementSource="select ifnull(max(invbalancesid),1) as max_id from maximo.invbalances"
-              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
-              <SQLTask:ResultBinding
-                SQLTask:ResultName="0"
-                SQLTask:DtsVariableName="User::max_id" />
-            </SQLTask:SqlTaskData>
-          </DTS:ObjectData>
-        </DTS:Executable>
       </DTS:Executables>
       <DTS:PrecedenceConstraints>
         <DTS:PrecedenceConstraint
           DTS:refId="Package\Pre-Task.PrecedenceConstraints[Constraint 1]"
           DTS:CreationName=""
           DTS:DTSID="{2CCBB6C8-B903-43B9-8546-9CD137AEB086}"
-          DTS:From="Package\Pre-Task\Execute SQL Task"
+          DTS:From="Package\Pre-Task\RESET (INVBALANCES)"
           DTS:LogicalAnd="True"
           DTS:ObjectName="Constraint 1"
-          DTS:To="Package\Pre-Task\Execute SQL Task 1" />
-        <DTS:PrecedenceConstraint
-          DTS:refId="Package\Pre-Task.PrecedenceConstraints[Constraint 2]"
-          DTS:CreationName=""
-          DTS:DTSID="{B81A9758-D539-448F-A700-33F1725DE878}"
-          DTS:From="Package\Pre-Task\Execute SQL Task 1"
-          DTS:LogicalAnd="True"
-          DTS:ObjectName="Constraint 2"
-          DTS:To="Package\Pre-Task\Get Max ID" />
+          DTS:To="Package\Pre-Task\RESET (INVLOT)" />
       </DTS:PrecedenceConstraints>
     </DTS:Executable>
     <DTS:Executable
       DTS:refId="Package\Update ITEM LOTTYPE"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
       DTS:Description="Execute SQL Task"
+      DTS:Disabled="True"
       DTS:DTSID="{390748C2-8C06-43A8-ADDB-92A5D0C47E59}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:LocaleID="-1"
@@ -7881,11 +7926,11 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
       DTS:CreationName=""
-      DTS:DTSID="{A8D13174-5732-4ACE-9A4E-8162CD003A42}"
+      DTS:DTSID="{506087A6-6E4F-4413-B19C-C4112C7C3A72}"
       DTS:From="Package\Pre-Task"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 1"
-      DTS:To="Package\DF - INVBALANCES" />
+      DTS:To="Package\Get Max ID (INVBALANCES)" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
       DTS:CreationName=""
@@ -7942,6 +7987,14 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 8"
       DTS:To="Package\POST-PKG" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 9]"
+      DTS:CreationName=""
+      DTS:DTSID="{EAB79DE5-DCD0-4F5A-9DB5-A94FCAAAD2F7}"
+      DTS:From="Package\Get Max ID (INVBALANCES)"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 9"
+      DTS:To="Package\DF - INVBALANCES" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
 <!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
@@ -7958,27 +8011,27 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         <NodeLayout
           Size="199.2,41.6"
           Id="Package\AUTOKEY (INVLOTNUM)"
-          TopLeft="164.43332495557,871.266667266323" />
+          TopLeft="152.766658926342,910.266666995122" />
         <NodeLayout
           Size="174.4,41.6"
           Id="Package\DF - INVBALANCES"
-          TopLeft="150.159251923657,456.429629336665" />
+          TopLeft="150.159251923657,492.829629083544" />
         <NodeLayout
           Size="139.2,41.6"
           Id="Package\DF - INVLOT"
-          TopLeft="175.344435732785,757.466665693356" />
+          TopLeft="175.344435732785,793.866665440235" />
         <NodeLayout
           Size="134.4,41.6"
           Id="Package\Get Max ID"
-          TopLeft="174.633325228758,655.866665693356" />
+          TopLeft="174.633325228758,692.266665440235" />
         <NodeLayout
           Size="205.6,41.6"
           Id="Package\MAXSEQ (INVBALANCES)"
-          TopLeft="135.992586031023,551.466669490172" />
+          TopLeft="135.992586031023,587.866669237051" />
         <NodeLayout
           Size="170.4,41.6"
           Id="Package\MAXSEQ (INVLOT)"
-          TopLeft="158.599991940956,983.733332444397" />
+          TopLeft="158.599991940956,1020.13333219128" />
         <NodeLayout
           Size="137.6,41.6"
           Id="Package\POST-PKG\FINISH LOG"
@@ -7989,7 +8042,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           PanelSize="270.4,130.4"
           Size="156,43.2"
           Id="Package\POST-PKG"
-          TopLeft="647.74997780348,977.872480750007" />
+          TopLeft="647.74997780348,1014.27248049689" />
         <NodeLayout
           Size="135.2,41.6"
           Id="Package\PRE-PKG\GET LOGID"
@@ -8028,55 +8081,29 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           PanelSize="240,177.6"
           Size="149.6,43.2"
           Id="Package\PRE-PKG"
-          TopLeft="422.103681509713,51.1111174140268" />
+          TopLeft="421.270348221911,195.844449740902" />
         <NodeLayout
-          Size="164.8,41.6"
-          Id="Package\Pre-Task\Execute SQL Task"
+          Size="195.2,41.6"
+          Id="Package\Pre-Task\RESET (INVBALANCES)"
           TopLeft="5.50000000000001,5.49999999999995" />
         <NodeLayout
-          Size="164.8,41.6"
-          Id="Package\Pre-Task\Execute SQL Task 1"
-          TopLeft="5.50000000000003,107.1" />
-        <NodeLayout
-          Size="134.4,41.6"
-          Id="Package\Pre-Task\Get Max ID"
-          TopLeft="20.7,208.7" />
+          Size="160,41.6"
+          Id="Package\Pre-Task\RESET (INVLOT)"
+          TopLeft="17.1666660292281,110.56666664256" />
         <EdgeLayout
           Id="Package\Pre-Task.PrecedenceConstraints[Constraint 1]"
-          TopLeft="87.9,47.1">
+          TopLeft="100.133333014614,47.1">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,59.9999999999999"
+              EndConnector="0,63.46666664256"
               Start="0,0"
-              End="0,52.4999999999999">
+              End="0,55.96666664256">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,52.4999999999999" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Pre-Task.PrecedenceConstraints[Constraint 2]"
-          TopLeft="87.9,148.7">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,59.9999999999999"
-              Start="0,0"
-              End="0,52.4999999999999">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,52.4999999999999" />
+                    End="0,55.96666664256" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -8088,17 +8115,17 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         <ContainerLayout
           HeaderHeight="43"
           IsExpanded="True"
-          PanelSize="176,305.6"
-          Size="176,348.8"
+          PanelSize="239.2,192.8"
+          Size="239.2,236"
           Id="Package\Pre-Task"
-          TopLeft="155.499991804362,46.6666663803989" />
+          TopLeft="113.833327414262,107.333332625197" />
         <NodeLayout
           Size="189.6,41.6"
           Id="Package\Update ITEM LOTTYPE"
-          TopLeft="397.499978281559,980.199998246233" />
+          TopLeft="397.499978281559,1016.59999799311" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="238.07591897734,498.029629336665">
+          TopLeft="238.07591897734,534.429629083544">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -8119,30 +8146,8 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 1]"
-          TopLeft="240.429621864009,395.466666380399">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,60.9629629562666"
-              Start="0,0"
-              End="0,53.4629629562666">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,53.4629629562666" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 2]"
-          TopLeft="240.31295562989,593.066669490172">
+          TopLeft="240.31295562989,629.466669237051">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -8164,30 +8169,18 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 3]"
-          TopLeft="244.944435732785,799.066665693356">
+          TopLeft="248.655547329563,835.466665440235">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="19.0888892227853,72.2000015729667"
+              EndConnector="0,74.8000015548868"
               Start="0,0"
-              End="19.0888892227853,64.7000015729667">
+              End="0,67.3000015548868">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,32.1000007864833" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,32.1000007864833"
-                    Point2="0,36.1000007864833"
-                    Point3="4,36.1000007864833" />
-                  <mssgle:LineSegment
-                    End="15.0888892227853,36.1000007864833" />
-                  <mssgle:CubicBezierSegment
-                    Point1="15.0888892227853,36.1000007864833"
-                    Point2="19.0888892227853,36.1000007864833"
-                    Point3="19.0888892227853,40.1000007864833" />
-                  <mssgle:LineSegment
-                    End="19.0888892227853,64.7000015729667" />
+                    End="0,67.3000015548868" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -8198,7 +8191,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 4]"
-          TopLeft="243.388880480771,697.466665693356">
+          TopLeft="243.388880480771,733.866665440235">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -8220,30 +8213,18 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 5]"
-          TopLeft="422.103681509713,72.7111174140268">
+          TopLeft="421.270348221911,221.38889118305">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-90.6036897053507,148.355548966372"
+              EndConnector="-68.2370208076495,0"
               Start="0,0"
-              End="-83.1036897053507,148.355548966372">
+              End="-60.7370208076495,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="-41.3018448526754,0" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-41.3018448526754,0"
-                    Point2="-45.3018448526754,0"
-                    Point3="-45.3018448526754,4" />
-                  <mssgle:LineSegment
-                    End="-45.3018448526754,144.355548966372" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-45.3018448526754,144.355548966372"
-                    Point2="-45.3018448526754,148.355548966372"
-                    Point3="-49.3018448526754,148.355548966372" />
-                  <mssgle:LineSegment
-                    End="-83.1036897053507,148.355548966372" />
+                    End="-60.7370208076495,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -8254,7 +8235,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 6]"
-          TopLeft="328.999991940956,1002.76666534531">
+          TopLeft="328.999991940956,1039.16666509219">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -8276,30 +8257,30 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 7]"
-          TopLeft="264.03332495557,912.866667266323">
+          TopLeft="252.366658926342,951.866666995122">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-20.2333330146142,70.8666651780737"
+              EndConnector="-8.56666698538589,68.2666651961541"
               Start="0,0"
-              End="-20.2333330146142,63.3666651780737">
+              End="-8.56666698538589,60.7666651961541">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,31.4333325890369" />
+                    End="0,30.1333325980771" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,31.4333325890369"
-                    Point2="0,35.4333325890369"
-                    Point3="-4,35.4333325890369" />
+                    Point1="0,30.1333325980771"
+                    Point2="0,34.1333325980771"
+                    Point3="-4,34.1333325980771" />
                   <mssgle:LineSegment
-                    End="-16.2333330146142,35.4333325890369" />
+                    End="-4.56666698538589,34.1333325980771" />
                   <mssgle:CubicBezierSegment
-                    Point1="-16.2333330146142,35.4333325890369"
-                    Point2="-20.2333330146142,35.4333325890369"
-                    Point3="-20.2333330146142,39.4333325890369" />
+                    Point1="-4.56666698538589,34.1333325980771"
+                    Point2="-8.56666698538589,34.1333325980771"
+                    Point3="-8.56666698538589,38.1333325980771" />
                   <mssgle:LineSegment
-                    End="-20.2333330146142,63.3666651780737" />
+                    End="-8.56666698538589,60.7666651961541" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -8310,7 +8291,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 8]"
-          TopLeft="587.099978281559,1000.23623949812">
+          TopLeft="587.099978281559,1036.636239245">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -8322,6 +8303,61 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                   Capacity="5">
                   <mssgle:LineSegment
                     End="53.1499995219209,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <AnnotationLayout
+          Text="11-03-2025:&#xD;&#xA;- Disable INVLOT&#xD;&#xA;- Remove INVBALANCE.LOTNUM"
+          ParentId="Package"
+          FontInfo="{assembly:Null}"
+          Size="204,72"
+          Id="636712ec-842f-4714-9db4-607b7e3036bb"
+          TopLeft="386.666645540132,819.066665883197" />
+        <NodeLayout
+          Size="213.6,41.6"
+          Id="Package\Get Max ID (INVBALANCES)"
+          TopLeft="129.325919728607,402.400003860097" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="234.779623571434,343.333332625197">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,59.0666712348993"
+              Start="0,0"
+              End="0,51.5666712348993">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,51.5666712348993" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 9]"
+          TopLeft="236.742585826132,444.000003860097">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,48.8296252234472"
+              Start="0,0"
+              End="0,41.3296252234472">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,41.3296252234472" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -8499,7 +8535,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\AUTOKEY (INVLOTNUM).Paths[Sort Output]"
+          Id="Package\AUTOKEY (INVLOTNUM).Paths[Sort Output1]"
           TopLeft="370.514280920369,319.885710138934">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -8643,7 +8679,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\AUTOKEY (INVLOTNUM).Paths[Multicast Output 11]"
+          Id="Package\AUTOKEY (INVLOTNUM).Paths[Multicast Output 12]"
           TopLeft="818.99044428922,491.552376481286">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -8703,7 +8739,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\AUTOKEY (INVLOTNUM).Paths[Multicast Output 12]"
+          Id="Package\AUTOKEY (INVLOTNUM).Paths[Multicast Output 1]"
           TopLeft="649.42856365868,209.585711779126">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -8775,7 +8811,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\AUTOKEY (INVLOTNUM).Paths[Sort Output1]"
+          Id="Package\AUTOKEY (INVLOTNUM).Paths[Sort Output]"
           TopLeft="592.057134827546,321.314281546218">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -8811,7 +8847,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\AUTOKEY (INVLOTNUM).Paths[Multicast Output 1]"
+          Id="Package\AUTOKEY (INVLOTNUM).Paths[Multicast Output 11]"
           TopLeft="436.999995395541,105.599998837709">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -8867,89 +8903,57 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
       <GraphLayout
         Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
-          Size="128,41.6"
-          Id="Package\DF - INVBALANCES\Multicast 1"
-          TopLeft="264.166652233237,353.999998445114" />
-        <NodeLayout
-          Size="180,41.6"
-          Id="Package\DF - INVBALANCES\OLE DB Destination 1 1"
-          TopLeft="624.166643901005,448.633331025111" />
-        <NodeLayout
-          Size="161.6,41.6"
-          Id="Package\DF - INVBALANCES\Derived Column 4"
-          TopLeft="641.299969129763,356.766664997274" />
-        <NodeLayout
-          Size="146.4,41.6"
-          Id="Package\DF - INVBALANCES\Lookup - ITEM"
-          TopLeft="251.999987296761,83.7000001627207" />
-        <NodeLayout
           Size="119.2,41.6"
           Id="Package\DF - INVBALANCES\Multicast"
           TopLeft="479.166640486156,85.2666662628787" />
+        <NodeLayout
+          Size="152.8,41.6"
+          Id="Package\DF - INVBALANCES\Derived Column"
+          TopLeft="248.499997131527,267.066665785047" />
+        <NodeLayout
+          Size="180,41.6"
+          Id="Package\DF - INVBALANCES\OLE DB Destination 1 1"
+          TopLeft="627.499977052213,539.09999761343" />
+        <NodeLayout
+          Size="178.4,41.6"
+          Id="Package\DF - INVBALANCES\Derived Column 4 1 1"
+          TopLeft="855.233297621873,91.7500046529845" />
+        <NodeLayout
+          Size="171.2,41.6"
+          Id="Package\DF - INVBALANCES\OLE DB Destination 1 1 1"
+          TopLeft="851.483298199293,175.500003405014" />
         <NodeLayout
           Size="148.8,41.6"
           Id="Package\DF - INVBALANCES\Oracle Source"
           TopLeft="44.4999986340603,5.49999999999999" />
         <NodeLayout
-          Size="171.2,41.6"
-          Id="Package\DF - INVBALANCES\OLE DB Destination"
-          TopLeft="245.499986886979,444.099997016788" />
-        <NodeLayout
           Size="126.4,41.6"
-          Id="Package\DF - INVBALANCES\Aggregate"
-          TopLeft="451.999976369243,356.833331368633" />
+          Id="Package\DF - INVBALANCES\Aggregate 1 1 1"
+          TopLeft="669.499964485567,87.6500009085245" />
         <NodeLayout
           Size="170.4,41.6"
           Id="Package\DF - INVBALANCES\Flat File Destination"
           TopLeft="459.166641578907,175.799998788635" />
         <NodeLayout
-          Size="152.8,41.6"
-          Id="Package\DF - INVBALANCES\Derived Column"
-          TopLeft="248.499997131527,267.066665785047" />
-        <EdgeLayout
-          Id="Package\DF - INVBALANCES.Paths[Multicast Output 2]"
-          TopLeft="392.166652233237,376.216664906873">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="59.8333241360059,0"
-              Start="0,0"
-              End="52.3333241360059,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="52.3333241360059,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - INVBALANCES.Paths[Multicast Output 11]"
-          TopLeft="329.633319560108,395.599998445114">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,48.4999985716748"
-              Start="0,0"
-              End="0,40.9999985716748">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,40.9999985716748" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
+          Size="161.6,41.6"
+          Id="Package\DF - INVBALANCES\Derived Column 4"
+          TopLeft="644.633302280971,447.233331585594" />
+        <NodeLayout
+          Size="146.4,41.6"
+          Id="Package\DF - INVBALANCES\Lookup - ITEM"
+          TopLeft="251.999987296761,83.7000001627207" />
+        <NodeLayout
+          Size="171.2,41.6"
+          Id="Package\DF - INVBALANCES\OLE DB Destination"
+          TopLeft="248.833320038187,534.566663605107" />
+        <NodeLayout
+          Size="126.4,41.6"
+          Id="Package\DF - INVBALANCES\Aggregate"
+          TopLeft="455.333309520451,447.299997956953" />
+        <NodeLayout
+          Size="128,41.6"
+          Id="Package\DF - INVBALANCES\Multicast 1"
+          TopLeft="267.499985384445,444.466665033434" />
         <EdgeLayout
           Id="Package\DF - INVBALANCES.Paths[Multicast Output 1]"
           TopLeft="541.566641032531,126.866666262879">
@@ -8997,19 +9001,87 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - INVBALANCES.Paths[Derived Column Output]"
-          TopLeft="718.133306515384,398.366664997274">
+          Id="Package\DF - INVBALANCES.Paths[Lookup Match Output]"
+          TopLeft="325.049992214144,125.300000162721">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,50.2666660278375"
+              EndConnector="0,141.766665622327"
               Start="0,0"
-              End="0,42.7666660278375">
+              End="0,134.266665622327">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,42.7666660278375" />
+                    End="0,134.266665622327" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-48.19138671875,61.3286453111633,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - INVBALANCES.Paths[Derived Column Output1]"
+          TopLeft="940.758297910584,133.350004652985">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,42.1499987520281"
+              Start="0,0"
+              End="0,34.6499987520281">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,34.6499987520281" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - INVBALANCES.Paths[Derived Column Output]"
+          TopLeft="721.466639666592,488.833331585593">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,50.2666660278376"
+              Start="0,0"
+              End="0,42.7666660278376">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,42.7666660278376" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - INVBALANCES.Paths[Aggregate Output 11]"
+          TopLeft="795.899964485567,110.500002780755">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="59.3333331363062,0"
+              Start="0,0"
+              End="51.8333331363062,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="51.8333331363062,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -9020,7 +9092,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - INVBALANCES.Paths[Aggregate Output 1]"
-          TopLeft="578.399976369243,377.599998182953">
+          TopLeft="581.733309520451,468.066664771272">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -9075,108 +9147,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - INVBALANCES.Paths[Lookup Match Output]"
-          TopLeft="325.049992214144,125.300000162721">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,141.766665622327"
-              Start="0,0"
-              End="0,134.266665622327">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,134.266665622327" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-48.19138671875,61.3286453111633,96.3827734375,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - INVBALANCES.Paths[Derived Column Output1]"
-          TopLeft="326.533324682382,308.666665785047">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,45.3333326600666"
-              Start="0,0"
-              End="0,37.8333326600666">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,37.8333326600666" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="178.4,41.6"
-          Id="Package\DF - INVBALANCES\Derived Column 4 1 1"
-          TopLeft="855.233297621873,91.7500046529845" />
-        <NodeLayout
-          Size="171.2,41.6"
-          Id="Package\DF - INVBALANCES\OLE DB Destination 1 1 1"
-          TopLeft="851.483298199293,175.500003405014" />
-        <NodeLayout
-          Size="126.4,41.6"
-          Id="Package\DF - INVBALANCES\Aggregate 1 1 1"
-          TopLeft="669.499964485567,87.6500009085245" />
-        <EdgeLayout
-          Id="Package\DF - INVBALANCES.Paths[Derived Column Output2]"
-          TopLeft="940.758297910584,133.350004652985">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,42.1499987520281"
-              Start="0,0"
-              End="0,34.6499987520281">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,34.6499987520281" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - INVBALANCES.Paths[Aggregate Output 11]"
-          TopLeft="795.899964485567,110.500002780755">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="59.3333331363062,0"
-              Start="0,0"
-              End="51.8333331363062,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="51.8333331363062,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
           Id="Package\DF - INVBALANCES.Paths[Multicast Output 21]"
           TopLeft="598.366640486156,107.258333585702">
           <EdgeLayout.Curve>
@@ -9198,32 +9168,101 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - INVBALANCES.Paths[Multicast Output 2]"
+          TopLeft="395.499985384445,466.683331495193">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="59.8333241360059,0"
+              Start="0,0"
+              End="52.3333241360059,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="52.3333241360059,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - INVBALANCES.Paths[Multicast Output 11]"
+          TopLeft="332.966652711316,486.066665033434">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,48.4999985716747"
+              Start="0,0"
+              End="0,40.9999985716747">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,40.9999985716747" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="161.6,41.6"
+          Id="Package\DF - INVBALANCES\Derived Column 1"
+          TopLeft="243.233320174781,356.199998969436" />
+        <EdgeLayout
+          Id="Package\DF - INVBALANCES.Paths[Derived Column Output2]"
+          TopLeft="324.466658653154,308.666665785047">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,47.5333331843887"
+              Start="0,0"
+              End="0,40.0333331843887">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,40.0333331843887" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - INVBALANCES.Paths[Derived Column Output3]"
+          TopLeft="327.766652779613,397.799998969436">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,46.6666660639979"
+              Start="0,0"
+              End="0,39.1666660639979">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,39.1666660639979" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
-  <PipelineComponentMetadata
-    design-time-name="Package\DF - INVBALANCES\Lookup - ITEM">
-    <Properties>
-      <Property>
-        <Name>OverwriteParamsSQLProp</Name>
-        <Value
-          type="q2:boolean">false</Value>
-      </Property>
-      <Property>
-        <Name>UsedTableName</Name>
-        <Value
-          type="q3:string"></Value>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q4:int">0</Value>
-      </Property>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
   <PipelineComponentMetadata
     design-time-name="Package\DF - INVBALANCES\Oracle Source">
     <Properties>
@@ -9234,6 +9273,29 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
         <Name>TableInfoObjectType</Name>
         <Value
           type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - INVBALANCES\Lookup - ITEM">
+    <Properties>
+      <Property>
+        <Name>OverwriteParamsSQLProp</Name>
+        <Value
+          type="q2:string">false</Value>
+      </Property>
+      <Property>
+        <Name>UsedTableName</Name>
+        <Value
+          type="q3:string"></Value>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q4:string">0</Value>
+      </Property>
+      <Property>
+        <Name>DataSourceViewID</Name>
       </Property>
     </Properties>
   </PipelineComponentMetadata>

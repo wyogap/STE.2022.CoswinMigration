@@ -11,8 +11,8 @@
   DTS:LocaleID="14345"
   DTS:ObjectName="DB2_1016_Fix_PM_System_Subsystem_LocType"
   DTS:PackageType="5"
-  DTS:VersionBuild="172"
-  DTS:VersionGUID="{0487A9E1-9422-49B4-8524-FCEF7E992FAF}">
+  DTS:VersionBuild="178"
+  DTS:VersionGUID="{28FC58DB-5DE2-4126-91D0-17342E5480DC}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -281,7 +281,7 @@
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-          SQLTask:SqlStatementSource="MERGE INTO MAXIMO.PM AS A&#xA;USING (&#xA;&#x9;SELECT a.pmnum, a.description, a.assetnum&#xA;&#x9;&#x9;, b.ste_system, b.ste_subsystem&#xA;&#x9;&#x9;, b.location, l.TYPE AS locationtype&#xA;&#x9;FROM maximo.pm a&#xA;&#x9;LEFT JOIN maximo.ASSET b ON b.assetnum=a.assetnum&#xA;&#x9;LEFT JOIN maximo.LOCATIONS l ON l.location=b.location&#xA;&#x9;WHERE a.assetnum IS NOT NULL&#xA;) B ON B.PMNUM=A.PMNUM&#xA;WHEN MATCHED THEN&#xA;UPDATE SET &#xA;&#x9;ste_system=B.ste_system,&#xA;&#x9;ste_subsystem=B.ste_subsystem,&#xA;&#x9;ste_loctype=B.locationtype&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:SqlStatementSource="MERGE INTO MAXIMO.PM AS A&#xA;USING (&#xA;&#x9;SELECT a.pmnum, a.description, a.assetnum&#xA;&#x9;&#x9;, b.ste_system, b.ste_subsystem&#xA;&#x9;&#x9;, b.location, l.TYPE AS locationtype&#xA;&#x9;&#x9;, b.ste_cswnauthority, c.maint_entity AS maintentity&#xA;&#x9;FROM maximo.pm a&#xA;&#x9;JOIN maximo.ASSET b ON b.assetnum=a.assetnum&#xA;&#x9;LEFT JOIN maximo.LOCATIONS l ON l.location=b.location&#xA;&#x9;LEFT JOIN MIGRATION.SBST_DEPT_ENTITY_MAPPING c ON c.coswin_entity=b.ste_cswnauthority&#xA;&#x9;WHERE a.assetnum IS NOT NULL&#xA;&#x9;&#x9;AND A.STE_MIGRATIONID IS NOT NULL&#xA;) B ON B.PMNUM=A.PMNUM&#xA;WHEN MATCHED THEN&#xA;UPDATE SET &#xA;&#x9;ste_system=B.ste_system,&#xA;&#x9;ste_subsystem=B.ste_subsystem,&#xA;&#x9;ste_loctype=B.locationtype,&#xA;&#x9;ste_maintentity=B.maintentity&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
@@ -298,7 +298,7 @@
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
-          SQLTask:SqlStatementSource="MERGE INTO MAXIMO.PM AS A&#xA;USING (&#xA;&#x9;WITH DATA AS (&#xA;&#x9;&#x9;SELECT a.pmnum, a.description, a.route, r.routesid, rs.assetnum &#xA;&#x9;&#x9;&#x9;, b.ste_system, b.ste_subsystem&#xA;&#x9;&#x9;&#x9;, b.location, l.TYPE AS locationtype&#xA;&#x9;&#x9;FROM maximo.pm a&#xA;&#x9;&#x9;JOIN maximo.ROUTES r ON r.route=a.route&#xA;&#x9;&#x9;JOIN MAXIMO.ROUTE_STOP rs ON rs.route=r.route&#xA;&#x9;&#x9;JOIN maximo.ASSET b ON b.assetnum=rs.assetnum&#xA;&#x9;&#x9;LEFT JOIN maximo.LOCATIONS l ON l.location=b.location&#xA;&#x9;&#x9;WHERE a.route IS NOT NULL &#xA;&#x9;&#x9;ORDER BY a.route&#xA;&#x9;),&#xA;&#x9;SYSTEMCNT AS (&#xA;&#x9;&#x9;SELECT pmnum, count(DISTINCT ste_system) AS cnt, max(ste_system) AS ste_system&#xA;&#x9;&#x9;FROM DATA&#xA;&#x9;&#x9;WHERE ste_system IS NOT null&#xA;&#x9;&#x9;GROUP BY pmnum&#xA;&#x9;),&#xA;&#x9;SUBSYSTEMCNT AS (&#xA;&#x9;&#x9;SELECT pmnum, count(DISTINCT ste_subsystem) AS cnt, max(ste_subsystem) AS ste_subsystem&#xA;&#x9;&#x9;FROM DATA&#xA;&#x9;&#x9;WHERE ste_subsystem IS NOT null&#xA;&#x9;&#x9;GROUP BY pmnum&#xA;&#x9;),&#xA;&#x9;LOCTYPECNT AS (&#xA;&#x9;&#x9;SELECT pmnum, count(DISTINCT locationtype) AS cnt, max(locationtype) AS locationtype&#xA;&#x9;&#x9;FROM DATA&#xA;&#x9;&#x9;WHERE locationtype IS NOT null&#xA;&#x9;&#x9;GROUP BY pmnum&#xA;&#x9;)&#xA;&#x9;SELECT A.PMNUM, B.CNT, C.CNT, D.CNT&#xA;&#x9;&#x9;, CASE WHEN COALESCE(B.CNT,0)=1 THEN B.STE_SYSTEM ELSE NULL END AS STE_SYSTEM&#xA;&#x9;&#x9;, CASE WHEN COALESCE(C.CNT,0)=1 THEN C.STE_SUBSYSTEM ELSE NULL END AS STE_SUBSYSTEM&#xA;&#x9;&#x9;, CASE WHEN COALESCE(D.CNT,0)=1 THEN D.LOCATIONTYPE ELSE NULL END AS LOCATIONTYPE&#xA;&#x9;FROM MAXIMO.PM A&#xA;&#x9;LEFT JOIN SYSTEMCNT B ON B.PMNUM=A.PMNUM&#xA;&#x9;LEFT JOIN SUBSYSTEMCNT C ON C.PMNUM=A.PMNUM&#xA;&#x9;LEFT JOIN LOCTYPECNT D ON D.PMNUM=A.PMNUM&#xA;&#x9;WHERE A.route IS NOT NULL &#xA;&#x9;ORDER BY A.route&#xA;) B ON B.PMNUM=A.PMNUM&#xA;WHEN MATCHED THEN&#xA;UPDATE SET &#xA;&#x9;ste_system=B.ste_system,&#xA;&#x9;ste_subsystem=B.ste_subsystem,&#xA;&#x9;ste_loctype=B.locationtype&#xA;;&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:SqlStatementSource="MERGE INTO MAXIMO.PM AS A&#xA;USING (&#xA;&#x9;SELECT a.pmnum, a.description, a.ROUTE&#xA;&#x9;&#x9;, b.ste_system, b.ste_subsystem&#xA;&#x9;&#x9;, b.ste_loctype AS locationtype&#xA;&#x9;&#x9;, b.ste_maintentity AS maintentity&#xA;&#x9;FROM maximo.pm a&#xA;&#x9;JOIN maximo.ROUTES b ON b.ROUTE=a.ROUTE&#xA;&#x9;WHERE a.ROUTE IS NOT NULL &#xA;&#x9;&#x9;AND A.STE_MIGRATIONID IS NOT NULL&#xA;) B ON B.PMNUM=A.PMNUM&#xA;WHEN MATCHED THEN&#xA;UPDATE SET &#xA;&#x9;ste_system=B.ste_system,&#xA;&#x9;ste_subsystem=B.ste_subsystem,&#xA;&#x9;ste_loctype=B.locationtype,&#xA;&#x9;ste_maintentity=B.maintentity&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
   </DTS:Executables>
@@ -465,10 +465,10 @@
           </EdgeLayout.Labels>
         </EdgeLayout>
         <AnnotationLayout
-          Text="Notes:&#xA;Set PM's system/subsystem/locationtype based on &#xA;Asset's or Route's system/subsystem/locationtype.&#xD;&#xA;&#xD;&#xA;In the migration script, it is triggered in 0101-Asset-Asset pkg"
+          Text="Notes:&#xA;Set PM's system/subsystem/locationtype based on &#xA;Asset's or Route's system/subsystem/locationtype.&#xD;&#xA;&#xD;&#xA;Set PM's maintentity based on Asset's STE_CSWNAUTHORITY&#xD;&#xA;or Route's maintentity.&#xA;&#xA;In the migration script, it is triggered in 0101-Asset-Asset pkg"
           ParentId="Package"
           FontInfo="{assembly:Null}"
-          Size="354.4,104"
+          Size="354.4,152"
           Id="7e868e6b-13e3-4eb7-a577-4f0886812f92"
           TopLeft="304.166650047733,76.9587344801544" />
       </GraphLayout>
