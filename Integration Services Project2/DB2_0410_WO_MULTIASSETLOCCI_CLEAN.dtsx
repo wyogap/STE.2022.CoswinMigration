@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0410_WO_MULTIASSETLOCCI_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="137"
-  DTS:VersionGUID="{BFB1DE6A-A609-432D-A994-F0281CA843B4}"
+  DTS:VersionBuild="140"
+  DTS:VersionGUID="{4574BF34-0ABA-4614-892B-F8D17B10E8EB}"
   DTS:VersionMajor="5">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -234,7 +234,8 @@
       DTS:refId="Package\Data Flow Task"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:Description="Data Flow Task"
-      DTS:DTSID="{E1BDB902-F07D-4DF0-AB70-F4117A1C2092}"
+      DTS:Disabled="True"
+      DTS:DTSID="{dfbab836-efa8-48ee-abc1-2ec52f842fd2}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="-1"
       DTS:ObjectName="Data Flow Task">
@@ -2856,6 +2857,23 @@ ORDER BY wo.wonum, a.assetnum</property>
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
+      DTS:refId="Package\MULTIASSETLOCCI"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{CA35CA0A-CCD7-45BA-BAA5-CA9659EF9111}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="MULTIASSETLOCCI"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="INSERT INTO maximo.MULTIASSETLOCCI (&#xA;&#x9;MULTIID, ASSETNUM, LOCATION, PROGRESS, ISPRIMARY, WORKORGID, WORKSITEID, ORGID, SITEID&#xA;&#x9;, ROUTE, ROUTESTOP, PERFORMMOVETO, RECORDKEY, RECORDCLASS, LANGCODE, REPLACEMENTSITE, HASLD&#xA;&#x9;, TOTALWORKUNITS, STE_MIGRATIONID, STE_MIGRATIONDATE&#xA;)&#xA;SELECT &#xA;&#x9;c.MAX_ID + ROW_NUMBER() OVER (ORDER BY wo.wonum, a.assetnum) AS MULTIID&#xA;&#x9;, A.ASSETNUM, B.LOCATION&#xA;&#x9;, 0 AS PROGRESS, 0 AS ISPRIMARY, 'SBST' AS WORKORGID, 'NEL' AS WORKSITEID, 'SBST' AS ORGID, 'NEL' AS SITEID&#xA;&#x9;, wo.ROUTE, a.ROUTE_STOPID AS ROUTE_STOP&#xA;&#x9;, 0 AS PERFORMMOVETO&#xA;&#x9;, wo.WONUM AS RECORDKEY, 'WORKORDER' AS RECORDCLASS, 'EN' AS LANGCODE, 'NEL' AS REPLACEMENTSITE, 0 AS HADLD&#xA;&#x9;, 1 AS TOTALWORKUNITS, c.MAX_ID AS STE_MIGRATIONID, ADD_HOURS(CURRENT_TIMESTAMP, 8) AS STE_MIGRATIONDATE&#xA;FROM maximo.workorder wo&#xA;JOIN maximo.route_stop A ON a.route=wo.route &#xA;JOIN MAXIMO.ASSET B ON B.ASSETNUM=A.ASSETNUM&#xA;JOIN (&#xA;&#x9;SELECT COALESCE(MAX(MULTIID),0) AS MAX_ID FROM maximo.MULTIASSETLOCCI&#xA;) c ON 1=1&#xA;WHERE 1=1&#xA;&#x9;AND (wo.ste_migrationid IS NOT NULL) AND (wo.route IS NOT NULL) &#xA;&#x9;-- AND (wo.ste_migrationtype IS NOT NULL) &#xA;&#x9;-- AND (wo.jpnum IS NOT NULL)&#xA;ORDER BY wo.wonum, a.assetnum;&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
       DTS:refId="Package\POST-PKG"
       DTS:CreationName="STOCK:SEQUENCE"
       DTS:Description="Sequence Container"
@@ -3052,19 +3070,19 @@ ORDER BY wo.wonum, a.assetnum</property>
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint]"
       DTS:CreationName=""
-      DTS:DTSID="{E500273E-2F3B-4F7A-BAE0-B612C26ECD33}"
-      DTS:From="Package\Data Flow Task"
+      DTS:DTSID="{E2D5EA05-4A12-4F33-ABE8-D5602BA9B918}"
+      DTS:From="Package\Pre-Task"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint"
-      DTS:To="Package\MAXSEQ (MULTIASSETLOCCI)" />
+      DTS:To="Package\MULTIASSETLOCCI" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
       DTS:CreationName=""
-      DTS:DTSID="{0E63DF18-8877-4F1F-8F1B-31E562306432}"
-      DTS:From="Package\Pre-Task"
+      DTS:DTSID="{45AB9BCE-0537-4164-9274-A8B9BE356348}"
+      DTS:From="Package\MULTIASSETLOCCI"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 1"
-      DTS:To="Package\Data Flow Task" />
+      DTS:To="Package\MAXSEQ (MULTIASSETLOCCI)" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
       DTS:CreationName=""
@@ -3093,11 +3111,7 @@ ORDER BY wo.wonum, a.assetnum</property>
     design-time-name="Package">
     <LayoutInfo>
       <GraphLayout
-        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
-        <NodeLayout
-          Size="155.2,41.6"
-          Id="Package\Data Flow Task"
-          TopLeft="82.5666630241609,333.499999855359" />
+        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="229.6,41.6"
           Id="Package\MAXSEQ (MULTIASSETLOCCI)"
@@ -3190,87 +3204,31 @@ ORDER BY wo.wonum, a.assetnum</property>
           Id="Package\Pre-Task"
           TopLeft="72.1666630241608,27.1666665159994" />
         <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="160.166663024161,375.099999855359">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="8.4416679756921,63.033333312241"
-              Start="0,0"
-              End="8.4416679756921,55.533333312241">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,27.5166666561205" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,27.5166666561205"
-                    Point2="0,31.5166666561205"
-                    Point3="4,31.5166666561205" />
-                  <mssgle:LineSegment
-                    End="4.4416679756921,31.5166666561205" />
-                  <mssgle:CubicBezierSegment
-                    Point1="4.4416679756921,31.5166666561205"
-                    Point2="8.4416679756921,31.5166666561205"
-                    Point3="8.4416679756921,35.5166666561205" />
-                  <mssgle:LineSegment
-                    End="8.4416679756921,55.533333312241" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 1]"
-          TopLeft="160.166663024161,274.366666515999">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,59.1333333393596"
-              Start="0,0"
-              End="0,51.6333333393596">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,51.6333333393596" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 2]"
           TopLeft="332.37974435081,57.4285747669287">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-84.2130813266496,93.3380917490707"
+              EndConnector="-84.2130813266492,93.3380917490707"
               Start="0,0"
-              End="-76.7130813266496,93.3380917490707">
+              End="-76.7130813266492,93.3380917490707">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="-38.1065406633248,0" />
+                    End="-38.1065406633246,0" />
                   <mssgle:CubicBezierSegment
-                    Point1="-38.1065406633248,0"
-                    Point2="-42.1065406633248,0"
-                    Point3="-42.1065406633248,4" />
+                    Point1="-38.1065406633246,0"
+                    Point2="-42.1065406633246,0"
+                    Point3="-42.1065406633246,4" />
                   <mssgle:LineSegment
-                    End="-42.1065406633248,89.3380917490707" />
+                    End="-42.1065406633246,89.3380917490707" />
                   <mssgle:CubicBezierSegment
-                    Point1="-42.1065406633248,89.3380917490707"
-                    Point2="-42.1065406633248,93.3380917490707"
-                    Point3="-46.1065406633248,93.3380917490707" />
+                    Point1="-42.1065406633246,89.3380917490707"
+                    Point2="-42.1065406633246,93.3380917490707"
+                    Point3="-46.1065406633246,93.3380917490707" />
                   <mssgle:LineSegment
-                    End="-76.7130813266496,93.3380917490707" />
+                    End="-76.7130813266492,93.3380917490707" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -3301,6 +3259,65 @@ ORDER BY wo.wonum, a.assetnum</property>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <NodeLayout
+          Size="155.2,41.6"
+          Id="Package\Data Flow Task"
+          TopLeft="310.474983642872,334.333334595926" />
+        <NodeLayout
+          Size="175.2,41.6"
+          Id="Package\MULTIASSETLOCCI"
+          TopLeft="79.1666623411909,333.199998879035" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="163.466662682676,274.366666515999">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,58.833332363036"
+              Start="0,0"
+              End="0,51.333332363036">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,51.333332363036" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="167.687496670522,374.799998879035">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,63.3333342885646"
+              Start="0,0"
+              End="0,55.8333342885646">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,55.8333342885646" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <AnnotationLayout
+          Text="Note:&#xD;&#xA;Use direct insert-select instead of dataflow"
+          ParentId="Package"
+          FontInfo="{assembly:Null}"
+          Size="253.6,60"
+          Id="468bf050-37d1-4ab5-b70a-67cd1fc84c0f"
+          TopLeft="308.333316486744,261.399999511838" />
       </GraphLayout>
     </LayoutInfo>
   </Package>
@@ -3308,27 +3325,11 @@ ORDER BY wo.wonum, a.assetnum</property>
     design-time-name="Package\Data Flow Task">
     <LayoutInfo>
       <GraphLayout
-        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="161.6,41.6"
           Id="Package\Data Flow Task\Running Number"
           TopLeft="77.4999957655871,151.666666335198" />
-        <NodeLayout
-          Size="171.2,41.6"
-          Id="Package\Data Flow Task\OLE DB Destination"
-          TopLeft="80.7666623411912,420.733331169752" />
-        <NodeLayout
-          Size="161.6,41.6"
-          Id="Package\Data Flow Task\Derived Column 1"
-          TopLeft="79.1666623411912,240.399998517434" />
-        <NodeLayout
-          Size="119.2,41.6"
-          Id="Package\Data Flow Task\Multicast"
-          TopLeft="99.1666612484392,334.200000452003" />
-        <NodeLayout
-          Size="180,41.6"
-          Id="Package\Data Flow Task\OLE DB Destination 1 1 1"
-          TopLeft="429.888814718362,424.016667094554" />
         <NodeLayout
           Size="148,41.6"
           Id="Package\Data Flow Task\WORKORDER"
@@ -3338,9 +3339,25 @@ ORDER BY wo.wonum, a.assetnum</property>
           Id="Package\Data Flow Task\Derived Column 4 1"
           TopLeft="447.02213994712,332.150001066726" />
         <NodeLayout
+          Size="171.2,41.6"
+          Id="Package\Data Flow Task\OLE DB Destination"
+          TopLeft="80.7666623411912,420.733331169752" />
+        <NodeLayout
+          Size="180,41.6"
+          Id="Package\Data Flow Task\OLE DB Destination 1 1 1"
+          TopLeft="429.888814718362,424.016667094554" />
+        <NodeLayout
           Size="129.6,41.6"
           Id="Package\Data Flow Task\Aggregate 1 1"
           TopLeft="267.499985384445,331.666665828958" />
+        <NodeLayout
+          Size="119.2,41.6"
+          Id="Package\Data Flow Task\Multicast"
+          TopLeft="99.1666612484392,334.200000452003" />
+        <NodeLayout
+          Size="161.6,41.6"
+          Id="Package\Data Flow Task\Derived Column 1"
+          TopLeft="79.1666623411912,240.399998517434" />
         <EdgeLayout
           Id="Package\Data Flow Task.Paths[Output 0]"
           TopLeft="159.133329053389,193.266666335198">
@@ -3360,117 +3377,9 @@ ORDER BY wo.wonum, a.assetnum</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Multicast Output 3]"
-          TopLeft="218.366661248439,353.73333314048">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="49.133324136006,0"
-              Start="0,0"
-              End="41.633324136006,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="41.633324136006,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Multicast Output 1]"
-          TopLeft="162.566661794815,375.800000452003">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,44.9333307177489"
-              Start="0,0"
-              End="0,37.4333307177489">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,37.4333307177489" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Derived Column Output1]"
-          TopLeft="523.855477332741,373.750001066725">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,50.266666027829"
-              Start="0,0"
-              End="0,42.766666027829">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,42.766666027829" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Derived Column Output]"
-          TopLeft="159.366661794815,281.999998517434">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,52.2000019345689"
-              Start="0,0"
-              End="0,44.7000019345689">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,44.7000019345689" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Aggregate Output 1]"
-          TopLeft="397.099985384445,352.708333447842">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="49.9221545626752,0"
-              Start="0,0"
-              End="42.4221545626752,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="42.4221545626752,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -3492,32 +3401,133 @@ ORDER BY wo.wonum, a.assetnum</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Multicast Output 3]"
+          TopLeft="218.366661248439,353.73333314048">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="49.133324136006,0"
+              Start="0,0"
+              End="41.633324136006,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="41.633324136006,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Multicast Output 1]"
+          TopLeft="162.566661794815,375.800000452003">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,44.9333307177489"
+              Start="0,0"
+              End="0,37.4333307177489">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,37.4333307177489" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Derived Column Output1]"
+          TopLeft="523.855477332741,373.750001066725">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,50.266666027829"
+              Start="0,0"
+              End="0,42.766666027829">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,42.766666027829" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Derived Column Output]"
+          TopLeft="159.366661794815,281.999998517434">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,52.2000019345689"
+              Start="0,0"
+              End="0,44.7000019345689">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,44.7000019345689" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Aggregate Output 1]"
+          TopLeft="397.099985384445,352.708333447842">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="49.9221545626752,0"
+              Start="0,0"
+              End="42.4221545626752,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="42.4221545626752,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
-  <PipelineComponentMetadata
-    design-time-name="Package\Data Flow Task\WORKORDER">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\Data Flow Task\OLE DB Destination">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
 </Objects>]]></DTS:DesignTimeProperties>
 </DTS:Executable>

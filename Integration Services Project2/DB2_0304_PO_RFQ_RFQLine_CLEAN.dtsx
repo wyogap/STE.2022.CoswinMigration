@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0304_PO_RFQ_RFQLine_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="291"
-  DTS:VersionGUID="{EC394C04-F612-46E1-98B8-C5CDEE940649}"
+  DTS:VersionBuild="293"
+  DTS:VersionGUID="{17D5ABAF-0774-4F85-88DB-9ACB390731B0}"
   DTS:VersionMajor="6"
   DTS:VersionMinor="2">
   <DTS:Property
@@ -5248,6 +5248,11 @@ order by d.PK_DEVIS ASC;</property>
                       cachedLength="20"
                       cachedName="DV_STRING1"
                       lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[DV_STRING1]" />
+                    <inputColumn
+                      refId="Package\DF - RFQLine\Derived Column 1.Inputs[Derived Column Input].Columns[PK_WIP_WO]"
+                      cachedDataType="i4"
+                      cachedName="PK_WIP_WO"
+                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[PK_WIP_WO]" />
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -5306,6 +5311,30 @@ order by d.PK_DEVIS ASC;</property>
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
                           name="FriendlyExpression">(DT_STR,30,1252)DV_STRING1</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\DF - RFQLine\Derived Column 1.Outputs[Derived Column Output].Columns[v_prefixwonum]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="10"
+                      lineageId="Package\DF - RFQLine\Derived Column 1.Outputs[Derived Column Output].Columns[v_prefixwonum]"
+                      name="v_prefixwonum"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_STR,10,1252)([LEFT]("WO00000000",10 - [LEN]((DT_WSTR,8)#{Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[PK_WIP_WO]})) + (DT_WSTR,8)#{Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[PK_WIP_WO]})</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_STR,10,1252)(LEFT("WO00000000",10 - LEN((DT_WSTR,8)PK_WIP_WO)) + (DT_WSTR,8)PK_WIP_WO)</property>
                       </properties>
                     </outputColumn>
                   </outputColumns>
@@ -9328,11 +9357,14 @@ where "refTable"."COMPVALUE" = ?</property>
 	, coalesce(d.DV_CC_CD, 'NEL') as DV_CC_CD
 	, upper(d.DV_STRING1) as DV_STRING1
 	, d.DEVIS_DATE
+	, d.DV_WOID
+	, wo.PK_WIP_WO
 	, it.ITEM_CD
 	, it.ITEM_DS
 	, ROW_NUMBER() OVER (PARTITION BY d.PK_DEVIS ORDER BY di.PK_DV_ITEMS) LINENUM
 FROM COSWIN.DV_ITEMS di
 JOIN COSWIN.DEVIS d ON d.PK_DEVIS = di.S_DV_ITEM 
+LEFT JOIN COSWIN.WIP_WO wo ON wo.WO_WOID=d.DV_WOID
 LEFT JOIN (
 	SELECT 
 		di.PK_DV_ITEMS 
@@ -9342,10 +9374,8 @@ LEFT JOIN (
 	LEFT JOIN COSWIN.ITEM_ it ON it.PK_ITEM_ = di.S_ITEM_DV 
 	LEFT JOIN COSWIN.NSITEM ns ON ns.PK_NSITEM = di.S_NSITEM_DV 	
 ) it ON it.PK_DV_ITEMS = di.PK_DV_ITEMS 
+-- WHERE wo.PK_WIP_WO IS NOT null
 order by d.PK_DEVIS, di.PK_DV_ITEMS asc
---WHERE 
---	it.ITEM_CD IS NOT null
--- offset 208000 rows fetch next 10000 rows only
 ;</property>
                 <property
                   dataType="System.Int32"
@@ -9514,6 +9544,20 @@ order by d.PK_DEVIS, di.PK_DV_ITEMS asc
                       lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[TIMESTAMP]"
                       name="TIMESTAMP"
                       precision="10" />
+                    <outputColumn
+                      refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[DV_WOID]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_WOID]"
+                      length="10"
+                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[DV_WOID]"
+                      name="DV_WOID" />
+                    <outputColumn
+                      refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[PK_WIP_WO]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_WIP_WO]"
+                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].Columns[PK_WIP_WO]"
+                      name="PK_WIP_WO" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -9607,6 +9651,16 @@ order by d.PK_DEVIS, di.PK_DV_ITEMS asc
                       dataType="numeric"
                       name="TIMESTAMP"
                       precision="10" />
+                    <externalMetadataColumn
+                      refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_WOID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="DV_WOID" />
+                    <externalMetadataColumn
+                      refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_WIP_WO]"
+                      dataType="i4"
+                      name="PK_WIP_WO" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -9740,6 +9794,20 @@ order by d.PK_DEVIS, di.PK_DV_ITEMS asc
                       lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[TIMESTAMP]"
                       name="TIMESTAMP"
                       precision="10" />
+                    <outputColumn
+                      refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[DV_WOID]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_WOID]"
+                      length="10"
+                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[DV_WOID]"
+                      name="DV_WOID" />
+                    <outputColumn
+                      refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_WIP_WO]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_WIP_WO]"
+                      lineageId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_WIP_WO]"
+                      name="PK_WIP_WO" />
                     <outputColumn
                       refId="Package\DF - RFQLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -10479,6 +10547,14 @@ order by d.PK_DEVIS, di.PK_DV_ITEMS asc
                       cachedPrecision="10"
                       externalMetadataColumnId="Package\DF - RFQLine\RFQLINE.Inputs[OLE DB Destination Input].ExternalColumns[STE_MIGRATIONTS]"
                       lineageId="Package\DF - RFQLine\Union All 2.Outputs[Union All Output 1].Columns[TIMESTAMP]" />
+                    <inputColumn
+                      refId="Package\DF - RFQLine\RFQLINE.Inputs[OLE DB Destination Input].Columns[v_prefixwonum]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="v_prefixwonum"
+                      externalMetadataColumnId="Package\DF - RFQLine\RFQLINE.Inputs[OLE DB Destination Input].ExternalColumns[REFWO]"
+                      lineageId="Package\DF - RFQLine\Union All 2.Outputs[Union All Output 1].Columns[v_prefixwonum]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -10508,7 +10584,7 @@ order by d.PK_DEVIS, di.PK_DV_ITEMS asc
                       refId="Package\DF - RFQLine\RFQLINE.Inputs[OLE DB Destination Input].ExternalColumns[DESCRIPTION]"
                       codePage="1252"
                       dataType="str"
-                      length="104"
+                      length="200"
                       name="DESCRIPTION" />
                     <externalMetadataColumn
                       refId="Package\DF - RFQLine\RFQLINE.Inputs[OLE DB Destination Input].ExternalColumns[ORDERQTY]"
@@ -13723,6 +13799,21 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="OutputColumnLineageID">#{Package\DF - RFQLine\Union All.Outputs[Union All Output 1].Columns[TIMESTAMP]}</property>
                       </properties>
                     </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - RFQLine\Union All.Inputs[Union All Input 1].Columns[v_prefixwonum]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="v_prefixwonum"
+                      lineageId="Package\DF - RFQLine\Union All 3.Outputs[Union All Output 1].Columns[v_prefixwonum]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - RFQLine\Union All.Outputs[Union All Output 1].Columns[v_prefixwonum]}</property>
+                      </properties>
+                    </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -14054,6 +14145,21 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           dataType="System.Int32"
                           description="Output column lineage ID"
                           name="OutputColumnLineageID">#{Package\DF - RFQLine\Union All.Outputs[Union All Output 1].Columns[TIMESTAMP]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - RFQLine\Union All.Inputs[Union All Input 2].Columns[v_prefixwonum]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="v_prefixwonum"
+                      lineageId="Package\DF - RFQLine\Union All 3.Outputs[Union All Output 1].Columns[v_prefixwonum]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - RFQLine\Union All.Outputs[Union All Output 1].Columns[v_prefixwonum]}</property>
                       </properties>
                     </inputColumn>
                   </inputColumns>
@@ -14389,6 +14495,21 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="OutputColumnLineageID">#{Package\DF - RFQLine\Union All.Outputs[Union All Output 1].Columns[TIMESTAMP]}</property>
                       </properties>
                     </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - RFQLine\Union All.Inputs[Union All Input 4].Columns[v_prefixwonum]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="v_prefixwonum"
+                      lineageId="Package\DF - RFQLine\Union All 3.Outputs[Union All Output 1].Columns[v_prefixwonum]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - RFQLine\Union All.Outputs[Union All Output 1].Columns[v_prefixwonum]}</property>
+                      </properties>
+                    </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -14546,6 +14667,13 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       lineageId="Package\DF - RFQLine\Union All.Outputs[Union All Output 1].Columns[TIMESTAMP]"
                       name="TIMESTAMP"
                       precision="10" />
+                    <outputColumn
+                      refId="Package\DF - RFQLine\Union All.Outputs[Union All Output 1].Columns[v_prefixwonum]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      lineageId="Package\DF - RFQLine\Union All.Outputs[Union All Output 1].Columns[v_prefixwonum]"
+                      name="v_prefixwonum" />
                   </outputColumns>
                   <externalMetadataColumns />
                 </output>
@@ -14916,6 +15044,21 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="OutputColumnLineageID">#{Package\DF - RFQLine\Union All 1.Outputs[Union All Output 1].Columns[TIMESTAMP]}</property>
                       </properties>
                     </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - RFQLine\Union All 1.Inputs[Union All Input 1].Columns[v_prefixwonum]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="v_prefixwonum"
+                      lineageId="Package\DF - RFQLine\Union All.Outputs[Union All Output 1].Columns[v_prefixwonum]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - RFQLine\Union All 1.Outputs[Union All Output 1].Columns[v_prefixwonum]}</property>
+                      </properties>
+                    </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -15277,6 +15420,21 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="OutputColumnLineageID">#{Package\DF - RFQLine\Union All 1.Outputs[Union All Output 1].Columns[TIMESTAMP]}</property>
                       </properties>
                     </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - RFQLine\Union All 1.Inputs[Union All Input 2].Columns[v_prefixwonum]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="v_prefixwonum"
+                      lineageId="Package\DF - RFQLine\Union All.Outputs[Union All Output 1].Columns[v_prefixwonum]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - RFQLine\Union All 1.Outputs[Union All Output 1].Columns[v_prefixwonum]}</property>
+                      </properties>
+                    </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -15610,6 +15768,21 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="OutputColumnLineageID">#{Package\DF - RFQLine\Union All 1.Outputs[Union All Output 1].Columns[TIMESTAMP]}</property>
                       </properties>
                     </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - RFQLine\Union All 1.Inputs[Union All Input 4].Columns[v_prefixwonum]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="v_prefixwonum"
+                      lineageId="Package\DF - RFQLine\Union All.Outputs[Union All Output 1].Columns[v_prefixwonum]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - RFQLine\Union All 1.Outputs[Union All Output 1].Columns[v_prefixwonum]}</property>
+                      </properties>
+                    </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -15779,6 +15952,13 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       lineageId="Package\DF - RFQLine\Union All 1.Outputs[Union All Output 1].Columns[TIMESTAMP]"
                       name="TIMESTAMP"
                       precision="10" />
+                    <outputColumn
+                      refId="Package\DF - RFQLine\Union All 1.Outputs[Union All Output 1].Columns[v_prefixwonum]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      lineageId="Package\DF - RFQLine\Union All 1.Outputs[Union All Output 1].Columns[v_prefixwonum]"
+                      name="v_prefixwonum" />
                   </outputColumns>
                   <externalMetadataColumns />
                 </output>
@@ -16468,6 +16648,21 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="OutputColumnLineageID">#{Package\DF - RFQLine\Union All 2.Outputs[Union All Output 1].Columns[TIMESTAMP]}</property>
                       </properties>
                     </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - RFQLine\Union All 2.Inputs[Union All Input 1].Columns[v_prefixwonum]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="v_prefixwonum"
+                      lineageId="Package\DF - RFQLine\Union All 1.Outputs[Union All Output 1].Columns[v_prefixwonum]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - RFQLine\Union All 2.Outputs[Union All Output 1].Columns[v_prefixwonum]}</property>
+                      </properties>
+                    </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -17146,6 +17341,21 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           dataType="System.Int32"
                           description="Output column lineage ID"
                           name="OutputColumnLineageID">#{Package\DF - RFQLine\Union All 2.Outputs[Union All Output 1].Columns[TIMESTAMP]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - RFQLine\Union All 2.Inputs[Union All Input 2].Columns[v_prefixwonum]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="v_prefixwonum"
+                      lineageId="Package\DF - RFQLine\Union All 1.Outputs[Union All Output 1].Columns[v_prefixwonum]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - RFQLine\Union All 2.Outputs[Union All Output 1].Columns[v_prefixwonum]}</property>
                       </properties>
                     </inputColumn>
                   </inputColumns>
@@ -17828,6 +18038,21 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="OutputColumnLineageID">#{Package\DF - RFQLine\Union All 2.Outputs[Union All Output 1].Columns[TIMESTAMP]}</property>
                       </properties>
                     </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - RFQLine\Union All 2.Inputs[Union All Input 3].Columns[v_prefixwonum]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="v_prefixwonum"
+                      lineageId="Package\DF - RFQLine\Union All 1.Outputs[Union All Output 1].Columns[v_prefixwonum]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - RFQLine\Union All 2.Outputs[Union All Output 1].Columns[v_prefixwonum]}</property>
+                      </properties>
+                    </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -18132,6 +18357,13 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       lineageId="Package\DF - RFQLine\Union All 2.Outputs[Union All Output 1].Columns[TIMESTAMP]"
                       name="TIMESTAMP"
                       precision="10" />
+                    <outputColumn
+                      refId="Package\DF - RFQLine\Union All 2.Outputs[Union All Output 1].Columns[v_prefixwonum]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      lineageId="Package\DF - RFQLine\Union All 2.Outputs[Union All Output 1].Columns[v_prefixwonum]"
+                      name="v_prefixwonum" />
                   </outputColumns>
                   <externalMetadataColumns />
                 </output>
@@ -18431,6 +18663,21 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="OutputColumnLineageID">#{Package\DF - RFQLine\Union All 3.Outputs[Union All Output 1].Columns[TIMESTAMP]}</property>
                       </properties>
                     </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - RFQLine\Union All 3.Inputs[Union All Input 1].Columns[v_prefixwonum]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="v_prefixwonum"
+                      lineageId="Package\DF - RFQLine\Derived Column 1.Outputs[Derived Column Output].Columns[v_prefixwonum]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - RFQLine\Union All 3.Outputs[Union All Output 1].Columns[v_prefixwonum]}</property>
+                      </properties>
+                    </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -18721,6 +18968,21 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                           name="OutputColumnLineageID">#{Package\DF - RFQLine\Union All 3.Outputs[Union All Output 1].Columns[TIMESTAMP]}</property>
                       </properties>
                     </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - RFQLine\Union All 3.Inputs[Union All Input 2].Columns[v_prefixwonum]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="v_prefixwonum"
+                      lineageId="Package\DF - RFQLine\Derived Column 1.Outputs[Derived Column Output].Columns[v_prefixwonum]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - RFQLine\Union All 3.Outputs[Union All Output 1].Columns[v_prefixwonum]}</property>
+                      </properties>
+                    </inputColumn>
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -18859,6 +19121,13 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                       lineageId="Package\DF - RFQLine\Union All 3.Outputs[Union All Output 1].Columns[TIMESTAMP]"
                       name="TIMESTAMP"
                       precision="10" />
+                    <outputColumn
+                      refId="Package\DF - RFQLine\Union All 3.Outputs[Union All Output 1].Columns[v_prefixwonum]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      lineageId="Package\DF - RFQLine\Union All 3.Outputs[Union All Output 1].Columns[v_prefixwonum]"
+                      name="v_prefixwonum" />
                   </outputColumns>
                   <externalMetadataColumns />
                 </output>
@@ -18903,59 +19172,59 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               startId="Package\DF - RFQLine\Conditional Split 2.Outputs[Conditional Split Default Output]" />
             <path
               refId="Package\DF - RFQLine.Paths[Derived Column Output10]"
-              endId="Package\DF - RFQLine\Conditional Split 2.Inputs[Conditional Split Input]"
+              endId="Package\DF - RFQLine\Union All 1.Inputs[Union All Input 2]"
               name="Derived Column Output"
-              startId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output]" />
+              startId="Package\DF - RFQLine\Derived Column 3.Outputs[Derived Column Output]" />
             <path
               refId="Package\DF - RFQLine.Paths[Derived Column Output9]"
-              endId="Package\DF - RFQLine\Lookup - Invalid CC Replacement.Inputs[Lookup Input]"
-              name="Derived Column Output"
-              startId="Package\DF - RFQLine\Derived Column 1.Outputs[Derived Column Output]" />
-            <path
-              refId="Package\DF - RFQLine.Paths[Derived Column Output8]"
-              endId="Package\DF - RFQLine\CHARTOFACCOUNTS.Inputs[OLE DB Destination Input]"
-              name="Derived Column Output"
-              startId="Package\DF - RFQLine\Derived Column 3 1.Outputs[Derived Column Output]" />
-            <path
-              refId="Package\DF - RFQLine.Paths[Derived Column Output7]"
-              endId="Package\DF - RFQLine\Union All 3.Inputs[Union All Input 2]"
-              name="Derived Column Output"
-              startId="Package\DF - RFQLine\Replace Invalid CostCenter.Outputs[Derived Column Output]" />
-            <path
-              refId="Package\DF - RFQLine.Paths[Derived Column Output6]"
-              endId="Package\DF - RFQLine\OLE DB Destination 1.Inputs[OLE DB Destination Input]"
-              name="Derived Column Output"
-              startId="Package\DF - RFQLine\Derived Column 4 1.Outputs[Derived Column Output]" />
-            <path
-              refId="Package\DF - RFQLine.Paths[Derived Column Output4]"
-              endId="Package\DF - RFQLine\Union All.Inputs[Union All Input 2]"
-              name="Derived Column Output"
-              startId="Package\DF - RFQLine\Derived Column 2.Outputs[Derived Column Output]" />
-            <path
-              refId="Package\DF - RFQLine.Paths[Derived Column Output3]"
-              endId="Package\DF - RFQLine\OLE DB Destination 1 1 1.Inputs[OLE DB Destination Input]"
-              name="Derived Column Output"
-              startId="Package\DF - RFQLine\Derived Column 4.Outputs[Derived Column Output]" />
-            <path
-              refId="Package\DF - RFQLine.Paths[Derived Column Output2]"
-              endId="Package\DF - RFQLine\Union All.Inputs[Union All Input 4]"
-              name="Derived Column Output"
-              startId="Package\DF - RFQLine\Derived Column 2 1.Outputs[Derived Column Output]" />
-            <path
-              refId="Package\DF - RFQLine.Paths[Derived Column Output1]"
-              endId="Package\DF - RFQLine\OLE DB Destination 1 1.Inputs[OLE DB Destination Input]"
-              name="Derived Column Output"
-              startId="Package\DF - RFQLine\Derived Column 4 1 1.Outputs[Derived Column Output]" />
-            <path
-              refId="Package\DF - RFQLine.Paths[Derived Column Output]"
               endId="Package\DF - RFQLine\OLE DB Destination 2.Inputs[OLE DB Destination Input]"
               name="Derived Column Output"
               startId="Package\DF - RFQLine\Derived Column 4 2.Outputs[Derived Column Output]" />
             <path
-              refId="Package\DF - RFQLine.Paths[Derived Column Output5]"
-              endId="Package\DF - RFQLine\Union All 1.Inputs[Union All Input 2]"
+              refId="Package\DF - RFQLine.Paths[Derived Column Output8]"
+              endId="Package\DF - RFQLine\OLE DB Destination 1 1.Inputs[OLE DB Destination Input]"
               name="Derived Column Output"
-              startId="Package\DF - RFQLine\Derived Column 3.Outputs[Derived Column Output]" />
+              startId="Package\DF - RFQLine\Derived Column 4 1 1.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - RFQLine.Paths[Derived Column Output7]"
+              endId="Package\DF - RFQLine\Union All.Inputs[Union All Input 4]"
+              name="Derived Column Output"
+              startId="Package\DF - RFQLine\Derived Column 2 1.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - RFQLine.Paths[Derived Column Output6]"
+              endId="Package\DF - RFQLine\OLE DB Destination 1 1 1.Inputs[OLE DB Destination Input]"
+              name="Derived Column Output"
+              startId="Package\DF - RFQLine\Derived Column 4.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - RFQLine.Paths[Derived Column Output4]"
+              endId="Package\DF - RFQLine\OLE DB Destination 1.Inputs[OLE DB Destination Input]"
+              name="Derived Column Output"
+              startId="Package\DF - RFQLine\Derived Column 4 1.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - RFQLine.Paths[Derived Column Output3]"
+              endId="Package\DF - RFQLine\Union All 3.Inputs[Union All Input 2]"
+              name="Derived Column Output"
+              startId="Package\DF - RFQLine\Replace Invalid CostCenter.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - RFQLine.Paths[Derived Column Output2]"
+              endId="Package\DF - RFQLine\CHARTOFACCOUNTS.Inputs[OLE DB Destination Input]"
+              name="Derived Column Output"
+              startId="Package\DF - RFQLine\Derived Column 3 1.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - RFQLine.Paths[Derived Column Output1]"
+              endId="Package\DF - RFQLine\Lookup - Invalid CC Replacement.Inputs[Lookup Input]"
+              name="Derived Column Output"
+              startId="Package\DF - RFQLine\Derived Column 1.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - RFQLine.Paths[Derived Column Output]"
+              endId="Package\DF - RFQLine\Conditional Split 2.Inputs[Conditional Split Input]"
+              name="Derived Column Output"
+              startId="Package\DF - RFQLine\Derived Column.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - RFQLine.Paths[Derived Column Output5]"
+              endId="Package\DF - RFQLine\Union All.Inputs[Union All Input 2]"
+              name="Derived Column Output"
+              startId="Package\DF - RFQLine\Derived Column 2.Outputs[Derived Column Output]" />
             <path
               refId="Package\DF - RFQLine.Paths[HAS COSTCENTER]"
               endId="Package\DF - RFQLine\Lookup - CC.Inputs[Lookup Input]"
@@ -18973,29 +19242,29 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               startId="Package\DF - RFQLine\Conditional Split 1.Outputs[HAS SAPGL]" />
             <path
               refId="Package\DF - RFQLine.Paths[Lookup Match Output3]"
-              endId="Package\DF - RFQLine\Union All.Inputs[Union All Input 1]"
-              name="Lookup Match Output"
-              startId="Package\DF - RFQLine\Lookup - CC.Outputs[Lookup Match Output]" />
-            <path
-              refId="Package\DF - RFQLine.Paths[Lookup Match Output2]"
-              endId="Package\DF - RFQLine\Union All 1.Inputs[Union All Input 1]"
-              name="Lookup Match Output"
-              startId="Package\DF - RFQLine\Lookup - SAPGL.Outputs[Lookup Match Output]" />
-            <path
-              refId="Package\DF - RFQLine.Paths[Lookup Match Output4]"
-              endId="Package\DF - RFQLine\Multicast 1.Inputs[Multicast Input 1]"
-              name="Lookup Match Output"
-              startId="Package\DF - RFQLine\Lookup - ITEM.Outputs[Lookup Match Output]" />
-            <path
-              refId="Package\DF - RFQLine.Paths[Lookup Match Output]"
               endId="Package\DF - RFQLine\Replace Invalid CostCenter.Inputs[Derived Column Input]"
               name="Lookup Match Output"
               startId="Package\DF - RFQLine\Lookup - Invalid CC Replacement.Outputs[Lookup Match Output]" />
             <path
-              refId="Package\DF - RFQLine.Paths[Lookup Match Output1]"
+              refId="Package\DF - RFQLine.Paths[Lookup Match Output2]"
+              endId="Package\DF - RFQLine\Multicast 1.Inputs[Multicast Input 1]"
+              name="Lookup Match Output"
+              startId="Package\DF - RFQLine\Lookup - ITEM.Outputs[Lookup Match Output]" />
+            <path
+              refId="Package\DF - RFQLine.Paths[Lookup Match Output4]"
               endId="Package\DF - RFQLine\Union All 2.Inputs[Union All Input 1]"
               name="Lookup Match Output"
               startId="Package\DF - RFQLine\Lookup - COA.Outputs[Lookup Match Output]" />
+            <path
+              refId="Package\DF - RFQLine.Paths[Lookup Match Output]"
+              endId="Package\DF - RFQLine\Union All.Inputs[Union All Input 1]"
+              name="Lookup Match Output"
+              startId="Package\DF - RFQLine\Lookup - CC.Outputs[Lookup Match Output]" />
+            <path
+              refId="Package\DF - RFQLine.Paths[Lookup Match Output1]"
+              endId="Package\DF - RFQLine\Union All 1.Inputs[Union All Input 1]"
+              name="Lookup Match Output"
+              startId="Package\DF - RFQLine\Lookup - SAPGL.Outputs[Lookup Match Output]" />
             <path
               refId="Package\DF - RFQLine.Paths[Lookup No Match Output]"
               endId="Package\DF - RFQLine\Multicast 1 1.Inputs[Multicast Input 1]"
@@ -19048,24 +19317,24 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               startId="Package\DF - RFQLine\Multicast 1.Outputs[Multicast Output 1]" />
             <path
               refId="Package\DF - RFQLine.Paths[Multicast Output 23]"
-              endId="Package\DF - RFQLine\Derived Column 3.Inputs[Derived Column Input]"
+              endId="Package\DF - RFQLine\Aggregate.Inputs[Aggregate Input 1]"
               name="Multicast Output 2"
-              startId="Package\DF - RFQLine\Multicast 1 1.Outputs[Multicast Output 2]" />
+              startId="Package\DF - RFQLine\Multicast 1.Outputs[Multicast Output 2]" />
             <path
               refId="Package\DF - RFQLine.Paths[Multicast Output 22]"
-              endId="Package\DF - RFQLine\Aggregate 1.Inputs[Aggregate Input 1]"
-              name="Multicast Output 2"
-              startId="Package\DF - RFQLine\Multicast.Outputs[Multicast Output 2]" />
-            <path
-              refId="Package\DF - RFQLine.Paths[Multicast Output 21]"
               endId="Package\DF - RFQLine\Aggregate 1 1 1.Inputs[Aggregate Input 1]"
               name="Multicast Output 2"
               startId="Package\DF - RFQLine\Multicast 3.Outputs[Multicast Output 2]" />
             <path
-              refId="Package\DF - RFQLine.Paths[Multicast Output 2]"
-              endId="Package\DF - RFQLine\Aggregate.Inputs[Aggregate Input 1]"
+              refId="Package\DF - RFQLine.Paths[Multicast Output 21]"
+              endId="Package\DF - RFQLine\Aggregate 1.Inputs[Aggregate Input 1]"
               name="Multicast Output 2"
-              startId="Package\DF - RFQLine\Multicast 1.Outputs[Multicast Output 2]" />
+              startId="Package\DF - RFQLine\Multicast.Outputs[Multicast Output 2]" />
+            <path
+              refId="Package\DF - RFQLine.Paths[Multicast Output 2]"
+              endId="Package\DF - RFQLine\Derived Column 3.Inputs[Derived Column Input]"
+              name="Multicast Output 2"
+              startId="Package\DF - RFQLine\Multicast 1 1.Outputs[Multicast Output 2]" />
             <path
               refId="Package\DF - RFQLine.Paths[Multicast Output 3]"
               endId="Package\DF - RFQLine\Sort.Inputs[Sort Input]"
@@ -19108,19 +19377,19 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               startId="Package\DF - RFQLine\Remove Duplicates 1.Outputs[Sort Output]" />
             <path
               refId="Package\DF - RFQLine.Paths[Union All Output 12]"
+              endId="Package\DF - RFQLine\Lookup - ITEM.Inputs[Lookup Input]"
+              name="Union All Output 1"
+              startId="Package\DF - RFQLine\Union All 2.Outputs[Union All Output 1]" />
+            <path
+              refId="Package\DF - RFQLine.Paths[Union All Output 1]"
               endId="Package\DF - RFQLine\Conditional Split.Inputs[Conditional Split Input]"
               name="Union All Output 1"
               startId="Package\DF - RFQLine\Union All 3.Outputs[Union All Output 1]" />
             <path
-              refId="Package\DF - RFQLine.Paths[Union All Output 1]"
+              refId="Package\DF - RFQLine.Paths[Union All Output 11]"
               endId="Package\DF - RFQLine\Conditional Split 1.Inputs[Conditional Split Input]"
               name="Union All Output 1"
               startId="Package\DF - RFQLine\Union All.Outputs[Union All Output 1]" />
-            <path
-              refId="Package\DF - RFQLine.Paths[Union All Output 11]"
-              endId="Package\DF - RFQLine\Lookup - ITEM.Inputs[Lookup Input]"
-              name="Union All Output 1"
-              startId="Package\DF - RFQLine\Union All 2.Outputs[Union All Output 1]" />
             <path
               refId="Package\DF - RFQLine.Paths[Union All Output 13]"
               endId="Package\DF - RFQLine\Derived Column.Inputs[Derived Column Input]"
@@ -20821,31 +21090,31 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Lookup Match Output2]"
-          TopLeft="401.73692008488,787.128566609706">
+          Id="Package\DF - RFQLine.Paths[Lookup Match Output4]"
+          TopLeft="455.995232139149,1157.7428565962">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,139.071430663381"
+              EndConnector="0,71.8571368115292"
               Start="0,0"
-              End="0,131.571430663381">
+              End="0,64.3571368115292">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,131.571430663381" />
+                    End="0,64.3571368115292" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="-48.19138671875,59.9810278316905,96.3827734375,11.609375"
+              BoundingBox="-48.19138671875,26.3738809057646,96.3827734375,11.609375"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Lookup Match Output]"
+          Id="Package\DF - RFQLine.Paths[Lookup Match Output3]"
           TopLeft="285.099988595645,254.05237796353">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -20881,31 +21150,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Lookup Match Output1]"
-          TopLeft="455.995232139149,1157.7428565962">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,71.8571368115292"
-              Start="0,0"
-              End="0,64.3571368115292">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,64.3571368115292" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-48.19138671875,26.3738809057646,96.3827734375,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Lookup Match Output4]"
+          Id="Package\DF - RFQLine.Paths[Lookup Match Output2]"
           TopLeft="437.557114359028,1384.80475119744">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -20941,7 +21186,31 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Lookup Match Output3]"
+          Id="Package\DF - RFQLine.Paths[Lookup Match Output1]"
+          TopLeft="401.73692008488,787.128566609706">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,139.071430663381"
+              Start="0,0"
+              End="0,131.571430663381">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,131.571430663381" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-48.19138671875,59.9810278316905,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - RFQLine.Paths[Lookup Match Output]"
           TopLeft="406.103579450806,509.884123754631">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -21037,175 +21306,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Derived Column Output]"
-          TopLeft="1084.73093738678,502.138096290874">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,53.3999985843897"
-              Start="0,0"
-              End="0,45.8999985843897">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,45.8999985843897" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Derived Column Output1]"
-          TopLeft="1127.09161999768,1394.43332977947">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,42.1499987520281"
-              Start="0,0"
-              End="0,34.6499987520281">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,34.6499987520281" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Derived Column Output2]"
-          TopLeft="188.099987805883,597.052375300194">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="188.899993344149,42.5476230002793"
-              Start="0,0"
-              End="188.899993344149,35.0476230002793">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,23.7484497827908" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,23.7484497827908"
-                    Point2="0,27.7484497827908"
-                    Point3="4,27.7484497827908" />
-                  <mssgle:LineSegment
-                    End="184.899993344149,27.7484497827908" />
-                  <mssgle:CubicBezierSegment
-                    Point1="184.899993344149,27.7484497827908"
-                    Point2="188.899993344149,27.7484497827908"
-                    Point3="188.899993344149,31.7484497827908" />
-                  <mssgle:LineSegment
-                    End="188.899993344149,35.0476230002793" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Derived Column Output3]"
-          TopLeft="852.633310769665,1562.85236920562">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,50.2666660278296"
-              Start="0,0"
-              End="0,42.7666660278296">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,42.7666660278296" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Derived Column Output4]"
-          TopLeft="625.64760542642,594.833329200215">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-201.980957609721,44.7666691002579"
-              Start="0,0"
-              End="-201.980957609721,37.2666691002579">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,22.5065803883106" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,22.5065803883106"
-                    Point2="0,26.5065803883106"
-                    Point3="-4,26.5065803883106" />
-                  <mssgle:LineSegment
-                    End="-197.980957609721,26.5065803883106" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-197.980957609721,26.5065803883106"
-                    Point2="-201.980957609721,26.5065803883106"
-                    Point3="-201.980957609721,30.5065803883106" />
-                  <mssgle:LineSegment
-                    End="-201.980957609721,37.2666691002579" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
           Id="Package\DF - RFQLine.Paths[Derived Column Output10]"
-          TopLeft="199.700007880229,1058.59046731757">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="19.9523708434817,60.0523896884117"
-              Start="0,0"
-              End="19.9523708434817,52.5523896884117">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,26.026194844206" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,26.026194844206"
-                    Point2="0,30.026194844206"
-                    Point3="4,30.026194844206" />
-                  <mssgle:LineSegment
-                    End="15.9523708434817,30.026194844206" />
-                  <mssgle:CubicBezierSegment
-                    Point1="15.9523708434817,30.026194844206"
-                    Point2="19.9523708434817,30.026194844206"
-                    Point3="19.9523708434817,34.026194844206" />
-                  <mssgle:LineSegment
-                    End="19.9523708434817,52.5523896884117" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Derived Column Output5]"
           TopLeft="619.1452299077,868.766666442203">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -21239,7 +21340,141 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
+          Id="Package\DF - RFQLine.Paths[Derived Column Output9]"
+          TopLeft="1084.73093738678,502.138096290874">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,53.3999985843897"
+              Start="0,0"
+              End="0,45.8999985843897">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,45.8999985843897" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - RFQLine.Paths[Derived Column Output8]"
+          TopLeft="1127.09161999768,1394.43332977947">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,42.1499987520281"
+              Start="0,0"
+              End="0,34.6499987520281">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,34.6499987520281" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - RFQLine.Paths[Derived Column Output7]"
+          TopLeft="188.099987805883,597.052375300194">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="188.899993344149,42.5476230002793"
+              Start="0,0"
+              End="188.899993344149,35.0476230002793">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,23.7484497827908" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,23.7484497827908"
+                    Point2="0,27.7484497827908"
+                    Point3="4,27.7484497827908" />
+                  <mssgle:LineSegment
+                    End="184.899993344149,27.7484497827908" />
+                  <mssgle:CubicBezierSegment
+                    Point1="184.899993344149,27.7484497827908"
+                    Point2="188.899993344149,27.7484497827908"
+                    Point3="188.899993344149,31.7484497827908" />
+                  <mssgle:LineSegment
+                    End="188.899993344149,35.0476230002793" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
           Id="Package\DF - RFQLine.Paths[Derived Column Output6]"
+          TopLeft="852.633310769665,1562.85236920562">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,50.2666660278296"
+              Start="0,0"
+              End="0,42.7666660278296">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,42.7666660278296" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - RFQLine.Paths[Derived Column Output5]"
+          TopLeft="625.64760542642,594.833329200215">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-201.980957609721,44.7666691002579"
+              Start="0,0"
+              End="-201.980957609721,37.2666691002579">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,22.5065803883106" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,22.5065803883106"
+                    Point2="0,26.5065803883106"
+                    Point3="-4,26.5065803883106" />
+                  <mssgle:LineSegment
+                    End="-197.980957609721,26.5065803883106" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-197.980957609721,26.5065803883106"
+                    Point2="-201.980957609721,26.5065803883106"
+                    Point3="-201.980957609721,30.5065803883106" />
+                  <mssgle:LineSegment
+                    End="-201.980957609721,37.2666691002579" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - RFQLine.Paths[Derived Column Output4]"
           TopLeft="1053.99165329432,784.695236307217">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -21261,7 +21496,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Derived Column Output7]"
+          Id="Package\DF - RFQLine.Paths[Derived Column Output3]"
           TopLeft="481.816637345736,283.70237794093">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -21295,7 +21530,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Derived Column Output8]"
+          Id="Package\DF - RFQLine.Paths[Derived Column Output2]"
           TopLeft="1081.36665402138,1170.88570342532">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -21329,7 +21564,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Derived Column Output9]"
+          Id="Package\DF - RFQLine.Paths[Derived Column Output1]"
           TopLeft="166.549987707784,137.957142410846">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -21342,6 +21577,40 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                   Capacity="5">
                   <mssgle:LineSegment
                     End="0,87.795235552684" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - RFQLine.Paths[Derived Column Output]"
+          TopLeft="199.700007880229,1058.59046731757">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="19.9523708434817,60.0523896884117"
+              Start="0,0"
+              End="19.9523708434817,52.5523896884117">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,26.026194844206" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,26.026194844206"
+                    Point2="0,30.026194844206"
+                    Point3="4,30.026194844206" />
+                  <mssgle:LineSegment
+                    End="15.9523708434817,30.026194844206" />
+                  <mssgle:CubicBezierSegment
+                    Point1="15.9523708434817,30.026194844206"
+                    Point2="19.9523708434817,30.026194844206"
+                    Point3="19.9523708434817,34.026194844206" />
+                  <mssgle:LineSegment
+                    End="19.9523708434817,52.5523896884117" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -21581,7 +21850,41 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Union All Output 1]"
+          Id="Package\DF - RFQLine.Paths[Union All Output 12]"
+          TopLeft="452.966660687162,1271.19999340773">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-15.4095463281338,72.0047577897158"
+              Start="0,0"
+              End="-15.4095463281338,64.5047577897158">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,32.0023788948579" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,32.0023788948579"
+                    Point2="0,36.0023788948579"
+                    Point3="-4,36.0023788948579" />
+                  <mssgle:LineSegment
+                    End="-11.4095463281338,36.0023788948579" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-11.4095463281338,36.0023788948579"
+                    Point2="-15.4095463281338,36.0023788948579"
+                    Point3="-15.4095463281338,40.0023788948579" />
+                  <mssgle:LineSegment
+                    End="-15.4095463281338,64.5047577897158" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - RFQLine.Paths[Union All Output 11]"
           TopLeft="404.999981150032,681.199998300473">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -21615,7 +21918,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Union All Output 12]"
+          Id="Package\DF - RFQLine.Paths[Union All Output 1]"
           TopLeft="167.032536260555,383.06666429215">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -21628,40 +21931,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
                   Capacity="5">
                   <mssgle:LineSegment
                     End="0,74.6857176427611" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Union All Output 11]"
-          TopLeft="452.966660687162,1271.19999340773">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-15.4095463281338,72.0047577897158"
-              Start="0,0"
-              End="-15.4095463281338,64.5047577897158">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,32.0023788948579" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,32.0023788948579"
-                    Point2="0,36.0023788948579"
-                    Point3="-4,36.0023788948579" />
-                  <mssgle:LineSegment
-                    End="-11.4095463281338,36.0023788948579" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-11.4095463281338,36.0023788948579"
-                    Point2="-15.4095463281338,36.0023788948579"
-                    Point3="-15.4095463281338,40.0023788948579" />
-                  <mssgle:LineSegment
-                    End="-15.4095463281338,64.5047577897158" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -21907,7 +22176,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Multicast Output 2]"
+          Id="Package\DF - RFQLine.Paths[Multicast Output 23]"
           TopLeft="510.499994300306,1542.45951145549">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -21929,7 +22198,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Multicast Output 21]"
+          Id="Package\DF - RFQLine.Paths[Multicast Output 22]"
           TopLeft="724.190434079323,1369.9190383046">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -21951,7 +22220,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Multicast Output 22]"
+          Id="Package\DF - RFQLine.Paths[Multicast Output 21]"
           TopLeft="674.795229650656,486.586903236138">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -21973,7 +22242,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - RFQLine.Paths[Multicast Output 23]"
+          Id="Package\DF - RFQLine.Paths[Multicast Output 2]"
           TopLeft="589.916658366305,782.995235763324">
           <EdgeLayout.Curve>
             <mssgle:Curve
