@@ -11,8 +11,8 @@
   DTS:LocaleID="14345"
   DTS:ObjectName="DB2_1047_Fix_PR_PO_Reference"
   DTS:PackageType="5"
-  DTS:VersionBuild="233"
-  DTS:VersionGUID="{547F04A8-9A5F-472E-B3E8-DAD8CC05F965}">
+  DTS:VersionBuild="237"
+  DTS:VersionGUID="{6A8FE393-3B2A-4D6D-9C5D-68FE24CE1290}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -267,15 +267,65 @@
           DTS:To="Package\PRE-PKG\GET LOGID" />
       </DTS:PrecedenceConstraints>
     </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Update PO"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{D8EFF6FC-6050-4ADA-AC8A-432D4E088A15}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Update PO"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="MERGE INTO MAXIMO.PO AS A&#xA;USING (&#xA;&#x9;SELECT p.POID, MAX(coalesce(l.VENDELIVERYDATE, l.REQDELIVERYDATE)) AS VENDELIVERYDATE&#xA;&#x9;FROM MAXIMO.PO p&#xA;&#x9;JOIN MAXIMO.POLINE l ON l.PONUM=p.PONUM &#xA;&#x9;WHERE p.STE_MIGRATIONID IS NOT NULL&#xA;&#x9;&#x9;AND coalesce(l.VENDELIVERYDATE, l.REQDELIVERYDATE) IS NOT NULL&#xA;&#x9;GROUP BY p.POID&#xA;) B ON B.POID=A.POID&#xA;WHEN MATCHED THEN&#xA;UPDATE SET&#xA;&#x9;VENDELIVERYDATE=B.VENDELIVERYDATE&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Update POLINE"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{FEA8E74F-2E57-4914-AE6E-82D46D2AADB1}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Update POLINE"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="UPDATE MAXIMO.POLINE&#xA;SET&#xA;&#x9;VENDELIVERYDATE=COALESCE(REQDELIVERYDATE,VENDELIVERYDATE),&#xA;&#x9;REQDELIVERYDATE = NULL&#xA;WHERE STE_MIGRATIONID IS NOT NULL;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
   </DTS:Executables>
   <DTS:PrecedenceConstraints>
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint]"
       DTS:CreationName=""
-      DTS:DTSID="{FE345DB8-053A-494A-96CF-1C51EC0616BF}"
+      DTS:DTSID="{B0EC779E-DE97-44E6-AC1F-8B3B58B54872}"
       DTS:From="Package\PRE-PKG"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint"
+      DTS:To="Package\Update POLINE" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{FDE9FB48-E8B5-487C-87B4-335B39F18344}"
+      DTS:From="Package\Update POLINE"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\Update PO" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{E4BE46FC-B3EB-45C2-9531-416367FBE4F6}"
+      DTS:From="Package\Update PO"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
       DTS:To="Package\POST-PKG" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
@@ -289,7 +339,7 @@
     design-time-name="Package">
     <LayoutInfo>
       <GraphLayout
-        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="137.6,41.6"
           Id="Package\POST-PKG\FINISH LOG"
@@ -300,7 +350,7 @@
           PanelSize="270.4,130.4"
           Size="156,44.8"
           Id="Package\POST-PKG"
-          TopLeft="78.4722212129454,279.692067060151" />
+          TopLeft="81.8055543641534,303.95873355807" />
         <NodeLayout
           Size="135.2,41.6"
           Id="Package\PRE-PKG\GET LOGID"
@@ -340,20 +390,31 @@
           Size="149.6,43.2"
           Id="Package\PRE-PKG"
           TopLeft="79.3055545007473,80.2444451214429" />
+        <AnnotationLayout
+          Text="Notes:&#xA;PO.REQUIREDDATE (RequiredDate) =&gt; NULL&#xD;&#xA;PO.VENDELIVERYDATE (Expected Delivery Date) =&gt; POLINE required date (dr_txt2)&#xA;&#xA;POLINE.REQDELIVERYDATE (RequiredDate) =&gt; NULL&#xA;POLINE.VENDELIVERYDATE (Expected Delivery Date)  =&gt; POLINE required date (dr_txt2)"
+          ParentId="Package"
+          FontInfo="{assembly:Null}"
+          Size="491.2,120"
+          Id="8a202e6b-eb62-422a-b5d5-4225e2ad88ad"
+          TopLeft="279.166651413673,97.3333332127995" />
+        <NodeLayout
+          Size="152.8,41.6"
+          Id="Package\Update POLINE"
+          TopLeft="77.4999957655869,159.666665973597" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="155.288887856846,123.444445121443">
+          TopLeft="154.002775133167,123.444445121443">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,156.247621938708"
+              EndConnector="0,36.2222208521543"
               Start="0,0"
-              End="0,148.747621938708">
+              End="0,28.7222208521543">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,148.747621938708" />
+                    End="0,28.7222208521543" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -362,13 +423,54 @@
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <AnnotationLayout
-          Text="Notes:&#xA;PO.Expected Delivery Date =&gt; POLINE required date (dr_txt2)&#xD;&#xA;&#xD;&#xA;POLINE.RequiredDate =&gt; NULL&#xD;&#xA;POLINE.ExpectedDeliveryDate =&gt; POLINE required date (dr_txt2)"
-          ParentId="Package"
-          FontInfo="{assembly:Null}"
-          Size="370.4,104"
-          Id="8a202e6b-eb62-422a-b5d5-4225e2ad88ad"
-          TopLeft="276.666651550267,99.0666665340795" />
+        <NodeLayout
+          Size="129.6,41.6"
+          Id="Package\Update PO"
+          TopLeft="93.333328233825,231.333332236475" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="156.016661999706,201.266665973597">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,30.0666662628783"
+              Start="0,0"
+              End="0,22.5666662628783">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,22.5666662628783" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="158.969441298989,272.933332236475">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,31.0254013215948"
+              Start="0,0"
+              End="0,23.5254013215948">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,23.5254013215948" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </Package>

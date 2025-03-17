@@ -12,8 +12,8 @@
   DTS:LocaleID="1033"
   DTS:ObjectName="DB2_0305_PO_RFQVendor_QuotationLine_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="139"
-  DTS:VersionGUID="{03FFAA52-946D-45BF-91B2-A4BD8956A0C2}"
+  DTS:VersionBuild="142"
+  DTS:VersionGUID="{DACA7BF7-C489-451A-91F1-5954366FD475}"
   DTS:VersionMajor="6">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -872,6 +872,11 @@
                       cachedLength="100"
                       cachedName="ITEM_DS"
                       lineageId="Package\DF - QuotationLine\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_DS]" />
+                    <inputColumn
+                      refId="Package\DF - QuotationLine\Derived Column.Inputs[Derived Column Input].Columns[PK_DEVIS]"
+                      cachedDataType="i4"
+                      cachedName="PK_DEVIS"
+                      lineageId="Package\DF - QuotationLine\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DEVIS]" />
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -1382,6 +1387,30 @@
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
                           name="FriendlyExpression">(DT_STR,100,1252)LEFT(ITEM_DS,90)</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\DF - QuotationLine\Derived Column.Outputs[Derived Column Output].Columns[v_prefixrfqnum]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="8"
+                      lineageId="Package\DF - QuotationLine\Derived Column.Outputs[Derived Column Output].Columns[v_prefixrfqnum]"
+                      name="v_prefixrfqnum"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_STR,8,1252)([LEFT]("00000000",8 - [LEN]((DT_WSTR,8)#{Package\DF - QuotationLine\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DEVIS]})) + (DT_WSTR,8)#{Package\DF - QuotationLine\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DEVIS]})</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_STR,8,1252)(LEFT("00000000",8 - LEN((DT_WSTR,8)PK_DEVIS)) + (DT_WSTR,8)PK_DEVIS)</property>
                       </properties>
                     </outputColumn>
                   </outputColumns>
@@ -3425,7 +3454,7 @@ where "refTable"."STE_CSWNITEMNO" = ?</property>
 		WHEN di.DV_TO_ORDER = 89 THEN 1 ELSE di.DV_TO_ORDER END isawarded
 	, di.DV_IT_NUMBER1
 	, di.DV_IT_STRING1
-	, d.DEVIS_CD
+	, d.PK_DEVIS, d.DEVIS_CD
 	--, d.DV_PREQ_REF
 	--, d.DV_WOID
 	, it.ITEM_CD
@@ -3639,6 +3668,12 @@ order by di.PK_DV_ITEMS
                       lineageId="Package\DF - QuotationLine\Oracle Source.Outputs[Oracle Source Output].Columns[TIMESTAMP]"
                       name="TIMESTAMP"
                       precision="10" />
+                    <outputColumn
+                      refId="Package\DF - QuotationLine\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DEVIS]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - QuotationLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DEVIS]"
+                      lineageId="Package\DF - QuotationLine\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DEVIS]"
+                      name="PK_DEVIS" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -3743,6 +3778,10 @@ order by di.PK_DV_ITEMS
                       dataType="numeric"
                       name="TIMESTAMP"
                       precision="10" />
+                    <externalMetadataColumn
+                      refId="Package\DF - QuotationLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DEVIS]"
+                      dataType="i4"
+                      name="PK_DEVIS" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -3893,6 +3932,12 @@ order by di.PK_DV_ITEMS
                       lineageId="Package\DF - QuotationLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[TIMESTAMP]"
                       name="TIMESTAMP"
                       precision="10" />
+                    <outputColumn
+                      refId="Package\DF - QuotationLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_DEVIS]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\DF - QuotationLine\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DEVIS]"
+                      lineageId="Package\DF - QuotationLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_DEVIS]"
+                      name="PK_DEVIS" />
                     <outputColumn
                       refId="Package\DF - QuotationLine\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -4425,6 +4470,30 @@ order by di.PK_DV_ITEMS
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
                           name="FriendlyExpression">(DT_STR,8,1252)"SBST"</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\DF - RFQVendor\Derived Column.Outputs[Derived Column Output].Columns[v_prefixrfqnum]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="8"
+                      lineageId="Package\DF - RFQVendor\Derived Column.Outputs[Derived Column Output].Columns[v_prefixrfqnum]"
+                      name="v_prefixrfqnum"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_STR,8,1252)([LEFT]("00000000",8 - [LEN]((DT_WSTR,8)#{Package\DF - RFQVendor\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DEVIS]})) + (DT_WSTR,8)#{Package\DF - RFQVendor\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DEVIS]})</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_STR,8,1252)(LEFT("00000000",8 - LEN((DT_WSTR,8)PK_DEVIS)) + (DT_WSTR,8)PK_DEVIS)</property>
                       </properties>
                     </outputColumn>
                   </outputColumns>
@@ -6484,33 +6553,113 @@ ORDER BY d.PK_DEVIS</property>
       <GraphLayout
         Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
-          Size="119.2,41.6"
-          Id="Package\DF - QuotationLine\Multicast"
-          TopLeft="158.999997630715,312.999996508161" />
-        <NodeLayout
-          Size="148.8,41.6"
-          Id="Package\DF - QuotationLine\Oracle Source"
-          TopLeft="25.3333330146141,27.7666666063998" />
-        <NodeLayout
           Size="161.6,41.6"
           Id="Package\DF - QuotationLine\Derived Column 4"
           TopLeft="518.79998814116,312.69999777476" />
         <NodeLayout
-          Size="171.2,41.6"
-          Id="Package\DF - QuotationLine\OLE DB Destination"
-          TopLeft="132.499998107552,426.09999457101" />
-        <NodeLayout
-          Size="126.4,41.6"
-          Id="Package\DF - QuotationLine\Aggregate"
-          TopLeft="329.49999538064,312.76666414611" />
+          Size="158.4,41.6"
+          Id="Package\DF - QuotationLine\Derived Column"
+          TopLeft="141.50000161926,230.933334152566" />
         <NodeLayout
           Size="180,41.6"
           Id="Package\DF - QuotationLine\OLE DB Destination 1 1"
           TopLeft="501.666662912402,404.566663802588" />
         <NodeLayout
-          Size="158.4,41.6"
-          Id="Package\DF - QuotationLine\Derived Column"
-          TopLeft="141.50000161926,230.933334152566" />
+          Size="161.6,41.6"
+          Id="Package\DF - QuotationLine\Derived Column 4 1 2"
+          TopLeft="762.099963666004,135.248145451924" />
+        <NodeLayout
+          Size="146.4,41.6"
+          Id="Package\DF - QuotationLine\Lookup - ITEM"
+          TopLeft="149.466660702063,130.23333049582" />
+        <NodeLayout
+          Size="171.2,41.6"
+          Id="Package\DF - QuotationLine\OLE DB Destination"
+          TopLeft="132.499998107552,426.09999457101" />
+        <NodeLayout
+          Size="180,41.6"
+          Id="Package\DF - QuotationLine\OLE DB Destination 1 1 1 2"
+          TopLeft="744.133305149444,227.114811479761" />
+        <NodeLayout
+          Size="126.4,41.6"
+          Id="Package\DF - QuotationLine\Aggregate 1 1 1"
+          TopLeft="571.966637617682,135.314811823282" />
+        <NodeLayout
+          Size="119.2,41.6"
+          Id="Package\DF - QuotationLine\Multicast 2"
+          TopLeft="381.299980422358,133.933329890634" />
+        <NodeLayout
+          Size="148.8,41.6"
+          Id="Package\DF - QuotationLine\Oracle Source"
+          TopLeft="25.3333330146141,27.7666666063998" />
+        <NodeLayout
+          Size="170.4,41.6"
+          Id="Package\DF - QuotationLine\Flat File Destination 2"
+          TopLeft="361.966657244994,229.133327426182" />
+        <NodeLayout
+          Size="119.2,41.6"
+          Id="Package\DF - QuotationLine\Multicast"
+          TopLeft="158.999997630715,312.999996508161" />
+        <NodeLayout
+          Size="126.4,41.6"
+          Id="Package\DF - QuotationLine\Aggregate"
+          TopLeft="329.49999538064,312.76666414611" />
+        <EdgeLayout
+          Id="Package\DF - QuotationLine.Paths[Oracle Source Output]"
+          TopLeft="99.7333330146141,69.3666666063998">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="122.933327687449,60.8666638894206"
+              Start="0,0"
+              End="122.933327687449,53.3666638894206">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,26.4333319447103" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,26.4333319447103"
+                    Point2="0,30.4333319447103"
+                    Point3="4,30.4333319447103" />
+                  <mssgle:LineSegment
+                    End="118.933327687449,30.4333319447103" />
+                  <mssgle:CubicBezierSegment
+                    Point1="118.933327687449,30.4333319447103"
+                    Point2="122.933327687449,30.4333319447103"
+                    Point3="122.933327687449,34.4333319447103" />
+                  <mssgle:LineSegment
+                    End="122.933327687449,53.3666638894206" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - QuotationLine.Paths[Multicast Output 21]"
+          TopLeft="444.033318833677,175.533329890635">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,53.5999975355476"
+              Start="0,0"
+              End="0,46.0999975355476">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,46.0999975355476" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - QuotationLine.Paths[Multicast Output 2]"
           TopLeft="278.199997630715,333.683330327135">
@@ -6534,6 +6683,28 @@ ORDER BY d.PK_DEVIS</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
+          Id="Package\DF - QuotationLine.Paths[Multicast Output 11]"
+          TopLeft="500.499980422358,155.424070856958">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="71.466657195323,0"
+              Start="0,0"
+              End="63.966657195323,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="63.966657195323,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
           Id="Package\DF - QuotationLine.Paths[Multicast Output 1]"
           TopLeft="218.349997869134,354.599996508161">
           <EdgeLayout.Curve>
@@ -6547,6 +6718,88 @@ ORDER BY d.PK_DEVIS</property>
                   Capacity="5">
                   <mssgle:LineSegment
                     End="0,63.9999980628488" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - QuotationLine.Paths[Lookup No Match Output]"
+          TopLeft="295.866660702063,152.883330193227">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="85.4333197202955,0"
+              Start="0,0"
+              End="77.9333197202955,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="77.9333197202955,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-16.8397268586022,5,111.6127734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - QuotationLine.Paths[Lookup Match Output]"
+          TopLeft="221.683331160662,171.83333049582">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,59.1000036567453"
+              Start="0,0"
+              End="0,51.6000036567453">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,51.6000036567453" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-48.19138671875,19.9953143283727,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - QuotationLine.Paths[Derived Column Output2]"
+          TopLeft="842.899963666005,176.848145451924">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-8.7666585165598,50.2666660278378"
+              Start="0,0"
+              End="-8.7666585165598,42.7666660278378">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,21.1333330139189" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,21.1333330139189"
+                    Point2="0,25.1333330139189"
+                    Point3="-4,25.1333330139189" />
+                  <mssgle:LineSegment
+                    End="-4.7666585165598,25.1333330139189" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-4.7666585165598,25.1333330139189"
+                    Point2="-8.7666585165598,25.1333330139189"
+                    Point3="-8.7666585165598,29.1333330139189" />
+                  <mssgle:LineSegment
+                    End="-8.7666585165598,42.7666660278378" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -6600,86 +6853,6 @@ ORDER BY d.PK_DEVIS</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - QuotationLine.Paths[Aggregate Output 1]"
-          TopLeft="455.89999538064,333.533330960435">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="62.8999927605199,0"
-              Start="0,0"
-              End="55.3999927605199,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="55.3999927605199,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="146.4,41.6"
-          Id="Package\DF - QuotationLine\Lookup - ITEM"
-          TopLeft="149.466660702063,130.23333049582" />
-        <NodeLayout
-          Size="161.6,41.6"
-          Id="Package\DF - QuotationLine\Derived Column 4 1 2"
-          TopLeft="762.099963666004,135.248145451924" />
-        <NodeLayout
-          Size="180,41.6"
-          Id="Package\DF - QuotationLine\OLE DB Destination 1 1 1 2"
-          TopLeft="744.133305149444,227.114811479761" />
-        <NodeLayout
-          Size="126.4,41.6"
-          Id="Package\DF - QuotationLine\Aggregate 1 1 1"
-          TopLeft="571.966637617682,135.314811823282" />
-        <NodeLayout
-          Size="170.4,41.6"
-          Id="Package\DF - QuotationLine\Flat File Destination 2"
-          TopLeft="361.966657244994,229.133327426182" />
-        <NodeLayout
-          Size="119.2,41.6"
-          Id="Package\DF - QuotationLine\Multicast 2"
-          TopLeft="381.299980422358,133.933329890634" />
-        <EdgeLayout
-          Id="Package\DF - QuotationLine.Paths[Derived Column Output2]"
-          TopLeft="842.899963666005,176.848145451924">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-8.7666585165598,50.2666660278378"
-              Start="0,0"
-              End="-8.7666585165598,42.7666660278378">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,21.1333330139189" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,21.1333330139189"
-                    Point2="0,25.1333330139189"
-                    Point3="-4,25.1333330139189" />
-                  <mssgle:LineSegment
-                    End="-4.7666585165598,25.1333330139189" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-4.7666585165598,25.1333330139189"
-                    Point2="-8.7666585165598,25.1333330139189"
-                    Point3="-8.7666585165598,29.1333330139189" />
-                  <mssgle:LineSegment
-                    End="-8.7666585165598,42.7666660278378" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
           Id="Package\DF - QuotationLine.Paths[Aggregate Output 11]"
           TopLeft="698.366637617682,156.081478637603">
           <EdgeLayout.Curve>
@@ -6702,137 +6875,48 @@ ORDER BY d.PK_DEVIS</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - QuotationLine.Paths[Multicast Output 21]"
-          TopLeft="444.033318833677,175.533329890635">
+          Id="Package\DF - QuotationLine.Paths[Aggregate Output 1]"
+          TopLeft="455.89999538064,333.533330960435">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,53.5999975355476"
+              EndConnector="62.8999927605199,0"
               Start="0,0"
-              End="0,46.0999975355476">
+              End="55.3999927605199,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,46.0999975355476" />
+                    End="55.3999927605199,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - QuotationLine.Paths[Multicast Output 11]"
-          TopLeft="500.499980422358,155.424070856958">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="71.466657195323,0"
-              Start="0,0"
-              End="63.966657195323,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="63.966657195323,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - QuotationLine.Paths[Lookup No Match Output]"
-          TopLeft="295.866660702063,152.883330193227">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="85.4333197202955,0"
-              Start="0,0"
-              End="77.9333197202955,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="77.9333197202955,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-16.8397268586022,5,111.6127734375,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - QuotationLine.Paths[Oracle Source Output]"
-          TopLeft="99.7333330146141,69.3666666063998">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="122.933327687449,60.8666638894206"
-              Start="0,0"
-              End="122.933327687449,53.3666638894206">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,26.4333319447103" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,26.4333319447103"
-                    Point2="0,30.4333319447103"
-                    Point3="4,30.4333319447103" />
-                  <mssgle:LineSegment
-                    End="118.933327687449,30.4333319447103" />
-                  <mssgle:CubicBezierSegment
-                    Point1="118.933327687449,30.4333319447103"
-                    Point2="122.933327687449,30.4333319447103"
-                    Point3="122.933327687449,34.4333319447103" />
-                  <mssgle:LineSegment
-                    End="122.933327687449,53.3666638894206" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - QuotationLine.Paths[Lookup Match Output]"
-          TopLeft="221.683331160662,171.83333049582">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,59.1000036567453"
-              Start="0,0"
-              End="0,51.6000036567453">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,51.6000036567453" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-48.19138671875,19.9953143283727,96.3827734375,11.609375"
-              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
   <PipelineComponentMetadata
-    design-time-name="Package\DF - QuotationLine\Oracle Source">
+    design-time-name="Package\DF - QuotationLine\Lookup - ITEM">
     <Properties>
+      <Property>
+        <Name>OverwriteParamsSQLProp</Name>
+        <Value
+          type="q2:string">false</Value>
+      </Property>
+      <Property>
+        <Name>UsedTableName</Name>
+        <Value
+          type="q3:string"></Value>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q4:string">0</Value>
+      </Property>
       <Property>
         <Name>DataSourceViewID</Name>
       </Property>
@@ -6851,23 +6935,47 @@ ORDER BY d.PK_DEVIS</property>
       </Property>
     </Properties>
   </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\DF - QuotationLine\Oracle Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
   <TaskHost
     design-time-name="Package\DF - RFQVendor">
     <LayoutInfo>
       <GraphLayout
         Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
-          Size="171.2,41.6"
-          Id="Package\DF - RFQVendor\OLE DB Destination"
-          TopLeft="93.8333301461401,301.566664816472" />
-        <NodeLayout
-          Size="158.4,41.6"
-          Id="Package\DF - RFQVendor\Derived Column"
-          TopLeft="91.8333384659558,122.333333238628" />
+          Size="161.6,41.6"
+          Id="Package\DF - RFQVendor\Derived Column 4"
+          TopLeft="471.299978418153,214.233332796958" />
         <NodeLayout
           Size="148.8,41.6"
           Id="Package\DF - RFQVendor\Oracle Source"
           TopLeft="19.5,5.5" />
+        <NodeLayout
+          Size="171.2,41.6"
+          Id="Package\DF - RFQVendor\OLE DB Destination"
+          TopLeft="93.8333301461401,301.566664816472" />
+        <NodeLayout
+          Size="119.2,41.6"
+          Id="Package\DF - RFQVendor\Multicast"
+          TopLeft="111.666660565469,211.666665322714" />
+        <NodeLayout
+          Size="180,41.6"
+          Id="Package\DF - RFQVendor\OLE DB Destination 1 1"
+          TopLeft="454.166653189395,306.099998824786" />
+        <NodeLayout
+          Size="126.4,41.6"
+          Id="Package\DF - RFQVendor\Aggregate"
+          TopLeft="281.999985657633,214.299999168308" />
+        <NodeLayout
+          Size="158.4,41.6"
+          Id="Package\DF - RFQVendor\Derived Column"
+          TopLeft="91.8333384659558,122.333333238628" />
         <EdgeLayout
           Id="Package\DF - RFQVendor.Paths[Oracle Source Output]"
           TopLeft="93.9,47.1">
@@ -6902,24 +7010,20 @@ ORDER BY d.PK_DEVIS</property>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="119.2,41.6"
-          Id="Package\DF - RFQVendor\Multicast"
-          TopLeft="111.666660565469,211.666665322714" />
         <EdgeLayout
-          Id="Package\DF - RFQVendor.Paths[Derived Column Output]"
-          TopLeft="171.149999515712,163.933333238628">
+          Id="Package\DF - RFQVendor.Paths[Multicast Output 2]"
+          TopLeft="230.866660565469,233.783332245511">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,47.7333320840863"
+              EndConnector="51.1333250921637,0"
               Start="0,0"
-              End="0,40.2333320840863">
+              End="43.6333250921637,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,40.2333320840863" />
+                    End="43.6333250921637,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -6962,18 +7066,6 @@ ORDER BY d.PK_DEVIS</property>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="161.6,41.6"
-          Id="Package\DF - RFQVendor\Derived Column 4"
-          TopLeft="471.299978418153,214.233332796958" />
-        <NodeLayout
-          Size="126.4,41.6"
-          Id="Package\DF - RFQVendor\Aggregate"
-          TopLeft="281.999985657633,214.299999168308" />
-        <NodeLayout
-          Size="180,41.6"
-          Id="Package\DF - RFQVendor\OLE DB Destination 1 1"
-          TopLeft="454.166653189395,306.099998824786" />
         <EdgeLayout
           Id="Package\DF - RFQVendor.Paths[Derived Column Output1]"
           TopLeft="548.133315803774,255.833332796958">
@@ -6997,6 +7089,28 @@ ORDER BY d.PK_DEVIS</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
+          Id="Package\DF - RFQVendor.Paths[Derived Column Output]"
+          TopLeft="171.149999515712,163.933333238628">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,47.7333320840863"
+              Start="0,0"
+              End="0,40.2333320840863">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,40.2333320840863" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
           Id="Package\DF - RFQVendor.Paths[Aggregate Output 1]"
           TopLeft="408.399985657633,235.066665982633">
           <EdgeLayout.Curve>
@@ -7010,28 +7124,6 @@ ORDER BY d.PK_DEVIS</property>
                   Capacity="5">
                   <mssgle:LineSegment
                     End="55.39999276052,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - RFQVendor.Paths[Multicast Output 2]"
-          TopLeft="230.866660565469,233.783332245511">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="51.1333250921637,0"
-              Start="0,0"
-              End="43.6333250921637,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="43.6333250921637,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -7066,29 +7158,6 @@ ORDER BY d.PK_DEVIS</property>
         <Name>TableInfoObjectType</Name>
         <Value
           type="q2:string">Table</Value>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
-  <PipelineComponentMetadata
-    design-time-name="Package\DF - QuotationLine\Lookup - ITEM">
-    <Properties>
-      <Property>
-        <Name>OverwriteParamsSQLProp</Name>
-        <Value
-          type="q2:boolean">false</Value>
-      </Property>
-      <Property>
-        <Name>UsedTableName</Name>
-        <Value
-          type="q3:string"></Value>
-      </Property>
-      <Property>
-        <Name>TableInfoObjectType</Name>
-        <Value
-          type="q4:int">0</Value>
-      </Property>
-      <Property>
-        <Name>DataSourceViewID</Name>
       </Property>
     </Properties>
   </PipelineComponentMetadata>

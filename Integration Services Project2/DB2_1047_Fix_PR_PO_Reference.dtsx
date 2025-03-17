@@ -11,8 +11,8 @@
   DTS:LocaleID="14345"
   DTS:ObjectName="DB2_1047_Fix_PR_PO_Reference"
   DTS:PackageType="5"
-  DTS:VersionBuild="237"
-  DTS:VersionGUID="{E7698B12-7975-4B59-8552-CBF6BA2BE5D1}">
+  DTS:VersionBuild="245"
+  DTS:VersionGUID="{0F3CB9A8-E559-4559-848B-44FC3F479BA4}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -267,15 +267,190 @@
           DTS:To="Package\PRE-PKG\GET LOGID" />
       </DTS:PrecedenceConstraints>
     </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Update PO STE_CSWNPOREF"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{2c860e93-e6d4-4573-8bed-54c7fda510a0}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Update PO STE_CSWNPOREF"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="UPDATE MAXIMO.PO SET STE_CSWNPOREF=COALESCE(STE_CSWNPOREF,PONUM)&#xA;WHERE STE_MIGRATIONID IS NOT NULL;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Update PR STE_CSWNPRREF"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{0346DF6B-14DB-4010-B970-16DF52C8C83E}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Update PR STE_CSWNPRREF"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="UPDATE MAXIMO.PR SET STE_CSWNPRREF=COALESCE(STE_CSWNPRREF,PRNUM)&#xA;WHERE STE_MIGRATIONID IS NOT NULL;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Update PR to PO Ref"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{337927a7-2739-4576-997d-4b9e86867fcb}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Update PR to PO Ref"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="-- PR TO PO RELATIONSHIP&#xA;MERGE INTO MAXIMO.PRLINE A&#xA;USING (&#xA;&#x9;SELECT D.PRLINEID, A.PONUM, A.REVISIONNUM, B.PRNUM, C.POLINENUM, C.POLINEID&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY D.PRLINEID ORDER BY A.POID DESC) RN&#xA;&#x9;FROM MAXIMO.PO A&#xA;&#x9;JOIN MAXIMO.PR B ON B.STE_CSWNPRREF=A.STE_PRNUM&#xA;&#x9;JOIN MAXIMO.POLINE C ON C.PONUM=A.PONUM&#xA;&#x9;JOIN MAXIMO.PRLINE D ON D.PRNUM=B.PRNUM AND D.ITEMNUM=C.ITEMNUM&#xA;&#x9;WHERE A.STE_MIGRATIONID IS NOT NULL AND A.STE_PRNUM IS NOT NULL&#xA;&#x9;&#x9;AND (A.STATUS!='CAN' AND B.STATUS!='CAN')&#xA;&#x9;&#x9;AND NOT (B.STATUS='CLOSE' AND A.STATUS='WAPPR')&#xA;) B ON B.PRLINEID=A.PRLINEID AND B.RN=1&#xA;WHEN MATCHED THEN&#xA;UPDATE SET &#xA;&#x9;PONUM=B.PONUM,&#xA;&#x9;POREVISIONNUM=B.REVISIONNUM,&#xA;&#x9;POLINENUM=B.POLINENUM,&#xA;&#x9;POLINEID=B.POLINEID&#xA;;&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Update PR to RFQ Ref"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{f163f45b-87cf-48ea-8590-8d97a52b4784}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Update PR to RFQ Ref"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="-- PR TO RFQ RELATIONSHIP&#xA;MERGE INTO MAXIMO.PRLINE A&#xA;USING (&#xA;&#x9;SELECT D.PRLINEID, A.RFQNUM, B.PRNUM, C.RFQLINENUM, C.RFQLINEID&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY D.PRLINEID &#xA;&#x9;&#x9;&#x9;ORDER BY (CASE WHEN A.STATUS='COMP' THEN 1 ELSE 99 END) ASC, A.RFQID DESC) RN&#xA;&#x9;FROM MAXIMO.RFQ A&#xA;&#x9;JOIN MAXIMO.PR B ON B.STE_CSWNPRREF=A.STE_PRNUM&#xA;&#x9;JOIN MAXIMO.RFQLINE C ON C.RFQNUM=A.RFQNUM&#xA;&#x9;JOIN MAXIMO.PRLINE D ON D.PRNUM=B.PRNUM AND D.ITEMNUM=C.ITEMNUM&#xA;&#x9;WHERE A.STE_MIGRATIONID IS NOT NULL AND A.STE_PRNUM IS NOT NULL&#xA;&#x9;&#x9;AND (A.STATUS!='CAN' AND B.STATUS!='CAN')&#xA;&#x9;&#x9;AND NOT (B.STATUS='CLOSE' AND A.STATUS='INPRG')&#xA;) B ON B.PRLINEID=A.PRLINEID AND B.RN=1&#xA;WHEN MATCHED THEN&#xA;UPDATE SET &#xA;&#x9;RFQNUM=B.RFQNUM,&#xA;&#x9;RFQLINENUM=B.RFQLINENUM,&#xA;&#x9;RFQLINEID=B.RFQLINEID&#xA;;&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Update RFQ STE_CSWNRFQREF"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{3471cbb0-a9f8-46da-94aa-352ce3752681}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Update RFQ STE_CSWNRFQREF"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="UPDATE MAXIMO.RFQ SET STE_CSWNRFQREF=COALESCE(STE_CSWNRFQREF,RFQNUM)&#xA;WHERE STE_MIGRATIONID IS NOT NULL;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Update RFQ STE_PONUM"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{93e9a6db-48ef-49fc-9902-9c72cf347a88}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Update RFQ STE_PONUM"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="MERGE INTO MAXIMO.RFQ A&#xA;USING (&#xA;&#x9;SELECT A.RFQID, A.STE_PONUM AS ORIGPONUM, MAX(B.PONUM) AS PONUM &#xA;&#x9;FROM MAXIMO.RFQ A&#xA;&#x9;JOIN MAXIMO.RFQLINE B ON B.RFQNUM=A.RFQNUM&#xA;&#x9;WHERE A.STE_MIGRATIONID IS NOT NULL&#xA;&#x9;GROUP BY A.RFQID, A.STE_PONUM&#xA;) B ON B.RFQID=A.RFQID&#xA;WHEN MATCHED THEN&#xA;UPDATE SET&#xA;&#x9;STE_PONUM=COALESCE(B.ORIGPONUM, B.PONUM)&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Update RFQ to PO Ref"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{11ea727f-3fc4-452f-bcf1-11862292e958}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Update RFQ to PO Ref"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="-- RFQ TO PO RELATIONSHIP&#xA;MERGE INTO MAXIMO.RFQLINE A&#xA;USING (&#xA;&#x9;SELECT C.RFQLINEID, A.RFQNUM, B.PONUM, B.REVISIONNUM, D.POLINENUM, D.POLINEID&#xA;&#x9;&#x9;, ROW_NUMBER() OVER (PARTITION BY C.RFQLINEID ORDER BY B.POID DESC) RN&#xA;--&#x9;&#x9;, A.STATUS AS RFQSTATUS, B.STATUS AS POSTATUS&#xA;--&#x9;&#x9;, C.ITEMNUM, E.STE_CSWNITEMNO, E.DESCRIPTION, C.ORDERQTY AS RFQQTY, D.ORDERQTY AS POQTY&#xA;&#x9;FROM MAXIMO.RFQ A&#xA;&#x9;JOIN MAXIMO.PO B ON B.STE_CSWNPOREF=A.STE_PONUM&#xA;&#x9;JOIN MAXIMO.RFQLINE C ON C.RFQNUM=A.RFQNUM&#xA;&#x9;JOIN MAXIMO.POLINE D ON D.PONUM=B.PONUM AND D.ITEMNUM=C.ITEMNUM&#xA;&#x9;LEFT JOIN MAXIMO.ITEM E ON E.ITEMNUM=C.ITEMNUM&#xA;&#x9;WHERE A.STE_MIGRATIONID IS NOT NULL AND A.STE_PONUM IS NOT NULL&#xA;--&#x9;&#x9;AND (A.STATUS!='CAN' AND B.STATUS!='CAN')&#xA;--&#x9;&#x9;AND NOT (B.STATUS='CLOSE' AND A.STATUS='INPRG')&#xA;) B ON B.RFQLINEID=A.RFQLINEID AND B.RN=1&#xA;WHEN MATCHED THEN&#xA;UPDATE SET&#xA;&#x9;PONUM=B.PONUM,&#xA;&#x9;POREVISIONNUM=B.REVISIONNUM,&#xA;&#x9;POLINENUM=B.POLINENUM,&#xA;&#x9;POLINEID=B.POLINEID&#xA;;&#x9;&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
   </DTS:Executables>
   <DTS:PrecedenceConstraints>
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint]"
       DTS:CreationName=""
-      DTS:DTSID="{08F94121-BEFB-4C24-AE02-3D1369C1D38C}"
+      DTS:DTSID="{42E3DCE8-1AC4-474F-A05A-128E9E697576}"
       DTS:From="Package\PRE-PKG"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint"
+      DTS:To="Package\Update PR STE_CSWNPRREF" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{D45D099D-3969-4A76-9801-B2F8318E215D}"
+      DTS:From="Package\Update PR STE_CSWNPRREF"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\Update RFQ STE_CSWNRFQREF" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{AAE0779B-6C14-4027-B543-62A0CDED4F3A}"
+      DTS:From="Package\Update RFQ STE_CSWNRFQREF"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\Update PO STE_CSWNPOREF" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
+      DTS:CreationName=""
+      DTS:DTSID="{6F9FC1F0-E8C2-4189-A55E-E9F2B2E2F926}"
+      DTS:From="Package\Update PO STE_CSWNPOREF"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 3"
+      DTS:To="Package\Update RFQ STE_PONUM" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 4]"
+      DTS:CreationName=""
+      DTS:DTSID="{D62C95B4-4364-40D6-90D1-01C5EECE324E}"
+      DTS:From="Package\Update RFQ STE_PONUM"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 4"
+      DTS:To="Package\Update PR to PO Ref" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 5]"
+      DTS:CreationName=""
+      DTS:DTSID="{C179B49E-355C-403F-AFD1-80676A176728}"
+      DTS:From="Package\Update PR to PO Ref"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 5"
+      DTS:To="Package\Update PR to RFQ Ref" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 6]"
+      DTS:CreationName=""
+      DTS:DTSID="{C7EFDCED-42FD-4AC4-9A66-F1C72EF05653}"
+      DTS:From="Package\Update PR to RFQ Ref"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 6"
+      DTS:To="Package\Update RFQ to PO Ref" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 7]"
+      DTS:CreationName=""
+      DTS:DTSID="{9FB87864-4A01-4272-B6B1-8101E439F64E}"
+      DTS:From="Package\Update RFQ to PO Ref"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 7"
       DTS:To="Package\POST-PKG" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
@@ -289,7 +464,7 @@
     design-time-name="Package">
     <LayoutInfo>
       <GraphLayout
-        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="137.6,41.6"
           Id="Package\POST-PKG\FINISH LOG"
@@ -300,7 +475,7 @@
           PanelSize="270.4,130.4"
           Size="156,44.8"
           Id="Package\POST-PKG"
-          TopLeft="78.4722212129454,279.692067060151" />
+          TopLeft="552.638861972289,547.492065993426" />
         <NodeLayout
           Size="135.2,41.6"
           Id="Package\PRE-PKG\GET LOGID"
@@ -339,21 +514,40 @@
           PanelSize="240,177.6"
           Size="149.6,43.2"
           Id="Package\PRE-PKG"
-          TopLeft="79.3055545007473,80.2444451214429" />
+          TopLeft="77.6388879251433,42.977778713924" />
+        <AnnotationLayout
+          Text="Notes:&#xA;TODO: The relationship from PO to PR is missing&#xA;&#xA;PO.STE_PRNUM =&gt; should be populated&#xA;PRLINE.PONUM =&gt; PORDER_.PO_PREQ_REF&#xA;PRLINE.POREVISIONNUM&#xA;PRLINE.POLINENUM&#xA;PRLINE.POLINEID&#xA;&#xA;RFQ.STE_PRNUM =&gt; should be populated&#xA;PRLINE.RFQNUM =&gt; DEVIS.DV_PREQ_REF&#xA;PRLINE.RFQLINENUM&#xA;PRLINE:RFQLINEID&#xA;&#xA;RFQ.STE_PONUM =&gt; should be populated&#xA;RFQLINE.PONUM =&gt; DEVIS.DV_PO_CD&#xA;RFQLINE.POLINENUM&#xA;RFQLINE.POLINEID&#xA;RFQLINE.POREVISIONNUM"
+          ParentId="Package"
+          FontInfo="{assembly:Null}"
+          Size="285.6,327.2"
+          Id="8a202e6b-eb62-422a-b5d5-4225e2ad88ad"
+          TopLeft="289.166650867297,23.6666670584017" />
+        <NodeLayout
+          Size="224.8,41.6"
+          Id="Package\Update PR STE_CSWNPRREF"
+          TopLeft="39.9999978144965,128.266665847037" />
+        <NodeLayout
+          Size="240,41.6"
+          Id="Package\Update RFQ STE_CSWNRFQREF"
+          TopLeft="29.9999983608722,206.266665304634" />
+        <NodeLayout
+          Size="226.4,41.6"
+          Id="Package\Update PO STE_CSWNPOREF"
+          TopLeft="37.4999979510904,281.999998228153" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="155.288887856846,123.444445121443">
+          TopLeft="152.41944286982,86.177778713924">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,156.247621938708"
+              EndConnector="0,42.0888871331126"
               Start="0,0"
-              End="0,148.747621938708">
+              End="0,34.5888871331126">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,148.747621938708" />
+                    End="0,34.5888871331126" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -362,13 +556,176 @@
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <AnnotationLayout
-          Text="Notes:&#xA;TODO: The relationship from PO to PR is missing&#xA;&#xA;PO.STE_PRNUM =&gt; should be populated&#xA;PRLINE.PONUM =&gt; should be populated&#xA;PRLINE.POREVISIONNUM&#xA;PRLINE.POLINENUM&#xA;PRLINE.POLINEID&#xA;PRLINE.RFQNUM&#xA;PRLINE.RFQLINENUM&#xA;PRLINE:RFQLINEID"
-          ParentId="Package"
-          FontInfo="{assembly:Null}"
-          Size="285.6,199.2"
-          Id="8a202e6b-eb62-422a-b5d5-4225e2ad88ad"
-          TopLeft="276.666651550267,99.0666665340795" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="151.199998087684,169.866665847037">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,36.3999994575977"
+              Start="0,0"
+              End="0,28.8999994575977">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,28.8999994575977" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="150.349998155981,247.866665304634">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,34.1333329235184"
+              Start="0,0"
+              End="0,26.6333329235184">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,26.6333329235184" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="204,41.6"
+          Id="Package\Update RFQ STE_PONUM"
+          TopLeft="44.9999975413085,367.93333095279" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 3]"
+          TopLeft="148.849997746199,323.599998228153">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,44.3333327246374"
+              Start="0,0"
+              End="0,36.8333327246374">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,36.8333327246374" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="177.6,41.6"
+          Id="Package\Update PR to PO Ref"
+          TopLeft="50.8333305559225,460.199997956952" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 4]"
+          TopLeft="143.316664048615,409.53333095279">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,50.6666670041615"
+              Start="0,0"
+              End="0,43.1666670041615">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,43.1666670041615" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="184,41.6"
+          Id="Package\Update PR to RFQ Ref"
+          TopLeft="290.833317442901,464.799998336633" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 5]"
+          TopLeft="228.433330555923,483.299998146792">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="62.3999868869788,0"
+              Start="0,0"
+              End="54.8999868869788,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="54.8999868869788,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="184.8,41.6"
+          Id="Package\Update RFQ to PO Ref"
+          TopLeft="532.499970905484,463.333331223991" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 6]"
+          TopLeft="474.833317442901,484.866664780312">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="57.6666534625828,0"
+              Start="0,0"
+              End="50.1666534625828,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="50.1666534625828,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 7]"
+          TopLeft="627.769416438887,504.933331223991">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,42.5587347694353"
+              Start="0,0"
+              End="0,35.0587347694353">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,35.0587347694353" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </Package>
