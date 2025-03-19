@@ -11,8 +11,8 @@
   DTS:LocaleID="14345"
   DTS:ObjectName="DB2_1055_Fix_Item_Dept"
   DTS:PackageType="5"
-  DTS:VersionBuild="251"
-  DTS:VersionGUID="{BF27E24C-015D-433E-9E03-7DC01CF74F61}">
+  DTS:VersionBuild="254"
+  DTS:VersionGUID="{BBC04C03-E646-43D4-B0F3-FDC78D119259}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -139,6 +139,23 @@
     </DTS:Variable>
   </DTS:Variables>
   <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Only update from Master if NULL"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{BB192762-5102-4EB9-B699-FA83E6C8E194}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Only update from Master if NULL"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="MERGE INTO MAXIMO.ITEM AS A&#xA;USING (&#xA;&#x9;SELECT B.ITEMID &#xA;&#x9;&#x9;, A.STE_OWNERDEPARTMENT AS MASTER_OWNERDEPT, B.STE_OWNERDEPARTMENT&#xA;&#x9;&#x9;, ROW_NUMBER() OVER(PARTITION BY B.ITEMID ORDER BY A.ID) AS RN&#xA;&#x9;FROM MIGRATION.SBST_ITEM_MASTER A&#xA;&#x9;JOIN MAXIMO.ITEM B ON B.STE_CSWNITEMNO=A.COSWINITEMNO&#xA;&#x9;WHERE (B.STE_OWNERDEPARTMENT IS NULL AND A.STE_OWNERDEPARTMENT IS NOT NULL)&#xA;) AS B ON B.ITEMID=A.ITEMID AND B.RN=1&#xA;WHEN MATCHED THEN&#xA;UPDATE SET &#xA;&#x9;-- STE_OWNERDEPARTMENT: only update if empty&#xA;&#x9;STE_OWNERDEPARTMENT=COALESCE(STE_OWNERDEPARTMENT,MASTER_OWNERDEPT)&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
     <DTS:Executable
       DTS:refId="Package\POST-PKG"
       DTS:CreationName="STOCK:SEQUENCE"
@@ -267,15 +284,48 @@
           DTS:To="Package\PRE-PKG\GET LOGID" />
       </DTS:PrecedenceConstraints>
     </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Set DEPT from ITEM_AUTHORITY"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{80A08260-2AC4-439B-AB0D-F87A96E2A81D}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Set DEPT from ITEM_AUTHORITY"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="MERGE INTO MAXIMO.ITEM AS A&#xA;USING (&#xA; SELECT &#xA;  A.ITEMID, A.STE_CSWNAUTHORITY, B.DEPT&#xA; FROM MAXIMO.ITEM A &#xA; JOIN MIGRATION.SBST_DEPT_ENTITY_MAPPING B ON B.COSWIN_ENTITY=A.STE_CSWNAUTHORITY&#xA;) AS B ON B.ITEMID=A.ITEMID&#xA;WHEN MATCHED THEN&#xA;UPDATE SET&#xA; STE_OWNERDEPARTMENT=B.DEPT&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
   </DTS:Executables>
   <DTS:PrecedenceConstraints>
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint]"
       DTS:CreationName=""
-      DTS:DTSID="{59E59401-7591-4A9C-A051-C6AF6634BFF5}"
+      DTS:DTSID="{7AC5A317-7C2E-4A44-9A96-590ADEB14BE9}"
       DTS:From="Package\PRE-PKG"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint"
+      DTS:To="Package\Set DEPT from ITEM_AUTHORITY" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{888DCD6A-853E-4607-87DC-A2CC0CE6437A}"
+      DTS:From="Package\Set DEPT from ITEM_AUTHORITY"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\Only update from Master if NULL" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{50823F11-04DB-4DC8-A41A-47046F29E076}"
+      DTS:From="Package\Only update from Master if NULL"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
       DTS:To="Package\POST-PKG" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
@@ -289,7 +339,7 @@
     design-time-name="Package">
     <LayoutInfo>
       <GraphLayout
-        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="137.6,41.6"
           Id="Package\POST-PKG\FINISH LOG"
@@ -340,32 +390,43 @@
           Size="149.6,43.2"
           Id="Package\PRE-PKG"
           TopLeft="79.3055545007473,80.2444451214429" />
+        <AnnotationLayout
+          Text="Notes:&#xA;Currently Item's OwnerDept (originally derived from ITEM_AUTHORITY) &#xA;is overwritten with value from Item master (which is derived from STE_SYSTEM)&#xA;&#xA;Instead, only overwritten OwnerDept from item master if empty."
+          ParentId="Package"
+          FontInfo="{assembly:Null}"
+          Size="445.6,104"
+          Id="0ae94c98-1734-420c-b37f-9c47f0d29190"
+          TopLeft="289.305543026854,120.158735564959" />
+        <NodeLayout
+          Size="241.6,41.6"
+          Id="Package\Set DEPT from ITEM_AUTHORITY"
+          TopLeft="19.9999989072482,169.933332869278" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
           TopLeft="154.105554500747,123.444445121443">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="13.1999994536242,224.714288129266"
+              EndConnector="-13.3055555934991,46.4888877478351"
               Start="0,0"
-              End="13.1999994536242,217.214288129266">
+              End="-13.3055555934991,38.9888877478351">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,108.357144064633" />
+                    End="0,19.2444438739175" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,108.357144064633"
-                    Point2="0,112.357144064633"
-                    Point3="4,112.357144064633" />
+                    Point1="0,19.2444438739175"
+                    Point2="0,23.2444438739175"
+                    Point3="-4,23.2444438739175" />
                   <mssgle:LineSegment
-                    End="9.1999994536242,112.357144064633" />
+                    End="-9.30555559349912,23.2444438739175" />
                   <mssgle:CubicBezierSegment
-                    Point1="9.1999994536242,112.357144064633"
-                    Point2="13.1999994536242,112.357144064633"
-                    Point3="13.1999994536242,116.357144064633" />
+                    Point1="-9.30555559349912,23.2444438739175"
+                    Point2="-13.3055555934991,23.2444438739175"
+                    Point3="-13.3055555934991,27.2444438739175" />
                   <mssgle:LineSegment
-                    End="13.1999994536242,217.214288129266" />
+                    End="-13.3055555934991,38.9888877478351" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -374,13 +435,78 @@
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <AnnotationLayout
-          Text="Notes:&#xA;Currently Item's OwnerDept (originally derived from ITEM_AUTHORITY) &#xD;&#xA;is overwritten with value from Item master (which is derived from STE_SYSTEM)&#xD;&#xA;&#xA;Instead, only overwritten OwnerDept from item master if empty."
-          ParentId="Package"
-          FontInfo="{assembly:Null}"
-          Size="445.6,104"
-          Id="0ae94c98-1734-420c-b37f-9c47f0d29190"
-          TopLeft="289.305543026854,120.158735564959" />
+        <NodeLayout
+          Size="229.6,41.6"
+          Id="Package\Only update from Master if NULL"
+          TopLeft="81.6666622045969,253.733332670397" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="140.799998907248,211.533332869278">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="55.6666632973487,42.1999998011192"
+              Start="0,0"
+              End="55.6666632973487,34.6999998011192">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,17.0999999005596" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,17.0999999005596"
+                    Point2="0,21.0999999005596"
+                    Point3="4,21.0999999005596" />
+                  <mssgle:LineSegment
+                    End="51.6666632973487,21.0999999005596" />
+                  <mssgle:CubicBezierSegment
+                    Point1="51.6666632973487,21.0999999005596"
+                    Point2="55.6666632973487,21.0999999005596"
+                    Point3="55.6666632973487,25.0999999005596" />
+                  <mssgle:LineSegment
+                    End="55.6666632973487,34.6999998011192" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="196.466662204597,295.333332670397">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-29.1611082502254,52.8254005803118"
+              Start="0,0"
+              End="-29.1611082502254,45.3254005803118">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,22.4127002901559" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,22.4127002901559"
+                    Point2="0,26.4127002901559"
+                    Point3="-4,26.4127002901559" />
+                  <mssgle:LineSegment
+                    End="-25.1611082502254,26.4127002901559" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-25.1611082502254,26.4127002901559"
+                    Point2="-29.1611082502254,26.4127002901559"
+                    Point3="-29.1611082502254,30.4127002901559" />
+                  <mssgle:LineSegment
+                    End="-29.1611082502254,45.3254005803118" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </Package>
