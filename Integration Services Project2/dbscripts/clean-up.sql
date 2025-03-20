@@ -46,7 +46,7 @@ delete from maximo.invoicecost WHERE ste_migrationid is null;
 delete from maximo.matrectrans WHERE ste_migrationid is null;
 delete from maximo.servrectrans WHERE ste_migrationid is null;
 delete from maximo.contractpurch WHERE ste_migrationid is null;
-delete from maximo.ste_cswnreceipt_per_cc WHERE ste_migrationid is null;
+delete from maximo.ste_cswnreceipt_per_cc;
 
 delete from maximo.workorder WHERE ste_migrationid is null;
 delete from maximo.labtrans WHERE ste_migrationid is null;
