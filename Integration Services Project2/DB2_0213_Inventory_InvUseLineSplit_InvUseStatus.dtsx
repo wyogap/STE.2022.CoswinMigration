@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0213_Inventory_InvUseLineSplit_InvUseStatus"
   DTS:PackageType="5"
-  DTS:VersionBuild="191"
-  DTS:VersionGUID="{D8009846-7E51-4E52-A810-328E476206E9}"
+  DTS:VersionBuild="193"
+  DTS:VersionGUID="{1D6A375F-552C-49B4-820C-00B093935358}"
   DTS:VersionMajor="3"
   DTS:VersionMinor="2">
   <DTS:Property
@@ -3755,6 +3755,23 @@ WHERE A.STE_MIGRATIONID IS NOT NULL</property>
           SQLTask:SqlStatementSource="delete from maximo.INVUSESTATUS where STE_MIGRATIONID is not NULL" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Update MATUSETRANS INVUSESPLITID"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{C03F32A7-FD90-488D-ADD8-ECAC7A4CFD4A}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Update MATUSETRANS INVUSESPLITID"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="MERGE INTO MAXIMO.MATUSETRANS AS A&#xA;USING (&#xA;&#x9;SELECT A.MATUSETRANSID, C.INVUSELINESPLITID&#xA;&#x9;FROM MAXIMO.MATUSETRANS A&#xA;&#x9;JOIN MAXIMO.INVUSELINE B ON B.INVUSELINEID=A.INVUSELINEID&#xA;&#x9;JOIN MAXIMO.INVUSELINESPLIT C ON C.STE_MIGRATIONID=B.STE_MIGRATIONID&#xA;&#x9;WHERE A.STE_MIGRATIONID IS NOT NULL&#xA;) B ON B.MATUSETRANSID=A.MATUSETRANSID&#xA;WHEN MATCHED THEN&#xA;UPDATE SET&#xA;&#x9;INVUSELINESPLITID=B.INVUSELINESPLITID&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
   </DTS:Executables>
   <DTS:PrecedenceConstraints>
     <DTS:PrecedenceConstraint
@@ -3806,6 +3823,14 @@ WHERE A.STE_MIGRATIONID IS NOT NULL</property>
       DTS:ObjectName="Constraint 4 1"
       DTS:To="Package\LOG - CNT 1" />
     <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 5]"
+      DTS:CreationName=""
+      DTS:DTSID="{CBFCDF96-7511-48BA-B8D2-F060DD7D3D87}"
+      DTS:From="Package\MAXSEQ (INVUSESTATUS)"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 5"
+      DTS:To="Package\Update MATUSETRANS INVUSESPLITID" />
+    <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 5 1]"
       DTS:CreationName=""
       DTS:DTSID="{56D23334-DB02-450F-B038-B71113B95064}"
@@ -3816,8 +3841,8 @@ WHERE A.STE_MIGRATIONID IS NOT NULL</property>
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 6]"
       DTS:CreationName=""
-      DTS:DTSID="{569CA60A-E208-4D59-A13D-FF3AB83CC59B}"
-      DTS:From="Package\MAXSEQ (INVUSESTATUS)"
+      DTS:DTSID="{56C078C7-7872-4BDE-96CE-204CAD2417B9}"
+      DTS:From="Package\Update MATUSETRANS INVUSESPLITID"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 6"
       DTS:To="Package\POST-PKG" />
@@ -3835,6 +3860,14 @@ WHERE A.STE_MIGRATIONID IS NOT NULL</property>
       <GraphLayout
         Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
+          Size="168.8,41.6"
+          Id="Package\INVUSELINESPLIT"
+          TopLeft="75.8333291899828,370.199998788635" />
+        <NodeLayout
+          Size="158.4,41.6"
+          Id="Package\INVUSESTATUS"
+          TopLeft="342.142838448996,370.929628457777" />
+        <NodeLayout
           Size="130.4,41.6"
           Id="Package\LOG - CNT 1"
           TopLeft="355.001170473304,461.866665431194" />
@@ -3847,10 +3880,6 @@ WHERE A.STE_MIGRATIONID IS NOT NULL</property>
           Id="Package\MAXSEQ (INVUSESTATUS)"
           TopLeft="313.809506663728,546.749999236118" />
         <NodeLayout
-          Size="158.4,41.6"
-          Id="Package\INVUSESTATUS"
-          TopLeft="342.142838448996,370.929628457777" />
-        <NodeLayout
           Size="137.6,41.6"
           Id="Package\POST-PKG\FINISH LOG"
           TopLeft="51.9333115693606,32.199997812311" />
@@ -3860,7 +3889,7 @@ WHERE A.STE_MIGRATIONID IS NOT NULL</property>
           PanelSize="270.4,130.4"
           Size="156,43.2"
           Id="Package\POST-PKG"
-          TopLeft="344.357137237276,635.62486383756" />
+          TopLeft="346.02380381288,747.291530823641" />
         <NodeLayout
           Size="135.2,41.6"
           Id="Package\PRE-PKG\GET LOGID"
@@ -3908,6 +3937,28 @@ WHERE A.STE_MIGRATIONID IS NOT NULL</property>
           Size="202.4,41.6"
           Id="Package\RESET (INVUSESTATUS)"
           TopLeft="324.584505468531,276.133333538241" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="159.974996482705,315.933333393601">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,54.266665395034"
+              Start="0,0"
+              End="0,46.766665395034">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,46.766665395034" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 1]"
           TopLeft="458.184505468531,317.733333538241">
@@ -3999,6 +4050,40 @@ WHERE A.STE_MIGRATIONID IS NOT NULL</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 4]"
+          TopLeft="160.233329189983,411.799998788635">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-38.1916644470146,132.283333642203"
+              Start="0,0"
+              End="-38.1916644470146,124.783333642203">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,74.8050891519743" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,74.8050891519743"
+                    Point2="0,78.8050891519743"
+                    Point3="-4,78.8050891519743" />
+                  <mssgle:LineSegment
+                    End="-34.1916644470146,78.8050891519743" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-34.1916644470146,78.8050891519743"
+                    Point2="-38.1916644470146,78.8050891519743"
+                    Point3="-38.1916644470146,82.8050891519743" />
+                  <mssgle:LineSegment
+                    End="-38.1916644470146,124.783333642203" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 4 1]"
           TopLeft="420.77200446115,412.529628457777">
           <EdgeLayout.Curve>
@@ -4042,80 +4127,46 @@ WHERE A.STE_MIGRATIONID IS NOT NULL</property>
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <NodeLayout
+          Size="274.4,41.6"
+          Id="Package\Update MATUSETRANS INVUSESPLITID"
+          TopLeft="280.833317989277,645.199999168316" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 5]"
+          TopLeft="418.921412326502,588.349999236118">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,56.8499999321984"
+              Start="0,0"
+              End="0,49.3499999321984">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,49.3499999321984" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 6]"
-          TopLeft="421.083321950502,588.349999236118">
+          TopLeft="421.028560901079,686.799999168317">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,47.274864601442"
+              EndConnector="0,60.4915316553248"
               Start="0,0"
-              End="0,39.774864601442">
+              End="0,52.9915316553248">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,39.774864601442" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="168.8,41.6"
-          Id="Package\INVUSELINESPLIT"
-          TopLeft="75.8333291899828,370.199998788635" />
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="159.974996482705,315.933333393601">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,54.266665395034"
-              Start="0,0"
-              End="0,46.766665395034">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,46.766665395034" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 4]"
-          TopLeft="160.233329189983,411.799998788635">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-38.1916644470146,132.283333642203"
-              Start="0,0"
-              End="-38.1916644470146,124.783333642203">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,74.8050891519743" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,74.8050891519743"
-                    Point2="0,78.8050891519743"
-                    Point3="-4,78.8050891519743" />
-                  <mssgle:LineSegment
-                    End="-34.1916644470146,78.8050891519743" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-34.1916644470146,78.8050891519743"
-                    Point2="-38.1916644470146,78.8050891519743"
-                    Point3="-38.1916644470146,82.8050891519743" />
-                  <mssgle:LineSegment
-                    End="-38.1916644470146,124.783333642203" />
+                    End="0,52.9915316553248" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -4127,78 +4178,6 @@ WHERE A.STE_MIGRATIONID IS NOT NULL</property>
       </GraphLayout>
     </LayoutInfo>
   </Package>
-  <TaskHost
-    design-time-name="Package\LOG - CNT 1">
-    <LayoutInfo>
-      <GraphLayout
-        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
-        <NodeLayout
-          Size="152.8,41.6"
-          Id="Package\LOG - CNT 1\Derived Column"
-          TopLeft="104.24166514944,122.933334787951" />
-        <NodeLayout
-          Size="124.8,41.6"
-          Id="Package\LOG - CNT 1\LOG CNT"
-          TopLeft="119.836903616615,214.611904902062" />
-        <NodeLayout
-          Size="158.4,41.6"
-          Id="Package\LOG - CNT 1\INVUSESTATUS"
-          TopLeft="107.999998390675,34.9999994784594" />
-        <EdgeLayout
-          Id="Package\LOG - CNT 1.Paths[OLE DB Source Output]"
-          TopLeft="183.920831770058,76.5999994784594">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,46.3333353094916"
-              Start="0,0"
-              End="0,38.8333353094916">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,38.8333353094916" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\LOG - CNT 1.Paths[Derived Column Output]"
-          TopLeft="181.439284383027,164.533334787951">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,50.078570114111"
-              Start="0,0"
-              End="0,42.578570114111">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,42.578570114111" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-      </GraphLayout>
-    </LayoutInfo>
-  </TaskHost>
-  <PipelineComponentMetadata
-    design-time-name="Package\LOG - CNT 1\INVUSESTATUS">
-    <Properties>
-      <Property>
-        <Name>DataSourceViewID</Name>
-      </Property>
-    </Properties>
-  </PipelineComponentMetadata>
   <TaskHost
     design-time-name="Package\INVUSELINESPLIT">
     <LayoutInfo>
@@ -4385,6 +4364,78 @@ WHERE A.STE_MIGRATIONID IS NOT NULL</property>
         <Name>TableInfoObjectType</Name>
         <Value
           type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\LOG - CNT 1">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="152.8,41.6"
+          Id="Package\LOG - CNT 1\Derived Column"
+          TopLeft="104.24166514944,122.933334787951" />
+        <NodeLayout
+          Size="124.8,41.6"
+          Id="Package\LOG - CNT 1\LOG CNT"
+          TopLeft="119.836903616615,214.611904902062" />
+        <NodeLayout
+          Size="158.4,41.6"
+          Id="Package\LOG - CNT 1\INVUSESTATUS"
+          TopLeft="107.999998390675,34.9999994784594" />
+        <EdgeLayout
+          Id="Package\LOG - CNT 1.Paths[OLE DB Source Output]"
+          TopLeft="183.920831770058,76.5999994784594">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,46.3333353094916"
+              Start="0,0"
+              End="0,38.8333353094916">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,38.8333353094916" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\LOG - CNT 1.Paths[Derived Column Output]"
+          TopLeft="181.439284383027,164.533334787951">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,50.078570114111"
+              Start="0,0"
+              End="0,42.578570114111">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,42.578570114111" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\LOG - CNT 1\INVUSESTATUS">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
       </Property>
     </Properties>
   </PipelineComponentMetadata>

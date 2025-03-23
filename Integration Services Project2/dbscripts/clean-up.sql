@@ -134,3 +134,6 @@ DELETE FROM MIGRATION.STE_MIGRATION_DEBUG_LOG;
 delete from MAXIMO.AMCREWT where STE_MIGRATIONID is not null;
 delete from MAXIMO.AMCREW where STE_MIGRATIONID is not null;
 delete from MAXIMO.AMCREWLABOR where STE_MIGRATIONID is not null;
+
+DELETE FROM maximo.glcomponents where STE_MIGRATIONID is not null;
+DELETE FROM MAXIMO.CHARTOFACCOUNTS where STE_MIGRATIONID is not null;
