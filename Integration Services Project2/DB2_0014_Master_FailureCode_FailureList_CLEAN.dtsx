@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0014_Master_FailureCode_FailureList_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="222"
-  DTS:VersionGUID="{BD013C6C-30C0-4B92-9479-F684CEC1E078}"
+  DTS:VersionBuild="224"
+  DTS:VersionGUID="{0F813BEB-5754-4375-9139-DB3993402A7E}"
   DTS:VersionMajor="7">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -10368,14 +10368,14 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               startId="Package\DF - FailureList (REMEDY)\Multicast.Outputs[Multicast Output 3]" />
             <path
               refId="Package\DF - FailureList (REMEDY).Paths[OLE DB Source Output1]"
-              endId="Package\DF - FailureList (REMEDY)\Sort 2.Inputs[Sort Input]"
-              name="OLE DB Source Output"
-              startId="Package\DF - FailureList (REMEDY)\OLE DB Source.Outputs[OLE DB Source Output]" />
-            <path
-              refId="Package\DF - FailureList (REMEDY).Paths[OLE DB Source Output]"
               endId="Package\DF - FailureList (REMEDY)\Sort 4.Inputs[Sort Input]"
               name="OLE DB Source Output"
               startId="Package\DF - FailureList (REMEDY)\OLE DB Source 1.Outputs[OLE DB Source Output]" />
+            <path
+              refId="Package\DF - FailureList (REMEDY).Paths[OLE DB Source Output]"
+              endId="Package\DF - FailureList (REMEDY)\Sort 2.Inputs[Sort Input]"
+              name="OLE DB Source Output"
+              startId="Package\DF - FailureList (REMEDY)\OLE DB Source.Outputs[OLE DB Source Output]" />
             <path
               refId="Package\DF - FailureList (REMEDY).Paths[Oracle Source Output]"
               endId="Package\DF - FailureList (REMEDY)\Sort.Inputs[Sort Input]"
@@ -10388,29 +10388,29 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==]]></arrayElement>
               startId="Package\DF - FailureList (REMEDY)\Running Number.Outputs[Output 0]" />
             <path
               refId="Package\DF - FailureList (REMEDY).Paths[Sort Output4]"
+              endId="Package\DF - FailureList (REMEDY)\Merge Join 1.Inputs[Merge Join Right Input]"
+              name="Sort Output"
+              startId="Package\DF - FailureList (REMEDY)\Sort 4.Outputs[Sort Output]" />
+            <path
+              refId="Package\DF - FailureList (REMEDY).Paths[Sort Output]"
               endId="Package\DF - FailureList (REMEDY)\Derived Column.Inputs[Derived Column Input]"
               name="Sort Output"
               startId="Package\DF - FailureList (REMEDY)\Sort 5.Outputs[Sort Output]" />
             <path
-              refId="Package\DF - FailureList (REMEDY).Paths[Sort Output]"
+              refId="Package\DF - FailureList (REMEDY).Paths[Sort Output1]"
               endId="Package\DF - FailureList (REMEDY)\Merge Join.Inputs[Merge Join Left Input]"
               name="Sort Output"
               startId="Package\DF - FailureList (REMEDY)\Sort 1.Outputs[Sort Output]" />
             <path
-              refId="Package\DF - FailureList (REMEDY).Paths[Sort Output1]"
+              refId="Package\DF - FailureList (REMEDY).Paths[Sort Output2]"
               endId="Package\DF - FailureList (REMEDY)\Merge Join.Inputs[Merge Join Right Input]"
               name="Sort Output"
               startId="Package\DF - FailureList (REMEDY)\Sort 2.Outputs[Sort Output]" />
             <path
-              refId="Package\DF - FailureList (REMEDY).Paths[Sort Output2]"
+              refId="Package\DF - FailureList (REMEDY).Paths[Sort Output3]"
               endId="Package\DF - FailureList (REMEDY)\Merge Join 1.Inputs[Merge Join Left Input]"
               name="Sort Output"
               startId="Package\DF - FailureList (REMEDY)\Sort 3.Outputs[Sort Output]" />
-            <path
-              refId="Package\DF - FailureList (REMEDY).Paths[Sort Output3]"
-              endId="Package\DF - FailureList (REMEDY)\Merge Join 1.Inputs[Merge Join Right Input]"
-              name="Sort Output"
-              startId="Package\DF - FailureList (REMEDY)\Sort 4.Outputs[Sort Output]" />
             <path
               refId="Package\DF - FailureList (REMEDY).Paths[Sort Output5]"
               endId="Package\DF - FailureList (REMEDY)\Running Number.Inputs[Input 0]"
@@ -16534,13 +16534,14 @@ where "refTable"."FAILURECODE" = ?</property>
                   description="The SQL command to be executed."
                   name="SqlCommand"
                   UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT  
-	FAILURECLASS, PROBLEMCODE, SEVERITY
+	FAILURECLASS, PROBLEMCODE, CASE WHEN SEVERITY='' THEN NULL ELSE SEVERITY END AS SEVERITY
 	, ROW_NUMBER() OVER(ORDER BY FAILURECLASS, PROBLEMCODE DESC) AS RN
 FROM (
-	SELECT DISTINCT 
+	SELECT 
 		FAILURECLASS, PROBLEMCODE
-		, NULL AS SEVERITY
+		, max(COALESCE(SEVERITY_CLASSIFICATION,'')) AS SEVERITY
 	FROM MIGRATION.SBST_FAILURELIST_MASTER
+	GROUP BY FAILURECLASS, PROBLEMCODE
 ) B 
 ORDER BY FAILURECLASS, PROBLEMCODE;</property>
                 <property
@@ -16627,7 +16628,7 @@ ORDER BY FAILURECLASS, PROBLEMCODE;</property>
                       refId="Package\DF - NEW FailureList (PROBLEM)\OLE DB Source 1.Outputs[OLE DB Source Output].ExternalColumns[SEVERITY]"
                       codePage="1252"
                       dataType="str"
-                      length="1"
+                      length="8"
                       name="SEVERITY" />
                     <externalMetadataColumn
                       refId="Package\DF - NEW FailureList (PROBLEM)\OLE DB Source 1.Outputs[OLE DB Source Output].ExternalColumns[RN]"
@@ -16670,7 +16671,7 @@ ORDER BY FAILURECLASS, PROBLEMCODE;</property>
                       refId="Package\DF - NEW FailureList (PROBLEM)\OLE DB Source 1.Outputs[OLE DB Source Error Output].Columns[SEVERITY]"
                       codePage="1252"
                       dataType="str"
-                      length="1"
+                      length="8"
                       lineageId="Package\DF - NEW FailureList (PROBLEM)\OLE DB Source 1.Outputs[OLE DB Source Error Output].Columns[SEVERITY]"
                       name="SEVERITY" />
                     <outputColumn
@@ -21918,79 +21919,7 @@ ORDER BY FAILURECLASS, PROBLEMCODE, CAUSECODE, REMEDYCODE;</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - FailureList (REMEDY).Paths[Sort Output]"
-          TopLeft="387.199995023012,287.599996334314">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="108.599998554588,33.3999988824129"
-              Start="0,0"
-              End="108.599998554588,25.8999988824129">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,12.6999994412064" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,12.6999994412064"
-                    Point2="0,16.6999994412064"
-                    Point3="4,16.6999994412064" />
-                  <mssgle:LineSegment
-                    End="104.599998554588,16.6999994412064" />
-                  <mssgle:CubicBezierSegment
-                    Point1="104.599998554588,16.6999994412064"
-                    Point2="108.599998554588,16.6999994412064"
-                    Point3="108.599998554588,20.6999994412064" />
-                  <mssgle:LineSegment
-                    End="108.599998554588,25.8999988824129" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
           Id="Package\DF - FailureList (REMEDY).Paths[Sort Output4]"
-          TopLeft="735.199989837408,582.39999409914">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-11.9999994337551,45.0000002235179"
-              Start="0,0"
-              End="-11.9999994337551,37.5000002235179">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,18.5000001117589" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,18.5000001117589"
-                    Point2="0,22.5000001117589"
-                    Point3="-4,22.5000001117589" />
-                  <mssgle:LineSegment
-                    End="-7.99999943375508,22.5000001117589" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-7.99999943375508,22.5000001117589"
-                    Point2="-11.9999994337551,22.5000001117589"
-                    Point3="-11.9999994337551,26.5000001117589" />
-                  <mssgle:LineSegment
-                    End="-11.9999994337551,37.5000002235179" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - FailureList (REMEDY).Paths[Sort Output3]"
           TopLeft="819.199988585711,445.79999473989">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -22026,7 +21955,7 @@ ORDER BY FAILURECLASS, PROBLEMCODE, CAUSECODE, REMEDYCODE;</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - FailureList (REMEDY).Paths[Sort Output2]"
+          Id="Package\DF - FailureList (REMEDY).Paths[Sort Output3]"
           TopLeft="575.199992221594,439.599994069338">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -22062,7 +21991,7 @@ ORDER BY FAILURECLASS, PROBLEMCODE, CAUSECODE, REMEDYCODE;</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - FailureList (REMEDY).Paths[Sort Output1]"
+          Id="Package\DF - FailureList (REMEDY).Paths[Sort Output2]"
           TopLeft="584.199992087483,286.599996349216">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -22087,6 +22016,78 @@ ORDER BY FAILURECLASS, PROBLEMCODE, CAUSECODE, REMEDYCODE;</property>
                     Point3="-68.1333318432171,24.3882920117204" />
                   <mssgle:LineSegment
                     End="-68.1333318432171,26.8999988675117" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - FailureList (REMEDY).Paths[Sort Output1]"
+          TopLeft="387.199995023012,287.599996334314">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="108.599998554588,33.3999988824129"
+              Start="0,0"
+              End="108.599998554588,25.8999988824129">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,12.6999994412064" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,12.6999994412064"
+                    Point2="0,16.6999994412064"
+                    Point3="4,16.6999994412064" />
+                  <mssgle:LineSegment
+                    End="104.599998554588,16.6999994412064" />
+                  <mssgle:CubicBezierSegment
+                    Point1="104.599998554588,16.6999994412064"
+                    Point2="108.599998554588,16.6999994412064"
+                    Point3="108.599998554588,20.6999994412064" />
+                  <mssgle:LineSegment
+                    End="108.599998554588,25.8999988824129" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - FailureList (REMEDY).Paths[Sort Output]"
+          TopLeft="735.199989837408,582.39999409914">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-11.9999994337551,45.0000002235179"
+              Start="0,0"
+              End="-11.9999994337551,37.5000002235179">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,18.5000001117589" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,18.5000001117589"
+                    Point2="0,22.5000001117589"
+                    Point3="-4,22.5000001117589" />
+                  <mssgle:LineSegment
+                    End="-7.99999943375508,22.5000001117589" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-7.99999943375508,22.5000001117589"
+                    Point2="-11.9999994337551,22.5000001117589"
+                    Point3="-11.9999994337551,26.5000001117589" />
+                  <mssgle:LineSegment
+                    End="-11.9999994337551,37.5000002235179" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -22170,7 +22171,7 @@ ORDER BY FAILURECLASS, PROBLEMCODE, CAUSECODE, REMEDYCODE;</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - FailureList (REMEDY).Paths[OLE DB Source Output]"
+          Id="Package\DF - FailureList (REMEDY).Paths[OLE DB Source Output1]"
           TopLeft="846.399988585711,319.199997019768">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -22206,7 +22207,7 @@ ORDER BY FAILURECLASS, PROBLEMCODE, CAUSECODE, REMEDYCODE;</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - FailureList (REMEDY).Paths[OLE DB Source Output1]"
+          Id="Package\DF - FailureList (REMEDY).Paths[OLE DB Source Output]"
           TopLeft="669.99999114871,163.999998390675">
           <EdgeLayout.Curve>
             <mssgle:Curve
@@ -22483,29 +22484,89 @@ ORDER BY FAILURECLASS, PROBLEMCODE, CAUSECODE, REMEDYCODE;</property>
       <GraphLayout
         Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
-          Size="171.2,41.6"
-          Id="Package\DF - NEW FailureCode\OLE DB Destination"
-          TopLeft="74.999990835787,545.50000079145" />
-        <NodeLayout
           Size="180,41.6"
           Id="Package\DF - NEW FailureCode\OLE DB Destination 1 1"
           TopLeft="481.333312239913,539.766668627295" />
         <NodeLayout
-          Size="158.4,41.6"
-          Id="Package\DF - NEW FailureCode\Derived Column"
-          TopLeft="86.666656865015,348.566667542491" />
+          Size="168.8,41.6"
+          Id="Package\DF - NEW FailureCode\Remove Duplicates"
+          TopLeft="78.9999988228082,166.899999217689" />
         <NodeLayout
-          Size="119.2,41.6"
-          Id="Package\DF - NEW FailureCode\Multicast"
-          TopLeft="107.499989060065,451.100001514653" />
+          Size="171.2,41.6"
+          Id="Package\DF - NEW FailureCode\OLE DB Destination"
+          TopLeft="74.999990835787,545.50000079145" />
         <NodeLayout
           Size="161.6,41.6"
           Id="Package\DF - NEW FailureCode\Derived Column 4"
           TopLeft="498.466637468671,447.900002599459" />
         <NodeLayout
+          Size="152,41.6"
+          Id="Package\DF - NEW FailureCode\OLE DB Source"
+          TopLeft="90.9999986439943,75.700001721084" />
+        <NodeLayout
+          Size="119.2,41.6"
+          Id="Package\DF - NEW FailureCode\Multicast"
+          TopLeft="107.499989060065,451.100001514653" />
+        <NodeLayout
+          Size="112.8,41.6"
+          Id="Package\DF - NEW FailureCode\Lookup"
+          TopLeft="107.499998398125,249.299998740852" />
+        <NodeLayout
           Size="126.4,41.6"
           Id="Package\DF - NEW FailureCode\Aggregate"
           TopLeft="309.166644708151,447.966668970817" />
+        <NodeLayout
+          Size="158.4,41.6"
+          Id="Package\DF - NEW FailureCode\Derived Column"
+          TopLeft="86.666656865015,348.566667542491" />
+        <EdgeLayout
+          Id="Package\DF - NEW FailureCode.Paths[Sort Output]"
+          TopLeft="163.649998610467,208.499999217689">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,40.7999995231629"
+              Start="0,0"
+              End="0,33.2999995231629">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,33.2999995231629" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-25.1537109375,11.8633786678314,50.307421875,9.5732421875"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - NEW FailureCode.Paths[OLE DB Source Output]"
+          TopLeft="165.199998733401,117.300001721084">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,49.5999974966051"
+              Start="0,0"
+              End="0,42.0999974966051">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,42.0999974966051" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-25.1537109375,16.2633776545525,50.307421875,9.5732421875"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - NEW FailureCode.Paths[Multicast Output 2]"
           TopLeft="226.699989060065,470.333335242735">
@@ -22551,6 +22612,30 @@ ORDER BY FAILURECLASS, PROBLEMCODE, CAUSECODE, REMEDYCODE;</property>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
               BoundingBox="-25.1537109375,17.8633785446487,50.307421875,9.5732421875"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - NEW FailureCode.Paths[Lookup No Match Output]"
+          TopLeft="164.88332763157,290.899998740852">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,57.6666688016394"
+              Start="0,0"
+              End="0,50.1666688016394">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,50.1666688016394" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-85.39673828125,19.2786469008197,170.7934765625,11.609375"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
@@ -22626,90 +22711,6 @@ ORDER BY FAILURECLASS, PROBLEMCODE, CAUSECODE, REMEDYCODE;</property>
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="152,41.6"
-          Id="Package\DF - NEW FailureCode\OLE DB Source"
-          TopLeft="90.9999986439943,75.700001721084" />
-        <NodeLayout
-          Size="168.8,41.6"
-          Id="Package\DF - NEW FailureCode\Remove Duplicates"
-          TopLeft="78.9999988228082,166.899999217689" />
-        <EdgeLayout
-          Id="Package\DF - NEW FailureCode.Paths[OLE DB Source Output]"
-          TopLeft="165.199998733401,117.300001721084">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,49.5999974966051"
-              Start="0,0"
-              End="0,42.0999974966051">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,42.0999974966051" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-25.1537109375,16.2633776545525,50.307421875,9.5732421875"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="112.8,41.6"
-          Id="Package\DF - NEW FailureCode\Lookup"
-          TopLeft="107.499998398125,249.299998740852" />
-        <EdgeLayout
-          Id="Package\DF - NEW FailureCode.Paths[Sort Output]"
-          TopLeft="163.649998610467,208.499999217689">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,40.7999995231629"
-              Start="0,0"
-              End="0,33.2999995231629">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,33.2999995231629" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-25.1537109375,11.8633786678314,50.307421875,9.5732421875"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - NEW FailureCode.Paths[Lookup No Match Output]"
-          TopLeft="164.88332763157,290.899998740852">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,57.6666688016394"
-              Start="0,0"
-              End="0,50.1666688016394">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,50.1666688016394" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-85.39673828125,19.2786469008197,170.7934765625,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
@@ -22763,115 +22764,135 @@ ORDER BY FAILURECLASS, PROBLEMCODE, CAUSECODE, REMEDYCODE;</property>
       <GraphLayout
         Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
-          Size="168.8,41.6"
-          Id="Package\DF - NEW FailureList (CAUSE)\Remove Duplicates"
-          TopLeft="113.499999600153,149.766664515369" />
-        <NodeLayout
-          Size="158.4,41.6"
-          Id="Package\DF - NEW FailureList (CAUSE)\Derived Column"
-          TopLeft="116.666672411892,459.966665043367" />
-        <NodeLayout
-          Size="147.2,41.6"
-          Id="Package\DF - NEW FailureList (CAUSE)\Check Existing"
-          TopLeft="122.041659839659,354.23333136595" />
+          Size="179.2,41.6"
+          Id="Package\DF - NEW FailureList (CAUSE)\Lookup - FailureClass"
+          TopLeft="113.999998301268,243.399998614192" />
         <NodeLayout
           Size="160.8,41.6"
           Id="Package\DF - NEW FailureList (CAUSE)\OLE DB Source 1"
           TopLeft="120.833326731291,67.5999996022384" />
         <NodeLayout
+          Size="171.2,41.6"
+          Id="Package\DF - NEW FailureList (CAUSE)\OLE DB Destination"
+          TopLeft="108.666672531101,648.866658367647" />
+        <NodeLayout
           Size="119.2,41.6"
           Id="Package\DF - NEW FailureList (CAUSE)\Multicast"
           TopLeft="133.166664516761,554.466658311222" />
+        <NodeLayout
+          Size="158.4,41.6"
+          Id="Package\DF - NEW FailureList (CAUSE)\Derived Column"
+          TopLeft="116.666672411892,459.966665043367" />
+        <NodeLayout
+          Size="168.8,41.6"
+          Id="Package\DF - NEW FailureList (CAUSE)\Remove Duplicates"
+          TopLeft="113.499999600153,149.766664515369" />
         <NodeLayout
           Size="180,41.6"
           Id="Package\DF - NEW FailureList (CAUSE)\OLE DB Destination 1 1"
           TopLeft="492.333329262005,644.73332576957" />
         <NodeLayout
-          Size="161.6,41.6"
-          Id="Package\DF - NEW FailureList (CAUSE)\Derived Column 4"
-          TopLeft="509.466654490763,552.866659741734" />
+          Size="172,41.6"
+          Id="Package\DF - NEW FailureList (CAUSE)\Lookup - PROBLEM"
+          TopLeft="387.416668377402,245.466665892733" />
         <NodeLayout
           Size="126.4,41.6"
           Id="Package\DF - NEW FailureList (CAUSE)\Aggregate"
           TopLeft="320.166661730244,552.933326113093" />
         <NodeLayout
-          Size="171.2,41.6"
-          Id="Package\DF - NEW FailureList (CAUSE)\OLE DB Destination"
-          TopLeft="108.666672531101,648.866658367647" />
+          Size="161.6,41.6"
+          Id="Package\DF - NEW FailureList (CAUSE)\Derived Column 4"
+          TopLeft="509.466654490763,552.866659741734" />
         <NodeLayout
-          Size="179.2,41.6"
-          Id="Package\DF - NEW FailureList (CAUSE)\Lookup - FailureClass"
-          TopLeft="113.999998301268,243.399998614192" />
+          Size="147.2,41.6"
+          Id="Package\DF - NEW FailureList (CAUSE)\Check Existing"
+          TopLeft="122.041659839659,354.23333136595" />
         <EdgeLayout
-          Id="Package\DF - NEW FailureList (CAUSE).Paths[Derived Column Output1]"
-          TopLeft="194.316668464326,501.566665043367">
+          Id="Package\DF - NEW FailureList (CAUSE).Paths[Sort Output]"
+          TopLeft="200.74999895071,191.366664515369">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,52.8999932678558"
+              EndConnector="0,52.033334098823"
               Start="0,0"
-              End="0,45.3999932678558">
+              End="0,44.533334098823">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,45.3999932678558" />
+                    End="0,44.533334098823" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-27.53947265625,17.8987271026779,55.0789453125,9.6025390625"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - NEW FailureList (CAUSE).Paths[Derived Column Output]"
-          TopLeft="586.299991876385,594.466659741734">
+          Id="Package\DF - NEW FailureList (CAUSE).Paths[OLE DB Source Output]"
+          TopLeft="199.566663165722,109.199999602238">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,50.266666027837"
+              EndConnector="0,40.5666649131308"
               Start="0,0"
-              End="0,42.766666027837">
+              End="0,33.0666649131308">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,42.766666027837" />
+                    End="0,33.0666649131308" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-15.10447265625,16.6601884826685,30.2089453125,9.4462890625"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - NEW FailureList (CAUSE).Paths[Aggregate Output 1]"
-          TopLeft="446.566661730243,573.699992927412">
+          Id="Package\DF - NEW FailureList (CAUSE).Paths[Multicast Output 3]"
+          TopLeft="252.366664516761,574.499992212156">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="62.8999927605201,0"
+              EndConnector="67.7999972134829,0"
               Start="0,0"
-              End="55.3999927605201,0">
+              End="60.2999972134829,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="55.3999927605201,0" />
+                    End="60.2999972134829,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="12.5955237240101,5,30.2089453125,9.4462890625"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - NEW FailureList (CAUSE).Paths[Multicast Output 1]"
+          TopLeft="193.516668523931,596.066658311221">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,52.800000056426"
+              Start="0,0"
+              End="0,45.300000056426">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,45.300000056426" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -22894,131 +22915,7 @@ ORDER BY FAILURECLASS, PROBLEMCODE, CAUSECODE, REMEDYCODE;</property>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="-88.12673828125,22.5119793387083,176.2534765625,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - NEW FailureList (CAUSE).Paths[Multicast Output 3]"
-          TopLeft="252.366664516761,574.499992212156">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="67.7999972134829,0"
-              Start="0,0"
-              End="60.2999972134829,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="60.2999972134829,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="2.61052595049144,5,55.0789453125,9.6025390625"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - NEW FailureList (CAUSE).Paths[Multicast Output 1]"
-          TopLeft="193.516668523931,596.066658311221">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,52.800000056426"
-              Start="0,0"
-              End="0,45.300000056426">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,45.300000056426" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-27.53947265625,17.848730496963,55.0789453125,9.6025390625"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - NEW FailureList (CAUSE).Paths[OLE DB Source Output]"
-          TopLeft="199.566663165722,109.199999602238">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,40.5666649131308"
-              Start="0,0"
-              End="0,33.0666649131308">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,33.0666649131308" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-27.53947265625,11.7320629253154,55.0789453125,9.6025390625"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - NEW FailureList (CAUSE).Paths[Sort Output]"
-          TopLeft="200.74999895071,191.366664515369">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,52.033334098823"
-              Start="0,0"
-              End="0,44.533334098823">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,44.533334098823" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-27.53947265625,17.4653975181615,55.0789453125,9.6025390625"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="172,41.6"
-          Id="Package\DF - NEW FailureList (CAUSE)\Lookup - PROBLEM"
-          TopLeft="387.416668377402,245.466665892733" />
-        <EdgeLayout
-          Id="Package\DF - NEW FailureList (CAUSE).Paths[Lookup Match Output]"
-          TopLeft="293.199998301268,265.233332253463">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="94.2166700761343,0"
-              Start="0,0"
-              End="86.7166700761343,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="86.7166700761343,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-37.1534032431829,5,161.0234765625,11.609375"
+              BoundingBox="-88.12673828125,22.5119793387083,111.6127734375,11.609375"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
@@ -23054,8 +22951,98 @@ ORDER BY FAILURECLASS, PROBLEMCODE, CAUSECODE, REMEDYCODE;</property>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="-219.399242550122,38.5833327366083,161.0234765625,11.609375"
+              BoundingBox="-219.399242550122,38.5833327366083,96.3827734375,11.609375"
               RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - NEW FailureList (CAUSE).Paths[Lookup Match Output]"
+          TopLeft="293.199998301268,265.233332253463">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="94.2166700761343,0"
+              Start="0,0"
+              End="86.7166700761343,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="86.7166700761343,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-37.1534032431829,5,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - NEW FailureList (CAUSE).Paths[Derived Column Output1]"
+          TopLeft="194.316668464326,501.566665043367">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,52.8999932678558"
+              Start="0,0"
+              End="0,45.3999932678558">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,45.3999932678558" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - NEW FailureList (CAUSE).Paths[Derived Column Output]"
+          TopLeft="586.299991876385,594.466659741734">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,50.266666027837"
+              Start="0,0"
+              End="0,42.766666027837">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,42.766666027837" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - NEW FailureList (CAUSE).Paths[Aggregate Output 1]"
+          TopLeft="446.566661730243,573.699992927412">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="62.8999927605201,0"
+              Start="0,0"
+              End="55.3999927605201,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="55.3999927605201,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
@@ -23134,181 +23121,37 @@ ORDER BY FAILURECLASS, PROBLEMCODE, CAUSECODE, REMEDYCODE;</property>
       <GraphLayout
         Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
-          Size="161.6,41.6"
-          Id="Package\DF - NEW FailureList (Failure Class)\Derived Column 4"
-          TopLeft="506.466654535467,445.06666109774" />
-        <NodeLayout
-          Size="168.8,41.6"
-          Id="Package\DF - NEW FailureList (Failure Class)\Remove Duplicates"
-          TopLeft="113.499999600153,149.766664515369" />
-        <NodeLayout
-          Size="158.4,41.6"
-          Id="Package\DF - NEW FailureList (Failure Class)\Derived Column"
-          TopLeft="117.666672396991,341.166666563285" />
+          Size="180,41.6"
+          Id="Package\DF - NEW FailureList (Failure Class)\OLE DB Destination 1 1"
+          TopLeft="489.333329306709,536.933327125576" />
         <NodeLayout
           Size="171.2,41.6"
           Id="Package\DF - NEW FailureList (Failure Class)\OLE DB Destination"
           TopLeft="105.666672575804,541.066659723653" />
         <NodeLayout
-          Size="180,41.6"
-          Id="Package\DF - NEW FailureList (Failure Class)\OLE DB Destination 1 1"
-          TopLeft="489.333329306709,536.933327125576" />
+          Size="160.8,41.6"
+          Id="Package\DF - NEW FailureList (Failure Class)\OLE DB Source 1"
+          TopLeft="120.833326731291,67.5999996022384" />
         <NodeLayout
           Size="119.2,41.6"
           Id="Package\DF - NEW FailureList (Failure Class)\Multicast"
           TopLeft="130.166664561464,446.666659667228" />
         <NodeLayout
+          Size="158.4,41.6"
+          Id="Package\DF - NEW FailureList (Failure Class)\Derived Column"
+          TopLeft="117.666672396991,341.166666563285" />
+        <NodeLayout
+          Size="168.8,41.6"
+          Id="Package\DF - NEW FailureList (Failure Class)\Remove Duplicates"
+          TopLeft="113.499999600153,149.766664515369" />
+        <NodeLayout
           Size="126.4,41.6"
           Id="Package\DF - NEW FailureList (Failure Class)\Aggregate"
           TopLeft="317.166661774947,445.133327469099" />
-        <EdgeLayout
-          Id="Package\DF - NEW FailureList (Failure Class).Paths[Derived Column Output1]"
-          TopLeft="193.316668479228,382.766666563285">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,63.8999931039428"
-              Start="0,0"
-              End="0,56.3999931039428">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,56.3999931039428" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-20.56447265625,23.4768520207214,41.1289453125,9.4462890625"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - NEW FailureList (Failure Class).Paths[Derived Column Output]"
-          TopLeft="583.299991921088,486.66666109774">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,50.2666660278371"
-              Start="0,0"
-              End="0,42.7666660278371">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,42.7666660278371" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-15.10447265625,16.6601884826685,30.2089453125,9.4462890625"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - NEW FailureList (Failure Class).Paths[Aggregate Output 1]"
-          TopLeft="443.566661774947,465.899994283418">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="62.8999927605201,0"
-              Start="0,0"
-              End="55.3999927605201,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="55.3999927605201,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="12.5955237240101,5,30.2089453125,9.4462890625"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - NEW FailureList (Failure Class).Paths[Multicast Output 3]"
-          TopLeft="249.366664561464,466.699993568162">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="67.7999972134829,0"
-              Start="0,0"
-              End="60.2999972134829,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="60.2999972134829,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="9.58552595049145,5,41.1289453125,9.4462890625"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - NEW FailureList (Failure Class).Paths[Multicast Output 1]"
-          TopLeft="190.516668568634,488.266659667227">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,52.8000000564261"
-              Start="0,0"
-              End="0,45.3000000564261">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,45.3000000564261" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-20.56447265625,17.9268554969631,41.1289453125,9.4462890625"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
         <NodeLayout
-          Size="160.8,41.6"
-          Id="Package\DF - NEW FailureList (Failure Class)\OLE DB Source 1"
-          TopLeft="120.833326731291,67.5999996022384" />
-        <EdgeLayout
-          Id="Package\DF - NEW FailureList (Failure Class).Paths[OLE DB Source Output]"
-          TopLeft="199.566663165722,109.199999602238">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,40.5666649131308"
-              Start="0,0"
-              End="0,33.0666649131308">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,33.0666649131308" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-20.56447265625,11.8101879253154,41.1289453125,9.4462890625"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
+          Size="161.6,41.6"
+          Id="Package\DF - NEW FailureList (Failure Class)\Derived Column 4"
+          TopLeft="506.466654535467,445.06666109774" />
         <NodeLayout
           Size="147.2,41.6"
           Id="Package\DF - NEW FailureList (Failure Class)\Check Existing"
@@ -23332,9 +23175,73 @@ ORDER BY FAILURECLASS, PROBLEMCODE, CAUSECODE, REMEDYCODE;</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-20.56447265625,18.0601895869443,41.1289453125,9.4462890625"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - NEW FailureList (Failure Class).Paths[OLE DB Source Output]"
+          TopLeft="199.566663165722,109.199999602238">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,40.5666649131308"
+              Start="0,0"
+              End="0,33.0666649131308">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,33.0666649131308" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - NEW FailureList (Failure Class).Paths[Multicast Output 3]"
+          TopLeft="249.366664561464,466.699993568162">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="67.7999972134829,0"
+              Start="0,0"
+              End="60.2999972134829,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="60.2999972134829,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - NEW FailureList (Failure Class).Paths[Multicast Output 1]"
+          TopLeft="190.516668568634,488.266659667227">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,52.8000000564261"
+              Start="0,0"
+              End="0,45.3000000564261">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,45.3000000564261" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -23357,8 +23264,74 @@ ORDER BY FAILURECLASS, PROBLEMCODE, CAUSECODE, REMEDYCODE;</property>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="-81.15173828125,18.0119794057634,162.3034765625,11.609375"
+              BoundingBox="-81.15173828125,18.0119794057634,111.6127734375,11.609375"
               RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - NEW FailureList (Failure Class).Paths[Derived Column Output1]"
+          TopLeft="193.316668479228,382.766666563285">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,63.8999931039428"
+              Start="0,0"
+              End="0,56.3999931039428">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,56.3999931039428" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - NEW FailureList (Failure Class).Paths[Derived Column Output]"
+          TopLeft="583.299991921088,486.66666109774">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,50.2666660278371"
+              Start="0,0"
+              End="0,42.7666660278371">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,42.7666660278371" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - NEW FailureList (Failure Class).Paths[Aggregate Output 1]"
+          TopLeft="443.566661774947,465.899994283418">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="62.8999927605201,0"
+              Start="0,0"
+              End="55.3999927605201,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="55.3999927605201,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
@@ -23414,111 +23387,131 @@ ORDER BY FAILURECLASS, PROBLEMCODE, CAUSECODE, REMEDYCODE;</property>
       <GraphLayout
         Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
+          Size="179.2,41.6"
+          Id="Package\DF - NEW FailureList (PROBLEM)\Lookup - FailureClass"
+          TopLeft="113.999998301268,243.399998614192" />
+        <NodeLayout
           Size="168.8,41.6"
           Id="Package\DF - NEW FailureList (PROBLEM)\Remove Duplicates"
           TopLeft="113.499999600153,149.766664515369" />
-        <NodeLayout
-          Size="158.4,41.6"
-          Id="Package\DF - NEW FailureList (PROBLEM)\Derived Column"
-          TopLeft="116.666672411892,459.966665043367" />
-        <NodeLayout
-          Size="147.2,41.6"
-          Id="Package\DF - NEW FailureList (PROBLEM)\Check Existing"
-          TopLeft="122.041659839659,354.23333136595" />
         <NodeLayout
           Size="160.8,41.6"
           Id="Package\DF - NEW FailureList (PROBLEM)\OLE DB Source 1"
           TopLeft="120.833326731291,67.5999996022384" />
         <NodeLayout
-          Size="119.2,41.6"
-          Id="Package\DF - NEW FailureList (PROBLEM)\Multicast"
-          TopLeft="133.166664516761,554.466658311222" />
+          Size="158.4,41.6"
+          Id="Package\DF - NEW FailureList (PROBLEM)\Derived Column"
+          TopLeft="116.666672411892,459.966665043367" />
         <NodeLayout
           Size="180,41.6"
           Id="Package\DF - NEW FailureList (PROBLEM)\OLE DB Destination 1 1"
           TopLeft="492.333329262005,644.73332576957" />
         <NodeLayout
-          Size="161.6,41.6"
-          Id="Package\DF - NEW FailureList (PROBLEM)\Derived Column 4"
-          TopLeft="509.466654490763,552.866659741734" />
+          Size="171.2,41.6"
+          Id="Package\DF - NEW FailureList (PROBLEM)\OLE DB Destination"
+          TopLeft="108.666672531101,648.866658367647" />
+        <NodeLayout
+          Size="119.2,41.6"
+          Id="Package\DF - NEW FailureList (PROBLEM)\Multicast"
+          TopLeft="133.166664516761,554.466658311222" />
         <NodeLayout
           Size="126.4,41.6"
           Id="Package\DF - NEW FailureList (PROBLEM)\Aggregate"
           TopLeft="320.166661730244,552.933326113093" />
         <NodeLayout
-          Size="171.2,41.6"
-          Id="Package\DF - NEW FailureList (PROBLEM)\OLE DB Destination"
-          TopLeft="108.666672531101,648.866658367647" />
+          Size="161.6,41.6"
+          Id="Package\DF - NEW FailureList (PROBLEM)\Derived Column 4"
+          TopLeft="509.466654490763,552.866659741734" />
+        <NodeLayout
+          Size="147.2,41.6"
+          Id="Package\DF - NEW FailureList (PROBLEM)\Check Existing"
+          TopLeft="122.041659839659,354.23333136595" />
         <EdgeLayout
-          Id="Package\DF - NEW FailureList (PROBLEM).Paths[Derived Column Output1]"
-          TopLeft="194.316668464326,501.566665043367">
+          Id="Package\DF - NEW FailureList (PROBLEM).Paths[Sort Output]"
+          TopLeft="200.74999895071,191.366664515369">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,52.8999932678558"
+              EndConnector="0,52.033334098823"
               Start="0,0"
-              End="0,45.3999932678558">
+              End="0,44.533334098823">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,45.3999932678558" />
+                    End="0,44.533334098823" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-25.0951171875,17.9133755401779,50.190234375,9.5732421875"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - NEW FailureList (PROBLEM).Paths[Derived Column Output]"
-          TopLeft="586.299991876385,594.466659741734">
+          Id="Package\DF - NEW FailureList (PROBLEM).Paths[OLE DB Source Output]"
+          TopLeft="199.566663165722,109.199999602238">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,50.266666027837"
+              EndConnector="0,40.5666649131308"
               Start="0,0"
-              End="0,42.766666027837">
+              End="0,33.0666649131308">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,42.766666027837" />
+                    End="0,33.0666649131308" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-15.10447265625,16.6601884826685,30.2089453125,9.4462890625"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - NEW FailureList (PROBLEM).Paths[Aggregate Output 1]"
-          TopLeft="446.566661730243,573.699992927412">
+          Id="Package\DF - NEW FailureList (PROBLEM).Paths[Multicast Output 3]"
+          TopLeft="252.366664516761,574.499992212156">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="62.8999927605201,0"
+              EndConnector="67.7999972134829,0"
               Start="0,0"
-              End="55.3999927605201,0">
+              End="60.2999972134829,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="55.3999927605201,0" />
+                    End="60.2999972134829,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="12.59552372401,5,30.2089453125,9.4462890625"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - NEW FailureList (PROBLEM).Paths[Multicast Output 1]"
+          TopLeft="193.516668523931,596.066658311221">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,52.800000056426"
+              Start="0,0"
+              End="0,45.300000056426">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,45.300000056426" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -23541,107 +23534,7 @@ ORDER BY FAILURECLASS, PROBLEMCODE, CAUSECODE, REMEDYCODE;</property>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="-85.39673828125,22.5119793387083,170.7934765625,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - NEW FailureList (PROBLEM).Paths[Multicast Output 3]"
-          TopLeft="252.366664516761,574.499992212156">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="67.7999972134829,0"
-              Start="0,0"
-              End="60.2999972134829,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="60.2999972134829,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="5.05488141924143,5,50.190234375,9.5732421875"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - NEW FailureList (PROBLEM).Paths[Multicast Output 1]"
-          TopLeft="193.516668523931,596.066658311221">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,52.800000056426"
-              Start="0,0"
-              End="0,45.300000056426">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,45.300000056426" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-25.0951171875,17.863378934463,50.190234375,9.5732421875"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - NEW FailureList (PROBLEM).Paths[OLE DB Source Output]"
-          TopLeft="199.566663165722,109.199999602238">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,40.5666649131308"
-              Start="0,0"
-              End="0,33.0666649131308">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,33.0666649131308" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-25.0951171875,11.7467113628154,50.190234375,9.5732421875"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="179.2,41.6"
-          Id="Package\DF - NEW FailureList (PROBLEM)\Lookup - FailureClass"
-          TopLeft="113.999998301268,243.399998614192" />
-        <EdgeLayout
-          Id="Package\DF - NEW FailureList (PROBLEM).Paths[Sort Output]"
-          TopLeft="200.74999895071,191.366664515369">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,52.033334098823"
-              Start="0,0"
-              End="0,44.533334098823">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,44.533334098823" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-25.0951171875,17.4800459556615,50.190234375,9.5732421875"
+              BoundingBox="-85.39673828125,22.5119793387083,111.6127734375,11.609375"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
@@ -23665,8 +23558,74 @@ ORDER BY FAILURECLASS, PROBLEMCODE, CAUSECODE, REMEDYCODE;</property>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="-77.78173828125,25.0619788758789,155.5634765625,11.609375"
+              BoundingBox="-77.78173828125,25.0619788758789,96.3827734375,11.609375"
               RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - NEW FailureList (PROBLEM).Paths[Derived Column Output1]"
+          TopLeft="194.316668464326,501.566665043367">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,52.8999932678558"
+              Start="0,0"
+              End="0,45.3999932678558">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,45.3999932678558" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - NEW FailureList (PROBLEM).Paths[Derived Column Output]"
+          TopLeft="586.299991876385,594.466659741734">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,50.266666027837"
+              Start="0,0"
+              End="0,42.766666027837">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,42.766666027837" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - NEW FailureList (PROBLEM).Paths[Aggregate Output 1]"
+          TopLeft="446.566661730243,573.699992927412">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="62.8999927605201,0"
+              Start="0,0"
+              End="55.3999927605201,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="55.3999927605201,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
@@ -23745,49 +23704,183 @@ ORDER BY FAILURECLASS, PROBLEMCODE, CAUSECODE, REMEDYCODE;</property>
       <GraphLayout
         Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
-          Size="168.8,41.6"
-          Id="Package\DF - NEW FailureList (REMEDY)\Remove Duplicates"
-          TopLeft="113.499999600153,149.766664515369" />
-        <NodeLayout
-          Size="158.4,41.6"
-          Id="Package\DF - NEW FailureList (REMEDY)\Derived Column"
-          TopLeft="116.666672411892,459.966665043367" />
-        <NodeLayout
           Size="172,41.6"
           Id="Package\DF - NEW FailureList (REMEDY)\Lookup - PROBLEM"
           TopLeft="387.416668377402,245.466665892733" />
-        <NodeLayout
-          Size="147.2,41.6"
-          Id="Package\DF - NEW FailureList (REMEDY)\Check Existing"
-          TopLeft="122.041659839659,354.23333136595" />
-        <NodeLayout
-          Size="160.8,41.6"
-          Id="Package\DF - NEW FailureList (REMEDY)\OLE DB Source 1"
-          TopLeft="120.833326731291,67.5999996022384" />
-        <NodeLayout
-          Size="119.2,41.6"
-          Id="Package\DF - NEW FailureList (REMEDY)\Multicast"
-          TopLeft="133.166664516761,554.466658311222" />
-        <NodeLayout
-          Size="180,41.6"
-          Id="Package\DF - NEW FailureList (REMEDY)\OLE DB Destination 1 1"
-          TopLeft="492.333329262005,644.73332576957" />
-        <NodeLayout
-          Size="161.6,41.6"
-          Id="Package\DF - NEW FailureList (REMEDY)\Derived Column 4"
-          TopLeft="509.466654490763,552.866659741734" />
-        <NodeLayout
-          Size="126.4,41.6"
-          Id="Package\DF - NEW FailureList (REMEDY)\Aggregate"
-          TopLeft="320.166661730244,552.933326113093" />
         <NodeLayout
           Size="171.2,41.6"
           Id="Package\DF - NEW FailureList (REMEDY)\OLE DB Destination"
           TopLeft="108.666672531101,648.866658367647" />
         <NodeLayout
+          Size="161.6,41.6"
+          Id="Package\DF - NEW FailureList (REMEDY)\Derived Column 4"
+          TopLeft="509.466654490763,552.866659741734" />
+        <NodeLayout
+          Size="119.2,41.6"
+          Id="Package\DF - NEW FailureList (REMEDY)\Multicast"
+          TopLeft="133.166664516761,554.466658311222" />
+        <NodeLayout
+          Size="160.8,41.6"
+          Id="Package\DF - NEW FailureList (REMEDY)\OLE DB Source 1"
+          TopLeft="120.833326731291,67.5999996022384" />
+        <NodeLayout
+          Size="168.8,41.6"
+          Id="Package\DF - NEW FailureList (REMEDY)\Remove Duplicates"
+          TopLeft="113.499999600153,149.766664515369" />
+        <NodeLayout
+          Size="157.6,41.6"
+          Id="Package\DF - NEW FailureList (REMEDY)\Lookup - CAUSE"
+          TopLeft="635.666664678189,247.466665862931" />
+        <NodeLayout
+          Size="180,41.6"
+          Id="Package\DF - NEW FailureList (REMEDY)\OLE DB Destination 1 1"
+          TopLeft="492.333329262005,644.73332576957" />
+        <NodeLayout
+          Size="147.2,41.6"
+          Id="Package\DF - NEW FailureList (REMEDY)\Check Existing"
+          TopLeft="122.041659839659,354.23333136595" />
+        <NodeLayout
           Size="179.2,41.6"
           Id="Package\DF - NEW FailureList (REMEDY)\Lookup - FailureClass"
           TopLeft="113.999998301268,243.399998614192" />
+        <NodeLayout
+          Size="158.4,41.6"
+          Id="Package\DF - NEW FailureList (REMEDY)\Derived Column"
+          TopLeft="116.666672411892,459.966665043367" />
+        <NodeLayout
+          Size="126.4,41.6"
+          Id="Package\DF - NEW FailureList (REMEDY)\Aggregate"
+          TopLeft="320.166661730244,552.933326113093" />
+        <EdgeLayout
+          Id="Package\DF - NEW FailureList (REMEDY).Paths[Multicast Output 1]"
+          TopLeft="193.516668523931,596.066658311221">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,52.800000056426"
+              Start="0,0"
+              End="0,45.300000056426">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,45.300000056426" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - NEW FailureList (REMEDY).Paths[Lookup No Match Output]"
+          TopLeft="195.754166125775,395.83333136595">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,64.1333336774165"
+              Start="0,0"
+              End="0,56.6333336774165">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,56.6333336774165" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-55.80638671875,22.5119793387083,111.6127734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - NEW FailureList (REMEDY).Paths[Lookup Match Output2]"
+          TopLeft="714.466664678189,289.066665862931">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-518.82500483853,65.166665503019"
+              Start="0,0"
+              End="-518.82500483853,57.666665503019">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,28.5833327515095" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,28.5833327515095"
+                    Point2="0,32.5833327515095"
+                    Point3="-4,32.5833327515095" />
+                  <mssgle:LineSegment
+                    End="-514.82500483853,32.5833327515095" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-514.82500483853,32.5833327515095"
+                    Point2="-518.82500483853,32.5833327515095"
+                    Point3="-518.82500483853,36.5833327515095" />
+                  <mssgle:LineSegment
+                    End="-518.82500483853,57.666665503019" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-327.489240700515,37.5833327515095,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - NEW FailureList (REMEDY).Paths[Lookup Match Output1]"
+          TopLeft="559.416668377402,267.266665877832">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="76.2499963007873,0"
+              Start="0,0"
+              End="68.7499963007873,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="68.7499963007873,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-43.4067401308564,5,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - NEW FailureList (REMEDY).Paths[Lookup Match Output]"
+          TopLeft="293.199998301268,265.233332253463">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="94.2166700761343,0"
+              Start="0,0"
+              End="86.7166700761343,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="86.7166700761343,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-37.1534032431829,5,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - NEW FailureList (REMEDY).Paths[Derived Column Output1]"
           TopLeft="194.316668464326,501.566665043367">
@@ -23855,89 +23948,19 @@ ORDER BY FAILURECLASS, PROBLEMCODE, CAUSECODE, REMEDYCODE;</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - NEW FailureList (REMEDY).Paths[Lookup No Match Output]"
-          TopLeft="195.754166125775,395.83333136595">
+          Id="Package\DF - NEW FailureList (REMEDY).Paths[Sort Output]"
+          TopLeft="200.74999895071,191.366664515369">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,64.1333336774165"
+              EndConnector="0,52.033334098823"
               Start="0,0"
-              End="0,56.6333336774165">
+              End="0,44.533334098823">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,56.6333336774165" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-55.80638671875,22.5119793387083,151.3834765625,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - NEW FailureList (REMEDY).Paths[Lookup Match Output]"
-          TopLeft="293.199998301268,265.233332253463">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="94.2166700761343,0"
-              Start="0,0"
-              End="86.7166700761343,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="86.7166700761343,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-37.1534032431829,5,161.0234765625,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - NEW FailureList (REMEDY).Paths[Multicast Output 3]"
-          TopLeft="252.366664516761,574.499992212156">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="67.7999972134829,0"
-              Start="0,0"
-              End="60.2999972134829,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="60.2999972134829,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - NEW FailureList (REMEDY).Paths[Multicast Output 1]"
-          TopLeft="193.516668523931,596.066658311221">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,52.800000056426"
-              Start="0,0"
-              End="0,45.300000056426">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,45.300000056426" />
+                    End="0,44.533334098823" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -23965,97 +23988,29 @@ ORDER BY FAILURECLASS, PROBLEMCODE, CAUSECODE, REMEDYCODE;</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-30.26947265625,11.7467113628154,60.5389453125,9.5732421875"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - NEW FailureList (REMEDY).Paths[Sort Output]"
-          TopLeft="200.74999895071,191.366664515369">
+          Id="Package\DF - NEW FailureList (REMEDY).Paths[Multicast Output 3]"
+          TopLeft="252.366664516761,574.499992212156">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,52.033334098823"
+              EndConnector="67.7999972134829,0"
               Start="0,0"
-              End="0,44.533334098823">
+              End="60.2999972134829,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,44.533334098823" />
+                    End="60.2999972134829,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-27.8251171875,17.4800459556615,55.650234375,9.5732421875"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="157.6,41.6"
-          Id="Package\DF - NEW FailureList (REMEDY)\Lookup - CAUSE"
-          TopLeft="635.666664678189,247.466665862931" />
-        <EdgeLayout
-          Id="Package\DF - NEW FailureList (REMEDY).Paths[Lookup Match Output1]"
-          TopLeft="559.416668377402,267.266665877832">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="76.2499963007873,0"
-              Start="0,0"
-              End="68.7499963007873,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="68.7499963007873,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-43.4067401308564,5,155.5634765625,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - NEW FailureList (REMEDY).Paths[Lookup Match Output2]"
-          TopLeft="714.466664678189,289.066665862931">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-518.82500483853,65.166665503019"
-              Start="0,0"
-              End="-518.82500483853,57.666665503019">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,28.5833327515095" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,28.5833327515095"
-                    Point2="0,32.5833327515095"
-                    Point3="-4,32.5833327515095" />
-                  <mssgle:LineSegment
-                    End="-514.82500483853,32.5833327515095" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-514.82500483853,32.5833327515095"
-                    Point2="-518.82500483853,32.5833327515095"
-                    Point3="-518.82500483853,36.5833327515095" />
-                  <mssgle:LineSegment
-                    End="-518.82500483853,57.666665503019" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-327.489240700515,37.5833327515095,136.1534765625,11.609375"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>

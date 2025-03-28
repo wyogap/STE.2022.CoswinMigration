@@ -12,8 +12,8 @@
   DTS:LocaleID="1057"
   DTS:ObjectName="DB2_0059_Misc_LaborQual_CLEAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="134"
-  DTS:VersionGUID="{FCBE0787-D7D5-42E3-A1ED-4B3C353026F3}"
+  DTS:VersionBuild="135"
+  DTS:VersionGUID="{057B40AB-DF8C-415A-8447-761BE688CB08}"
   DTS:VersionMinor="1">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -520,13 +520,13 @@
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Expression"
-                          name="Expression">[DATEADD]("dd",(DT_I8)#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ESKILL_VUNTIL]},(DT_DBTIMESTAMP)"1899-12-31")</property>
+                          name="Expression">([ISNULL](#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ESKILL_VUNTIL]}) || #{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ESKILL_VUNTIL]} == 0) ? NULL(DT_DBTIMESTAMP) : ([DATEADD]("dd",(DT_I8)#{Package\Data Flow Task\Oracle Source.Outputs[Oracle Source Output].Columns[ESKILL_VUNTIL]},(DT_DBTIMESTAMP)"1899-12-31"))</property>
                         <property
                           containsID="true"
                           dataType="System.String"
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
-                          name="FriendlyExpression">DATEADD("dd",(DT_I8)ESKILL_VUNTIL,(DT_DBTIMESTAMP)"1899-12-31")</property>
+                          name="FriendlyExpression">(ISNULL(ESKILL_VUNTIL) || ESKILL_VUNTIL == 0) ? NULL(DT_DBTIMESTAMP) : (DATEADD("dd",(DT_I8)ESKILL_VUNTIL,(DT_DBTIMESTAMP)"1899-12-31"))</property>
                       </properties>
                     </outputColumn>
                     <outputColumn
@@ -2803,7 +2803,7 @@ JOIN COSWIN.SKILL s ON s.PK_SKILL = es.S_SKILL_TO_EMP</property>
         <NodeLayout
           Size="155.2,41.6"
           Id="Package\Data Flow Task"
-          TopLeft="15.9000000000001,414.3" />
+          TopLeft="16.7333332878021,414.3" />
         <NodeLayout
           Size="134.4,41.6"
           Id="Package\Get Max ID"
@@ -2875,13 +2875,13 @@ JOIN COSWIN.SKILL s ON s.PK_SKILL = es.S_SKILL_TO_EMP</property>
           TopLeft="5.50000000000003,55.3000000000001" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="93.5000000000001,455.9">
+          TopLeft="94.3333332878021,455.9">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="16.166666203075,74.766668760512"
+              EndConnector="15.333332915273,74.766668760512"
               Start="0,0"
-              End="16.166666203075,67.266668760512">
+              End="15.333332915273,67.266668760512">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
@@ -2892,13 +2892,13 @@ JOIN COSWIN.SKILL s ON s.PK_SKILL = es.S_SKILL_TO_EMP</property>
                     Point2="0,37.383334380256"
                     Point3="4,37.383334380256" />
                   <mssgle:LineSegment
-                    End="12.166666203075,37.383334380256" />
+                    End="11.333332915273,37.383334380256" />
                   <mssgle:CubicBezierSegment
-                    Point1="12.166666203075,37.383334380256"
-                    Point2="16.166666203075,37.383334380256"
-                    Point3="16.166666203075,41.383334380256" />
+                    Point1="11.333332915273,37.383334380256"
+                    Point2="15.333332915273,37.383334380256"
+                    Point3="15.333332915273,41.383334380256" />
                   <mssgle:LineSegment
-                    End="16.166666203075,67.266668760512" />
+                    End="15.333332915273,67.266668760512" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -2987,18 +2987,18 @@ JOIN COSWIN.SKILL s ON s.PK_SKILL = es.S_SKILL_TO_EMP</property>
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 5]"
-          TopLeft="93.5000000000001,354.3">
+          TopLeft="93.9166666439011,354.3">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,59.9999999999999"
+              EndConnector="0,60"
               Start="0,0"
-              End="0,52.4999999999999">
+              End="0,52.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,52.4999999999999" />
+                    End="0,52.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -3016,33 +3016,95 @@ JOIN COSWIN.SKILL s ON s.PK_SKILL = es.S_SKILL_TO_EMP</property>
       <GraphLayout
         Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
-          Size="119.2,41.6"
-          Id="Package\Data Flow Task\Multicast"
-          TopLeft="251.666652916207,461.73333086239" />
-        <NodeLayout
-          Size="129.6,41.6"
-          Id="Package\Data Flow Task\Aggregate 1 1"
-          TopLeft="431.333310066828,459.066665015353" />
+          Size="128,41.6"
+          Id="Package\Data Flow Task\Multicast 1"
+          TopLeft="433.16663415813,205.500003344217" />
         <NodeLayout
           Size="161.6,41.6"
           Id="Package\Data Flow Task\Derived Column 4 1"
           TopLeft="610.855464629503,459.550000253121" />
         <NodeLayout
-          Size="180,41.6"
-          Id="Package\Data Flow Task\OLE DB Destination 1 1 1"
-          TopLeft="593.722139400745,551.416666280951" />
+          Size="158.4,41.6"
+          Id="Package\Data Flow Task\Derived Column"
+          TopLeft="225.833329326577,378.099998879035" />
+        <NodeLayout
+          Size="152.8,41.6"
+          Id="Package\Data Flow Task\Derived Column 1"
+          TopLeft="230.999988116324,118.466667383843" />
+        <NodeLayout
+          Size="161.6,41.6"
+          Id="Package\Data Flow Task\Derived Column 4 1 1"
+          TopLeft="818.39995050828,208.500003579258" />
         <NodeLayout
           Size="144.8,41.6"
           Id="Package\Data Flow Task\Oracle Source"
           TopLeft="12.1666663024161,25.4333331947194" />
         <NodeLayout
+          Size="170.4,41.6"
+          Id="Package\Data Flow Task\Flat File Destination"
+          TopLeft="415.666635114288,302.566669335894" />
+        <NodeLayout
+          Size="180,41.6"
+          Id="Package\Data Flow Task\OLE DB Destination 1 1 1"
+          TopLeft="593.722139400745,551.416666280951" />
+        <NodeLayout
+          Size="129.6,41.6"
+          Id="Package\Data Flow Task\Aggregate 1 1"
+          TopLeft="431.333310066828,459.066665015353" />
+        <NodeLayout
+          Size="180,41.6"
+          Id="Package\Data Flow Task\OLE DB Destination 1 1 1 1"
+          TopLeft="801.266625279522,300.366669607095" />
+        <NodeLayout
+          Size="119.2,41.6"
+          Id="Package\Data Flow Task\Multicast"
+          TopLeft="251.666652916207,461.73333086239" />
+        <NodeLayout
+          Size="112.8,41.6"
+          Id="Package\Data Flow Task\Lookup"
+          TopLeft="248.999977553886,208.833335942294" />
+        <NodeLayout
           Size="171.2,41.6"
           Id="Package\Data Flow Task\OLE DB Destination"
           TopLeft="223.333321130939,552.466663659347" />
         <NodeLayout
-          Size="158.4,41.6"
-          Id="Package\Data Flow Task\Derived Column"
-          TopLeft="225.833329326577,378.099998879035" />
+          Size="126.4,41.6"
+          Id="Package\Data Flow Task\Aggregate 1"
+          TopLeft="629.099957747761,208.566669950617" />
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Oracle Source Output]"
+          TopLeft="84.5666663024161,67.0333331947194">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="222.833321813908,51.4333341891235"
+              Start="0,0"
+              End="222.833321813908,43.9333341891235">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,21.7166670945617" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,21.7166670945617"
+                    Point2="0,25.7166670945617"
+                    Point3="4,25.7166670945617" />
+                  <mssgle:LineSegment
+                    End="218.833321813908,25.7166670945617" />
+                  <mssgle:CubicBezierSegment
+                    Point1="218.833321813908,25.7166670945617"
+                    Point2="222.833321813908,25.7166670945617"
+                    Point3="222.833321813908,29.7166670945617" />
+                  <mssgle:LineSegment
+                    End="222.833321813908,43.9333341891235" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
         <EdgeLayout
           Id="Package\Data Flow Task.Paths[Multicast Output 3]"
           TopLeft="370.866652916207,481.199997938871">
@@ -3066,122 +3128,6 @@ JOIN COSWIN.SKILL s ON s.PK_SKILL = es.S_SKILL_TO_EMP</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Multicast Output 2]"
-          TopLeft="310.099987023573,503.33333086239">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,49.1333327969575"
-              Start="0,0"
-              End="0,41.6333327969575">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,41.6333327969575" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Derived Column Output1]"
-          TopLeft="687.688802015124,501.150000253121">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,50.2666660278289"
-              Start="0,0"
-              End="0,42.7666660278289">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,42.7666660278289" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Derived Column Output]"
-          TopLeft="308.149991121392,419.699998879035">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,42.0333319833548"
-              Start="0,0"
-              End="0,34.5333319833548">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,34.5333319833548" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Aggregate Output 1]"
-          TopLeft="560.933310066828,480.108332634237">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="49.9221545626752,0"
-              Start="0,0"
-              End="42.4221545626752,0">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="42.4221545626752,0" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="161.6,41.6"
-          Id="Package\Data Flow Task\Derived Column 4 1 1"
-          TopLeft="818.39995050828,208.500003579258" />
-        <NodeLayout
-          Size="112.8,41.6"
-          Id="Package\Data Flow Task\Lookup"
-          TopLeft="248.999977553886,208.833335942294" />
-        <NodeLayout
-          Size="170.4,41.6"
-          Id="Package\Data Flow Task\Flat File Destination"
-          TopLeft="415.666635114288,302.566669335894" />
-        <NodeLayout
-          Size="128,41.6"
-          Id="Package\Data Flow Task\Multicast 1"
-          TopLeft="433.16663415813,205.500003344217" />
-        <NodeLayout
-          Size="126.4,41.6"
-          Id="Package\Data Flow Task\Aggregate 1"
-          TopLeft="629.099957747761,208.566669950617" />
-        <NodeLayout
-          Size="180,41.6"
-          Id="Package\Data Flow Task\OLE DB Destination 1 1 1 1"
-          TopLeft="801.266625279522,300.366669607095" />
-        <NodeLayout
-          Size="152.8,41.6"
-          Id="Package\Data Flow Task\Derived Column 1"
-          TopLeft="230.999988116324,118.466667383843" />
-        <EdgeLayout
           Id="Package\Data Flow Task.Paths[Multicast Output 21]"
           TopLeft="561.16663415813,227.833336647417">
           <EdgeLayout.Curve>
@@ -3195,6 +3141,28 @@ JOIN COSWIN.SKILL s ON s.PK_SKILL = es.S_SKILL_TO_EMP</property>
                   Capacity="5">
                   <mssgle:LineSegment
                     End="60.4333235896303,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Multicast Output 2]"
+          TopLeft="310.099987023573,503.33333086239">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,49.1333327969575"
+              Start="0,0"
+              End="0,41.6333327969575">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,41.6333327969575" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -3250,6 +3218,52 @@ JOIN COSWIN.SKILL s ON s.PK_SKILL = es.S_SKILL_TO_EMP</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Lookup Match Output]"
+          TopLeft="305.216653440231,250.433335942294">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,127.666662936741"
+              Start="0,0"
+              End="0,120.166662936741">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,120.166662936741" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-48.19138671875,54.2786439683705,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Derived Column Output3]"
+          TopLeft="306.399982835105,160.066667383843">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,48.7666685584514"
+              Start="0,0"
+              End="0,41.2666685584514">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,41.2666685584514" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
           Id="Package\Data Flow Task.Paths[Derived Column Output2]"
           TopLeft="895.233287893901,250.100003579259">
           <EdgeLayout.Curve>
@@ -3263,6 +3277,50 @@ JOIN COSWIN.SKILL s ON s.PK_SKILL = es.S_SKILL_TO_EMP</property>
                   Capacity="5">
                   <mssgle:LineSegment
                     End="0,42.7666660278376" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Derived Column Output1]"
+          TopLeft="687.688802015124,501.150000253121">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,50.2666660278289"
+              Start="0,0"
+              End="0,42.7666660278289">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,42.7666660278289" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Derived Column Output]"
+          TopLeft="308.149991121392,419.699998879035">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,42.0333319833548"
+              Start="0,0"
+              End="0,34.5333319833548">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,34.5333319833548" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -3294,83 +3352,25 @@ JOIN COSWIN.SKILL s ON s.PK_SKILL = es.S_SKILL_TO_EMP</property>
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Derived Column Output3]"
-          TopLeft="306.399982835105,160.066667383843">
+          Id="Package\Data Flow Task.Paths[Aggregate Output 1]"
+          TopLeft="560.933310066828,480.108332634237">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,48.7666685584514"
+              EndConnector="49.9221545626752,0"
               Start="0,0"
-              End="0,41.2666685584514">
+              End="42.4221545626752,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,41.2666685584514" />
+                    End="42.4221545626752,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Oracle Source Output]"
-          TopLeft="84.5666663024161,67.0333331947194">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="222.833321813908,51.4333341891235"
-              Start="0,0"
-              End="222.833321813908,43.9333341891235">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,21.7166670945617" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,21.7166670945617"
-                    Point2="0,25.7166670945617"
-                    Point3="4,25.7166670945617" />
-                  <mssgle:LineSegment
-                    End="218.833321813908,25.7166670945617" />
-                  <mssgle:CubicBezierSegment
-                    Point1="218.833321813908,25.7166670945617"
-                    Point2="222.833321813908,25.7166670945617"
-                    Point3="222.833321813908,29.7166670945617" />
-                  <mssgle:LineSegment
-                    End="222.833321813908,43.9333341891235" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\Data Flow Task.Paths[Lookup Match Output]"
-          TopLeft="305.216653440231,250.433335942294">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,127.666662936741"
-              Start="0,0"
-              End="0,120.166662936741">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,120.166662936741" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-48.19138671875,54.2786439683705,96.3827734375,11.609375"
-              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
