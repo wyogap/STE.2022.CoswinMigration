@@ -1,0 +1,1663 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="12/22/2024 2:10:50 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="LENOVO-YOGA"
+  DTS:CreatorName="LENOVO-YOGA\wyoga"
+  DTS:DTSID="{3DD835D5-D656-4E0B-A14D-B63B0273E3D6}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="16.0.5685.0"
+  DTS:LocaleID="14345"
+  DTS:ObjectName="DB2_1219_Fix_RFQLine_As-is"
+  DTS:PackageType="5"
+  DTS:VersionBuild="311"
+  DTS:VersionGUID="{3AB55B4B-609E-4A32-ABE9-4802A26E5BC5}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{721477DE-7AD2-4DEB-B664-435CE8635A76}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="log_id">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{C82D5183-B28A-4A9F-9825-31684CE0A04B}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="max_id">
+      <DTS:VariableValue
+        DTS:DataType="20">0</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\POST-PKG"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{D79A00D9-A634-4A08-8DFE-D1B7EDAB2A0F}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="POST-PKG">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\POST-PKG\FINISH LOG"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{2A1146F0-0B9D-4F38-8F3B-F2BA385AB9B6}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="FINISH LOG"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="UPDATE MIGRATION.ste_migration_logs &#xA;SET&#xA; end_date = add_hours(CURRENT_TIMESTAMP,8)&#xA; , success = 1&#xA;WHERE id = ?" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="LogId"
+                SQLTask:DtsVariableName="User::log_id"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\PRE-PKG"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{09DE55C6-437D-4FD6-97BF-91E91B3940B4}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="PRE-PKG">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\PRE-PKG\GET LOGID"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{BCFD98C8-3C80-4CEF-9E4F-61BD60A4B8EF}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="GET LOGID"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="SELECT ID FROM MIGRATION.ste_migration_logs &#xA;WHERE package_name=?&#xA;ORDER BY ID DESC LIMIT 1"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="ID"
+                SQLTask:DtsVariableName="User::log_id" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="NewParameterName"
+                SQLTask:DtsVariableName="System::PackageName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\PRE-PKG\START LOG"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{F4B56505-67FD-48B1-B437-4EAA465DE0D2}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="START LOG"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="INSERT INTO MIGRATION.ste_migration_logs (&#xA; package_name&#xA; ,version&#xA; ,start_date&#xA; ,hostname &#xA;)&#xA;VALUES (&#xA; ?&#xA; , CONCAT(?,CONCAT( '.', ?))&#xA; ,add_hours(CURRENT_TIMESTAMP,8)&#xA; , ?&#xA;);" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="PkgName"
+                SQLTask:DtsVariableName="System::PackageName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="PkgVersionMajor"
+                SQLTask:DtsVariableName="System::VersionMajor"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="PkgVersionMinor"
+                SQLTask:DtsVariableName="System::VersionMinor"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="Hostname"
+                SQLTask:DtsVariableName="System::MachineName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\PRE-PKG.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{DCF802EE-C474-485B-870B-0C15D4621C73}"
+          DTS:From="Package\PRE-PKG\START LOG"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\PRE-PKG\GET LOGID" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\RESET RFQLINE (AS-IS)"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{ECA40841-19A9-486E-B683-65C873CF42FB}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="RESET RFQLINE (AS-IS)"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="DELETE FROM MAXIMO.CSWN_RFQLINE" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\RFQLINE (AS IS)"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{4321B5E2-52CA-41EE-B6E2-D4D93B5022C0}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="RFQLINE (AS IS)"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\RFQLINE (AS IS)\Derived Column"
+              componentClassID="Microsoft.DerivedColumn"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="Derived Column"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\RFQLINE (AS IS)\Derived Column.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\RFQLINE (AS IS)\Derived Column.Inputs[Derived Column Input].Columns[DV_QTY]"
+                      cachedDataType="r8"
+                      cachedName="DV_QTY"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_QTY]" />
+                    <inputColumn
+                      refId="Package\RFQLINE (AS IS)\Derived Column.Inputs[Derived Column Input].Columns[DV_UNIT_RATE]"
+                      cachedDataType="r8"
+                      cachedName="DV_UNIT_RATE"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_UNIT_RATE]" />
+                    <inputColumn
+                      refId="Package\RFQLINE (AS IS)\Derived Column.Inputs[Derived Column Input].Columns[DV_VALUE]"
+                      cachedDataType="r8"
+                      cachedName="DV_VALUE"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_VALUE]" />
+                    <inputColumn
+                      refId="Package\RFQLINE (AS IS)\Derived Column.Inputs[Derived Column Input].Columns[DV_IT_NUMBER1]"
+                      cachedDataType="r8"
+                      cachedName="DV_IT_NUMBER1"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_IT_NUMBER1]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\RFQLINE (AS IS)\Derived Column.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\RFQLINE (AS IS)\Derived Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_UNIT_RATE]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\RFQLINE (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_UNIT_RATE]"
+                      name="V_UNIT_RATE"
+                      precision="28"
+                      scale="12"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_NUMERIC,28,12)#{Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_UNIT_RATE]}</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_NUMERIC,28,12)DV_UNIT_RATE</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_VALUE]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\RFQLINE (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_VALUE]"
+                      name="V_VALUE"
+                      precision="28"
+                      scale="12"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_NUMERIC,28,12)#{Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_VALUE]}</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_NUMERIC,28,12)DV_VALUE</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_QTY]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\RFQLINE (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_QTY]"
+                      name="V_QTY"
+                      precision="28"
+                      scale="12"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_NUMERIC,28,12)#{Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_QTY]}</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_NUMERIC,28,12)DV_QTY</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_IT_NUMBER1]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\RFQLINE (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_IT_NUMBER1]"
+                      name="V_IT_NUMBER1"
+                      precision="28"
+                      scale="12"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_NUMERIC,28,12)#{Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_IT_NUMBER1]}</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_NUMERIC,28,12)DV_IT_NUMBER1</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\RFQLINE (AS IS)\Derived Column.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\RFQLINE (AS IS)\Derived Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\RFQLINE (AS IS)\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\RFQLINE (AS IS)\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\RFQLINE (AS IS)\OLE DB Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="OLE DB Destination"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">"MAXIMO"."CSWN_RFQLINE"</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\RFQLINE (AS IS)\OLE DB Destination.Connections[OleDbConnection]"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[BLUDB]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PK_DEVIS]"
+                      cachedDataType="i4"
+                      cachedName="PK_DEVIS"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PK_DEVIS]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DEVIS]" />
+                    <inputColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DEVIS_CD]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="13"
+                      cachedName="DEVIS_CD"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DEVIS_CD]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DEVIS_CD]" />
+                    <inputColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[TIMESTAMP]"
+                      cachedDataType="numeric"
+                      cachedName="TIMESTAMP"
+                      cachedPrecision="10"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[TIMESTAMP]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[TIMESTAMP]" />
+                    <inputColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[SUPL_CD]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="SUPL_CD"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[SUPL_CD]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[SUPL_CD]" />
+                    <inputColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PK_DV_ITEMS]"
+                      cachedDataType="i4"
+                      cachedName="PK_DV_ITEMS"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PK_DV_ITEMS]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DV_ITEMS]" />
+                    <inputColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[S_DV_ITEM]"
+                      cachedDataType="i4"
+                      cachedName="S_DV_ITEM"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[S_DV_ITEM]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[S_DV_ITEM]" />
+                    <inputColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[S_ITEM_DV]"
+                      cachedDataType="i4"
+                      cachedName="S_ITEM_DV"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[S_ITEM_DV]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[S_ITEM_DV]" />
+                    <inputColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[S_NSITEM_DV]"
+                      cachedDataType="i4"
+                      cachedName="S_NSITEM_DV"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[S_NSITEM_DV]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[S_NSITEM_DV]" />
+                    <inputColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DT_DV_ITEMS]"
+                      cachedDataType="numeric"
+                      cachedName="DT_DV_ITEMS"
+                      cachedPrecision="10"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DT_DV_ITEMS]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DT_DV_ITEMS]" />
+                    <inputColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[TM_DV_ITEMS]"
+                      cachedDataType="numeric"
+                      cachedName="TM_DV_ITEMS"
+                      cachedPrecision="10"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[TM_DV_ITEMS]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[TM_DV_ITEMS]" />
+                    <inputColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DV_UNIT]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="6"
+                      cachedName="DV_UNIT"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DV_UNIT]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_UNIT]" />
+                    <inputColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[S_DV_ITEM_GEN]"
+                      cachedDataType="i4"
+                      cachedName="S_DV_ITEM_GEN"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[S_DV_ITEM_GEN]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[S_DV_ITEM_GEN]" />
+                    <inputColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DV_DELAY]"
+                      cachedDataType="i4"
+                      cachedName="DV_DELAY"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DV_DELAY]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_DELAY]" />
+                    <inputColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DV_DISCNT]"
+                      cachedDataType="i2"
+                      cachedName="DV_DISCNT"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DV_DISCNT]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_DISCNT]" />
+                    <inputColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DV_TO_ORDER]"
+                      cachedDataType="i2"
+                      cachedName="DV_TO_ORDER"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DV_TO_ORDER]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_TO_ORDER]" />
+                    <inputColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DV_IT_STRING1]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="DV_IT_STRING1"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DV_IT_STRING1]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_IT_STRING1]" />
+                    <inputColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DV_STOR_CD]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="DV_STOR_CD"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DV_STOR_CD]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_STOR_CD]" />
+                    <inputColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[ISAWARDED]"
+                      cachedDataType="r8"
+                      cachedName="ISAWARDED"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ISAWARDED]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[ISAWARDED]" />
+                    <inputColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[ITEM_CD]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="ITEM_CD"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ITEM_CD]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_CD]" />
+                    <inputColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[ITEM_DS]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="ITEM_DS"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ITEM_DS]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_DS]" />
+                    <inputColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[S_ITEM_REF]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="S_ITEM_REF"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[S_ITEM_REF]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[S_ITEM_REF]" />
+                    <inputColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[LINENUM]"
+                      cachedDataType="r8"
+                      cachedName="LINENUM"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LINENUM]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[LINENUM]" />
+                    <inputColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[V_IT_NUMBER1]"
+                      cachedDataType="numeric"
+                      cachedName="V_IT_NUMBER1"
+                      cachedPrecision="28"
+                      cachedScale="12"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DV_IT_NUMBER1]"
+                      lineageId="Package\RFQLINE (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_IT_NUMBER1]" />
+                    <inputColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[V_VALUE]"
+                      cachedDataType="numeric"
+                      cachedName="V_VALUE"
+                      cachedPrecision="28"
+                      cachedScale="12"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DV_VALUE]"
+                      lineageId="Package\RFQLINE (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_VALUE]" />
+                    <inputColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[V_UNIT_RATE]"
+                      cachedDataType="numeric"
+                      cachedName="V_UNIT_RATE"
+                      cachedPrecision="28"
+                      cachedScale="12"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DV_UNIT_RATE]"
+                      lineageId="Package\RFQLINE (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_UNIT_RATE]" />
+                    <inputColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[V_QTY]"
+                      cachedDataType="numeric"
+                      cachedName="V_QTY"
+                      cachedPrecision="28"
+                      cachedScale="12"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DV_QTY]"
+                      lineageId="Package\RFQLINE (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_QTY]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PK_DEVIS]"
+                      dataType="i8"
+                      name="PK_DEVIS" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[TIMESTAMP]"
+                      dataType="i8"
+                      name="TIMESTAMP" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DEVIS_CD]"
+                      codePage="1252"
+                      dataType="str"
+                      length="13"
+                      name="DEVIS_CD" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[SUPL_CD]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="SUPL_CD" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PK_DV_ITEMS]"
+                      dataType="i8"
+                      name="PK_DV_ITEMS" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[S_DV_ITEM]"
+                      dataType="i8"
+                      name="S_DV_ITEM" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[S_ITEM_DV]"
+                      dataType="i8"
+                      name="S_ITEM_DV" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[S_NSITEM_DV]"
+                      dataType="i8"
+                      name="S_NSITEM_DV" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[S_DV_ITEM_GEN]"
+                      dataType="i8"
+                      name="S_DV_ITEM_GEN" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DT_DV_ITEMS]"
+                      dataType="i8"
+                      name="DT_DV_ITEMS" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[TM_DV_ITEMS]"
+                      dataType="i8"
+                      name="TM_DV_ITEMS" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DV_QTY]"
+                      dataType="decimal"
+                      name="DV_QTY"
+                      scale="12" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DV_UNIT]"
+                      codePage="1252"
+                      dataType="str"
+                      length="6"
+                      name="DV_UNIT" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DV_UNIT_RATE]"
+                      dataType="decimal"
+                      name="DV_UNIT_RATE"
+                      scale="12" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DV_DELAY]"
+                      dataType="i4"
+                      name="DV_DELAY" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DV_VALUE]"
+                      dataType="decimal"
+                      name="DV_VALUE"
+                      scale="12" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DV_DISCNT]"
+                      dataType="i4"
+                      name="DV_DISCNT" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DV_TO_ORDER]"
+                      dataType="i4"
+                      name="DV_TO_ORDER" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DV_IT_NUMBER1]"
+                      dataType="decimal"
+                      name="DV_IT_NUMBER1"
+                      scale="12" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DV_IT_STRING1]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="DV_IT_STRING1" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DV_STOR_CD]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="DV_STOR_CD" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ISAWARDED]"
+                      dataType="i2"
+                      name="ISAWARDED" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ITEM_CD]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="ITEM_CD" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ITEM_DS]"
+                      codePage="1252"
+                      dataType="str"
+                      length="104"
+                      name="ITEM_DS" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[S_ITEM_REF]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="S_ITEM_REF" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LINENUM]"
+                      dataType="i4"
+                      name="LINENUM" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\RFQLINE (AS IS)\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\RFQLINE (AS IS)\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\RFQLINE (AS IS)\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\RFQLINE (AS IS)\Oracle Source"
+              componentClassID="Microsoft.SSISOracleSrc"
+              description="Oracle Source"
+              name="Oracle Source"
+              usesDispositions="true"
+              version="1">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The name of the table to be fetched."
+                  expressionType="Notify"
+                  name="TableName">"COSWIN"."STE_TEST_TABLE"</property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT 
+	di.*
+	, CASE WHEN di.DV_TO_ORDER = 78 THEN 0 
+		WHEN di.DV_TO_ORDER = 89 THEN 1 ELSE di.DV_TO_ORDER END isawarded
+	, d.PK_DEVIS, d.DEVIS_CD
+	--, d.DV_PREQ_REF
+	--, d.DV_WOID
+	, it.ITEM_CD
+	, it.ITEM_DS
+	, ROW_NUMBER() OVER (PARTITION BY d.PK_DEVIS ORDER BY it.ITEM_CD) LINENUM
+	, s.SUPL_CD 
+	, si.S_ITEM_REF 
+FROM COSWIN.DV_ITEMS di
+JOIN COSWIN.DEVIS d ON d.PK_DEVIS = di.S_DV_ITEM 
+LEFT JOIN (
+	SELECT 
+		di.PK_DV_ITEMS 
+		, COALESCE(ns.NSITEM_CD, it.ITEM_CD) AS ITEM_CD
+		, COALESCE(ns.NSITEM_SHORT, it.ITEM_SHORT) AS ITEM_DS
+	FROM COSWIN.DV_ITEMS di
+	LEFT JOIN COSWIN.ITEM_ it ON it.PK_ITEM_ = di.S_ITEM_DV 
+	LEFT JOIN COSWIN.NSITEM ns ON ns.PK_NSITEM = di.S_NSITEM_DV 	
+) it ON it.PK_DV_ITEMS = di.PK_DV_ITEMS 
+JOIN COSWIN.SUPPLIER_ s ON s.PK_SUPPLIER_ = d.S_SUPL_DV 
+LEFT JOIN COSWIN.SUPL_ITEMS si ON si.S_SUPL_ITEM = s.PK_SUPPLIER_ 
+	AND (di.S_ITEM_DV = si.S_ITEM_SUPL OR di.S_NSITEM_DV = si.S_NSITEM_SUPL)
+order by di.PK_DV_ITEMS
+;</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows fetched per batch."
+                  expressionType="Notify"
+                  name="BatchSize">1000</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines the chunk size allocation for LOB columns"
+                  expressionType="Notify"
+                  name="LobChunkSize">32768</property>
+                <property
+                  dataType="System.Int32"
+                  description="The code page to use when code page information is unavailable from the data source."
+                  expressionType="Notify"
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Int32"
+                  description="Number of pre-fetched rows."
+                  expressionType="Notify"
+                  name="PrefetchCount">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">1</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\RFQLINE (AS IS)\Oracle Source.Connections[ORACLEConnection]"
+                  connectionManagerID="{1BBC9476-D9E4-4553-8563-89CF216CBE10}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[COSWIN]"
+                  description="The ORACLE runtime connection used to access the database."
+                  name="ORACLEConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output]"
+                  errorRowDisposition="FailComponent"
+                  name="Oracle Source Output"
+                  truncationRowDisposition="FailComponent">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DEVIS]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DEVIS]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DEVIS]"
+                      name="PK_DEVIS" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DEVIS_CD]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DEVIS_CD]"
+                      length="13"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DEVIS_CD]"
+                      name="DEVIS_CD" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[TIMESTAMP]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[TIMESTAMP]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[TIMESTAMP]"
+                      name="TIMESTAMP"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[SUPL_CD]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SUPL_CD]"
+                      length="20"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[SUPL_CD]"
+                      name="SUPL_CD" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DV_ITEMS]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DV_ITEMS]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_DV_ITEMS]"
+                      name="PK_DV_ITEMS" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[S_DV_ITEM]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_DV_ITEM]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[S_DV_ITEM]"
+                      name="S_DV_ITEM" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[S_ITEM_DV]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_ITEM_DV]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[S_ITEM_DV]"
+                      name="S_ITEM_DV" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[S_NSITEM_DV]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_NSITEM_DV]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[S_NSITEM_DV]"
+                      name="S_NSITEM_DV" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DT_DV_ITEMS]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DT_DV_ITEMS]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DT_DV_ITEMS]"
+                      name="DT_DV_ITEMS"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[TM_DV_ITEMS]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[TM_DV_ITEMS]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[TM_DV_ITEMS]"
+                      name="TM_DV_ITEMS"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_QTY]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_QTY]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_QTY]"
+                      name="DV_QTY" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_UNIT]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_UNIT]"
+                      length="6"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_UNIT]"
+                      name="DV_UNIT" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_UNIT_RATE]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_UNIT_RATE]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_UNIT_RATE]"
+                      name="DV_UNIT_RATE" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_VALUE]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_VALUE]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_VALUE]"
+                      name="DV_VALUE" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_TO_ORDER]"
+                      dataType="i2"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_TO_ORDER]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_TO_ORDER]"
+                      name="DV_TO_ORDER" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[ISAWARDED]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ISAWARDED]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[ISAWARDED]"
+                      name="ISAWARDED" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_IT_NUMBER1]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_IT_NUMBER1]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_IT_NUMBER1]"
+                      name="DV_IT_NUMBER1" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_IT_STRING1]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_IT_STRING1]"
+                      length="20"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_IT_STRING1]"
+                      name="DV_IT_STRING1" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_CD]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ITEM_CD]"
+                      length="20"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_CD]"
+                      name="ITEM_CD" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_DS]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ITEM_DS]"
+                      length="100"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_DS]"
+                      name="ITEM_DS" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[LINENUM]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[LINENUM]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[LINENUM]"
+                      name="LINENUM" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[S_ITEM_REF]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_ITEM_REF]"
+                      length="20"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[S_ITEM_REF]"
+                      name="S_ITEM_REF" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[S_DV_ITEM_GEN]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_DV_ITEM_GEN]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[S_DV_ITEM_GEN]"
+                      name="S_DV_ITEM_GEN" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_DELAY]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_DELAY]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_DELAY]"
+                      name="DV_DELAY" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_DISCNT]"
+                      dataType="i2"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_DISCNT]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_DISCNT]"
+                      name="DV_DISCNT" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_STOR_CD]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_STOR_CD]"
+                      length="10"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DV_STOR_CD]"
+                      name="DV_STOR_CD" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DEVIS]"
+                      dataType="i4"
+                      name="PK_DEVIS" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DEVIS_CD]"
+                      codePage="1252"
+                      dataType="str"
+                      length="13"
+                      name="DEVIS_CD" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[TIMESTAMP]"
+                      dataType="numeric"
+                      name="TIMESTAMP"
+                      precision="10" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SUPL_CD]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="SUPL_CD" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DV_ITEMS]"
+                      dataType="i4"
+                      name="PK_DV_ITEMS" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_DV_ITEM]"
+                      dataType="i4"
+                      name="S_DV_ITEM" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_ITEM_DV]"
+                      dataType="i4"
+                      name="S_ITEM_DV" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_NSITEM_DV]"
+                      dataType="i4"
+                      name="S_NSITEM_DV" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DT_DV_ITEMS]"
+                      dataType="numeric"
+                      name="DT_DV_ITEMS"
+                      precision="10" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[TM_DV_ITEMS]"
+                      dataType="numeric"
+                      name="TM_DV_ITEMS"
+                      precision="10" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_QTY]"
+                      dataType="r8"
+                      name="DV_QTY" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_UNIT]"
+                      codePage="1252"
+                      dataType="str"
+                      length="6"
+                      name="DV_UNIT" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_UNIT_RATE]"
+                      dataType="r8"
+                      name="DV_UNIT_RATE" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_VALUE]"
+                      dataType="r8"
+                      name="DV_VALUE" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_TO_ORDER]"
+                      dataType="i2"
+                      name="DV_TO_ORDER" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ISAWARDED]"
+                      dataType="r8"
+                      name="ISAWARDED" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_IT_NUMBER1]"
+                      dataType="r8"
+                      name="DV_IT_NUMBER1" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_IT_STRING1]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="DV_IT_STRING1" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ITEM_CD]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="ITEM_CD" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ITEM_DS]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="ITEM_DS" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[LINENUM]"
+                      dataType="r8"
+                      name="LINENUM" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_ITEM_REF]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="S_ITEM_REF" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_DV_ITEM_GEN]"
+                      dataType="i4"
+                      name="S_DV_ITEM_GEN" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_DELAY]"
+                      dataType="i4"
+                      name="DV_DELAY" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_DISCNT]"
+                      dataType="i2"
+                      name="DV_DISCNT" />
+                    <externalMetadataColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_STOR_CD]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="DV_STOR_CD" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output]"
+                  isErrorOut="true"
+                  name="Oracle Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_DEVIS]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DEVIS]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_DEVIS]"
+                      name="PK_DEVIS" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[DEVIS_CD]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DEVIS_CD]"
+                      length="13"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[DEVIS_CD]"
+                      name="DEVIS_CD" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[TIMESTAMP]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[TIMESTAMP]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[TIMESTAMP]"
+                      name="TIMESTAMP"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[SUPL_CD]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[SUPL_CD]"
+                      length="20"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[SUPL_CD]"
+                      name="SUPL_CD" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_DV_ITEMS]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_DV_ITEMS]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_DV_ITEMS]"
+                      name="PK_DV_ITEMS" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[S_DV_ITEM]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_DV_ITEM]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[S_DV_ITEM]"
+                      name="S_DV_ITEM" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[S_ITEM_DV]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_ITEM_DV]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[S_ITEM_DV]"
+                      name="S_ITEM_DV" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[S_NSITEM_DV]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_NSITEM_DV]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[S_NSITEM_DV]"
+                      name="S_NSITEM_DV" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[DT_DV_ITEMS]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DT_DV_ITEMS]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[DT_DV_ITEMS]"
+                      name="DT_DV_ITEMS"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[TM_DV_ITEMS]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[TM_DV_ITEMS]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[TM_DV_ITEMS]"
+                      name="TM_DV_ITEMS"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[DV_QTY]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_QTY]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[DV_QTY]"
+                      name="DV_QTY" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[DV_UNIT]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_UNIT]"
+                      length="6"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[DV_UNIT]"
+                      name="DV_UNIT" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[DV_UNIT_RATE]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_UNIT_RATE]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[DV_UNIT_RATE]"
+                      name="DV_UNIT_RATE" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[DV_VALUE]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_VALUE]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[DV_VALUE]"
+                      name="DV_VALUE" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[DV_TO_ORDER]"
+                      dataType="i2"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_TO_ORDER]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[DV_TO_ORDER]"
+                      name="DV_TO_ORDER" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[ISAWARDED]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ISAWARDED]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[ISAWARDED]"
+                      name="ISAWARDED" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[DV_IT_NUMBER1]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_IT_NUMBER1]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[DV_IT_NUMBER1]"
+                      name="DV_IT_NUMBER1" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[DV_IT_STRING1]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_IT_STRING1]"
+                      length="20"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[DV_IT_STRING1]"
+                      name="DV_IT_STRING1" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[ITEM_CD]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ITEM_CD]"
+                      length="20"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[ITEM_CD]"
+                      name="ITEM_CD" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[ITEM_DS]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ITEM_DS]"
+                      length="100"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[ITEM_DS]"
+                      name="ITEM_DS" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[LINENUM]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[LINENUM]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[LINENUM]"
+                      name="LINENUM" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[S_ITEM_REF]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_ITEM_REF]"
+                      length="20"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[S_ITEM_REF]"
+                      name="S_ITEM_REF" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[S_DV_ITEM_GEN]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_DV_ITEM_GEN]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[S_DV_ITEM_GEN]"
+                      name="S_DV_ITEM_GEN" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[DV_DELAY]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_DELAY]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[DV_DELAY]"
+                      name="DV_DELAY" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[DV_DISCNT]"
+                      dataType="i2"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_DISCNT]"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[DV_DISCNT]"
+                      name="DV_DISCNT" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[DV_STOR_CD]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DV_STOR_CD]"
+                      length="10"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[DV_STOR_CD]"
+                      name="DV_STOR_CD" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\RFQLINE (AS IS).Paths[Derived Column Output]"
+              endId="Package\RFQLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input]"
+              name="Derived Column Output"
+              startId="Package\RFQLINE (AS IS)\Derived Column.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\RFQLINE (AS IS).Paths[Oracle Source Output]"
+              endId="Package\RFQLINE (AS IS)\Derived Column.Inputs[Derived Column Input]"
+              name="Oracle Source Output"
+              startId="Package\RFQLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{E6494A8A-6ED1-4D39-B754-0E0CBBF1A5C3}"
+      DTS:From="Package\PRE-PKG"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\RESET RFQLINE (AS-IS)" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{2F643BB2-4BF9-4BF0-B534-3A3408FA7018}"
+      DTS:From="Package\RFQLINE (AS IS)"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\POST-PKG" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{3E57A8AC-4634-4311-82DA-FA9A18F87B86}"
+      DTS:From="Package\RESET RFQLINE (AS-IS)"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\RFQLINE (AS IS)" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        <NodeLayout
+          Size="137.6,41.6"
+          Id="Package\POST-PKG\FINISH LOG"
+          TopLeft="51.9333115693606,32.199997812311" />
+        <ContainerLayout
+          HeaderHeight="44.8"
+          IsExpanded="False"
+          PanelSize="270.4,130.4"
+          Size="156,44.8"
+          Id="Package\POST-PKG"
+          TopLeft="78.8425915630795,299.906881855546" />
+        <NodeLayout
+          Size="135.2,41.6"
+          Id="Package\PRE-PKG\GET LOGID"
+          TopLeft="47.4999810134378,99.1999989151955" />
+        <NodeLayout
+          Size="128,41.6"
+          Id="Package\PRE-PKG\START LOG"
+          TopLeft="45.833314437834,26.3999994214376" />
+        <EdgeLayout
+          Id="Package\PRE-PKG.PrecedenceConstraints[Constraint]"
+          TopLeft="112.466647725636,67.9999994214376">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,31.1999994937579"
+              Start="0,0"
+              End="0,23.6999994937579">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,23.6999994937579" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43.2"
+          IsExpanded="False"
+          PanelSize="240,177.6"
+          Size="149.6,43.2"
+          Id="Package\PRE-PKG"
+          TopLeft="85.9722208031633,51.6444453203237" />
+        <NodeLayout
+          Size="197.6,41.6"
+          Id="Package\RESET RFQLINE (AS-IS)"
+          TopLeft="81.6666622045969,130.533332598077" />
+        <NodeLayout
+          Size="160,41.6"
+          Id="Package\RFQLINE (AS IS)"
+          TopLeft="96.8055535445894,210.573549872192" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="160.772220803163,94.8444453203237">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="19.6944414014336,35.6888872777533"
+              Start="0,0"
+              End="19.6944414014336,28.1888872777533">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,13.8444436388767" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,13.8444436388767"
+                    Point2="0,17.8444436388767"
+                    Point3="4,17.8444436388767" />
+                  <mssgle:LineSegment
+                    End="15.6944414014336,17.8444436388767" />
+                  <mssgle:CubicBezierSegment
+                    Point1="15.6944414014336,17.8444436388767"
+                    Point2="19.6944414014336,17.8444436388767"
+                    Point3="19.6944414014336,21.8444436388767" />
+                  <mssgle:LineSegment
+                    End="19.6944414014336,28.1888872777533" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="176.805553544589,252.173549872192">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-19.9629619815099,47.733331983354"
+              Start="0,0"
+              End="-19.9629619815099,40.233331983354">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,19.866665991677" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,19.866665991677"
+                    Point2="0,23.866665991677"
+                    Point3="-4,23.866665991677" />
+                  <mssgle:LineSegment
+                    End="-15.9629619815099,23.866665991677" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-15.9629619815099,23.866665991677"
+                    Point2="-19.9629619815099,23.866665991677"
+                    Point3="-19.9629619815099,27.866665991677" />
+                  <mssgle:LineSegment
+                    End="-19.9629619815099,40.233331983354" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="178.636107874593,172.133332598077">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,38.440217274115"
+              Start="0,0"
+              End="0,30.940217274115">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,30.940217274115" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <AnnotationLayout
+          Text="Notes:&#xA;Load RFQLINE data as-is into CSWN_RFQLINE table"
+          ParentId="Package"
+          FontInfo="{assembly:Null}"
+          Size="300,56"
+          Id="23dc0cc0-435c-4eac-ac0f-24ba75582a95"
+          TopLeft="297.499983745317,67.599999529918" />
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\RFQLINE (AS IS)">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="144.8,41.6"
+          Id="Package\RFQLINE (AS IS)\Oracle Source"
+          TopLeft="114.000005851189,61.9333331323331" />
+        <NodeLayout
+          Size="171.2,41.6"
+          Id="Package\RFQLINE (AS IS)\OLE DB Destination"
+          TopLeft="103.333327687449,247.199998336633" />
+        <NodeLayout
+          Size="152.8,41.6"
+          Id="Package\RFQLINE (AS IS)\Derived Column"
+          TopLeft="113.333327141073,153.399999150236" />
+        <EdgeLayout
+          Id="Package\RFQLINE (AS IS).Paths[Oracle Source Output]"
+          TopLeft="188.066666496131,103.533333132333">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,49.8666660179034"
+              Start="0,0"
+              End="0,42.3666660179034">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,42.3666660179034" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\RFQLINE (AS IS).Paths[Derived Column Output]"
+          TopLeft="189.333327414261,194.999999150236">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,52.1999991863962"
+              Start="0,0"
+              End="0,44.6999991863962">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,44.6999991863962" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\RFQLINE (AS IS)\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\RFQLINE (AS IS)\Oracle Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

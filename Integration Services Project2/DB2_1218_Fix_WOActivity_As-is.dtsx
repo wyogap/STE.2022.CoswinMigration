@@ -1,0 +1,1694 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="12/22/2024 2:10:50 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="LENOVO-YOGA"
+  DTS:CreatorName="LENOVO-YOGA\wyoga"
+  DTS:DTSID="{8A3A9F57-70CE-4D42-8BDB-B58B5539B73C}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="16.0.5685.0"
+  DTS:LocaleID="14345"
+  DTS:ObjectName="DB2_1218_Fix_WOActivity_As-is"
+  DTS:PackageType="5"
+  DTS:VersionBuild="331"
+  DTS:VersionGUID="{1908B44D-0312-466F-81BC-5FFDAC78BE58}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{8B384773-2631-4085-8F9D-1884B2F7E20A}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="log_id">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{06C0576D-6D73-4B38-A851-D6BBEDCCC9DE}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="max_id">
+      <DTS:VariableValue
+        DTS:DataType="20">0</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\POST-PKG"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{4647814E-11AB-4123-A37D-26F5845D1E4F}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="POST-PKG">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\POST-PKG\FINISH LOG"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{943D9B59-75EC-47F0-952A-D34ECEC89749}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="FINISH LOG"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="UPDATE MIGRATION.ste_migration_logs &#xA;SET&#xA; end_date = add_hours(CURRENT_TIMESTAMP,8)&#xA; , success = 1&#xA;WHERE id = ?" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="LogId"
+                SQLTask:DtsVariableName="User::log_id"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\PRE-PKG"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{3C315358-1EEB-49B0-AC8F-ECEF4E2D7740}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="PRE-PKG">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\PRE-PKG\GET LOGID"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{42B6F8B6-C18D-4D78-A168-8B9F7AF810D4}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="GET LOGID"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="SELECT ID FROM MIGRATION.ste_migration_logs &#xA;WHERE package_name=?&#xA;ORDER BY ID DESC LIMIT 1"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="ID"
+                SQLTask:DtsVariableName="User::log_id" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="NewParameterName"
+                SQLTask:DtsVariableName="System::PackageName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\PRE-PKG\START LOG"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{545A2522-E0E8-482C-A0DC-357742F1E0D0}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="START LOG"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="INSERT INTO MIGRATION.ste_migration_logs (&#xA; package_name&#xA; ,version&#xA; ,start_date&#xA; ,hostname &#xA;)&#xA;VALUES (&#xA; ?&#xA; , CONCAT(?,CONCAT( '.', ?))&#xA; ,add_hours(CURRENT_TIMESTAMP,8)&#xA; , ?&#xA;);" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="PkgName"
+                SQLTask:DtsVariableName="System::PackageName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="PkgVersionMajor"
+                SQLTask:DtsVariableName="System::VersionMajor"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="PkgVersionMinor"
+                SQLTask:DtsVariableName="System::VersionMinor"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="Hostname"
+                SQLTask:DtsVariableName="System::MachineName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\PRE-PKG.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{9D7E69E6-70C4-4768-8C5D-8D448A650986}"
+          DTS:From="Package\PRE-PKG\START LOG"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\PRE-PKG\GET LOGID" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\RESET WOACTIVITY (AS-IS)"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{9FAFA29A-1C9C-408D-BB10-1AA17B6DE486}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="RESET WOACTIVITY (AS-IS)"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="DELETE FROM MAXIMO.CSWN_WOACTIVITY" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\WOACTIVITY (AS IS)"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{22765D34-3163-4E5C-A88C-51DFD2D5FAB0}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="WOACTIVITY (AS IS)"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\WOACTIVITY (AS IS)\Derived Column"
+              componentClassID="Microsoft.DerivedColumn"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="Derived Column"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\WOACTIVITY (AS IS)\Derived Column.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Derived Column.Inputs[Derived Column Input].Columns[WA_DURN]"
+                      cachedDataType="r8"
+                      cachedName="WA_DURN"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_DURN]" />
+                    <inputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Derived Column.Inputs[Derived Column Input].Columns[WA_VAL1]"
+                      cachedDataType="r8"
+                      cachedName="WA_VAL1"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_VAL1]" />
+                    <inputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Derived Column.Inputs[Derived Column Input].Columns[WA_VAL2]"
+                      cachedDataType="r8"
+                      cachedName="WA_VAL2"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_VAL2]" />
+                    <inputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Derived Column.Inputs[Derived Column Input].Columns[LABORS_WKHR]"
+                      cachedDataType="r8"
+                      cachedName="LABORS_WKHR"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[LABORS_WKHR]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\WOACTIVITY (AS IS)\Derived Column.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\WOACTIVITY (AS IS)\Derived Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_WA_DURN]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\WOACTIVITY (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_WA_DURN]"
+                      name="V_WA_DURN"
+                      precision="18"
+                      scale="6"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_NUMERIC,18,6)#{Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_DURN]}</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_NUMERIC,18,6)WA_DURN</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_WA_VAL1]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\WOACTIVITY (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_WA_VAL1]"
+                      name="V_WA_VAL1"
+                      precision="18"
+                      scale="6"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_NUMERIC,18,6)#{Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_VAL1]}</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_NUMERIC,18,6)WA_VAL1</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_WA_VAL2]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\WOACTIVITY (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_WA_VAL2]"
+                      name="V_WA_VAL2"
+                      precision="18"
+                      scale="6"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_NUMERIC,18,6)#{Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_VAL2]}</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_NUMERIC,18,6)WA_VAL2</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_LABORS_WKHR]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\WOACTIVITY (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_LABORS_WKHR]"
+                      name="V_LABORS_WKHR"
+                      precision="18"
+                      scale="6"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_NUMERIC,18,6)#{Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[LABORS_WKHR]}</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_NUMERIC,18,6)LABORS_WKHR</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\WOACTIVITY (AS IS)\Derived Column.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\WOACTIVITY (AS IS)\Derived Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\WOACTIVITY (AS IS)\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\WOACTIVITY (AS IS)\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\WOACTIVITY (AS IS)\OLE DB Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="OLE DB Destination"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">"MAXIMO"."CSWN_WOACTIVITY"</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Connections[OleDbConnection]"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[BLUDB]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[TIMESTAMP]"
+                      cachedDataType="numeric"
+                      cachedName="TIMESTAMP"
+                      cachedPrecision="10"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[TIMESTAMP]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[TIMESTAMP]" />
+                    <inputColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[V_WA_DURN]"
+                      cachedDataType="numeric"
+                      cachedName="V_WA_DURN"
+                      cachedPrecision="18"
+                      cachedScale="6"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_DURN]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_WA_DURN]" />
+                    <inputColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[V_WA_VAL1]"
+                      cachedDataType="numeric"
+                      cachedName="V_WA_VAL1"
+                      cachedPrecision="18"
+                      cachedScale="6"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_VAL1]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_WA_VAL1]" />
+                    <inputColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[V_WA_VAL2]"
+                      cachedDataType="numeric"
+                      cachedName="V_WA_VAL2"
+                      cachedPrecision="18"
+                      cachedScale="6"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_VAL2]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_WA_VAL2]" />
+                    <inputColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[V_LABORS_WKHR]"
+                      cachedDataType="numeric"
+                      cachedName="V_LABORS_WKHR"
+                      cachedPrecision="18"
+                      cachedScale="6"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LABORS_WKHR]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_LABORS_WKHR]" />
+                    <inputColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PK_WIP_WA]"
+                      cachedDataType="i4"
+                      cachedName="PK_WIP_WA"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PK_WIP_WA]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_WIP_WA]" />
+                    <inputColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[WA_NO]"
+                      cachedDataType="i4"
+                      cachedName="WA_NO"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_NO]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_NO]" />
+                    <inputColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[WA_ACT]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="WA_ACT"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_ACT]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_ACT]" />
+                    <inputColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[WA_EXEC_STATUS]"
+                      cachedDataType="i4"
+                      cachedName="WA_EXEC_STATUS"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_EXEC_STATUS]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_EXEC_STATUS]" />
+                    <inputColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[ACT_DESC]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="ACT_DESC"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ACT_DESC]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[ACT_DESC]" />
+                    <inputColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[WA_DT]"
+                      cachedDataType="numeric"
+                      cachedName="WA_DT"
+                      cachedPrecision="10"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_DT]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_DT]" />
+                    <inputColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[WA_WO_GEN]"
+                      cachedDataType="numeric"
+                      cachedName="WA_WO_GEN"
+                      cachedPrecision="10"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_WO_GEN]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_WO_GEN]" />
+                    <inputColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[WA_MULTIPLE]"
+                      cachedDataType="i4"
+                      cachedName="WA_MULTIPLE"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_MULTIPLE]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_MULTIPLE]" />
+                    <inputColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[WA_PLANNED]"
+                      cachedDataType="i4"
+                      cachedName="WA_PLANNED"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_PLANNED]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_PLANNED]" />
+                    <inputColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[WA_EQCD]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="WA_EQCD"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_EQCD]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_EQCD]" />
+                    <inputColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PK_EQP_TOPO]"
+                      cachedDataType="i4"
+                      cachedName="PK_EQP_TOPO"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PK_EQP_TOPO]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_EQP_TOPO]" />
+                    <inputColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[EQ_LEVL]"
+                      cachedDataType="i4"
+                      cachedName="EQ_LEVL"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[EQ_LEVL]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[EQ_LEVL]" />
+                    <inputColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[WA_ELEM]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="40"
+                      cachedName="WA_ELEM"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_ELEM]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_ELEM]" />
+                    <inputColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[WA_OP_TYPE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="WA_OP_TYPE"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_OP_TYPE]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_OP_TYPE]" />
+                    <inputColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[WA_DEVICE]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="WA_DEVICE"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_DEVICE]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_DEVICE]" />
+                    <inputColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[WA_EQP_STAT]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="WA_EQP_STAT"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_EQP_STAT]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_EQP_STAT]" />
+                    <inputColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[WA_UNIT1]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="6"
+                      cachedName="WA_UNIT1"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_UNIT1]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_UNIT1]" />
+                    <inputColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[WA_UNIT2]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="6"
+                      cachedName="WA_UNIT2"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_UNIT2]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_UNIT2]" />
+                    <inputColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PK_WIP_WO]"
+                      cachedDataType="i4"
+                      cachedName="PK_WIP_WO"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PK_WIP_WO]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_WIP_WO]" />
+                    <inputColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[WO_WOID]"
+                      cachedDataType="numeric"
+                      cachedName="WO_WOID"
+                      cachedPrecision="10"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WO_WOID]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WO_WOID]" />
+                    <inputColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[LABORS]"
+                      cachedDataType="r8"
+                      cachedName="LABORS"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LABORS]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[LABORS]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[TIMESTAMP]"
+                      dataType="i8"
+                      name="TIMESTAMP" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PK_WIP_WA]"
+                      dataType="i8"
+                      name="PK_WIP_WA" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_NO]"
+                      dataType="i4"
+                      name="WA_NO" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_ACT]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="WA_ACT" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_EXEC_STATUS]"
+                      dataType="i4"
+                      name="WA_EXEC_STATUS" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_DT]"
+                      dataType="i8"
+                      name="WA_DT" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_DURN]"
+                      dataType="decimal"
+                      name="WA_DURN"
+                      scale="6" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_WO_GEN]"
+                      dataType="i8"
+                      name="WA_WO_GEN" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_MULTIPLE]"
+                      dataType="i4"
+                      name="WA_MULTIPLE" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_PLANNED]"
+                      dataType="i4"
+                      name="WA_PLANNED" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_EQCD]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="WA_EQCD" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_ELEM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="40"
+                      name="WA_ELEM" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_VAL1]"
+                      dataType="decimal"
+                      name="WA_VAL1"
+                      scale="6" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_VAL2]"
+                      dataType="decimal"
+                      name="WA_VAL2"
+                      scale="6" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_OP_TYPE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="WA_OP_TYPE" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_DEVICE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="WA_DEVICE" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_EQP_STAT]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="WA_EQP_STAT" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_UNIT1]"
+                      codePage="1252"
+                      dataType="str"
+                      length="6"
+                      name="WA_UNIT1" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WA_UNIT2]"
+                      codePage="1252"
+                      dataType="str"
+                      length="6"
+                      name="WA_UNIT2" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ACT_DESC]"
+                      codePage="1252"
+                      dataType="str"
+                      length="104"
+                      name="ACT_DESC" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PK_EQP_TOPO]"
+                      dataType="i8"
+                      name="PK_EQP_TOPO" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[EQ_LEVL]"
+                      dataType="i4"
+                      name="EQ_LEVL" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PK_WIP_WO]"
+                      dataType="i8"
+                      name="PK_WIP_WO" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WO_WOID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="WO_WOID" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LABORS]"
+                      dataType="i4"
+                      name="LABORS" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LABORS_WKHR]"
+                      dataType="decimal"
+                      name="LABORS_WKHR"
+                      scale="6" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\WOACTIVITY (AS IS)\Oracle Source"
+              componentClassID="Microsoft.SSISOracleSrc"
+              description="Oracle Source"
+              name="Oracle Source"
+              usesDispositions="true"
+              version="1">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The name of the table to be fetched."
+                  expressionType="Notify"
+                  name="TableName">"COSWIN"."STE_TEST_TABLE"</property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT 
+	wa.PK_WIP_WA 
+	, wa."TIMESTAMP"
+	--, wa.WO_WA_40 --  COSWIN.WIP_WO
+	, wa.WA_NO
+	, wa.WA_ACT
+	, da.ACT_DESC 
+	, wa.WA_EXEC_STATUS
+	, wa.WA_DT
+	, wa.WA_DURN
+	, wa.WA_WO_GEN
+	, wa.WA_MULTIPLE
+	, wa.WA_PLANNED
+	, wa.WA_EQCD
+	, et.PK_EQP_TOPO 
+	--, et.EQ_DESC 
+	, et.EQ_LEVL 
+	, wa.WA_ELEM
+	, wa.WA_VAL1
+	, wa.WA_VAL2
+	, wa.WA_OP_TYPE
+	, wa.WA_DEVICE
+	, wa.WA_EQP_STAT
+	, wa.WA_UNIT1
+	, wa.WA_UNIT2
+	, wo.PK_WIP_WO
+	, wo.WO_WOID
+	, COALESCE(ae.CNT,0) AS LABORS
+	, COALESCE(ae.TOT_WKHR,0) AS LABORS_WKHR
+FROM COSWIN.WIP_WA wa
+JOIN COSWIN.WIP_WO wo ON wo.PK_WIP_WO = wa.WO_WA_40 
+LEFT JOIN COSWIN.DIR_ACTION da ON da.ACT_CODE = wa.WA_ACT 
+LEFT JOIN COSWIN.EQP_TOPO et ON et.EQ_EQCD = wa.WA_EQCD 
+LEFT JOIN (
+	SELECT wa.PK_WIP_WA 
+		, count(*) AS CNT
+		, sum(we.WE_WKHR) AS TOT_WKHR
+	FROM COSWIN.WIP_WA wa
+	JOIN COSWIN.WIP_AE ae ON ae.WA_WE_43 = wa.PK_WIP_WA 
+	JOIN COSWIN.WIP_WE we ON we.PK_WIP_WE = ae.WE_WA_42 
+	GROUP BY wa.PK_WIP_WA
+) ae on ae.PK_WIP_WA = wa.PK_WIP_WA  
+;</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows fetched per batch."
+                  expressionType="Notify"
+                  name="BatchSize">1000</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines the chunk size allocation for LOB columns"
+                  expressionType="Notify"
+                  name="LobChunkSize">32768</property>
+                <property
+                  dataType="System.Int32"
+                  description="The code page to use when code page information is unavailable from the data source."
+                  expressionType="Notify"
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Int32"
+                  description="Number of pre-fetched rows."
+                  expressionType="Notify"
+                  name="PrefetchCount">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">1</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\WOACTIVITY (AS IS)\Oracle Source.Connections[ORACLEConnection]"
+                  connectionManagerID="{1BBC9476-D9E4-4553-8563-89CF216CBE10}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[COSWIN]"
+                  description="The ORACLE runtime connection used to access the database."
+                  name="ORACLEConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output]"
+                  errorRowDisposition="FailComponent"
+                  name="Oracle Source Output"
+                  truncationRowDisposition="FailComponent">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[TIMESTAMP]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[TIMESTAMP]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[TIMESTAMP]"
+                      name="TIMESTAMP"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_WIP_WA]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_WIP_WA]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_WIP_WA]"
+                      name="PK_WIP_WA" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_NO]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_NO]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_NO]"
+                      name="WA_NO" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_ACT]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_ACT]"
+                      length="10"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_ACT]"
+                      name="WA_ACT" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[ACT_DESC]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ACT_DESC]"
+                      length="100"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[ACT_DESC]"
+                      name="ACT_DESC" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_EXEC_STATUS]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_EXEC_STATUS]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_EXEC_STATUS]"
+                      name="WA_EXEC_STATUS" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_DT]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_DT]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_DT]"
+                      name="WA_DT"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_DURN]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_DURN]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_DURN]"
+                      name="WA_DURN" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_WO_GEN]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_WO_GEN]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_WO_GEN]"
+                      name="WA_WO_GEN"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_MULTIPLE]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_MULTIPLE]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_MULTIPLE]"
+                      name="WA_MULTIPLE" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_PLANNED]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_PLANNED]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_PLANNED]"
+                      name="WA_PLANNED" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_EQCD]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_EQCD]"
+                      length="20"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_EQCD]"
+                      name="WA_EQCD" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_EQP_TOPO]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_EQP_TOPO]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_EQP_TOPO]"
+                      name="PK_EQP_TOPO" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[EQ_LEVL]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EQ_LEVL]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[EQ_LEVL]"
+                      name="EQ_LEVL" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_ELEM]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_ELEM]"
+                      length="40"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_ELEM]"
+                      name="WA_ELEM" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_VAL1]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_VAL1]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_VAL1]"
+                      name="WA_VAL1" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_VAL2]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_VAL2]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_VAL2]"
+                      name="WA_VAL2" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_OP_TYPE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_OP_TYPE]"
+                      length="20"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_OP_TYPE]"
+                      name="WA_OP_TYPE" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_DEVICE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_DEVICE]"
+                      length="20"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_DEVICE]"
+                      name="WA_DEVICE" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_EQP_STAT]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_EQP_STAT]"
+                      length="20"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_EQP_STAT]"
+                      name="WA_EQP_STAT" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_UNIT1]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_UNIT1]"
+                      length="6"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_UNIT1]"
+                      name="WA_UNIT1" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_UNIT2]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_UNIT2]"
+                      length="6"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WA_UNIT2]"
+                      name="WA_UNIT2" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_WIP_WO]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_WIP_WO]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_WIP_WO]"
+                      name="PK_WIP_WO" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WO_WOID]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WO_WOID]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[WO_WOID]"
+                      name="WO_WOID"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[LABORS]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[LABORS]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[LABORS]"
+                      name="LABORS" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[LABORS_WKHR]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[LABORS_WKHR]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[LABORS_WKHR]"
+                      name="LABORS_WKHR" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[TIMESTAMP]"
+                      dataType="numeric"
+                      name="TIMESTAMP"
+                      precision="10" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_WIP_WA]"
+                      dataType="i4"
+                      name="PK_WIP_WA" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_NO]"
+                      dataType="i4"
+                      name="WA_NO" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_ACT]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="WA_ACT" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ACT_DESC]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="ACT_DESC" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_EXEC_STATUS]"
+                      dataType="i4"
+                      name="WA_EXEC_STATUS" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_DT]"
+                      dataType="numeric"
+                      name="WA_DT"
+                      precision="10" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_DURN]"
+                      dataType="r8"
+                      name="WA_DURN" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_WO_GEN]"
+                      dataType="numeric"
+                      name="WA_WO_GEN"
+                      precision="10" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_MULTIPLE]"
+                      dataType="i4"
+                      name="WA_MULTIPLE" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_PLANNED]"
+                      dataType="i4"
+                      name="WA_PLANNED" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_EQCD]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="WA_EQCD" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_EQP_TOPO]"
+                      dataType="i4"
+                      name="PK_EQP_TOPO" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EQ_LEVL]"
+                      dataType="i4"
+                      name="EQ_LEVL" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_ELEM]"
+                      codePage="1252"
+                      dataType="str"
+                      length="40"
+                      name="WA_ELEM" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_VAL1]"
+                      dataType="r8"
+                      name="WA_VAL1" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_VAL2]"
+                      dataType="r8"
+                      name="WA_VAL2" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_OP_TYPE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="WA_OP_TYPE" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_DEVICE]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="WA_DEVICE" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_EQP_STAT]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="WA_EQP_STAT" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_UNIT1]"
+                      codePage="1252"
+                      dataType="str"
+                      length="6"
+                      name="WA_UNIT1" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_UNIT2]"
+                      codePage="1252"
+                      dataType="str"
+                      length="6"
+                      name="WA_UNIT2" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_WIP_WO]"
+                      dataType="i4"
+                      name="PK_WIP_WO" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WO_WOID]"
+                      dataType="numeric"
+                      name="WO_WOID"
+                      precision="10" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[LABORS]"
+                      dataType="r8"
+                      name="LABORS" />
+                    <externalMetadataColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[LABORS_WKHR]"
+                      dataType="r8"
+                      name="LABORS_WKHR" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output]"
+                  isErrorOut="true"
+                  name="Oracle Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[TIMESTAMP]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[TIMESTAMP]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[TIMESTAMP]"
+                      name="TIMESTAMP"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_WIP_WA]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_WIP_WA]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_WIP_WA]"
+                      name="PK_WIP_WA" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_NO]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_NO]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_NO]"
+                      name="WA_NO" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_ACT]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_ACT]"
+                      length="10"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_ACT]"
+                      name="WA_ACT" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[ACT_DESC]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ACT_DESC]"
+                      length="100"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[ACT_DESC]"
+                      name="ACT_DESC" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_EXEC_STATUS]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_EXEC_STATUS]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_EXEC_STATUS]"
+                      name="WA_EXEC_STATUS" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_DT]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_DT]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_DT]"
+                      name="WA_DT"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_DURN]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_DURN]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_DURN]"
+                      name="WA_DURN" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_WO_GEN]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_WO_GEN]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_WO_GEN]"
+                      name="WA_WO_GEN"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_MULTIPLE]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_MULTIPLE]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_MULTIPLE]"
+                      name="WA_MULTIPLE" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_PLANNED]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_PLANNED]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_PLANNED]"
+                      name="WA_PLANNED" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_EQCD]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_EQCD]"
+                      length="20"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_EQCD]"
+                      name="WA_EQCD" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_EQP_TOPO]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_EQP_TOPO]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_EQP_TOPO]"
+                      name="PK_EQP_TOPO" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[EQ_LEVL]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[EQ_LEVL]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[EQ_LEVL]"
+                      name="EQ_LEVL" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_ELEM]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_ELEM]"
+                      length="40"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_ELEM]"
+                      name="WA_ELEM" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_VAL1]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_VAL1]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_VAL1]"
+                      name="WA_VAL1" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_VAL2]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_VAL2]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_VAL2]"
+                      name="WA_VAL2" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_OP_TYPE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_OP_TYPE]"
+                      length="20"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_OP_TYPE]"
+                      name="WA_OP_TYPE" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_DEVICE]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_DEVICE]"
+                      length="20"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_DEVICE]"
+                      name="WA_DEVICE" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_EQP_STAT]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_EQP_STAT]"
+                      length="20"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_EQP_STAT]"
+                      name="WA_EQP_STAT" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_UNIT1]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_UNIT1]"
+                      length="6"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_UNIT1]"
+                      name="WA_UNIT1" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_UNIT2]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WA_UNIT2]"
+                      length="6"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WA_UNIT2]"
+                      name="WA_UNIT2" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_WIP_WO]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_WIP_WO]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_WIP_WO]"
+                      name="PK_WIP_WO" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WO_WOID]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[WO_WOID]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[WO_WOID]"
+                      name="WO_WOID"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[LABORS]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[LABORS]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[LABORS]"
+                      name="LABORS" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[LABORS_WKHR]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[LABORS_WKHR]"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[LABORS_WKHR]"
+                      name="LABORS_WKHR" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\WOACTIVITY (AS IS).Paths[Derived Column Output]"
+              endId="Package\WOACTIVITY (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input]"
+              name="Derived Column Output"
+              startId="Package\WOACTIVITY (AS IS)\Derived Column.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\WOACTIVITY (AS IS).Paths[Oracle Source Output]"
+              endId="Package\WOACTIVITY (AS IS)\Derived Column.Inputs[Derived Column Input]"
+              name="Oracle Source Output"
+              startId="Package\WOACTIVITY (AS IS)\Oracle Source.Outputs[Oracle Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{08254D0A-1EAA-4351-B2B0-C7F3E52795ED}"
+      DTS:From="Package\PRE-PKG"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\RESET WOACTIVITY (AS-IS)" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{BE4A8137-D468-4887-ADB6-D72F3E6935F3}"
+      DTS:From="Package\WOACTIVITY (AS IS)"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\POST-PKG" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{7496D40A-ACFE-47B2-B7F0-64C01ECAF85B}"
+      DTS:From="Package\RESET WOACTIVITY (AS-IS)"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\WOACTIVITY (AS IS)" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        <NodeLayout
+          Size="179.2,41.6"
+          Id="Package\WOACTIVITY (AS IS)"
+          TopLeft="96.8055535445894,210.573549872192" />
+        <NodeLayout
+          Size="137.6,41.6"
+          Id="Package\POST-PKG\FINISH LOG"
+          TopLeft="51.9333115693606,32.199997812311" />
+        <ContainerLayout
+          HeaderHeight="44.8"
+          IsExpanded="False"
+          PanelSize="270.4,130.4"
+          Size="156,44.8"
+          Id="Package\POST-PKG"
+          TopLeft="78.8425915630795,299.906881855546" />
+        <NodeLayout
+          Size="135.2,41.6"
+          Id="Package\PRE-PKG\GET LOGID"
+          TopLeft="47.4999810134378,99.1999989151955" />
+        <NodeLayout
+          Size="128,41.6"
+          Id="Package\PRE-PKG\START LOG"
+          TopLeft="45.833314437834,26.3999994214376" />
+        <EdgeLayout
+          Id="Package\PRE-PKG.PrecedenceConstraints[Constraint]"
+          TopLeft="112.466647725636,67.9999994214376">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,31.1999994937579"
+              Start="0,0"
+              End="0,23.6999994937579">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,23.6999994937579" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43.2"
+          IsExpanded="False"
+          PanelSize="240,177.6"
+          Size="149.6,43.2"
+          Id="Package\PRE-PKG"
+          TopLeft="85.9722208031633,51.6444453203237" />
+        <NodeLayout
+          Size="217.6,41.6"
+          Id="Package\RESET WOACTIVITY (AS-IS)"
+          TopLeft="81.6666622045969,130.533332598077" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="160.772220803163,94.8444453203237">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="29.6944414014336,35.6888872777533"
+              Start="0,0"
+              End="29.6944414014336,28.1888872777533">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,13.8444436388767" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,13.8444436388767"
+                    Point2="0,17.8444436388767"
+                    Point3="4,17.8444436388767" />
+                  <mssgle:LineSegment
+                    End="25.6944414014336,17.8444436388767" />
+                  <mssgle:CubicBezierSegment
+                    Point1="25.6944414014336,17.8444436388767"
+                    Point2="29.6944414014336,17.8444436388767"
+                    Point3="29.6944414014336,21.8444436388767" />
+                  <mssgle:LineSegment
+                    End="29.6944414014336,28.1888872777533" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="186.405553544589,252.173549872192">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-29.5629619815099,47.733331983354"
+              Start="0,0"
+              End="-29.5629619815099,40.233331983354">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,19.866665991677" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,19.866665991677"
+                    Point2="0,23.866665991677"
+                    Point3="-4,23.866665991677" />
+                  <mssgle:LineSegment
+                    End="-25.5629619815099,23.866665991677" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-25.5629619815099,23.866665991677"
+                    Point2="-29.5629619815099,23.866665991677"
+                    Point3="-29.5629619815099,27.866665991677" />
+                  <mssgle:LineSegment
+                    End="-29.5629619815099,40.233331983354" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="188.436107874593,172.133332598077">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,38.440217274115"
+              Start="0,0"
+              End="0,30.940217274115">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,30.940217274115" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <AnnotationLayout
+          Text="Notes:&#xA;Load WOACTIVITY data as-is into CSWN_WOACTIVITY table"
+          ParentId="Package"
+          FontInfo="{assembly:Null}"
+          Size="344,56"
+          Id="23dc0cc0-435c-4eac-ac0f-24ba75582a95"
+          TopLeft="313.333316213555,64.1333328873581" />
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\WOACTIVITY (AS IS)">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="171.2,41.6"
+          Id="Package\WOACTIVITY (AS IS)\OLE DB Destination"
+          TopLeft="99.999994536241,258.933331621753" />
+        <NodeLayout
+          Size="144.8,41.6"
+          Id="Package\WOACTIVITY (AS IS)\Oracle Source"
+          TopLeft="114.000005851189,61.9333331323331" />
+        <NodeLayout
+          Size="152.8,41.6"
+          Id="Package\WOACTIVITY (AS IS)\Derived Column"
+          TopLeft="115.833327004479,155.066665883197" />
+        <EdgeLayout
+          Id="Package\WOACTIVITY (AS IS).Paths[Derived Column Output]"
+          TopLeft="188.91666077036,196.666665883197">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,62.2666657385563"
+              Start="0,0"
+              End="0,54.7666657385563">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,54.7666657385563" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\WOACTIVITY (AS IS).Paths[Oracle Source Output]"
+          TopLeft="189.316666427834,103.533333132333">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,51.5333327508636"
+              Start="0,0"
+              End="0,44.0333327508636">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,44.0333327508636" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\WOACTIVITY (AS IS)\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\WOACTIVITY (AS IS)\Oracle Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
