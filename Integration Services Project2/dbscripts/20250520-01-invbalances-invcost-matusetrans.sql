@@ -1,0 +1,525 @@
+CALL MIGRATION.STE_START_PATCH('20250520-01-INVBALANCES-INVCOST-MATUSETRANS');
+
+-- MOVEMENT/ALL INVENTORY PER ITEM PER LOCATION
+CREATE OR REPLACE VIEW MIGRATION.DBG_INVENTORY_PER_STORE_ITEM
+AS
+SELECT a.*
+	, CASE WHEN (a.calc_qty!=a.quantity AND curbaladj=0) OR (a.calc_avgcost!=a.avgcost AND a.costadj=0) THEN 1 ELSE 0 END AS mismatched
+FROM (
+	SELECT 
+		a.itemnum, a.ste_cswnitemno, a.description
+		, a.item_cat, a.item_group, a.item_authority, a.location
+		, COALESCE(b.totalqty,0) AS last_qty, CAST(COALESCE(c.MAP,0) AS decimal(13,5)) AS last_avgcost
+		, COALESCE(b.totalqty,0)*CAST(COALESCE(c.MAP,0) AS decimal(13,5)) AS last_value
+		, COALESCE(d.quantity,0) AS receipt_qty, COALESCE(d.avgcost,0) AS receipt_avgcost
+		, COALESCE(d.MINDATE,CAST('2025-03-30' AS DATE)) AS receipt_mindate
+		, COALESCE(d.MAXDATE,CAST('2025-03-30' AS DATE)) AS receipt_maxdate
+		, COALESCE(e.quantity,0) AS transfer_in_qty, COALESCE(e.avgcost,0) AS transfer_in_avgcost
+		, COALESCE(f.quantity,0) AS issue_qty, COALESCE(f.avgcost,0) AS issue_avgcost
+		, COALESCE(f.MINDATE,CAST('2025-03-30' AS DATE)) AS issue_mindate
+		, COALESCE(f.MAXDATE,CAST('2025-03-30' AS DATE)) AS issue_maxdate
+		, COALESCE(g.quantity,0) AS transfer_out_qty, COALESCE(g.avgcost,0) AS transfer_out_avgcost
+		, COALESCE(b.totalqty,0) + COALESCE(d.quantity,0) + COALESCE(e.quantity,0) - COALESCE(f.quantity,0) - COALESCE(g.quantity,0) AS calc_qty
+		, a.curbal AS quantity
+		, CASE WHEN (COALESCE(b.totalqty,0) + COALESCE(d.quantity,0) + COALESCE(e.quantity,0) - COALESCE(f.quantity,0) - COALESCE(g.quantity,0))=0 
+					THEN 
+						CASE WHEN (COALESCE(b.totalqty,0) + COALESCE(d.quantity,0))=0 THEN 0
+							 ELSE ((COALESCE(b.totalqty,0)*CAST(COALESCE(c.MAP,0) AS decimal(13,5))) + (COALESCE(d.quantity,0)*COALESCE(d.avgcost,0)))
+									/ (COALESCE(b.totalqty,0) + COALESCE(d.quantity,0))
+						END 
+		       ELSE ((COALESCE(b.totalqty,0)*CAST(COALESCE(c.MAP,0) AS decimal(13,5))) 
+		       		  + (COALESCE(d.quantity,0)*COALESCE(d.avgcost,0)) + (COALESCE(e.quantity,0)*COALESCE(e.avgcost,0))
+		       		  - (COALESCE(f.quantity,0)*COALESCE(f.avgcost,0)) - (COALESCE(g.quantity,0)*COALESCE(g.avgcost,0))
+		       		) /
+		       		(COALESCE(b.totalqty,0) + COALESCE(d.quantity,0) + COALESCE(e.quantity,0) - COALESCE(f.quantity,0) - COALESCE(g.quantity,0))
+		  END AS calc_avgcost
+		, a.avgcost
+		, (COALESCE(b.totalqty,0)*CAST(COALESCE(c.MAP,0) AS decimal(13,5))) + COALESCE(d.invvalue,0) - COALESCE(f.invvalue,0) AS calc_value
+		, a.invvalue
+		, GREATEST(CAST('2025-03-30' AS DATE), COALESCE(d.MAXDATE,CAST('2025-03-30' AS DATE)), COALESCE(e.MAXDATE,CAST('2025-03-30' AS DATE))
+					, COALESCE(f.MAXDATE,CAST('2025-03-30' AS DATE)), COALESCE(g.MAXDATE,CAST('2025-03-30' AS DATE))) AS maxdate
+		, CASE WHEN coalesce(h.cnt, 0)>0 THEN 1 ELSE 0 END AS COSTADJ
+		, CASE WHEN coalesce(j.cnt, 0)>0 THEN 1 ELSE 0 END AS CURBALADJ
+	FROM (
+		SELECT a.itemnum, b.ste_cswnitemno, b.description
+			, b.ste_cswnitemcat AS item_cat, b.ste_itemgroup AS item_group, b.ste_cswnauthority AS item_authority
+			, a.location, a.curbal, a.avgcost, a.invvalue
+		FROM (
+			SELECT x.ITEMNUM, x.LOCATION, sum(x.CURBAL) AS CURBAL, sum(x.CURBAL*y.AVGCOST) AS INVVALUE
+				, MAX(y.AVGCOST) AS AVGCOST
+			FROM MAXIMO.INVBALANCES x
+			LEFT JOIN MAXIMO.INVCOST y ON y.itemnum=x.itemnum AND y.location=x.location
+			GROUP BY x.ITEMNUM, x.LOCATION
+		) a
+		JOIN maximo.item b ON b.itemnum=a.itemnum
+		--LEFT JOIN MAXIMO.INVCOST c ON c.itemnum=a.itemnum AND c.location=a.location
+	) a
+	LEFT JOIN (
+		SELECT b.is_stor_cd, b.item_cd, sum(b.loc_free_qty) AS loc_free_qty, sum(b.loc_res_qty) AS loc_res_qty
+			, sum(b.loc_free_qty)+sum(b.loc_res_qty) AS totalqty
+		FROM maximo.cswn_invbalances b
+		GROUP BY b.is_stor_cd, b.item_cd
+	) b ON b.is_stor_cd=a.location AND b.item_cd=a.ste_cswnitemno
+	LEFT JOIN migration.sbst_inventory_master c ON c.item_code=a.ste_cswnitemno
+	LEFT JOIN (
+		SELECT a.itemnum, a.tostoreloc, sum(a.quantity+COALESCE(b.quantity,0)) AS quantity
+			, CASE WHEN sum(a.quantity+COALESCE(b.quantity,0))=0 THEN 0 ELSE sum((a.quantity+COALESCE(b.quantity,0))*a.unitcost)/sum(a.quantity+COALESCE(b.quantity,0)) END AS avgcost
+			, sum((a.quantity+COALESCE(b.quantity,0))*a.unitcost) AS invvalue
+			, MAX(A.TRANSDATE) AS MAXDATE
+			, MIN(A.TRANSDATE) AS MINDATE
+		FROM maximo.matrectrans a 
+		LEFT JOIN maximo.matrectrans b ON b.issuetype='RETURN' AND b.receiptref=a.receiptref --AND b.ste_migrationid IS NOT null
+		WHERE 1=1
+			AND a.issuetype='TRANSFER' 
+			AND a.transdate>'2025-03-30' --AND a.transdate <'2025-05-01'
+			-- holding
+			AND a.fromstoreloc='L100000019292'
+			AND A.STATUS='COMP'
+		GROUP BY a.itemnum, a.tostoreloc
+	) d ON d.itemnum=a.itemnum AND d.tostoreloc=a.location
+	LEFT JOIN (
+		SELECT a.itemnum, a.tostoreloc, sum(a.quantity) AS quantity
+			, CASE WHEN sum(a.quantity)=0 THEN 0 ELSE sum(a.quantity*a.unitcost)/sum(a.quantity) END AS avgcost
+			--, sum(a.quantity*a.unitcost) AS invvalue
+			, MAX(A.TRANSDATE) AS MAXDATE
+		FROM maximo.matrectrans a 
+		WHERE 1=1
+			AND a.issuetype='TRANSFER' 
+			AND a.transdate>'2025-03-30' --AND a.transdate <'2025-05-01'
+			-- transfer between store
+			AND a.fromstoreloc!='L100000019292' AND a.fromstoreloc!=a.tostoreloc
+		GROUP BY a.itemnum, a.tostoreloc
+	) e ON e.itemnum=a.itemnum AND e.tostoreloc=a.location
+	LEFT JOIN (
+		SELECT a.itemnum, a.storeloc, -1*sum(a.quantity) AS quantity
+			, CASE WHEN sum(a.quantity)=0 THEN 0 ELSE sum(a.quantity*a.unitcost)/sum(a.quantity) END AS avgcost
+			, -1*sum(a.quantity*a.unitcost) AS invvalue
+			, MAX(A.TRANSDATE) AS MAXDATE
+			, MIN(A.TRANSDATE) AS MINDATE
+		FROM maximo.matusetrans a 
+		WHERE 1=1
+			AND (a.issuetype='RETURN' OR a.issuetype='ISSUE')
+			AND a.transdate>'2025-03-30' --AND a.transdate <'2025-05-01'
+		GROUP BY a.itemnum, a.storeloc
+	) f ON f.itemnum=a.itemnum AND f.storeloc=a.location
+	LEFT JOIN (
+		SELECT a.itemnum, a.fromstoreloc, sum(a.quantity) AS quantity
+			, CASE WHEN sum(a.quantity)=0 THEN 0 ELSE sum(a.quantity*a.unitcost)/sum(a.quantity) END AS avgcost
+			--, sum(a.quantity*a.unitcost) AS invvalue
+			, MAX(A.TRANSDATE) AS MAXDATE
+		FROM maximo.matrectrans a 
+		WHERE 1=1
+			AND a.issuetype='TRANSFER' 
+			AND a.transdate>'2025-03-30' --AND a.transdate <'2025-05-01'
+			-- transfer between store
+			AND a.fromstoreloc!='L100000019292' AND a.fromstoreloc!=a.tostoreloc
+		GROUP BY a.itemnum, a.fromstoreloc
+	) g ON g.itemnum=a.itemnum AND g.fromstoreloc=a.location
+	LEFT JOIN (
+		SELECT a.itemnum, a.storeloc, count(*) AS cnt
+		FROM maximo.invtrans a
+		WHERE a.transtype='CAPCSTADJ' AND a.transdate>'2025-03-30' AND a.oldcost!=a.newcost
+		GROUP BY a.itemnum, a.storeloc
+	) h ON h.itemnum=a.itemnum AND h.storeloc=a.location
+	LEFT JOIN (
+		SELECT a.itemnum, a.storeloc, count(*) AS cnt
+		FROM maximo.invtrans a
+		WHERE a.transtype='CURBALADJ' AND a.transdate>'2025-03-30'
+		GROUP BY a.itemnum, a.storeloc
+	) j ON j.itemnum=a.itemnum AND j.storeloc=a.location
+	WHERE 1=1
+		AND (COALESCE(b.totalqty,0)>0 OR COALESCE(d.quantity,0)>0 OR COALESCE(e.quantity,0)>0 OR COALESCE(f.quantity,0)>0 OR COALESCE(g.quantity,0)>0
+			OR a.curbal>0)
+	ORDER BY a.itemnum, a.location
+) a
+--WHERE (a.calc_qty!=a.quantity OR a.calc_avgcost!=a.avgcost)
+-- WHERE A.ITEMNUM='A44-GEN1-0001-0460XX'
+;
+
+-- ALL INVENTORY PER ITEM
+CREATE OR REPLACE VIEW MIGRATION.DBG_INVENTORY_PER_ITEM
+AS
+SELECT a.*, 
+	CASE WHEN (a.calc_qty!=a.quantity AND a.curbaladj=0) OR (a.calc_value!=a.invvalue AND a.costadj=0) THEN 1 ELSE 0 END AS mismatched
+FROM (
+	SELECT 
+		a.itemnum, a.ste_cswnitemno, a.description
+		, a.item_cat, a.item_group, a.item_authority
+		, COALESCE(b.totalqty,0) AS last_qty, COALESCE(b.totalqty,0)*CAST(COALESCE(c.MAP,0) AS decimal(13,5)) AS last_value
+		, COALESCE(d.quantity,0) AS receipt_qty, COALESCE(d.invvalue,0) AS receipt_value
+		, COALESCE(f.quantity,0) AS issue_qty, COALESCE(f.invvalue,0) AS issue_value
+		, COALESCE(b.totalqty,0) + COALESCE(d.quantity,0) - COALESCE(f.quantity,0) AS calc_qty
+		, a.curbal AS quantity
+		, (COALESCE(b.totalqty,0)*CAST(COALESCE(c.MAP,0) AS decimal(13,5))) + COALESCE(d.invvalue,0) - COALESCE(f.invvalue,0) AS calc_value
+		, a.invvalue
+		, CASE WHEN coalesce(h.cnt, 0)>0 THEN 1 ELSE 0 END AS COSTADJ
+		, CASE WHEN coalesce(j.cnt, 0)>0 THEN 1 ELSE 0 END AS CURBALADJ
+	FROM (
+		SELECT a.itemnum, b.ste_cswnitemno, b.description
+			, b.ste_cswnitemcat AS item_cat, b.ste_itemgroup AS item_group, b.ste_cswnauthority AS item_authority
+			, a.curbal, a.invvalue
+		FROM (
+			SELECT x.ITEMNUM, sum(x.CURBAL) AS CURBAL, sum(x.CURBAL*y.AVGCOST) AS INVVALUE
+			FROM MAXIMO.INVBALANCES x
+			LEFT JOIN MAXIMO.INVCOST y ON y.itemnum=x.itemnum AND y.location=x.location
+			GROUP BY x.ITEMNUM
+		) a
+		JOIN maximo.item b ON b.itemnum=a.itemnum
+	) a
+	LEFT JOIN (
+		SELECT b.item_cd, sum(b.loc_free_qty) AS loc_free_qty, sum(b.loc_res_qty) AS loc_res_qty
+			, sum(b.loc_free_qty)+sum(b.loc_res_qty) AS totalqty
+		FROM maximo.cswn_invbalances b
+		GROUP BY b.item_cd
+	) b ON b.item_cd=a.ste_cswnitemno
+	LEFT JOIN migration.sbst_inventory_master c ON c.item_code=a.ste_cswnitemno
+	LEFT JOIN (
+		SELECT a.itemnum, sum(a.quantity) AS quantity, sum(a.quantity*a.unitcost) AS invvalue
+		FROM maximo.matrectrans a 
+		WHERE 1=1
+			AND a.issuetype='TRANSFER' 
+			AND a.transdate>'2025-03-30' --AND a.transdate <'2025-05-01'
+			-- holding
+			AND a.fromstoreloc='L100000019292'
+			AND A.STATUS='COMP'
+		GROUP BY a.itemnum
+	) d ON d.itemnum=a.itemnum
+	LEFT JOIN (
+		SELECT a.itemnum, -1*sum(a.quantity) AS quantity, -1*sum(a.quantity*a.unitcost) AS invvalue
+		FROM maximo.matusetrans a 
+		WHERE 1=1
+			AND (a.issuetype='RETURN' OR a.issuetype='ISSUE')
+			AND a.transdate>'2025-03-30' --AND a.transdate <'2025-05-01'
+		GROUP BY a.itemnum
+	) f ON f.itemnum=a.itemnum
+	LEFT JOIN (
+		SELECT a.itemnum, count(*) AS cnt
+		FROM maximo.invtrans a
+		WHERE a.transtype='CAPCSTADJ' AND a.transdate>'2025-03-30' AND a.oldcost!=a.newcost
+		GROUP BY a.itemnum
+	) h ON h.itemnum=a.itemnum
+	LEFT JOIN (
+		SELECT a.itemnum, count(*) AS cnt
+		FROM maximo.invtrans a
+		WHERE a.transtype='CURBALADJ' AND a.transdate>'2025-03-30'
+		GROUP BY a.itemnum
+	) j ON j.itemnum=a.itemnum
+	WHERE 1=1
+		AND (COALESCE(b.totalqty,0)>0 OR COALESCE(d.quantity,0)>0 OR COALESCE(f.quantity,0)>0 OR a.curbal>0)
+		--AND (COALESCE(d.quantity,0)>0 OR COALESCE(f.quantity,0)>0)
+	ORDER BY a.itemnum
+) a
+--WHERE (a.calc_qty!=a.quantity OR a.calc_value!=a.invvalue)
+;
+
+-- MAXIMO.MATUSETRANS definition
+-- DROP TABLE "MIGRATION"."BAK_20250520_INVENTORY_MISMATCHED";
+CREATE TABLE "MIGRATION"."BAK_20250520_INVENTORY_MISMATCHED"  (
+	  "ITEMNUM" VARCHAR(30 OCTETS) , 
+	  "STE_CSWNITEMNO" VARCHAR(30 OCTETS) , 
+	  "DESCRIPTION" VARCHAR(104 OCTETS) , 
+	  "ITEM_CAT" VARCHAR(16 OCTETS) , 
+	  "ITEM_GROUP" VARCHAR(16 OCTETS) , 
+	  "ITEM_AUTHORITY" VARCHAR(16 OCTETS) , 
+	  "LOCATION" VARCHAR(16 OCTETS) , 
+	  "LAST_QTY" DECIMAL(15,2), 
+	  "LAST_AVGCOST" DECIMAL(13,5) , 
+	  "LAST_VALUE" DECIMAL(13,5) , 
+	  "RECEIPT_QTY" DECIMAL(15,2), 
+	  "RECEIPT_AVGCOST" DECIMAL(13,5) , 
+	  "RECEIPT_MAXDATE" TIMESTAMP , 
+	  "TRANSFER_IN_QTY" DECIMAL(15,2), 
+	  "TRANSFER_IN_AVGCOST" DECIMAL(13,5) , 
+	  "ISSUE_QTY" DECIMAL(15,2), 
+	  "ISSUE_AVGCOST" DECIMAL(13,5) , 
+	  "ISSUE_MINDATE" TIMESTAMP , 
+	  "TRANSFER_OUT_QTY" DECIMAL(15,2), 
+	  "TRANSFER_OUT_AVGCOST" DECIMAL(13,5) , 
+	  "CALC_QTY" DECIMAL(15,2) , 
+	  "QUANTITY" DECIMAL(15,2) , 
+	  "CALC_AVGCOST" DECIMAL(13,5) , 
+	  "AVGCOST" DECIMAL(13,5) , 
+	  "CALC_VALUE" DECIMAL(13,5) , 
+	  "INVVALUE" DECIMAL(13,5) , 
+	  "MAXDATE" TIMESTAMP , 
+	  "COSTADJ" INTEGER , 
+	  "CURBALADJ" INTEGER , 
+	  "MISMATCHED" INTEGER
+)   
+ORGANIZE BY ROW;
+
+INSERT INTO "MIGRATION"."BAK_20250520_INVENTORY_MISMATCHED" (
+	ITEMNUM, STE_CSWNITEMNO, DESCRIPTION, ITEM_CAT, ITEM_GROUP, ITEM_AUTHORITY, LOCATION, 
+	LAST_QTY, LAST_AVGCOST, LAST_VALUE, RECEIPT_QTY, RECEIPT_AVGCOST, RECEIPT_MAXDATE, 
+	TRANSFER_IN_QTY, TRANSFER_IN_AVGCOST, ISSUE_QTY, ISSUE_AVGCOST, ISSUE_MINDATE, TRANSFER_OUT_QTY, TRANSFER_OUT_AVGCOST, 
+	CALC_QTY, QUANTITY, CALC_AVGCOST, AVGCOST, CALC_VALUE, INVVALUE, MAXDATE, COSTADJ, CURBALADJ, MISMATCHED
+)
+SELECT 
+	ITEMNUM, STE_CSWNITEMNO, DESCRIPTION, ITEM_CAT, ITEM_GROUP, ITEM_AUTHORITY, LOCATION, 
+	LAST_QTY, LAST_AVGCOST, LAST_VALUE, RECEIPT_QTY, RECEIPT_AVGCOST, RECEIPT_MAXDATE, 
+	TRANSFER_IN_QTY, TRANSFER_IN_AVGCOST, ISSUE_QTY, ISSUE_AVGCOST, ISSUE_MINDATE, TRANSFER_OUT_QTY, TRANSFER_OUT_AVGCOST, 
+	CALC_QTY, QUANTITY, CALC_AVGCOST, AVGCOST, CALC_VALUE, INVVALUE, MAXDATE, COSTADJ, CURBALADJ, MISMATCHED
+FROM MIGRATION.DBG_INVENTORY_PER_STORE_ITEM
+WHERE 
+	(calc_qty!=quantity) OR (calc_avgcost!=avgcost)
+;
+
+-- MAXIMO.MATUSETRANS definition
+CREATE TABLE "MIGRATION"."BAK_20250520_MATUSETRANS"  (
+	  "MATUSETRANSID" BIGINT NOT NULL , 
+	  "ITEMNUM" VARCHAR(30 OCTETS) , 
+	  "STORELOC" VARCHAR(16 OCTETS) , 
+	  "TRANSDATE" TIMESTAMP NOT NULL , 
+	  "UNITCOST" DECIMAL(13,5) NOT NULL , 
+	  "ACTUALCOST" DECIMAL(13,5) NOT NULL , 
+	  "LINECOST" DECIMAL(13,5) NOT NULL , 
+	  "CURRENCYCODE" VARCHAR(8 OCTETS) NOT NULL , 
+	  "CURRENCYUNITCOST" DECIMAL(10,2) , 
+	  "CURRENCYLINECOST" DECIMAL(10,2) , 
+	  "NEW_UNITCOST" DECIMAL(13,5) NOT NULL , 
+	  "NEW_LINECOST" DECIMAL(13,5) NOT NULL 
+)   
+ORGANIZE BY ROW;
+
+-- to update matusetrans's unitcost
+INSERT INTO "MIGRATION"."BAK_20250520_MATUSETRANS"(
+	MATUSETRANSID, ITEMNUM, STORELOC, TRANSDATE, UNITCOST, ACTUALCOST, LINECOST, CURRENCYCODE, CURRENCYUNITCOST, CURRENCYLINECOST,
+	NEW_UNITCOST, NEW_LINECOST
+)
+SELECT B.MATUSETRANSID, B.ITEMNUM, B.STORELOC, B.TRANSDATE, B.UNITCOST, B.ACTUALCOST, B.LINECOST, B.CURRENCYCODE, B.CURRENCYUNITCOST, B.CURRENCYLINECOST
+	, A.RECEIPT_AVGCOST AS NEW_UNITCOST, -1*A.RECEIPT_AVGCOST*B.QUANTITY AS NEW_LINECOST
+FROM (
+	SELECT * FROM MIGRATION.DBG_INVENTORY_PER_STORE_ITEM 
+	WHERE MISMATCHED=1
+		AND last_qty=0 AND issue_qty>0 AND receipt_avgcost!=issue_avgcost
+) A
+JOIN MAXIMO.MATUSETRANS B ON B.ITEMNUM=A.ITEMNUM AND B.STORELOC=A.LOCATION AND B.TRANSDATE>'2025-03-30'
+;
+
+-- to update matusetrans's unitcost
+INSERT INTO "MIGRATION"."BAK_20250520_MATUSETRANS"(
+	MATUSETRANSID, ITEMNUM, STORELOC, TRANSDATE, UNITCOST, ACTUALCOST, LINECOST, CURRENCYCODE, CURRENCYUNITCOST, CURRENCYLINECOST,
+	NEW_UNITCOST, NEW_LINECOST
+)
+SELECT B.MATUSETRANSID, B.ITEMNUM, B.STORELOC, B.TRANSDATE, B.UNITCOST, B.ACTUALCOST, B.LINECOST, B.CURRENCYCODE, B.CURRENCYUNITCOST, B.CURRENCYLINECOST
+	, A.CALC_AVGCOST AS NEW_UNITCOST, -1*A.CALC_AVGCOST*B.QUANTITY AS NEW_LINECOST
+FROM (
+	SELECT * FROM MIGRATION.DBG_INVENTORY_PER_STORE_ITEM 
+	WHERE MISMATCHED=1
+		AND last_qty>0 AND calc_qty=quantity AND receipt_maxdate<issue_mindate AND issue_avgcost!=calc_avgcost
+) A
+JOIN MAXIMO.MATUSETRANS B ON B.ITEMNUM=A.ITEMNUM AND B.STORELOC=A.LOCATION AND B.TRANSDATE>'2025-03-30'
+;
+
+CREATE TABLE "MIGRATION"."BAK_20250520_INVBALANCES"  (
+	  "INVBALANCESID" BIGINT NOT NULL , 
+	  "ITEMNUM" VARCHAR(30 OCTETS) , 
+	  "LOCATION" VARCHAR(16 OCTETS) , 
+	  "CURBAL" DECIMAL(15,2) NOT NULL , 
+	  "NEW_CURBAL" DECIMAL(15,2) NOT NULL 
+)   
+ORGANIZE BY ROW;
+
+-- to update invbalance.curbal
+INSERT INTO "MIGRATION"."BAK_20250520_INVBALANCES"(
+	INVBALANCESID, ITEMNUM, LOCATION, CURBAL, NEW_CURBAL
+)
+SELECT B.INVBALANCESID, B.ITEMNUM, B.LOCATION, B.CURBAL
+	, A.CALC_QTY AS NEW_CURBAL
+FROM (
+	SELECT * FROM MIGRATION.DBG_INVENTORY_PER_STORE_ITEM 
+	WHERE MISMATCHED=1
+		AND calc_qty!=quantity
+) A
+JOIN MAXIMO.INVBALANCES B ON B.ITEMNUM=A.ITEMNUM AND B.LOCATION=A.LOCATION 
+;
+
+-- UPDATE: no initial value, receipt.unitcost -> issue.unitcost
+MERGE INTO MAXIMO.MATUSETRANS A
+USING (
+	SELECT B.MATUSETRANSID, B.ITEMNUM, B.STORELOC, B.TRANSDATE, B.UNITCOST, B.ACTUALCOST, B.LINECOST, B.CURRENCYCODE, B.CURRENCYUNITCOST, B.CURRENCYLINECOST
+		, A.RECEIPT_AVGCOST AS NEW_UNITCOST, -1*A.RECEIPT_AVGCOST*B.QUANTITY AS NEW_LINECOST
+	FROM (
+		SELECT * FROM MIGRATION.DBG_INVENTORY_PER_STORE_ITEM 
+		WHERE MISMATCHED=1
+			AND last_qty=0 AND issue_qty>0 AND receipt_avgcost!=issue_avgcost
+	) A
+	JOIN MAXIMO.MATUSETRANS B ON B.ITEMNUM=A.ITEMNUM AND B.STORELOC=A.LOCATION AND B.TRANSDATE>'2025-03-30'
+) B ON B.MATUSETRANSID=A.MATUSETRANSID
+WHEN MATCHED THEN
+UPDATE SET
+	UNITCOST=NEW_UNITCOST,
+	ACTUALCOST=NEW_UNITCOST,
+	LINECOST=NEW_LINECOST,
+	CURRENCYUNITCOST=NEW_UNITCOST,
+	CURRENCYLINECOST=NEW_LINECOST
+;
+
+-- UPDATE: has initial value and issue is after all receipts, calc_avgcost -> issue.unitcost
+MERGE INTO MAXIMO.MATUSETRANS A
+USING (
+	SELECT B.MATUSETRANSID, B.ITEMNUM, B.STORELOC, B.TRANSDATE, B.UNITCOST, B.ACTUALCOST, B.LINECOST, B.CURRENCYCODE, B.CURRENCYUNITCOST, B.CURRENCYLINECOST
+		, A.CALC_AVGCOST AS NEW_UNITCOST, -1*A.CALC_AVGCOST*B.QUANTITY AS NEW_LINECOST
+	FROM (
+		SELECT * FROM MIGRATION.DBG_INVENTORY_PER_STORE_ITEM 
+		WHERE MISMATCHED=1
+			AND last_qty>0 AND calc_qty=quantity AND receipt_maxdate<issue_mindate AND issue_avgcost!=calc_avgcost
+	) A
+	JOIN MAXIMO.MATUSETRANS B ON B.ITEMNUM=A.ITEMNUM AND B.STORELOC=A.LOCATION AND B.TRANSDATE>'2025-03-30'
+) B ON B.MATUSETRANSID=A.MATUSETRANSID
+WHEN MATCHED THEN
+UPDATE SET
+	UNITCOST=NEW_UNITCOST,
+	ACTUALCOST=NEW_UNITCOST,
+	LINECOST=NEW_LINECOST,
+	CURRENCYUNITCOST=NEW_UNITCOST,
+	CURRENCYLINECOST=NEW_LINECOST
+;
+
+MERGE INTO MAXIMO.INVBALANCES A
+USING (
+	SELECT B.INVBALANCESID, B.ITEMNUM, B.LOCATION, B.CURBAL
+		, A.CALC_QTY AS NEW_CURBAL
+	FROM (
+		SELECT * FROM MIGRATION.DBG_INVENTORY_PER_STORE_ITEM 
+		WHERE MISMATCHED=1
+			AND calc_qty!=quantity
+			-- exception: to confirm later
+			AND (itemnum!='A44-AUX1-APS1-0003XX' OR location!='CW')
+			AND (itemnum!='A44-BRK1-PNE1-0024XX' OR location!='CW')
+	) A
+	JOIN MAXIMO.INVBALANCES B ON B.ITEMNUM=A.ITEMNUM AND B.LOCATION=A.LOCATION 
+) B ON B.INVBALANCESID=A.INVBALANCESID
+WHEN MATCHED THEN
+UPDATE SET
+	CURBAL=NEW_CURBAL
+;
+
+-- BACKUP
+CREATE TABLE "MIGRATION"."BAK_20250520_INVCOST"  (
+	  "INVCOSTID" BIGINT NOT NULL , 
+	  "ITEMNUM" VARCHAR(30 OCTETS) , 
+	  "LOCATION" VARCHAR(16 OCTETS) , 
+	  "AVGCOST" DECIMAL(13,5) NOT NULL , 
+	  "NEW_AVGCOST" DECIMAL(13,5) NOT NULL 
+)   
+ORGANIZE BY ROW;
+
+INSERT INTO "MIGRATION"."BAK_20250520_INVCOST"(
+	INVCOSTID, ITEMNUM, LOCATION, AVGCOST, NEW_AVGCOST
+)
+SELECT B.INVCOSTID, B.ITEMNUM, B.LOCATION, B.AVGCOST
+	, A.CALC_AVGCOST AS NEW_AVGCOST
+FROM (
+	SELECT * FROM MIGRATION.DBG_INVENTORY_PER_STORE_ITEM 
+	WHERE MISMATCHED=1 
+		AND ABS(CALC_AVGCOST-AVGCOST)<=0.01
+) A
+JOIN MAXIMO.INVCOST B ON B.ITEMNUM=A.ITEMNUM AND B.LOCATION=A.LOCATION 
+;
+
+INSERT INTO "MIGRATION"."BAK_20250520_INVCOST"(
+	INVCOSTID, ITEMNUM, LOCATION, AVGCOST, NEW_AVGCOST
+)
+SELECT B.INVCOSTID, B.ITEMNUM, B.LOCATION, B.AVGCOST
+	, A.CALC_AVGCOST AS NEW_AVGCOST
+FROM (
+	SELECT * FROM MIGRATION.DBG_INVENTORY_PER_STORE_ITEM 
+	WHERE MISMATCHED=1 
+		AND ISSUE_QTY=0 AND TRANSFER_IN_QTY=0 AND TRANSFER_OUT_QTY=0
+) A
+JOIN MAXIMO.INVCOST B ON B.ITEMNUM=A.ITEMNUM AND B.LOCATION=A.LOCATION 
+;
+
+-- UPDATE: ONLY RECEIPT AND NO ISSUE/TRANSFER-IN/TRANSFER-OUT, CALC_AVGCOST -> AVGCOST
+MERGE INTO MAXIMO.INVCOST A
+USING (
+	SELECT B.INVCOSTID, B.ITEMNUM, B.LOCATION, B.AVGCOST
+		, A.CALC_AVGCOST AS NEW_AVGCOST
+	FROM (
+		SELECT * FROM MIGRATION.DBG_INVENTORY_PER_STORE_ITEM 
+		WHERE MISMATCHED=1 
+			AND ISSUE_QTY=0 AND TRANSFER_IN_QTY=0 AND TRANSFER_OUT_QTY=0
+			-- exception: to confirm later
+			AND (itemnum!='A44-AUX1-APS1-0003XX' OR location!='CW')
+			AND (itemnum!='A44-BRK1-PNE1-0024XX' OR location!='CW')
+	) A
+	JOIN MAXIMO.INVCOST B ON B.ITEMNUM=A.ITEMNUM AND B.LOCATION=A.LOCATION 
+) B ON B.INVCOSTID=A.INVCOSTID
+WHEN MATCHED THEN
+UPDATE SET
+	AVGCOST=NEW_AVGCOST
+;
+
+-- UPDATE: DIFF IN CALC_AVGCOST AND AVGCOST < 0.01
+MERGE INTO MAXIMO.INVCOST A
+USING (
+	SELECT B.INVCOSTID, B.ITEMNUM, B.LOCATION, B.AVGCOST
+		, A.CALC_AVGCOST AS NEW_AVGCOST
+	FROM (
+		SELECT * FROM MIGRATION.DBG_INVENTORY_PER_STORE_ITEM 
+		WHERE MISMATCHED=1 
+			AND ABS(CALC_AVGCOST-AVGCOST)<=0.01
+			-- exception: to confirm later
+			AND (itemnum!='A44-AUX1-APS1-0003XX' OR location!='CW')
+			AND (itemnum!='A44-BRK1-PNE1-0024XX' OR location!='CW')
+	) A
+	JOIN MAXIMO.INVCOST B ON B.ITEMNUM=A.ITEMNUM AND B.LOCATION=A.LOCATION 
+) B ON B.INVCOSTID=A.INVCOSTID
+WHEN MATCHED THEN
+UPDATE SET
+	AVGCOST=NEW_AVGCOST
+;
+
+-- special case. backup
+INSERT INTO "MIGRATION"."BAK_20250520_MATUSETRANS"(
+	MATUSETRANSID, ITEMNUM, STORELOC, TRANSDATE, UNITCOST, ACTUALCOST, LINECOST, CURRENCYCODE, CURRENCYUNITCOST, CURRENCYLINECOST,
+	NEW_UNITCOST, NEW_LINECOST
+)
+SELECT B.MATUSETRANSID, B.ITEMNUM, B.STORELOC, B.TRANSDATE, B.UNITCOST, B.ACTUALCOST, B.LINECOST, B.CURRENCYCODE, B.CURRENCYUNITCOST, B.CURRENCYLINECOST
+	, 1143.67598 AS NEW_UNITCOST, -1*B.QUANTITY*1143.67598 AS NEW_LINECOST
+FROM MAXIMO.MATUSETRANS B 
+WHERE b.matusetransid=140494;
+
+UPDATE MAXIMO.MATUSETRANS
+UPDATE SET
+	UNITCOST=1143.67598,
+	ACTUALCOST=1143.67598,
+	LINECOST=-1*QUANTITY*1143.67598,
+	CURRENCYUNITCOST=1143.67598,
+	CURRENCYLINECOST=-1*QUANTITY*1143.67598	
+WHERE matusetransid=140494
+;
+
+INSERT INTO "MIGRATION"."BAK_20250520_INVCOST"(
+	INVCOSTID, ITEMNUM, LOCATION, AVGCOST, NEW_AVGCOST
+)
+SELECT B.INVCOSTID, B.ITEMNUM, B.LOCATION, B.AVGCOST
+	, A.CALC_AVGCOST AS NEW_AVGCOST
+FROM (
+	SELECT * FROM MIGRATION.DBG_INVENTORY_PER_STORE_ITEM 
+	WHERE MISMATCHED=1 
+		AND itemnum=(SELECT itemnum FROM MAXIMO.MATUSETRANS WHERE MATUSETRANSID=140494)
+		AND location=(SELECT storeloc FROM MAXIMO.MATUSETRANS WHERE MATUSETRANSID=140494)
+) A
+JOIN MAXIMO.INVCOST B ON B.ITEMNUM=A.ITEMNUM AND B.LOCATION=A.LOCATION 
+;
+
+MERGE INTO MAXIMO.INVCOST A
+USING (
+	SELECT B.INVCOSTID, B.ITEMNUM, B.LOCATION, B.AVGCOST
+		, A.CALC_AVGCOST AS NEW_AVGCOST
+	FROM (
+		SELECT * FROM MIGRATION.DBG_INVENTORY_PER_STORE_ITEM 
+		WHERE MISMATCHED=1 
+			AND itemnum=(SELECT itemnum FROM MAXIMO.MATUSETRANS WHERE MATUSETRANSID=140494)
+			AND location=(SELECT storeloc FROM MAXIMO.MATUSETRANS WHERE MATUSETRANSID=140494)
+	) A
+	JOIN MAXIMO.INVCOST B ON B.ITEMNUM=A.ITEMNUM AND B.LOCATION=A.LOCATION 
+) B ON B.INVCOSTID=A.INVCOSTID
+WHEN MATCHED THEN
+UPDATE SET
+	AVGCOST=NEW_AVGCOST
+;
+
+CALL MIGRATION.STE_FINISH_PATCH('20250520-01-INVBALANCES-INVCOST-MATUSETRANS');
