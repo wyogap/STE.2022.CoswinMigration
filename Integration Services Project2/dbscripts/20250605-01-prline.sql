@@ -1,0 +1,107 @@
+CALL MIGRATION.STE_START_PATCH('20250605-01-PRLINE');
+
+--CREATE TABLE "MAXIMO"."CSWN_PRLINE" 
+--   (	
+--   "PK_PR_ITEMS" BIGINT, 
+--	"TIMESTAMP" BIGINT, 
+--	"S_NSITEM_PR" BIGINT, 
+--	"S_ITEM_PR" BIGINT, 
+--	"DT_PR_ITEMS" BIGINT, 
+--	"TM_PR_ITEMS" BIGINT, 
+--	"NEEDED_DT" BIGINT, 
+--	"PR_QTY" DECIMAL(28,12), 
+--	"PR_ORD_QTY" DECIMAL(28,12), 
+--	"PR_UNIT" VARCHAR(6), 
+--	"PR_NST_REF" VARCHAR(2), 
+--	"PR_TP_FLG" INTEGER, 
+--	"PR_PREF_SUPL" VARCHAR(20), 
+--	"PR_ITEM_EST_VAL" DECIMAL(28,12), 
+--	"PR_DEV_QTY" DECIMAL(28,12), 
+--	"PR_IT_NUMBER1" DECIMAL(28,12), 
+--	"PR_IT_STRING1" VARCHAR(20), 
+--	"PR_STOR_CD" VARCHAR(10), 
+--	PK_PREQUEST BIGINT,
+--	PR_REF VARCHAR(10), 
+--	PR_CC VARCHAR(16),  
+--	PR_STRING1 VARCHAR(20),
+--	PR_STRING2 VARCHAR(20), 
+--	PR_WO_REF VARCHAR(10),
+--	PK_WIP_WO BIGINT,
+--	ITEM_CD VARCHAR(20),
+--	ITEM_DS VARCHAR(104),
+--	BUY_PRICE DECIMAL(28,12),
+--	BUY_CURR VARCHAR(6), 
+--	LINENUM INTEGER
+--)
+-- IN "MAXDATA"  
+-- ORGANIZE BY ROW;
+
+-- BRING TABLE "MAXIMO"."CSWN_PRLINE" FROM ON-PREM
+
+-- NOTES: NEED TO UPDATE PRLINE.UNITCOST AND PRLINE.LINECOST TO DECIMAL(12,2)
+
+-- BACKUP
+--DROP TABLE "MIGRATION"."BAK_20250605_PRLINE";
+CREATE TABLE "MIGRATION"."BAK_20250605_PRLINE"(
+	PRLINEID BIGINT,
+	PRNUM VARCHAR(10),
+	ITEMNUM VARCHAR(30),
+	ORDERQTY DECIMAL(15,2),
+	LINECOST DECIMAL(12,2),
+	UNITCOST DECIMAL(12,2),
+	NEW_LINECOST DECIMAL(12,2),
+	NEW_UNITCOST DECIMAL(12,2),
+	CONTRACT_UNITCOST DECIMAL(10,2)
+);
+
+INSERT INTO "MIGRATION"."BAK_20250605_PRLINE"(
+	PRLINEID, PRNUM, ITEMNUM, ORDERQTY, LINECOST, UNITCOST, NEW_LINECOST, NEW_UNITCOST, CONTRACT_UNITCOST
+)
+SELECT A.PRLINEID, A.PRNUM, A.ITEMNUM, A.ORDERQTY, A.LINECOST, A.UNITCOST
+	, TRUNCATE(E.PR_ITEM_EST_VAL,2) AS NEW_LINECOST, TRUNCATE(E.PR_ITEM_EST_VAL/A.ORDERQTY,2) AS NEW_UNITCOST
+	, c.unitcost AS contract_unitcost
+FROM maximo.prline a
+JOIN maximo.pr b ON b.prnum=a.prnum
+LEFT JOIN (
+	SELECT c.contractnum, d.startdate, c.itemnum, c.unitcost
+	FROM maximo.contractline c
+	JOIN maximo.contract d ON d.contractnum=c.contractnum
+	WHERE d.contracttype='PRICE'
+) c ON c.contractnum=b.contractrefnum AND c.itemnum=a.itemnum
+	AND CAST(b.issuedate AS date)>=CAST(c.startdate AS date)
+	AND c.unitcost!=a.unitcost
+	AND ABS(c.unitcost-a.unitcost)<0.02 
+JOIN maximo.cswn_prline e ON e.PK_PR_ITEMS=a.ste_migrationid
+WHERE 1=1
+	AND (TRUNCATE(E.PR_ITEM_EST_VAL,2)!=a.linecost OR c.unitcost IS NOT NULL)
+	--AND E.PR_ITEM_EST_VAL>99999999
+;
+
+-- UPDATE
+MERGE INTO MAXIMO.PRLINE A
+USING (
+	SELECT A.PRLINEID, A.PRNUM, A.ITEMNUM, A.ORDERQTY, A.LINECOST, A.UNITCOST
+		, TRUNCATE(E.PR_ITEM_EST_VAL,2) AS NEW_LINECOST, TRUNCATE(E.PR_ITEM_EST_VAL/A.ORDERQTY,2) AS NEW_UNITCOST
+		, c.unitcost AS contract_unitcost
+	FROM maximo.prline a
+	JOIN maximo.pr b ON b.prnum=a.prnum
+	LEFT JOIN (
+		SELECT c.contractnum, d.startdate, c.itemnum, c.unitcost
+		FROM maximo.contractline c
+		JOIN maximo.contract d ON d.contractnum=c.contractnum
+		WHERE d.contracttype='PRICE'
+	) c ON c.contractnum=b.contractrefnum AND c.itemnum=a.itemnum
+		AND CAST(b.issuedate AS date)>=CAST(c.startdate AS date)
+		AND c.unitcost!=a.unitcost
+		AND ABS(c.unitcost-a.unitcost)<0.02 
+	JOIN maximo.cswn_prline e ON e.PK_PR_ITEMS=a.ste_migrationid
+	WHERE 1=1
+		AND (TRUNCATE(E.PR_ITEM_EST_VAL,2)!=a.linecost OR c.unitcost IS NOT NULL)
+) B ON B.PRLINEID=A.PRLINEID
+WHEN MATCHED THEN
+UPDATE SET
+	LINECOST=B.NEW_LINECOST,
+	UNITCOST=COALESCE(B.contract_unitcost, B.NEW_UNITCOST)
+;
+
+CALL MIGRATION.STE_FINISH_PATCH('20250605-01-PRLINE');
