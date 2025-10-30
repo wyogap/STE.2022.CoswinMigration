@@ -1,0 +1,1921 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="12/22/2024 2:10:50 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="LENOVO-YOGA"
+  DTS:CreatorName="LENOVO-YOGA\wyoga"
+  DTS:DTSID="{B4007354-7903-4F3D-8315-456A2FF543F2}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="16.0.5685.0"
+  DTS:LocaleID="14345"
+  DTS:ObjectName="DB2_1221_Fix_PRLine_As-is"
+  DTS:PackageType="5"
+  DTS:VersionBuild="323"
+  DTS:VersionGUID="{E67A4EC5-167F-4FAC-822A-F0705BAB77E2}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{189543CD-E801-47F8-9E50-C250255EAA61}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="log_id">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{1C555EB0-657D-4D1F-A85D-E538D38D0F74}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="max_id">
+      <DTS:VariableValue
+        DTS:DataType="20">0</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\POST-PKG"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{0D4CC7B5-E279-415C-8A7D-BE30EF52B7BA}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="POST-PKG">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\POST-PKG\FINISH LOG"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{CA86BB0E-7663-4E65-8D41-91D7B560C7A1}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="FINISH LOG"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="UPDATE MIGRATION.ste_migration_logs &#xA;SET&#xA; end_date = add_hours(CURRENT_TIMESTAMP,8)&#xA; , success = 1&#xA;WHERE id = ?" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="LogId"
+                SQLTask:DtsVariableName="User::log_id"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\PRE-PKG"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{D25F0EF9-510D-46EE-A6C8-B448B5B5BBF5}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="PRE-PKG">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\PRE-PKG\GET LOGID"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{16C6B1F5-FAF9-4612-AEE8-5C9A29511F73}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="GET LOGID"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="SELECT ID FROM MIGRATION.ste_migration_logs &#xA;WHERE package_name=?&#xA;ORDER BY ID DESC LIMIT 1"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="ID"
+                SQLTask:DtsVariableName="User::log_id" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="NewParameterName"
+                SQLTask:DtsVariableName="System::PackageName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\PRE-PKG\START LOG"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{375AA5EB-35F0-486A-867B-DCCF24A38397}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="START LOG"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="INSERT INTO MIGRATION.ste_migration_logs (&#xA; package_name&#xA; ,version&#xA; ,start_date&#xA; ,hostname &#xA;)&#xA;VALUES (&#xA; ?&#xA; , CONCAT(?,CONCAT( '.', ?))&#xA; ,add_hours(CURRENT_TIMESTAMP,8)&#xA; , ?&#xA;);" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="PkgName"
+                SQLTask:DtsVariableName="System::PackageName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="PkgVersionMajor"
+                SQLTask:DtsVariableName="System::VersionMajor"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="PkgVersionMinor"
+                SQLTask:DtsVariableName="System::VersionMinor"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="Hostname"
+                SQLTask:DtsVariableName="System::MachineName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\PRE-PKG.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{C825A0E4-655A-47FE-A4FD-685D0DB86976}"
+          DTS:From="Package\PRE-PKG\START LOG"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\PRE-PKG\GET LOGID" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\PRLINE (AS IS)"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{5D3FD319-FE78-4FA4-A13E-8B948EF027D1}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="PRLINE (AS IS)"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\PRLINE (AS IS)\Derived Column"
+              componentClassID="Microsoft.DerivedColumn"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="Derived Column"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\PRLINE (AS IS)\Derived Column.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\Derived Column.Inputs[Derived Column Input].Columns[PR_QTY]"
+                      cachedDataType="r8"
+                      cachedName="PR_QTY"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_QTY]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\Derived Column.Inputs[Derived Column Input].Columns[PR_ITEM_EST_VAL]"
+                      cachedDataType="r8"
+                      cachedName="PR_ITEM_EST_VAL"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_ITEM_EST_VAL]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\Derived Column.Inputs[Derived Column Input].Columns[BUY_PRICE]"
+                      cachedDataType="r8"
+                      cachedName="BUY_PRICE"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[BUY_PRICE]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\Derived Column.Inputs[Derived Column Input].Columns[PR_ORD_QTY]"
+                      cachedDataType="r8"
+                      cachedName="PR_ORD_QTY"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_ORD_QTY]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\Derived Column.Inputs[Derived Column Input].Columns[PR_DEV_QTY]"
+                      cachedDataType="r8"
+                      cachedName="PR_DEV_QTY"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_DEV_QTY]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\Derived Column.Inputs[Derived Column Input].Columns[PR_IT_NUMBER1]"
+                      cachedDataType="r8"
+                      cachedName="PR_IT_NUMBER1"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_IT_NUMBER1]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\PRLINE (AS IS)\Derived Column.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\PRLINE (AS IS)\Derived Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_PR_QTY]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\PRLINE (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_PR_QTY]"
+                      name="V_PR_QTY"
+                      precision="28"
+                      scale="12"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_NUMERIC,28,12)#{Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_QTY]}</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_NUMERIC,28,12)PR_QTY</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_PR_ORD_QTY]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\PRLINE (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_PR_ORD_QTY]"
+                      name="V_PR_ORD_QTY"
+                      precision="28"
+                      scale="12"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_NUMERIC,28,12)#{Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_ORD_QTY]}</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_NUMERIC,28,12)PR_ORD_QTY</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_PR_ITEM_EST_VAL]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\PRLINE (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_PR_ITEM_EST_VAL]"
+                      name="V_PR_ITEM_EST_VAL"
+                      precision="28"
+                      scale="12"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_NUMERIC,28,12)#{Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_ITEM_EST_VAL]}</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_NUMERIC,28,12)PR_ITEM_EST_VAL</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_PR_DEV_QTY]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\PRLINE (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_PR_DEV_QTY]"
+                      name="V_PR_DEV_QTY"
+                      precision="28"
+                      scale="12"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_NUMERIC,28,12)#{Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_DEV_QTY]}</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_NUMERIC,28,12)PR_DEV_QTY</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_PR_IT_NUMBER1]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\PRLINE (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_PR_IT_NUMBER1]"
+                      name="V_PR_IT_NUMBER1"
+                      precision="28"
+                      scale="12"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_NUMERIC,28,12)#{Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_IT_NUMBER1]}</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_NUMERIC,28,12)PR_IT_NUMBER1</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_BUY_PRICE]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\PRLINE (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_BUY_PRICE]"
+                      name="V_BUY_PRICE"
+                      precision="28"
+                      scale="12"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_NUMERIC,28,12)#{Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[BUY_PRICE]}</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_NUMERIC,28,12)BUY_PRICE</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\PRLINE (AS IS)\Derived Column.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\PRLINE (AS IS)\Derived Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\PRLINE (AS IS)\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\PRLINE (AS IS)\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\PRLINE (AS IS)\OLE DB Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="OLE DB Destination"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">"MAXIMO"."CSWN_PRLINE"</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\PRLINE (AS IS)\OLE DB Destination.Connections[OleDbConnection]"
+                  connectionManagerID="{0BC696F0-EC0B-4459-B510-122B6C034F5D}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[BLUDB]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[TIMESTAMP]"
+                      cachedDataType="numeric"
+                      cachedName="TIMESTAMP"
+                      cachedPrecision="10"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[TIMESTAMP]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[TIMESTAMP]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[ITEM_CD]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="ITEM_CD"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ITEM_CD]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_CD]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[LINENUM]"
+                      cachedDataType="r8"
+                      cachedName="LINENUM"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LINENUM]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[LINENUM]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[V_PR_QTY]"
+                      cachedDataType="numeric"
+                      cachedName="V_PR_QTY"
+                      cachedPrecision="28"
+                      cachedScale="12"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PR_QTY]"
+                      lineageId="Package\PRLINE (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_PR_QTY]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[V_PR_ORD_QTY]"
+                      cachedDataType="numeric"
+                      cachedName="V_PR_ORD_QTY"
+                      cachedPrecision="28"
+                      cachedScale="12"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PR_ORD_QTY]"
+                      lineageId="Package\PRLINE (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_PR_ORD_QTY]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[V_PR_ITEM_EST_VAL]"
+                      cachedDataType="numeric"
+                      cachedName="V_PR_ITEM_EST_VAL"
+                      cachedPrecision="28"
+                      cachedScale="12"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PR_ITEM_EST_VAL]"
+                      lineageId="Package\PRLINE (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_PR_ITEM_EST_VAL]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[V_PR_DEV_QTY]"
+                      cachedDataType="numeric"
+                      cachedName="V_PR_DEV_QTY"
+                      cachedPrecision="28"
+                      cachedScale="12"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PR_DEV_QTY]"
+                      lineageId="Package\PRLINE (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_PR_DEV_QTY]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[V_PR_IT_NUMBER1]"
+                      cachedDataType="numeric"
+                      cachedName="V_PR_IT_NUMBER1"
+                      cachedPrecision="28"
+                      cachedScale="12"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PR_IT_NUMBER1]"
+                      lineageId="Package\PRLINE (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_PR_IT_NUMBER1]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[V_BUY_PRICE]"
+                      cachedDataType="numeric"
+                      cachedName="V_BUY_PRICE"
+                      cachedPrecision="28"
+                      cachedScale="12"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[BUY_PRICE]"
+                      lineageId="Package\PRLINE (AS IS)\Derived Column.Outputs[Derived Column Output].Columns[V_BUY_PRICE]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PK_PR_ITEMS]"
+                      cachedDataType="i4"
+                      cachedName="PK_PR_ITEMS"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PK_PR_ITEMS]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_PR_ITEMS]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[S_NSITEM_PR]"
+                      cachedDataType="i4"
+                      cachedName="S_NSITEM_PR"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[S_NSITEM_PR]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[S_NSITEM_PR]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[S_ITEM_PR]"
+                      cachedDataType="i4"
+                      cachedName="S_ITEM_PR"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[S_ITEM_PR]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[S_ITEM_PR]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DT_PR_ITEMS]"
+                      cachedDataType="numeric"
+                      cachedName="DT_PR_ITEMS"
+                      cachedPrecision="10"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DT_PR_ITEMS]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DT_PR_ITEMS]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[TM_PR_ITEMS]"
+                      cachedDataType="numeric"
+                      cachedName="TM_PR_ITEMS"
+                      cachedPrecision="10"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[TM_PR_ITEMS]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[TM_PR_ITEMS]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[NEEDED_DT]"
+                      cachedDataType="numeric"
+                      cachedName="NEEDED_DT"
+                      cachedPrecision="10"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[NEEDED_DT]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[NEEDED_DT]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PR_UNIT]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="6"
+                      cachedName="PR_UNIT"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PR_UNIT]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_UNIT]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PR_NST_REF]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="2"
+                      cachedName="PR_NST_REF"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PR_NST_REF]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_NST_REF]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PR_TP_FLG]"
+                      cachedDataType="i2"
+                      cachedName="PR_TP_FLG"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PR_TP_FLG]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_TP_FLG]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PR_PREF_SUPL]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="PR_PREF_SUPL"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PR_PREF_SUPL]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_PREF_SUPL]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PR_IT_STRING1]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="PR_IT_STRING1"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PR_IT_STRING1]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_IT_STRING1]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PR_STOR_CD]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="PR_STOR_CD"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PR_STOR_CD]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_STOR_CD]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PK_PREQUEST]"
+                      cachedDataType="i4"
+                      cachedName="PK_PREQUEST"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PK_PREQUEST]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_PREQUEST]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PR_REF]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="PR_REF"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PR_REF]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_REF]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PR_CC]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="16"
+                      cachedName="PR_CC"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PR_CC]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_CC]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PR_STRING1]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="PR_STRING1"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PR_STRING1]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_STRING1]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PR_STRING2]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="PR_STRING2"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PR_STRING2]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_STRING2]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PR_WO_REF]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="10"
+                      cachedName="PR_WO_REF"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PR_WO_REF]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_WO_REF]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PK_WIP_WO]"
+                      cachedDataType="i4"
+                      cachedName="PK_WIP_WO"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PK_WIP_WO]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_WIP_WO]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[ITEM_DS]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="100"
+                      cachedName="ITEM_DS"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ITEM_DS]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_DS]" />
+                    <inputColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[BUY_CURR]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="6"
+                      cachedName="BUY_CURR"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[BUY_CURR]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[BUY_CURR]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[TIMESTAMP]"
+                      dataType="i8"
+                      name="TIMESTAMP" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ITEM_CD]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="ITEM_CD" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LINENUM]"
+                      dataType="i4"
+                      name="LINENUM" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PK_PR_ITEMS]"
+                      dataType="i8"
+                      name="PK_PR_ITEMS" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[S_NSITEM_PR]"
+                      dataType="i8"
+                      name="S_NSITEM_PR" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[S_ITEM_PR]"
+                      dataType="i8"
+                      name="S_ITEM_PR" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DT_PR_ITEMS]"
+                      dataType="i8"
+                      name="DT_PR_ITEMS" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[TM_PR_ITEMS]"
+                      dataType="i8"
+                      name="TM_PR_ITEMS" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[NEEDED_DT]"
+                      dataType="i8"
+                      name="NEEDED_DT" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PR_QTY]"
+                      dataType="decimal"
+                      name="PR_QTY"
+                      scale="12" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PR_ORD_QTY]"
+                      dataType="decimal"
+                      name="PR_ORD_QTY"
+                      scale="12" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PR_UNIT]"
+                      codePage="1252"
+                      dataType="str"
+                      length="6"
+                      name="PR_UNIT" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PR_NST_REF]"
+                      codePage="1252"
+                      dataType="str"
+                      length="2"
+                      name="PR_NST_REF" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PR_TP_FLG]"
+                      dataType="i4"
+                      name="PR_TP_FLG" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PR_PREF_SUPL]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="PR_PREF_SUPL" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PR_ITEM_EST_VAL]"
+                      dataType="decimal"
+                      name="PR_ITEM_EST_VAL"
+                      scale="12" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PR_DEV_QTY]"
+                      dataType="decimal"
+                      name="PR_DEV_QTY"
+                      scale="12" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PR_IT_NUMBER1]"
+                      dataType="decimal"
+                      name="PR_IT_NUMBER1"
+                      scale="12" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PR_IT_STRING1]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="PR_IT_STRING1" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PR_STOR_CD]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="PR_STOR_CD" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PK_PREQUEST]"
+                      dataType="i8"
+                      name="PK_PREQUEST" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PR_REF]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="PR_REF" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PR_CC]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="PR_CC" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PR_STRING1]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="PR_STRING1" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PR_STRING2]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="PR_STRING2" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PR_WO_REF]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="PR_WO_REF" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PK_WIP_WO]"
+                      dataType="i8"
+                      name="PK_WIP_WO" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ITEM_DS]"
+                      codePage="1252"
+                      dataType="str"
+                      length="104"
+                      name="ITEM_DS" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[BUY_PRICE]"
+                      dataType="decimal"
+                      name="BUY_PRICE"
+                      scale="12" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[BUY_CURR]"
+                      codePage="1252"
+                      dataType="str"
+                      length="6"
+                      name="BUY_CURR" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\PRLINE (AS IS)\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\PRLINE (AS IS)\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\PRLINE (AS IS)\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\PRLINE (AS IS)\Oracle Source"
+              componentClassID="Microsoft.SSISOracleSrc"
+              description="Oracle Source"
+              name="Oracle Source"
+              usesDispositions="true"
+              version="1">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The name of the table to be fetched."
+                  expressionType="Notify"
+                  name="TableName">"COSWIN"."STE_TEST_TABLE"</property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT 
+	pri.PK_PR_ITEMS 
+	, pri.TIMESTAMP
+	, pri.S_ITEM_PR
+	, pri.S_NSITEM_PR
+	, pri.DT_PR_ITEMS
+	, pri.TM_PR_ITEMS 
+	, pri.NEEDED_DT
+	, pri.PR_QTY
+	, pri.PR_ORD_QTY
+	, pri.PR_UNIT
+	, pri.PR_NST_REF
+	, pri.PR_TP_FLG
+	, pri.PR_PREF_SUPL
+	, pri.PR_ITEM_EST_VAL
+	, pri.PR_DEV_QTY
+	, pri.PR_IT_NUMBER1
+	, pri.PR_IT_STRING1
+	, pri.PR_STOR_CD
+	, pr.PK_PREQUEST 
+	, pr.PR_REF 
+	, coalesce(pr.PR_CC, 'NEL') as PR_CC 
+	, upper(pr.PR_STRING1) as  PR_STRING1
+	, pr.PR_STRING2 
+	, pr.PR_WO_REF
+	, wo.PK_WIP_WO
+	, it.ITEM_CD
+	, it.ITEM_DS
+	, it.BUY_PRICE
+	, it.BUY_CURR 
+	, ROW_NUMBER() OVER (PARTITION BY pr.PK_PREQUEST ORDER BY it.ITEM_CD) LINENUM
+FROM COSWIN.PR_ITEMS pri
+JOIN COSWIN.PREQUEST pr ON pr.PK_PREQUEST = pri.S_PR_ITEM
+LEFT JOIN COSWIN.WIP_WO wo ON wo.WO_WOID=pr.PR_WO_REF 
+LEFT JOIN (
+	SELECT
+		pri.PK_PR_ITEMS 
+		, COALESCE(ns.NSITEM_CD, it.ITEM_CD) AS ITEM_CD
+		, COALESCE(ns.NSITEM_SHORT, it.ITEM_SHORT) AS ITEM_DS
+		, COALESCE(it.BUY_PRICE, 0) AS BUY_PRICE
+		, COALESCE(it.BUY_CURR, 'SGD') AS BUY_CURR 
+	FROM COSWIN.PR_ITEMS pri	
+	LEFT JOIN COSWIN.ITEM_ it ON it.PK_ITEM_ = pri.S_ITEM_PR 
+	LEFT JOIN COSWIN.NSITEM ns ON ns.PK_NSITEM = pri.S_NSITEM_PR 
+) it ON it.PK_PR_ITEMS = pri.PK_PR_ITEMS 
+-- WHERE pr.PR_WO_REF IS NOT NULL 
+order by pri.PK_PR_ITEMS
+;</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows fetched per batch."
+                  expressionType="Notify"
+                  name="BatchSize">1000</property>
+                <property
+                  dataType="System.Int32"
+                  description="Determines the chunk size allocation for LOB columns"
+                  expressionType="Notify"
+                  name="LobChunkSize">32768</property>
+                <property
+                  dataType="System.Int32"
+                  description="The code page to use when code page information is unavailable from the data source."
+                  expressionType="Notify"
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Int32"
+                  description="Number of pre-fetched rows."
+                  expressionType="Notify"
+                  name="PrefetchCount">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">1</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\PRLINE (AS IS)\Oracle Source.Connections[ORACLEConnection]"
+                  connectionManagerID="{1BBC9476-D9E4-4553-8563-89CF216CBE10}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[COSWIN]"
+                  description="The ORACLE runtime connection used to access the database."
+                  name="ORACLEConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output]"
+                  errorRowDisposition="FailComponent"
+                  name="Oracle Source Output"
+                  truncationRowDisposition="FailComponent">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[TIMESTAMP]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[TIMESTAMP]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[TIMESTAMP]"
+                      name="TIMESTAMP"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_CD]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ITEM_CD]"
+                      length="20"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_CD]"
+                      name="ITEM_CD" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[LINENUM]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[LINENUM]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[LINENUM]"
+                      name="LINENUM" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_PR_ITEMS]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_PR_ITEMS]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_PR_ITEMS]"
+                      name="PK_PR_ITEMS" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[S_ITEM_PR]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_ITEM_PR]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[S_ITEM_PR]"
+                      name="S_ITEM_PR" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[S_NSITEM_PR]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_NSITEM_PR]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[S_NSITEM_PR]"
+                      name="S_NSITEM_PR" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_STOR_CD]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_STOR_CD]"
+                      length="10"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_STOR_CD]"
+                      name="PR_STOR_CD" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_QTY]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_QTY]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_QTY]"
+                      name="PR_QTY" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_UNIT]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_UNIT]"
+                      length="6"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_UNIT]"
+                      name="PR_UNIT" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[NEEDED_DT]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[NEEDED_DT]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[NEEDED_DT]"
+                      name="NEEDED_DT"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DT_PR_ITEMS]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DT_PR_ITEMS]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[DT_PR_ITEMS]"
+                      name="DT_PR_ITEMS"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[TM_PR_ITEMS]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[TM_PR_ITEMS]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[TM_PR_ITEMS]"
+                      name="TM_PR_ITEMS"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_ITEM_EST_VAL]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_ITEM_EST_VAL]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_ITEM_EST_VAL]"
+                      name="PR_ITEM_EST_VAL" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_PREF_SUPL]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_PREF_SUPL]"
+                      length="20"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_PREF_SUPL]"
+                      name="PR_PREF_SUPL" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_TP_FLG]"
+                      dataType="i2"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_TP_FLG]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_TP_FLG]"
+                      name="PR_TP_FLG" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_PREQUEST]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_PREQUEST]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_PREQUEST]"
+                      name="PK_PREQUEST" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_REF]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_REF]"
+                      length="10"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_REF]"
+                      name="PR_REF" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_CC]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_CC]"
+                      length="16"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_CC]"
+                      name="PR_CC" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_STRING1]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_STRING1]"
+                      length="20"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_STRING1]"
+                      name="PR_STRING1" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_STRING2]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_STRING2]"
+                      length="20"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_STRING2]"
+                      name="PR_STRING2" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_WO_REF]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_WO_REF]"
+                      length="10"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_WO_REF]"
+                      name="PR_WO_REF" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_WIP_WO]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_WIP_WO]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PK_WIP_WO]"
+                      name="PK_WIP_WO" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_DS]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ITEM_DS]"
+                      length="100"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[ITEM_DS]"
+                      name="ITEM_DS" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[BUY_PRICE]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[BUY_PRICE]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[BUY_PRICE]"
+                      name="BUY_PRICE" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[BUY_CURR]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[BUY_CURR]"
+                      length="6"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[BUY_CURR]"
+                      name="BUY_CURR" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_ORD_QTY]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_ORD_QTY]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_ORD_QTY]"
+                      name="PR_ORD_QTY" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_NST_REF]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_NST_REF]"
+                      length="2"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_NST_REF]"
+                      name="PR_NST_REF" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_DEV_QTY]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_DEV_QTY]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_DEV_QTY]"
+                      name="PR_DEV_QTY" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_IT_NUMBER1]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_IT_NUMBER1]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_IT_NUMBER1]"
+                      name="PR_IT_NUMBER1" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_IT_STRING1]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_IT_STRING1]"
+                      length="20"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].Columns[PR_IT_STRING1]"
+                      name="PR_IT_STRING1" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[TIMESTAMP]"
+                      dataType="numeric"
+                      name="TIMESTAMP"
+                      precision="10" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ITEM_CD]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="ITEM_CD" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[LINENUM]"
+                      dataType="r8"
+                      name="LINENUM" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_PR_ITEMS]"
+                      dataType="i4"
+                      name="PK_PR_ITEMS" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_ITEM_PR]"
+                      dataType="i4"
+                      name="S_ITEM_PR" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_NSITEM_PR]"
+                      dataType="i4"
+                      name="S_NSITEM_PR" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_STOR_CD]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="PR_STOR_CD" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_QTY]"
+                      dataType="r8"
+                      name="PR_QTY" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_UNIT]"
+                      codePage="1252"
+                      dataType="str"
+                      length="6"
+                      name="PR_UNIT" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[NEEDED_DT]"
+                      dataType="numeric"
+                      name="NEEDED_DT"
+                      precision="10" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DT_PR_ITEMS]"
+                      dataType="numeric"
+                      name="DT_PR_ITEMS"
+                      precision="10" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[TM_PR_ITEMS]"
+                      dataType="numeric"
+                      name="TM_PR_ITEMS"
+                      precision="10" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_ITEM_EST_VAL]"
+                      dataType="r8"
+                      name="PR_ITEM_EST_VAL" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_PREF_SUPL]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="PR_PREF_SUPL" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_TP_FLG]"
+                      dataType="i2"
+                      name="PR_TP_FLG" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_PREQUEST]"
+                      dataType="i4"
+                      name="PK_PREQUEST" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_REF]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="PR_REF" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_CC]"
+                      codePage="1252"
+                      dataType="str"
+                      length="16"
+                      name="PR_CC" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_STRING1]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="PR_STRING1" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_STRING2]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="PR_STRING2" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_WO_REF]"
+                      codePage="1252"
+                      dataType="str"
+                      length="10"
+                      name="PR_WO_REF" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_WIP_WO]"
+                      dataType="i4"
+                      name="PK_WIP_WO" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ITEM_DS]"
+                      codePage="1252"
+                      dataType="str"
+                      length="100"
+                      name="ITEM_DS" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[BUY_PRICE]"
+                      dataType="r8"
+                      name="BUY_PRICE" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[BUY_CURR]"
+                      codePage="1252"
+                      dataType="str"
+                      length="6"
+                      name="BUY_CURR" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_ORD_QTY]"
+                      dataType="r8"
+                      name="PR_ORD_QTY" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_NST_REF]"
+                      codePage="1252"
+                      dataType="str"
+                      length="2"
+                      name="PR_NST_REF" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_DEV_QTY]"
+                      dataType="r8"
+                      name="PR_DEV_QTY" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_IT_NUMBER1]"
+                      dataType="r8"
+                      name="PR_IT_NUMBER1" />
+                    <externalMetadataColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_IT_STRING1]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="PR_IT_STRING1" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output]"
+                  isErrorOut="true"
+                  name="Oracle Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[TIMESTAMP]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[TIMESTAMP]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[TIMESTAMP]"
+                      name="TIMESTAMP"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[ITEM_CD]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ITEM_CD]"
+                      length="20"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[ITEM_CD]"
+                      name="ITEM_CD" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[LINENUM]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[LINENUM]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[LINENUM]"
+                      name="LINENUM" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_PR_ITEMS]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_PR_ITEMS]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_PR_ITEMS]"
+                      name="PK_PR_ITEMS" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[S_ITEM_PR]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_ITEM_PR]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[S_ITEM_PR]"
+                      name="S_ITEM_PR" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[S_NSITEM_PR]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[S_NSITEM_PR]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[S_NSITEM_PR]"
+                      name="S_NSITEM_PR" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PR_STOR_CD]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_STOR_CD]"
+                      length="10"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PR_STOR_CD]"
+                      name="PR_STOR_CD" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PR_QTY]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_QTY]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PR_QTY]"
+                      name="PR_QTY" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PR_UNIT]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_UNIT]"
+                      length="6"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PR_UNIT]"
+                      name="PR_UNIT" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[NEEDED_DT]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[NEEDED_DT]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[NEEDED_DT]"
+                      name="NEEDED_DT"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[DT_PR_ITEMS]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[DT_PR_ITEMS]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[DT_PR_ITEMS]"
+                      name="DT_PR_ITEMS"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[TM_PR_ITEMS]"
+                      dataType="numeric"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[TM_PR_ITEMS]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[TM_PR_ITEMS]"
+                      name="TM_PR_ITEMS"
+                      precision="10" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PR_ITEM_EST_VAL]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_ITEM_EST_VAL]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PR_ITEM_EST_VAL]"
+                      name="PR_ITEM_EST_VAL" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PR_PREF_SUPL]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_PREF_SUPL]"
+                      length="20"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PR_PREF_SUPL]"
+                      name="PR_PREF_SUPL" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PR_TP_FLG]"
+                      dataType="i2"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_TP_FLG]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PR_TP_FLG]"
+                      name="PR_TP_FLG" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_PREQUEST]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_PREQUEST]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_PREQUEST]"
+                      name="PK_PREQUEST" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PR_REF]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_REF]"
+                      length="10"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PR_REF]"
+                      name="PR_REF" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PR_CC]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_CC]"
+                      length="16"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PR_CC]"
+                      name="PR_CC" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PR_STRING1]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_STRING1]"
+                      length="20"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PR_STRING1]"
+                      name="PR_STRING1" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PR_STRING2]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_STRING2]"
+                      length="20"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PR_STRING2]"
+                      name="PR_STRING2" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PR_WO_REF]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_WO_REF]"
+                      length="10"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PR_WO_REF]"
+                      name="PR_WO_REF" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_WIP_WO]"
+                      dataType="i4"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PK_WIP_WO]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PK_WIP_WO]"
+                      name="PK_WIP_WO" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[ITEM_DS]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[ITEM_DS]"
+                      length="100"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[ITEM_DS]"
+                      name="ITEM_DS" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[BUY_PRICE]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[BUY_PRICE]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[BUY_PRICE]"
+                      name="BUY_PRICE" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[BUY_CURR]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[BUY_CURR]"
+                      length="6"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[BUY_CURR]"
+                      name="BUY_CURR" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PR_ORD_QTY]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_ORD_QTY]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PR_ORD_QTY]"
+                      name="PR_ORD_QTY" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PR_NST_REF]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_NST_REF]"
+                      length="2"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PR_NST_REF]"
+                      name="PR_NST_REF" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PR_DEV_QTY]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_DEV_QTY]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PR_DEV_QTY]"
+                      name="PR_DEV_QTY" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PR_IT_NUMBER1]"
+                      dataType="r8"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_IT_NUMBER1]"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PR_IT_NUMBER1]"
+                      name="PR_IT_NUMBER1" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PR_IT_STRING1]"
+                      codePage="1252"
+                      dataType="str"
+                      externalMetadataColumnId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output].ExternalColumns[PR_IT_STRING1]"
+                      length="20"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[PR_IT_STRING1]"
+                      name="PR_IT_STRING1" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\PRLINE (AS IS).Paths[Derived Column Output]"
+              endId="Package\PRLINE (AS IS)\OLE DB Destination.Inputs[OLE DB Destination Input]"
+              name="Derived Column Output"
+              startId="Package\PRLINE (AS IS)\Derived Column.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\PRLINE (AS IS).Paths[Oracle Source Output]"
+              endId="Package\PRLINE (AS IS)\Derived Column.Inputs[Derived Column Input]"
+              name="Oracle Source Output"
+              startId="Package\PRLINE (AS IS)\Oracle Source.Outputs[Oracle Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\RESET PRLINE (AS-IS)"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{3A434F98-0CCB-43A3-A9AD-ECD5052FB2E1}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="RESET PRLINE (AS-IS)"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="DELETE FROM MAXIMO.CSWN_PRLINE" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{7AB85451-FD72-4CC1-8FCB-CE7EB8CDB7B2}"
+      DTS:From="Package\PRE-PKG"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\RESET PRLINE (AS-IS)" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{BC8B4D33-D0DF-4C88-975F-B413027125A3}"
+      DTS:From="Package\PRLINE (AS IS)"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\POST-PKG" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{794EF3A3-8F76-4507-9605-FA83C322B0FD}"
+      DTS:From="Package\RESET PRLINE (AS-IS)"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\PRLINE (AS IS)" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        <NodeLayout
+          Size="152,41.6"
+          Id="Package\PRLINE (AS IS)"
+          TopLeft="96.8055535445894,210.573549872192" />
+        <NodeLayout
+          Size="137.6,41.6"
+          Id="Package\POST-PKG\FINISH LOG"
+          TopLeft="51.9333115693606,32.199997812311" />
+        <ContainerLayout
+          HeaderHeight="44.8"
+          IsExpanded="False"
+          PanelSize="270.4,130.4"
+          Size="156,44.8"
+          Id="Package\POST-PKG"
+          TopLeft="78.8425915630795,299.906881855546" />
+        <NodeLayout
+          Size="135.2,41.6"
+          Id="Package\PRE-PKG\GET LOGID"
+          TopLeft="47.4999810134378,99.1999989151955" />
+        <NodeLayout
+          Size="128,41.6"
+          Id="Package\PRE-PKG\START LOG"
+          TopLeft="45.833314437834,26.3999994214376" />
+        <EdgeLayout
+          Id="Package\PRE-PKG.PrecedenceConstraints[Constraint]"
+          TopLeft="112.466647725636,67.9999994214376">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,31.1999994937579"
+              Start="0,0"
+              End="0,23.6999994937579">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,23.6999994937579" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43.2"
+          IsExpanded="False"
+          PanelSize="240,177.6"
+          Size="149.6,43.2"
+          Id="Package\PRE-PKG"
+          TopLeft="85.9722208031633,51.6444453203237" />
+        <NodeLayout
+          Size="233.6,41.6"
+          Id="Package\RESET PRLINE (AS-IS)"
+          TopLeft="81.6666622045969,130.533332598077" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="160.772220803163,94.8444453203237">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="37.6944414014336,35.6888872777533"
+              Start="0,0"
+              End="37.6944414014336,28.1888872777533">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,13.8444436388767" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,13.8444436388767"
+                    Point2="0,17.8444436388767"
+                    Point3="4,17.8444436388767" />
+                  <mssgle:LineSegment
+                    End="33.6944414014336,17.8444436388767" />
+                  <mssgle:CubicBezierSegment
+                    Point1="33.6944414014336,17.8444436388767"
+                    Point2="37.6944414014336,17.8444436388767"
+                    Point3="37.6944414014336,21.8444436388767" />
+                  <mssgle:LineSegment
+                    End="37.6944414014336,28.1888872777533" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="172.805553544589,252.173549872192">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-15.9629619815099,47.733331983354"
+              Start="0,0"
+              End="-15.9629619815099,40.233331983354">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,19.866665991677" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,19.866665991677"
+                    Point2="0,23.866665991677"
+                    Point3="-4,23.866665991677" />
+                  <mssgle:LineSegment
+                    End="-11.9629619815099,23.866665991677" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-11.9629619815099,23.866665991677"
+                    Point2="-15.9629619815099,23.866665991677"
+                    Point3="-15.9629619815099,27.866665991677" />
+                  <mssgle:LineSegment
+                    End="-15.9629619815099,40.233331983354" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="198.466662204597,172.133332598077">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-25.6611086600075,38.440217274115"
+              Start="0,0"
+              End="-25.6611086600075,30.940217274115">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,15.2201086370575" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,15.2201086370575"
+                    Point2="0,19.2201086370575"
+                    Point3="-4,19.2201086370575" />
+                  <mssgle:LineSegment
+                    End="-21.6611086600075,19.2201086370575" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-21.6611086600075,19.2201086370575"
+                    Point2="-25.6611086600075,19.2201086370575"
+                    Point3="-25.6611086600075,23.2201086370575" />
+                  <mssgle:LineSegment
+                    End="-25.6611086600075,30.940217274115" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <AnnotationLayout
+          Text="Notes:&#xA;Load PRLINE data as-is into CSWN_PRLINE table"
+          ParentId="Package"
+          FontInfo="{assembly:Null}"
+          Size="283.2,56"
+          Id="23dc0cc0-435c-4eac-ac0f-24ba75582a95"
+          TopLeft="297.499983745317,67.599999529918" />
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\PRLINE (AS IS)">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        <NodeLayout
+          Size="144.8,41.6"
+          Id="Package\PRLINE (AS IS)\Oracle Source"
+          TopLeft="114.000005851189,61.9333331323331" />
+        <NodeLayout
+          Size="152.8,41.6"
+          Id="Package\PRLINE (AS IS)\Derived Column"
+          TopLeft="113.333327141073,153.399999150236" />
+        <NodeLayout
+          Size="171.2,41.6"
+          Id="Package\PRLINE (AS IS)\OLE DB Destination"
+          TopLeft="103.333327687449,247.199998336633" />
+        <EdgeLayout
+          Id="Package\PRLINE (AS IS).Paths[Oracle Source Output]"
+          TopLeft="188.066666496131,103.533333132333">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,49.8666660179029"
+              Start="0,0"
+              End="0,42.3666660179029">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,42.3666660179029" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-25.19765625,15.5715166027015,50.3953125,11.2236328125"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\PRLINE (AS IS).Paths[Derived Column Output]"
+          TopLeft="189.333327414261,194.999999150236">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,52.199999186397"
+              Start="0,0"
+              End="0,44.699999186397">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,44.699999186397" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-25.19765625,16.7381831869485,50.3953125,11.2236328125"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\PRLINE (AS IS)\Oracle Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\PRLINE (AS IS)\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

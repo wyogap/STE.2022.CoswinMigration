@@ -1,0 +1,528 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="12/22/2024 2:10:50 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="LENOVO-YOGA"
+  DTS:CreatorName="LENOVO-YOGA\wyoga"
+  DTS:DTSID="{DBBC1FE0-60D4-4034-AEC8-A4CCC6548451}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="16.0.5685.0"
+  DTS:LocaleID="14345"
+  DTS:ObjectName="DB2_1082_Fix_ROUTE_STELINE"
+  DTS:PackageType="5"
+  DTS:VersionBuild="296"
+  DTS:VersionGUID="{54E863D8-5401-4EEF-957D-416AD0BE9694}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{7B4FD4F7-8A02-4267-8CAD-FA8A58D34913}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="log_id">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{69096B6B-9204-4B33-A638-B188172527DD}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="max_id">
+      <DTS:VariableValue
+        DTS:DataType="20">0</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\POST-PKG"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{3CDFA97C-E07C-442E-A455-64B58A3D9B2B}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="POST-PKG">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\POST-PKG\FINISH LOG"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{679F3BEE-4A14-402F-8E4E-58E72FA92B83}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="FINISH LOG"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="UPDATE MIGRATION.ste_migration_logs &#xA;SET&#xA; end_date = add_hours(CURRENT_TIMESTAMP,8)&#xA; , success = 1&#xA;WHERE id = ?" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="LogId"
+                SQLTask:DtsVariableName="User::log_id"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\PRE-PKG"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{4405B935-15B2-45D6-A8CE-04105B7A3D18}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="PRE-PKG">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\PRE-PKG\GET LOGID"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{B696B745-3712-4CDC-81BB-6AE03E97DE8B}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="GET LOGID"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="SELECT ID FROM MIGRATION.ste_migration_logs &#xA;WHERE package_name=?&#xA;ORDER BY ID DESC LIMIT 1"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="ID"
+                SQLTask:DtsVariableName="User::log_id" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="NewParameterName"
+                SQLTask:DtsVariableName="System::PackageName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\PRE-PKG\START LOG"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{35C651D2-997D-4C08-B318-3B5CBB8317E1}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="START LOG"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="INSERT INTO MIGRATION.ste_migration_logs (&#xA; package_name&#xA; ,version&#xA; ,start_date&#xA; ,hostname &#xA;)&#xA;VALUES (&#xA; ?&#xA; , CONCAT(?,CONCAT( '.', ?))&#xA; ,add_hours(CURRENT_TIMESTAMP,8)&#xA; , ?&#xA;);" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="PkgName"
+                SQLTask:DtsVariableName="System::PackageName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="PkgVersionMajor"
+                SQLTask:DtsVariableName="System::VersionMajor"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="PkgVersionMinor"
+                SQLTask:DtsVariableName="System::VersionMinor"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="Hostname"
+                SQLTask:DtsVariableName="System::MachineName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\PRE-PKG.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{83494046-3487-4493-993D-FAE1BECED79F}"
+          DTS:From="Package\PRE-PKG\START LOG"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\PRE-PKG\GET LOGID" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Update Asset STE_LINE from ITEM"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{CA680317-7F31-40A9-B699-5FCA435C12A8}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Update Asset STE_LINE from ITEM"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="MERGE INTO maximo.asset a&#xA;USING (&#xA;&#x9;SELECT a.assetuid, a.ste_cweqcode, a.ste_line AS orig_line, a.itemnum, a.ste_origitemnum, b.ste_line &#xA;&#x9;FROM maximo.asset a&#xA;&#x9;JOIN maximo.item b ON b.itemnum=a.ste_origitemnum&#xA;&#x9;WHERE a.ste_line IS NULL AND a.ste_origitemnum IS NOT NULL&#xA;) b ON b.assetuid=a.assetuid&#xA;WHEN MATCHED THEN &#xA;UPDATE SET &#xA;&#x9;ste_line=b.ste_line&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Update Remaining Asset STE_LINE to NEL"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{49105D4A-0AD8-407F-9B9A-E657F397B55C}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Update Remaining Asset STE_LINE to NEL"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="UPDATE MAXIMO.asset SET STE_LINE='NEL' WHERE STE_LINE IS NULL;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Update Remaining Route STE_LINE to NEL"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{FA47CA1B-2278-4245-BCC5-7DD72C195E11}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Update Remaining Route STE_LINE to NEL"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="UPDATE MAXIMO.routes SET STE_LINE='NEL' WHERE STE_LINE IS NULL;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Update Routes"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{4490E4F7-3EF6-4D50-8A06-905FC48897CC}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Update Routes"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="MERGE INTO MAXIMO.ROUTES AS A&#xA;USING (&#xA; WITH DATA AS (&#xA;  SELECT r.routesid, r.route, rs.assetnum &#xA;   , b.ste_system, b.ste_subsystem, b.ste_line&#xA;   , b.location, l.TYPE AS locationtype&#xA;  FROM maximo.ROUTES r &#xA;  JOIN MAXIMO.ROUTE_STOP rs ON rs.route=r.route&#xA;  JOIN maximo.ASSET b ON b.assetnum=rs.assetnum&#xA;  LEFT JOIN maximo.LOCATIONS l ON l.location=b.location&#xA;  ORDER BY r.route&#xA; ),&#xA; SYSTEMCNT AS (&#xA;  SELECT routesid, count(DISTINCT ste_system) AS cnt, max(ste_system) AS ste_system&#xA;  FROM DATA&#xA;  WHERE ste_system IS NOT null&#xA;  GROUP BY routesid&#xA; ),&#xA; SUBSYSTEMCNT AS (&#xA;  SELECT routesid, count(DISTINCT ste_subsystem) AS cnt, max(ste_subsystem) AS ste_subsystem&#xA;  FROM DATA&#xA;  WHERE ste_subsystem IS NOT null&#xA;  GROUP BY routesid&#xA; ),&#xA; LOCTYPECNT AS (&#xA;  SELECT routesid, count(DISTINCT locationtype) AS cnt, max(locationtype) AS locationtype&#xA;  FROM DATA&#xA;  WHERE locationtype IS NOT null&#xA;  GROUP BY routesid&#xA; ),&#xA; LINECNT AS (&#xA;  SELECT routesid, count(DISTINCT ste_line) AS cnt, max(ste_line) AS ste_line&#xA;  FROM DATA&#xA;  WHERE ste_line IS NOT null&#xA;  GROUP BY routesid&#xA; )&#xA; SELECT R.ROUTESID, R.ROUTE, B.CNT, C.CNT, D.CNT, E.CNT&#xA;  , CASE WHEN COALESCE(B.CNT,0)=1 THEN B.STE_SYSTEM ELSE NULL END AS STE_SYSTEM&#xA;  , CASE WHEN COALESCE(C.CNT,0)=1 THEN C.STE_SUBSYSTEM ELSE NULL END AS STE_SUBSYSTEM&#xA;  , CASE WHEN COALESCE(D.CNT,0)=1 THEN D.LOCATIONTYPE ELSE NULL END AS LOCATIONTYPE&#xA;  , CASE WHEN COALESCE(E.CNT,0)=1 THEN E.STE_LINE ELSE NULL END AS STE_LINE&#xA;  , R.STE_SYSTEM AS ORIG_SYSTEM&#xA;  , R.STE_SUBSYSTEM AS ORIG_SUBSYSTEM&#xA;  , R.STE_LOCTYPE AS ORIG_LOCTYPE&#xA;  , R.STE_LINE AS ORIG_LINE&#xA; FROM MAXIMO.ROUTES R&#xA; LEFT JOIN SYSTEMCNT B ON B.ROUTESID=R.ROUTESID&#xA; LEFT JOIN SUBSYSTEMCNT C ON C.ROUTESID=R.ROUTESID&#xA; LEFT JOIN LOCTYPECNT D ON D.ROUTESID=R.ROUTESID&#xA; LEFT JOIN LINECNT E ON E.ROUTESID=R.ROUTESID&#xA; ORDER BY R.route&#xA;) B ON B.ROUTESID=A.ROUTESID&#xA;WHEN MATCHED THEN&#xA;UPDATE SET &#xA; ste_system=COALESCE(B.ste_system,B.ORIG_SYSTEM),&#xA; ste_subsystem=COALESCE(B.ste_subsystem,B.ORIG_SUBSYSTEM),&#xA; ste_loctype=COALESCE(B.locationtype,B.ORIG_LOCTYPE),&#xA; ste_line=COALESCE(B.ste_line,B.ORIG_LINE)&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Update Workorder"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{CB29240F-B2B0-4B07-B918-B47F5A8BA7F4}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Update Workorder"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="MERGE INTO maximo.workorder a&#xA;USING (&#xA;&#x9;SELECT a.workorderid, a.route, a.ste_line AS orig_line, b.ste_line&#xA;&#x9;FROM maximo.workorder a&#xA;&#x9;JOIN maximo.routes b ON b.route=a.route&#xA;&#x9;WHERE a.ste_migrationid IS NOT NULL AND a.route IS NOT NULL&#xA;) b ON b.workorderid=a.workorderid&#xA;WHEN MATCHED THEN &#xA;UPDATE SET &#xA;&#x9;ste_line=coalesce(b.orig_line,b.ste_line)&#xA;;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{3F0130AE-9AFA-4CE4-BBE7-F9AF2A3808F1}"
+      DTS:From="Package\PRE-PKG"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Update Asset STE_LINE from ITEM" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{D4AA587B-D8CC-4307-94C0-4349621AF9DA}"
+      DTS:From="Package\Update Routes"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\Update Remaining Route STE_LINE to NEL" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{04B00E1E-2C52-4353-8732-97F1429C76C1}"
+      DTS:From="Package\Update Workorder"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\POST-PKG" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
+      DTS:CreationName=""
+      DTS:DTSID="{A4BD662B-9D4A-40B7-BA6E-7547C7F68CDE}"
+      DTS:From="Package\Update Asset STE_LINE from ITEM"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 3"
+      DTS:To="Package\Update Remaining Asset STE_LINE to NEL" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 4]"
+      DTS:CreationName=""
+      DTS:DTSID="{83295C91-70BE-4A8B-828B-298E22EF7BB0}"
+      DTS:From="Package\Update Remaining Asset STE_LINE to NEL"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 4"
+      DTS:To="Package\Update Routes" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 5]"
+      DTS:CreationName=""
+      DTS:DTSID="{DED519A3-B793-44BD-88D1-800534E950BA}"
+      DTS:From="Package\Update Remaining Route STE_LINE to NEL"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 5"
+      DTS:To="Package\Update Workorder" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        <NodeLayout
+          Size="137.6,41.6"
+          Id="Package\POST-PKG\FINISH LOG"
+          TopLeft="51.9333115693606,32.199997812311" />
+        <ContainerLayout
+          HeaderHeight="44.8"
+          IsExpanded="False"
+          PanelSize="270.4,130.4"
+          Size="156,44.8"
+          Id="Package\POST-PKG"
+          TopLeft="97.1759238947239,590.640213784661" />
+        <NodeLayout
+          Size="135.2,41.6"
+          Id="Package\PRE-PKG\GET LOGID"
+          TopLeft="47.4999810134378,99.1999989151955" />
+        <NodeLayout
+          Size="128,41.6"
+          Id="Package\PRE-PKG\START LOG"
+          TopLeft="45.833314437834,26.3999994214376" />
+        <EdgeLayout
+          Id="Package\PRE-PKG.PrecedenceConstraints[Constraint]"
+          TopLeft="112.466647725636,67.9999994214376">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,31.1999994937579"
+              Start="0,0"
+              End="0,23.6999994937579">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,23.6999994937579" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43.2"
+          IsExpanded="False"
+          PanelSize="240,177.6"
+          Size="149.6,43.2"
+          Id="Package\PRE-PKG"
+          TopLeft="95.9722202567876,80.2444451214429" />
+        <NodeLayout
+          Size="244,41.6"
+          Id="Package\Update Asset STE_LINE from ITEM"
+          TopLeft="46.6666641169127,168.199999403358" />
+        <NodeLayout
+          Size="279.2,41.6"
+          Id="Package\Update Remaining Asset STE_LINE to NEL"
+          TopLeft="29.9999983608723,250.466664924953" />
+        <NodeLayout
+          Size="281.6,41.6"
+          Id="Package\Update Remaining Route STE_LINE to NEL"
+          TopLeft="29.1666650730703,420.373548913948" />
+        <NodeLayout
+          Size="148,41.6"
+          Id="Package\Update Routes"
+          TopLeft="93.3333282338251,338.733331495193" />
+        <NodeLayout
+          Size="163.2,41.6"
+          Id="Package\Update Workorder"
+          TopLeft="89.3055539543715,512.573548389626" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="169.71944218685,123.444445121443">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,44.7555542819146"
+              Start="0,0"
+              End="0,37.2555542819146">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,37.2555542819146" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="168.649996653448,380.333331495193">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,40.0402174187554"
+              Start="0,0"
+              End="0,32.5402174187554">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,32.5402174187554" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="173.040738924548,554.173548389626">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,36.4666653950345"
+              Start="0,0"
+              End="0,28.9666653950345">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,28.9666653950345" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 3]"
+          TopLeft="169.133331238893,209.799999403358">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,40.6666655215948"
+              Start="0,0"
+              End="0,33.1666655215948">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,33.1666655215948" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 4]"
+          TopLeft="168.466663297349,292.066664924953">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,46.6666665702399"
+              Start="0,0"
+              End="0,39.1666665702399">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,39.1666665702399" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 5]"
+          TopLeft="170.436109513721,461.973548913948">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,50.5999994756779"
+              Start="0,0"
+              End="0,43.0999994756779">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,43.0999994756779" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <AnnotationLayout
+          Text="Notes:&#xA;To set ASSET_STE_LINE from ITEM (only for those still NULL, majority will come from master ASSET file).&#xA;If the value is still NULL after all that, set it to NEL&#xA;&#xA;To set ROUTE.STE_LINE from ASSET. If the value is still NULL, set it to NEL.&#xA;&#xA;To update WORKORDER.STE_LINE from ROUTE/ASSET"
+          ParentId="Package"
+          FontInfo="{assembly:Null}"
+          Size="571.2,136"
+          Id="23dc0cc0-435c-4eac-ac0f-24ba75582a95"
+          TopLeft="308.333316486743,159.799998933276" />
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

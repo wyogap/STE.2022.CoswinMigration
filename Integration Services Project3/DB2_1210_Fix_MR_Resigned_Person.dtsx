@@ -1,0 +1,336 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="12/22/2024 2:10:50 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="LENOVO-YOGA"
+  DTS:CreatorName="LENOVO-YOGA\wyoga"
+  DTS:DTSID="{93B20EED-EDC4-4EFB-89B8-09F7417AC090}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="16.0.5685.0"
+  DTS:LocaleID="14345"
+  DTS:ObjectName="DB2_1210_Fix_MR_Resigned_Person"
+  DTS:PackageType="5"
+  DTS:VersionBuild="298"
+  DTS:VersionGUID="{3E5A308A-63DC-4776-8C36-86B43B45A177}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{97480DAE-F74E-4166-8863-48C93613A14A}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="log_id">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{BBFD2E39-2C5C-4BB8-BF17-EE12B3C951BE}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="max_id">
+      <DTS:VariableValue
+        DTS:DataType="20">0</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\POST-PKG"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{16D1DAF4-F254-44DB-8BDC-56C6B71FA858}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="POST-PKG">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\POST-PKG\FINISH LOG"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{89FA0E8C-7961-4BEC-A512-89066A0422DC}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="FINISH LOG"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="UPDATE MIGRATION.ste_migration_logs &#xA;SET&#xA; end_date = add_hours(CURRENT_TIMESTAMP,8)&#xA; , success = 1&#xA;WHERE id = ?" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="LogId"
+                SQLTask:DtsVariableName="User::log_id"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\PRE-PKG"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{B140C22F-C5CA-488D-B302-7F03F88592EA}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="PRE-PKG">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\PRE-PKG\GET LOGID"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{338182F6-6ADC-4853-A4CC-F01ED811471D}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="GET LOGID"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="SELECT ID FROM MIGRATION.ste_migration_logs &#xA;WHERE package_name=?&#xA;ORDER BY ID DESC LIMIT 1"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="ID"
+                SQLTask:DtsVariableName="User::log_id" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="NewParameterName"
+                SQLTask:DtsVariableName="System::PackageName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\PRE-PKG\START LOG"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{21F2F290-007E-4209-8D13-75318B8E53D2}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="START LOG"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+              SQLTask:SqlStatementSource="INSERT INTO MIGRATION.ste_migration_logs (&#xA; package_name&#xA; ,version&#xA; ,start_date&#xA; ,hostname &#xA;)&#xA;VALUES (&#xA; ?&#xA; , CONCAT(?,CONCAT( '.', ?))&#xA; ,add_hours(CURRENT_TIMESTAMP,8)&#xA; , ?&#xA;);" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="PkgName"
+                SQLTask:DtsVariableName="System::PackageName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="PkgVersionMajor"
+                SQLTask:DtsVariableName="System::VersionMajor"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="PkgVersionMinor"
+                SQLTask:DtsVariableName="System::VersionMinor"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="Hostname"
+                SQLTask:DtsVariableName="System::MachineName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\PRE-PKG.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{55C72B24-BF37-49B3-A225-A0E3AC5AE936}"
+          DTS:From="Package\PRE-PKG\START LOG"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\PRE-PKG\GET LOGID" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Update MR Status of Resigned Person"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{58014D0B-C97C-4A10-B22B-141440CE2FFE}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Update MR Status of Resigned Person"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{0BC696F0-EC0B-4459-B510-122B6C034F5D}"
+          SQLTask:SqlStatementSource="-- update MR created by resigned people which are still in 'WAPPR' status to 'CAN'&#xA;UPDATE MAXIMO.MR m SET m.STATUS = 'CAN' where&#xA;m.MRNUM IN&#xA;('MR00457225',&#xA;'MR00433307',&#xA;'MR00423708',&#xA;'MR00422870',&#xA;'MR00420465',&#xA;'MR00419727',&#xA;'MR00419410',&#xA;'MR00418027',&#xA;'MR00415306',&#xA;'MR00415085',&#xA;'MR00413892',&#xA;'MR00413327',&#xA;'MR00413287',&#xA;'MR00412665',&#xA;'MR00412289',&#xA;'MR00412273',&#xA;'MR00412185',&#xA;'MR00410906',&#xA;'MR00410709',&#xA;'MR00410696',&#xA;'MR00410449',&#xA;'MR00409266',&#xA;'MR00408905',&#xA;'MR00406549',&#xA;'MR00406550',&#xA;'MR00406465',&#xA;'MR00405870',&#xA;'MR00403665',&#xA;'MR00403586',&#xA;'MR00403293',&#xA;'MR00403009',&#xA;'MR00402045',&#xA;'MR00401694',&#xA;'MR00401266',&#xA;'MR00399575',&#xA;'MR00398646',&#xA;'MR00398425',&#xA;'MR00398345',&#xA;'MR00398327',&#xA;'MR00398328',&#xA;'MR00398346',&#xA;'MR00397790',&#xA;'MR00397631',&#xA;'MR00397505',&#xA;'MR00396989',&#xA;'MR00396576',&#xA;'MR00396509',&#xA;'MR00396366',&#xA;'MR00394725',&#xA;'MR00394726',&#xA;'MR00394047',&#xA;'MR00393630',&#xA;'MR00393189',&#xA;'MR00392958',&#xA;'MR00392066',&#xA;'MR00391606',&#xA;'MR00391288',&#xA;'MR00390705',&#xA;'MR00390706',&#xA;'MR00390407',&#xA;'MR00390045',&#xA;'MR00389870',&#xA;'MR00389745',&#xA;'MR00388165',&#xA;'MR00388166',&#xA;'MR00387189',&#xA;'MR00386833',&#xA;'MR00386767',&#xA;'MR00385768',&#xA;'MR00385769',&#xA;'MR00384945',&#xA;'MR00384588',&#xA;'MR00384346',&#xA;'MR00384228',&#xA;'MR00384150',&#xA;'MR00384145',&#xA;'MR00383125',&#xA;'MR00382205',&#xA;'MR00382206',&#xA;'MR00381045',&#xA;'MR00381085',&#xA;'MR00380948',&#xA;'MR00380633',&#xA;'MR00380634',&#xA;'MR00380635',&#xA;'MR00380706',&#xA;'MR00380517',&#xA;'MR00380588',&#xA;'MR00380436',&#xA;'MR00379894',&#xA;'MR00379725',&#xA;'MR00379305',&#xA;'MR00379308',&#xA;'MR00379309',&#xA;'MR00379146',&#xA;'MR00378727',&#xA;'MR00378645',&#xA;'MR00378545',&#xA;'MR00378565',&#xA;'MR00377147',&#xA;'MR00376965',&#xA;'MR00376909',&#xA;'MR00376846',&#xA;'MR00376847',&#xA;'MR00376597',&#xA;'MR00375487',&#xA;'MR00374606',&#xA;'MR00373952',&#xA;'MR00373665',&#xA;'MR00373226',&#xA;'MR00372848',&#xA;'MR00372432',&#xA;'MR00372325',&#xA;'MR00372229',&#xA;'MR00370469',&#xA;'MR00370167',&#xA;'MR00370068',&#xA;'MR00369567',&#xA;'MR00369430',&#xA;'MR00368369',&#xA;'MR00368367',&#xA;'MR00368368',&#xA;'MR00367685',&#xA;'MR00366797',&#xA;'MR00366087',&#xA;'MR00365926',&#xA;'MR00363469',&#xA;'MR00362826',&#xA;'MR00362649',&#xA;'MR00362650',&#xA;'MR00362055',&#xA;'MR00361426',&#xA;'MR00361425',&#xA;'MR00361005',&#xA;'MR00360465',&#xA;'MR00360485',&#xA;'MR00360085',&#xA;'MR00359677',&#xA;'MR00359466',&#xA;'MR00359427',&#xA;'MR00358669',&#xA;'MR00358572',&#xA;'MR00357926',&#xA;'MR00356849',&#xA;'MR00356749',&#xA;'MR00356649',&#xA;'MR00356234',&#xA;'MR00356188',&#xA;'MR00356145',&#xA;'MR00355705',&#xA;'MR00355245',&#xA;'MR00355115',&#xA;'MR00354762',&#xA;'MR00354714',&#xA;'MR00354467',&#xA;'MR00354245',&#xA;'MR00354025',&#xA;'MR00354065',&#xA;'MR00353665',&#xA;'MR00353387',&#xA;'MR00352411',&#xA;'MR00352429',&#xA;'MR00351686',&#xA;'MR00351409',&#xA;'MR00350848',&#xA;'MR00350865',&#xA;'MR00350670',&#xA;'MR00350666',&#xA;'MR00350669',&#xA;'MR00350248',&#xA;'MR00350249',&#xA;'MR00350289',&#xA;'MR00350106',&#xA;'MR00350085',&#xA;'MR00350008',&#xA;'MR00349545',&#xA;'MR00349546',&#xA;'MR00349547',&#xA;'MR00349270',&#xA;'MR00348388',&#xA;'MR00347906',&#xA;'MR00347665',&#xA;'MR00347687',&#xA;'MR00347485',&#xA;'MR00347410',&#xA;'MR00347065',&#xA;'MR00346305',&#xA;'MR00345845',&#xA;'MR00345687',&#xA;'MR00344807',&#xA;'MR00344068',&#xA;'MR00343268',&#xA;'MR00342987',&#xA;'MR00342148',&#xA;'MR00342149',&#xA;'MR00341719',&#xA;'MR00340807',&#xA;'MR00340846',&#xA;'MR00340847',&#xA;'MR00340798',&#xA;'MR00340665',&#xA;'MR00340612',&#xA;'MR00339172',&#xA;'MR00339016',&#xA;'MR00338008',&#xA;'MR00337906',&#xA;'MR00336094',&#xA;'MR00336034',&#xA;'MR00336038',&#xA;'MR00335311',&#xA;'MR00334108',&#xA;'MR00333045',&#xA;'MR00333072',&#xA;'MR00332873',&#xA;'MR00332123',&#xA;'MR00331255',&#xA;'MR00331106',&#xA;'MR00330488',&#xA;'MR00330328',&#xA;'MR00330329',&#xA;'MR00329689',&#xA;'MR00329267',&#xA;'MR00329012',&#xA;'MR00328561',&#xA;'MR00328387',&#xA;'MR00328186',&#xA;'MR00328231',&#xA;'MR00327810',&#xA;'MR00327368',&#xA;'MR00327151',&#xA;'MR00326386',&#xA;'MR00326387',&#xA;'MR00325810',&#xA;'MR00324965',&#xA;'MR00324865',&#xA;'MR00324866',&#xA;'MR00324478',&#xA;'MR00323425',&#xA;'MR00322605',&#xA;'MR00321647',&#xA;'MR00321649',&#xA;'MR00321437',&#xA;'MR00321125',&#xA;'MR00320266',&#xA;'MR00320145',&#xA;'MR00319425',&#xA;'MR00319422',&#xA;'MR00319426',&#xA;'MR00319428',&#xA;'MR00319363',&#xA;'MR00319207',&#xA;'MR00318541',&#xA;'MR00318390',&#xA;'MR00318343',&#xA;'MR00316102',&#xA;'MR00312302',&#xA;'MR00311762',&#xA;'MR00311422',&#xA;'MR00311421',&#xA;'MR00310823',&#xA;'MR00309824',&#xA;'MR00305763',&#xA;'MR00305101',&#xA;'MR00305142',&#xA;'MR00304801',&#xA;'MR00302802',&#xA;'MR00302805',&#xA;'MR00302641',&#xA;'MR00302643',&#xA;'MR00302681',&#xA;'MR00302241',&#xA;'MR00302242',&#xA;'MR00301724',&#xA;'MR00300781',&#xA;'MR00299861',&#xA;'MR00299862',&#xA;'MR00299462',&#xA;'MR00299344',&#xA;'MR00298241',&#xA;'MR00297345',&#xA;'MR00296053',&#xA;'MR00294603',&#xA;'MR00294421',&#xA;'MR00293101',&#xA;'MR00291082',&#xA;'MR00289862',&#xA;'MR00289863',&#xA;'MR00289864',&#xA;'MR00289807',&#xA;'MR00289664',&#xA;'MR00289101',&#xA;'MR00289025',&#xA;'MR00288021',&#xA;'MR00286428',&#xA;'MR00285789',&#xA;'MR00285408',&#xA;'MR00284870',&#xA;'MR00284824',&#xA;'MR00284191',&#xA;'MR00283670',&#xA;'MR00282783',&#xA;'MR00282746',&#xA;'MR00282181',&#xA;'MR00282063',&#xA;'MR00282023',&#xA;'MR00281952',&#xA;'MR00281570',&#xA;'MR00281365',&#xA;'MR00281303',&#xA;'MR00280561',&#xA;'MR00280503',&#xA;'MR00279607',&#xA;'MR00279063',&#xA;'MR00279101',&#xA;'MR00278682',&#xA;'MR00278282',&#xA;'MR00276684',&#xA;'MR00275541',&#xA;'MR00275483',&#xA;'MR00274641',&#xA;'MR00274562',&#xA;'MR00274089',&#xA;'MR00273061',&#xA;'MR00271501',&#xA;'MR00271521',&#xA;'MR00271367',&#xA;'MR00271161',&#xA;'MR00271045',&#xA;'MR00267952',&#xA;'MR00267541',&#xA;'MR00266183',&#xA;'MR00265465',&#xA;'MR00264525',&#xA;'MR00264331',&#xA;'MR00264286',&#xA;'MR00264105',&#xA;'MR00264085',&#xA;'MR00264025',&#xA;'MR00263305',&#xA;'MR00262863',&#xA;'MR00259826',&#xA;'MR00259827',&#xA;'MR00259847',&#xA;'MR00259101',&#xA;'MR00258783',&#xA;'MR00258701',&#xA;'MR00257481',&#xA;'MR00257282',&#xA;'MR00257226',&#xA;'MR00256084',&#xA;'MR00255863',&#xA;'MR00254561',&#xA;'MR00254342',&#xA;'MR00254346',&#xA;'MR00254145',&#xA;'MR00254006',&#xA;'MR00253841',&#xA;'MR00252181',&#xA;'MR00251902',&#xA;'MR00251281',&#xA;'MR00249684',&#xA;'MR00249161',&#xA;'MR00248694',&#xA;'MR00248526',&#xA;'MR00248461',&#xA;'MR00248281',&#xA;'MR00245706',&#xA;'MR00245721',&#xA;'MR00245144',&#xA;'MR00245145',&#xA;'MR00239041',&#xA;'MR00238841',&#xA;'MR00235374',&#xA;'MR00234401',&#xA;'MR00234202',&#xA;'MR00234148',&#xA;'MR00234149',&#xA;'MR00233783',&#xA;'MR00233781',&#xA;'MR00232681',&#xA;'MR00231781',&#xA;'MR00231184',&#xA;'MR00231185',&#xA;'MR00231188',&#xA;'MR00230481',&#xA;'MR00228921',&#xA;'MR00228224',&#xA;'MR00227626',&#xA;'MR00227121',&#xA;'MR00226446',&#xA;'MR00226322',&#xA;'MR00226331',&#xA;'MR00225261',&#xA;'MR00224904',&#xA;'MR00224905',&#xA;'MR00224906',&#xA;'MR00224521',&#xA;'MR00224245',&#xA;'MR00222721',&#xA;'MR00222562',&#xA;'MR00220643',&#xA;'MR00220318',&#xA;'MR00220281',&#xA;'MR00219967',&#xA;'MR00219874',&#xA;'MR00219796',&#xA;'MR00219797',&#xA;'MR00219798',&#xA;'MR00219583',&#xA;'MR00219423',&#xA;'MR00219361',&#xA;'MR00219223',&#xA;'MR00218861',&#xA;'MR00218804',&#xA;'MR00218502',&#xA;'MR00217846',&#xA;'MR00217847',&#xA;'MR00217502',&#xA;'MR00217124',&#xA;'MR00217141',&#xA;'MR00216961',&#xA;'MR00216404',&#xA;'MR00216361',&#xA;'MR00215842',&#xA;'MR00214767',&#xA;'MR00214773',&#xA;'MR00214281',&#xA;'MR00213521',&#xA;'MR00213261',&#xA;'MR00212323',&#xA;'MR00212081',&#xA;'MR00211901',&#xA;'MR00211663',&#xA;'MR00210324',&#xA;'MR00210004',&#xA;'MR00209664',&#xA;'MR00209621',&#xA;'MR00209623',&#xA;'MR00209501',&#xA;'MR00209505',&#xA;'MR00208762',&#xA;'MR00208641',&#xA;'MR00208481',&#xA;'MR00208224',&#xA;'MR00207686',&#xA;'MR00207464',&#xA;'MR00207423',&#xA;'MR00207401',&#xA;'MR00207345',&#xA;'MR00207349',&#xA;'MR00207161',&#xA;'MR00207026',&#xA;'MR00206891',&#xA;'MR00206661',&#xA;'MR00205828',&#xA;'MR00205801',&#xA;'MR00205206',&#xA;'MR00204861',&#xA;'MR00204847',&#xA;'MR00204687',&#xA;'MR00204581',&#xA;'MR00204242',&#xA;'MR00203684',&#xA;'MR00203581',&#xA;'MR00202901',&#xA;'MR00202641',&#xA;'MR00202382',&#xA;'MR00202083',&#xA;'MR00201664',&#xA;'MR00201442',&#xA;'MR00201381',&#xA;'MR00201321',&#xA;'MR00201061',&#xA;'MR00200443',&#xA;'MR00200243',&#xA;'MR00200244',&#xA;'MR00199562',&#xA;'MR00199502',&#xA;'MR00199203',&#xA;'MR00198382',&#xA;'MR00196521',&#xA;'MR00196561',&#xA;'MR00196562',&#xA;'MR00196462',&#xA;'MR00196298',&#xA;'MR00195647',&#xA;'MR00195442',&#xA;'MR00195443',&#xA;'MR00195383',&#xA;'MR00194182',&#xA;'MR00194061',&#xA;'MR00193461',&#xA;'MR00192923',&#xA;'MR00191742',&#xA;'MR00191681',&#xA;'MR00189152',&#xA;'MR00188445',&#xA;'MR00186924',&#xA;'MR00186483',&#xA;'MR00185901',&#xA;'MR00185821',&#xA;'MR00185822',&#xA;'MR00184681',&#xA;'MR00184682',&#xA;'MR00184702',&#xA;'MR00181642',&#xA;'MR00181568',&#xA;'MR00179407',&#xA;'MR00179262',&#xA;'MR00179221',&#xA;'MR00178941',&#xA;'MR00178841',&#xA;'MR00178842',&#xA;'MR00178843',&#xA;'MR00178844',&#xA;'MR00177782',&#xA;'MR00177443',&#xA;'MR00176624',&#xA;'MR00176322',&#xA;'MR00176241',&#xA;'MR00176121',&#xA;'MR00175741',&#xA;'MR00174361',&#xA;'MR00174262',&#xA;'MR00174041',&#xA;'MR00173822',&#xA;'MR00172023',&#xA;'MR00171961',&#xA;'MR00171962',&#xA;'MR00171403',&#xA;'MR00171041',&#xA;'MR00170981',&#xA;'MR00170842',&#xA;'MR00170901',&#xA;'MR00170681',&#xA;'MR00170301',&#xA;'MR00169463',&#xA;'MR00169464',&#xA;'MR00169465',&#xA;'MR00169070',&#xA;'MR00169071',&#xA;'MR00168601',&#xA;'MR00168323',&#xA;'MR00167021',&#xA;'MR00166563',&#xA;'MR00166104',&#xA;'MR00165841',&#xA;'MR00165601',&#xA;'MR00165307',&#xA;'MR00164781',&#xA;'MR00164283',&#xA;'MR00164321',&#xA;'MR00164201',&#xA;'MR00163683',&#xA;'MR00163086',&#xA;'MR00162466',&#xA;'MR00162263',&#xA;'MR00162322',&#xA;'MR00162341',&#xA;'MR00161625',&#xA;'MR00161461',&#xA;'MR00160821',&#xA;'MR00160582',&#xA;'MR00160263',&#xA;'MR00160264',&#xA;'MR00160106',&#xA;'MR00159906',&#xA;'MR00159501',&#xA;'MR00158725',&#xA;'MR00158141',&#xA;'MR00157421',&#xA;'MR00157381',&#xA;'MR00157103',&#xA;'MR00156824',&#xA;'MR00156202',&#xA;'MR00156203',&#xA;'MR00156204',&#xA;'MR00155261',&#xA;'MR00155142',&#xA;'MR00154801',&#xA;'MR00154602',&#xA;'MR00154481',&#xA;'MR00154082',&#xA;'MR00153083',&#xA;'MR00152321',&#xA;'MR00151123',&#xA;'MR00150924',&#xA;'MR00150461',&#xA;'MR00150462',&#xA;'MR00149721',&#xA;'MR00148963',&#xA;'MR00148862',&#xA;'MR00148882',&#xA;'MR00148681',&#xA;'MR00148144',&#xA;'MR00146902',&#xA;'MR00146068',&#xA;'MR00145781',&#xA;'MR00145486',&#xA;'MR00144481',&#xA;'MR00143105',&#xA;'MR00142943',&#xA;'MR00142562',&#xA;'MR00141604',&#xA;'MR00141501',&#xA;'MR00141223',&#xA;'MR00140501',&#xA;'MR00140321',&#xA;'MR00140162',&#xA;'MR00140086',&#xA;'MR00139723',&#xA;'MR00139482',&#xA;'MR00139203',&#xA;'MR00138622',&#xA;'MR00138182',&#xA;'MR00137949',&#xA;'MR00137363',&#xA;'MR00137141',&#xA;'MR00136681',&#xA;'MR00136505',&#xA;'MR00136442',&#xA;'MR00135804',&#xA;'MR00134522',&#xA;'MR00134469',&#xA;'MR00134381',&#xA;'MR00134382',&#xA;'MR00133261',&#xA;'MR00132344',&#xA;'MR00131985',&#xA;'MR00131201',&#xA;'MR00129981',&#xA;'MR00129181',&#xA;'MR00129183',&#xA;'MR00129184',&#xA;'MR00129191',&#xA;'MR00129122',&#xA;'MR00128141',&#xA;'MR00128082',&#xA;'MR00128028',&#xA;'MR00128029',&#xA;'MR00127101',&#xA;'MR00127005',&#xA;'MR00126842',&#xA;'MR00126843',&#xA;'MR00126637',&#xA;'MR00126402',&#xA;'MR00125943',&#xA;'MR00125909',&#xA;'MR00125345',&#xA;'MR00125301',&#xA;'MR00125230',&#xA;'MR00124582',&#xA;'MR00123988',&#xA;'MR00123861',&#xA;'MR00122801',&#xA;'MR00121232',&#xA;'MR00121234',&#xA;'MR00120462',&#xA;'MR00117242',&#xA;'MR00109403',&#xA;'MR00067744');&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{1783926E-0138-4332-91D0-3A3039CC9047}"
+      DTS:From="Package\PRE-PKG"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Update MR Status of Resigned Person" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{8869523E-A943-4459-AB61-EEE4BC581960}"
+      DTS:From="Package\Update MR Status of Resigned Person"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\POST-PKG" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        <NodeLayout
+          Size="137.6,41.6"
+          Id="Package\POST-PKG\FINISH LOG"
+          TopLeft="51.9333115693606,32.199997812311" />
+        <ContainerLayout
+          HeaderHeight="44.8"
+          IsExpanded="False"
+          PanelSize="270.4,130.4"
+          Size="156,44.8"
+          Id="Package\POST-PKG"
+          TopLeft="81.3425914264855,380.106881403544" />
+        <NodeLayout
+          Size="135.2,41.6"
+          Id="Package\PRE-PKG\GET LOGID"
+          TopLeft="47.4999810134378,99.1999989151955" />
+        <NodeLayout
+          Size="128,41.6"
+          Id="Package\PRE-PKG\START LOG"
+          TopLeft="45.833314437834,26.3999994214376" />
+        <EdgeLayout
+          Id="Package\PRE-PKG.PrecedenceConstraints[Constraint]"
+          TopLeft="112.466647725636,67.9999994214376">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,31.1999994937579"
+              Start="0,0"
+              End="0,23.6999994937579">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,23.6999994937579" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43.2"
+          IsExpanded="False"
+          PanelSize="240,177.6"
+          Size="149.6,43.2"
+          Id="Package\PRE-PKG"
+          TopLeft="82.6388876519553,53.3777786416036" />
+        <NodeLayout
+          Size="256.8,41.6"
+          Id="Package\Update MR Status of Resigned Person"
+          TopLeft="21.8055576424086,137.373550486915" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="153.822222647182,96.5777786416036">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,40.7957718453114"
+              Start="0,0"
+              End="0,33.2957718453114">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,33.2957718453114" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="150.205557642409,178.973550486915">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="9.13703378407689,201.133330916629"
+              Start="0,0"
+              End="9.13703378407689,193.633330916629">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,96.5666654583145" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,96.5666654583145"
+                    Point2="0,100.566665458314"
+                    Point3="4,100.566665458314" />
+                  <mssgle:LineSegment
+                    End="5.13703378407689,100.566665458314" />
+                  <mssgle:CubicBezierSegment
+                    Point1="5.13703378407689,100.566665458314"
+                    Point2="9.13703378407689,100.566665458314"
+                    Point3="9.13703378407689,104.566665458314" />
+                  <mssgle:LineSegment
+                    End="9.13703378407689,193.633330916629" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <AnnotationLayout
+          Text="Notes:&#xA;For MR created by Resigned/InActive Person which are still 'WAPPR' status,&#xA;set status = CAN"
+          ParentId="Package"
+          FontInfo="{assembly:Null}"
+          Size="423.2,72"
+          Id="23dc0cc0-435c-4eac-ac0f-24ba75582a95"
+          TopLeft="289.166650867297,77.1333327969578" />
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
