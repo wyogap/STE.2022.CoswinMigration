@@ -1,5 +1,8 @@
 CALL MIGRATION.STE_START_PATCH('20260428_ROTATING_ASSETS');
 
+-- clean up
+DELETE FROM MAXIMO.ASSET WHERE STE_MIGRATIONID=20260428 AND STE_MIGRATIONTS=-1;
+
 --DROP TABLE "MIGRATION"."BAK_20260428_ROTATING_ASSETS" IF EXISTS;
 DROP TABLE "MIGRATION"."PATCH_20260428_ROTATING_ASSETS" IF EXISTS;
 CREATE TABLE "MIGRATION"."PATCH_20260428_ROTATING_ASSETS"  (
@@ -43,12 +46,15 @@ LEFT JOIN (
 	SELECT a.itemid, a.itemnum, b.location, count(*) AS cnt
 	FROM maximo.item a
 	JOIN maximo.asset b ON b.itemnum=a.itemnum
-	--WHERE a.itemnum='A51-ATC1-0001-0005XX'
+	WHERE b.status!='DECOMMISSIONED'
 	GROUP BY a.itemid, a.itemnum, b.location
 ) c ON c.itemid=a.itemid AND c.location=b.location
 JOIN maximo.invcost d ON d.itemnum=a.itemnum AND d.location=b.location
 WHERE a.rotating=1
 	AND b.curbal>0
+	AND (b.curbal - COALESCE(c.cnt,0)) > 0
+	AND b.location!='TRANSIT'
+	--and a.itemnum in ('A44-TCM1-0001-0006XX', 'A44-TRE1-0001-0001A1', 'A44-AUX1-APS1-0003XX', 'A44-TCM1-0001-0016XX')
 ORDER BY a.itemnum;
 
 --#SET TERMINATOR /
